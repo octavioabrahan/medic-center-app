@@ -1,4 +1,7 @@
 import React, { useEffect, useState } from 'react';
+import './CotizadorExamenes.css';
+import MailIcon from '../assets/Mail.svg';
+import ArrowLeftIcon from '../assets/ArrowLeft.svg';
 
 export default function CotizadorExamenes() {
   const [examenes, setExamenes] = useState([]);
@@ -9,6 +12,8 @@ export default function CotizadorExamenes() {
   const [acepta, setAcepta] = useState(false);
   const [captchaValido, setCaptchaValido] = useState(false);
   const [modalInfo, setModalInfo] = useState(null);
+  const [modoFormulario, setModoFormulario] = useState(false);
+  const [cotizacionEnviada, setCotizacionEnviada] = useState(false);
 
   useEffect(() => {
     fetch(`${process.env.REACT_APP_API_URL}/api/exams`)
@@ -20,32 +25,34 @@ export default function CotizadorExamenes() {
       .then(data => setTasaCambio(data.tasa));
   }, []);
 
-  const handleCheckboxChange = (codigo) => {
-    setSeleccionados(prev =>
-      prev.includes(codigo)
-        ? prev.filter(c => c !== codigo)
-        : [...prev, codigo]
-    );
+  const handleSelect = (examen) => {
+    setSeleccionados([...seleccionados, examen]);
+    setExamenes(examenes.filter(e => e.codigo !== examen.codigo));
+  };
+
+  const handleRemove = (codigo) => {
+    const examen = seleccionados.find(e => e.codigo === codigo);
+    setExamenes([...examenes, examen]);
+    setSeleccionados(seleccionados.filter(e => e.codigo !== codigo));
   };
 
   const handleSubmit = async () => {
-    const seleccionFinal = examenes.filter(e => seleccionados.includes(e.codigo));
-    if (!form.nombre || !form.rut || !form.email || !acepta || !captchaValido || seleccionFinal.length === 0 || !tasaCambio) {
+    if (!form.nombre || !form.rut || !form.email || !acepta || !captchaValido || seleccionados.length === 0 || !tasaCambio) {
       alert('Completa todos los campos, acepta los términos, selecciona al menos un examen y espera que se cargue la tasa de cambio.');
       return;
     }
 
     const resumen = {
       paciente: form,
-      cotizacion: seleccionFinal.map(e => ({
+      cotizacion: seleccionados.map(e => ({
         codigo: e.codigo,
         nombre: e.nombre,
         tiempo_entrega: e.tiempo_entrega || null,
         precioUSD: Number(e.precio),
         precioVES: Number(e.precio) * tasaCambio
       })),
-      totalUSD: seleccionFinal.reduce((sum, e) => sum + Number(e.precio), 0),
-      totalVES: seleccionFinal.reduce((sum, e) => sum + Number(e.precio), 0) * tasaCambio
+      totalUSD: seleccionados.reduce((sum, e) => sum + Number(e.precio), 0),
+      totalVES: seleccionados.reduce((sum, e) => sum + Number(e.precio), 0) * tasaCambio
     };
 
     try {
@@ -56,116 +63,167 @@ export default function CotizadorExamenes() {
       });
 
       if (!res.ok) throw new Error('Fallo al enviar la cotización');
-      alert('Cotización enviada exitosamente ✅');
-      setSeleccionados([]);
-      setForm({ nombre: '', rut: '', email: '', telefono: '' });
-      setAcepta(false);
-      setCaptchaValido(false);
+      setCotizacionEnviada(true);
     } catch (err) {
       console.error(err);
       alert('Ocurrió un error al enviar la cotización');
     }
   };
 
-  const filtrados = examenes.filter(e => e.nombre.toLowerCase().includes(busqueda.toLowerCase()));
+  const filtrados = examenes.filter(e =>
+    e.nombre.toLowerCase().includes(busqueda.toLowerCase())
+  );
+
+  if (cotizacionEnviada) {
+    return (
+      <div className="thankyou-screen">
+        <div className="logo-header">LOGO AQUÍ</div>
+        <h1>¡Gracias por cotizar con nosotros!</h1>
+        <p>
+          Te enviamos un PDF con el detalle de tu cotización al correo que nos indicaste.<br />
+          Si no lo ves en tu bandeja de entrada, revisa la carpeta de spam o promociones.
+        </p>
+        <div className="thankyou-buttons">
+          <button onClick={() => window.location.href = '/'}>Volver a la página principal</button>
+          <button onClick={() => window.location.reload()}>Hacer otra cotización</button>
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <div>
-      <h2>EXÁMENES</h2>
+    <div className="cotizador-wrapper">
+      <div className="logo-header">LOGO AQUÍ</div>
 
-      <input
-        type="text"
-        placeholder="Buscar examen..."
-        value={busqueda}
-        onChange={e => setBusqueda(e.target.value)}
-        style={{ marginBottom: '10px', width: '100%' }}
-      />
+      <div className="cotizador-content">
+        {/* IZQUIERDA */}
+        <div className="cotizador-left">
+          {!modoFormulario ? (
+            <>
+              <h2 className="cotizador-title">Cotiza tus exámenes de forma rápida</h2>
+              <p className="cotizador-subtitle">
+                Selecciona los exámenes que necesitas. Cuando estés listo, presiona “Continuar” para completar tus datos y recibir el detalle de tu cotización.
+              </p>
 
-      <div>
-        {filtrados.map(ex => (
-          <div key={ex.codigo} style={{ display: 'flex', alignItems: 'center', marginBottom: '5px' }}>
-            <label style={{ flex: 1 }}>
               <input
-                type="checkbox"
-                checked={seleccionados.includes(ex.codigo)}
-                onChange={() => handleCheckboxChange(ex.codigo)}
+                className="input-busqueda"
+                type="text"
+                placeholder="Buscar examen por nombre"
+                value={busqueda}
+                onChange={e => setBusqueda(e.target.value)}
               />
-              {ex.nombre}
-            </label>
-            <button onClick={() => setModalInfo(ex)} style={{ marginLeft: '10px' }}>
-              ℹ️
-            </button>
-          </div>
-        ))}
-      </div>
 
-      {modalInfo && (
-        <div style={{
-          position: 'fixed',
-          top: '20%',
-          left: '30%',
-          width: '40%',
-          background: '#fff',
-          border: '1px solid #ccc',
-          padding: '20px',
-          zIndex: 1000
-        }}>
-          <h3>{modalInfo.nombre}</h3>
-          <p>{modalInfo.informacion ? modalInfo.informacion : 'Información no disponible (desactivado).'}</p>
-          <button onClick={() => setModalInfo(null)}>Cerrar</button>
+              <div className="exam-list-scroll">
+                {filtrados.map(ex => (
+                  <div className="exam-item" key={ex.codigo}>
+                    <label>
+                      <input
+                        type="checkbox"
+                        onChange={() => handleSelect(ex)}
+                      />
+                      {' '}{ex.nombre}
+                    </label>
+                    <div>
+                      <button onClick={() => setModalInfo(ex)}>Indicación</button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+                <button
+                  className="btn-continuar"
+                  disabled={seleccionados.length === 0}
+                  onClick={() => setModoFormulario(true)}
+                >
+                  Continuar
+                </button>
+              </div>
+            </>
+          ) : (
+            <>
+              <h2 className="cotizador-title">Para enviarte tu cotización, necesitamos algunos datos</h2>
+              <p className="cotizador-subtitle">
+                Usaremos esta información para contactarte y enviarte el detalle de tu cotización.
+              </p>
+
+              <div className="form-group">
+                <label htmlFor="nombre">Nombre</label>
+                <input id="nombre" className="form-input" placeholder="¿Cuál es tu nombre?" value={form.nombre} onChange={e => setForm({ ...form, nombre: e.target.value })} />
+              </div>
+
+              <div className="form-group">
+                <label htmlFor="rut">Cédula</label>
+                <input id="rut" className="form-input" placeholder="Tu número de cédula" value={form.rut} onChange={e => setForm({ ...form, rut: e.target.value })} />
+              </div>
+
+              <div className="form-group">
+                <label htmlFor="telefono">Teléfono</label>
+                <input id="telefono" className="form-input" placeholder="Número donde podamos contactarte" value={form.telefono} onChange={e => setForm({ ...form, telefono: e.target.value })} />
+              </div>
+
+              <div className="form-group">
+                <label htmlFor="email">Correo electrónico</label>
+                <input id="email" className="form-input" placeholder="Correo para enviarte la cotización" value={form.email} onChange={e => setForm({ ...form, email: e.target.value })} />
+              </div>
+
+              <div className="checkbox-line">
+                <input type="checkbox" checked={acepta} onChange={e => setAcepta(e.target.checked)} />
+                <span>Autorizo que se me contacte con fines informativos y de marketing del centro médico.</span>
+              </div>
+
+              <button onClick={() => setCaptchaValido(true)}>Simular CAPTCHA ✔️</button><br /><br />
+
+              <div className="form-buttons">
+                <button className="btn-volver" onClick={() => setModoFormulario(false)}>
+                  <img src={ArrowLeftIcon} alt="Volver" />
+                  <span>Volver al listado</span>
+                </button>
+
+                <button className="btn-enviar" onClick={handleSubmit}>
+                  <img src={MailIcon} alt="Enviar" />
+                  <span>Enviar cotización</span>
+                </button>
+              </div>
+            </>
+          )}
         </div>
-      )}
 
-      {seleccionados.length > 0 && (
-        <div style={{ marginTop: '30px' }}>
-          <h3>Resumen de exámenes seleccionados</h3>
-          <ul>
-            {examenes
-              .filter(e => seleccionados.includes(e.codigo))
-              .map((e) => (
-                <li key={e.codigo}>
-                  {e.nombre}{' '}
-                  <button
-                    onClick={() =>
-                      setSeleccionados(seleccionados.filter(c => c !== e.codigo))
-                    }
-                    style={{
-                      marginLeft: '10px',
-                      color: 'white',
-                      background: 'red',
-                      border: 'none',
-                      borderRadius: '50%',
-                      width: '20px',
-                      height: '20px',
-                      cursor: 'pointer',
-                    }}
-                    title="Eliminar examen"
-                  >
-                    ✕
-                  </button>
-                </li>
+        {/* DERECHA */}
+        <div className="cotizador-right">
+          {seleccionados.length === 0 ? (
+            <>
+              <h4>Aún no has seleccionado ningún examen</h4>
+              <p>Busca en el listado o escribe el nombre del examen que necesitas para comenzar tu cotización.</p>
+            </>
+          ) : (
+            <>
+              <h4>Estos son los exámenes que quieres cotizar</h4>
+              {seleccionados.map(ex => (
+                <div className="selected-exam" key={ex.codigo}>
+                  <div>
+                    <span className="exam-name">{ex.nombre}</span>
+                    <div className="indicacion-btn-wrapper">
+                      <button onClick={() => setModalInfo(ex)}>Indicación</button>
+                    </div>
+                  </div>
+                  <button onClick={() => handleRemove(ex.codigo)}>✕</button>
+                </div>
               ))}
-          </ul>
+            </>
+          )}
         </div>
-      )}
 
-      <div style={{ marginTop: '30px' }}>
-        <h3>Datos del Paciente</h3>
-        <input placeholder="Nombre completo" value={form.nombre} onChange={e => setForm({ ...form, nombre: e.target.value })} /><br />
-        <input placeholder="RUT o ID" value={form.rut} onChange={e => setForm({ ...form, rut: e.target.value })} /><br />
-        <input placeholder="Email" value={form.email} onChange={e => setForm({ ...form, email: e.target.value })} /><br />
-        <input placeholder="Teléfono (opcional)" value={form.telefono} onChange={e => setForm({ ...form, telefono: e.target.value })} /><br />
-
-        <label>
-          <input type="checkbox" checked={acepta} onChange={e => setAcepta(e.target.checked)} />
-          Acepto que mis datos serán almacenados con fines de contacto.
-        </label>
-
-        <br />
-        <button onClick={() => setCaptchaValido(true)}>Simular CAPTCHA ✔️</button>
-
-        <br /><br />
-        <button onClick={handleSubmit}>Enviar Cotización</button>
+        {/* MODAL INFO */}
+        {modalInfo && (
+          <div className="modal-overlay">
+            <div className="modal-box">
+              <h3>{modalInfo.nombre}</h3>
+              <p>{modalInfo.informacion || 'Información no disponible (desactivado).'}</p>
+              <button onClick={() => setModalInfo(null)}>Entendido</button>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

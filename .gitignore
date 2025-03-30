@@ -1,0 +1,24 @@
+# Logs y archivos temporales
+/backend.pid
+/backend/logs/
+/backend/pdfs/
+/backend/tmp/
+
+# Node
+node_modules
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Build
+/build
+/dist
+
+# React dev
+.vite
+.DS_Store
+
+# Otros
+.env*
+*.log
+*.gz

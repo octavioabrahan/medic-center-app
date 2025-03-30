@@ -1,0 +1,400 @@
+/* ------------------------------
+   ⚡ Reset General
+------------------------------ */
+* {
+  box-sizing: border-box;
+}
+
+/* ------------------------------
+   📦 Layout General
+------------------------------ */
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Inter', sans-serif;
+  background-color: #fffff; /* fondo celeste */
+}
+
+.cotizador-wrapper {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background-color: #ffffff;
+}
+
+/* ------------------------------
+   🧩 Línea separadora (bajo logo)
+------------------------------ */
+.logo-header {
+  width: 100%;
+  padding: 1rem 0;
+  text-align: center;
+  font-weight: bold;
+  font-size: 1.5rem;
+  background-color: #ffffff;
+  border-bottom: 1px solid #e0e0e0; /* línea gris delgada */
+}
+
+/* ------------------------------
+   🎯 Contenido Principal
+------------------------------ */
+.cotizador-content {
+  display: flex;
+  flex-direction: row;
+  gap: 24px;
+  width: 100%;
+  max-width: 1366px;
+  padding: 2rem 200px;
+  box-sizing: border-box;
+  height: calc(100vh - 80px); /* Ajustado para altura total menos header */
+}
+
+/* ------------------------------
+   🧪 Columna izquierda
+------------------------------ */
+.left-column {
+  flex: 1;
+  max-width: 700px;
+}
+
+.cotizador-title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #1e3a8a;
+  margin-bottom: 0.5rem;
+}
+
+.cotizador-subtitle {
+  color: #333;
+  margin-bottom: 1.5rem;
+}
+
+.input-busqueda {
+  width: 100%;
+  padding: 0.85rem 1rem;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  margin-bottom: 1rem;
+  font-size: 1rem;
+}
+
+.exam-item {
+  #color: white;
+  border: 1px solid #ccc;
+  padding: 1rem;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  font-size: 1rem;
+}
+
+.exam-item label {
+  display: block;
+  font-weight: 500;
+  margin-bottom: 0.3rem;
+}
+
+.exam-item button {
+  font-size: 0.85rem;
+  background: none;
+  border: none;
+  color: #000;
+  cursor: pointer;
+  padding-left: 0; /* <-- ajustado */
+  margin-top: 0.25rem;
+  padding-left: 1.6rem; /* <-- alinear con texto */
+}
+
+.cotizador-left {
+  flex: 1;
+  background-color: #ffffff;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden; /* Para contener el scroll del listado */
+}
+
+.exam-list-scroll {
+  overflow-y: auto;
+  padding-right: 0.5rem;
+  flex-grow: 1;
+  max-height: 100%;
+  margin-bottom: 1rem;
+}
+
+.btn-form-dual {
+  width: 180px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 1rem;
+  background-color: #000;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 500;
+  font-size: 1rem;
+  cursor: pointer;
+  gap: 0.5rem;
+}
+
+/* ------------------------------
+   📋 Columna derecha (Resumen)
+------------------------------ */
+.right-column {
+  width: 306px;
+  background-color: #f1f5fb; /* <- solo aquí el fondo celeste */
+  padding: 1.5rem;
+  border-radius: 12px;
+  height: 100%;
+}
+
+.right-column h4 {
+  color: #1e3a8a;
+  margin-bottom: 1rem;
+  font-size: 1.1rem;
+}
+
+.right-column p {
+  font-size: 0.95rem;
+  color: #555;
+}
+
+.selected-exam {
+  background: white;
+  padding: 1rem;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  width: 100%;
+  font-size: 1rem;
+}
+
+.selected-exam .exam-name {
+  font-weight: 600;
+  margin-bottom: 0.4rem;
+}
+
+.indicacion-btn-wrapper button {
+  font-size: 0.85rem;
+  background: none;
+  border: none;
+  color: #000;
+  cursor: pointer;
+  padding: 0;
+}
+
+.selected-exam button:last-child {
+  background: none;
+  border: none;
+  font-size: 1.2rem;
+  color: #000;
+  cursor: pointer;
+}
+
+.cotizador-right {
+  width: 306px;
+  background-color: #f1f5fb;
+  padding: 2rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.cotizador-right {
+  width: 306px;
+  background-color: #f1f5fb;
+  padding: 2rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+}
+/* ------------------------------
+   🪟 Modal
+------------------------------ */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  backdrop-filter: blur(3px);
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-box {
+  background: white;
+  padding: 2rem;
+  border-radius: 10px;
+  width: 400px;
+  max-width: 90%;
+  text-align: center;
+}
+
+/* ------------------------------
+   📝 Formulario
+------------------------------ */
+.form-input {
+  display: block;
+  width: 100%;
+  padding: 0.7rem 1rem;
+  margin-bottom: 1rem;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 1rem;
+}
+
+.checkbox-line {
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: flex-start;
+}
+
+.checkbox-line input {
+  margin-right: 0.5rem;
+  margin-top: 0.3rem;
+}
+
+.form-group {
+  margin-bottom: 1rem;
+}
+
+.form-group label {
+  display: block;
+  font-size: 0.95rem;
+  font-weight: 500;
+  margin-bottom: 0.3rem;
+  color: #333;
+}
+
+.form-buttons {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.btn-volver {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: none;
+  border: none;
+  color: #000;
+  font-size: 0.95rem;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.btn-volver img {
+  width: 16px;
+  height: 16px;
+}
+
+/* Enviar cotización */
+.btn-enviar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  background-color: #000;
+  color: white;
+  border: none;
+  width: 180px;
+  height: 40px;
+  font-size: 0.95rem;
+  font-weight: 500;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.btn-enviar img {
+  width: 16px;
+  height: 16px;
+}
+
+/* ------------------------------
+   ✅ Botón continuar
+------------------------------ */
+
+.btn-continuar {
+  width: 98px;
+  height: 40px;
+  background-color: #000;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-continuar:disabled {
+  background-color: #bbb;
+  color: #eee;
+  cursor: not-allowed;
+}
+
+/* ------------------------------
+   🎉 Vista final éxito
+------------------------------ */
+.thankyou-screen {
+  width: 100%;
+  text-align: center;
+  padding: 4rem 2rem;
+}
+
+.thankyou-screen h1 {
+  font-size: 2rem;
+  color: #1e3a8a;
+}
+
+.thankyou-screen p {
+  font-size: 1rem;
+  margin-top: 1rem;
+  color: #444;
+}
+
+.thankyou-buttons {
+  margin-top: 2rem;
+}
+
+.thankyou-buttons button {
+  padding: 0.7rem 1.2rem;
+  margin: 0 0.5rem;
+  border: none;
+  background-color: #222;
+  color: white;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.thankyou-buttons button:hover {
+  background-color: #000;
+}
+
+/* ------------------------------
+   📱 Responsive
+------------------------------ */
+@media (max-width: 768px) {
+  .cotizador-content {
+    flex-direction: column;
+    padding: 1rem;
+  }
+
+  .right-column {
+    width: 100%;
+    margin-top: 2rem;
+  }
+}
+
