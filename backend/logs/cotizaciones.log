@@ -1,0 +1,60 @@
+[2025-03-29T22:34:49.328Z] --- NUEVA COTIZACIÓN RECIBIDA ---
+[2025-03-29T22:34:49.328Z] Paciente: Octavio Romero | RUT: 18596082K | Email: octavio1709@gmail.com
+[2025-03-29T22:34:49.328Z] Resumen: {
+  "paciente": {
+    "nombre": "Octavio Romero",
+    "rut": "18596082K",
+    "email": "octavio1709@gmail.com",
+    "telefono": "+56971243283"
+  },
+  "cotizacion": [
+    {
+      "nombre": "17-Hidroxiprogesterona",
+      "precioUSD": 22.5,
+      "precioVES": 1568.25
+    }
+  ],
+  "totalUSD": 22.5,
+  "totalVES": 1568.25
+}
+[2025-03-29T22:34:49.342Z] ❌ Error al guardar cotización: permission denied for table cotizaciones
+[2025-03-29T22:36:56.478Z] --- NUEVA COTIZACIÓN RECIBIDA ---
+[2025-03-29T22:36:56.478Z] Paciente: Octavio Romero | RUT: 18596082K | Email: octavio1709@gmail.com
+[2025-03-29T22:36:56.478Z] Resumen: {
+  "paciente": {
+    "nombre": "Octavio Romero",
+    "rut": "18596082K",
+    "email": "octavio1709@gmail.com",
+    "telefono": "+56971243283"
+  },
+  "cotizacion": [
+    {
+      "nombre": "17-Hidroxiprogesterona",
+      "precioUSD": 22.5,
+      "precioVES": 1568.25
+    }
+  ],
+  "totalUSD": 22.5,
+  "totalVES": 1568.25
+}
+[2025-03-29T22:36:56.490Z] ❌ Error al guardar cotización: permission denied for sequence cotizaciones_id_seq
+[2025-03-29T22:53:13.810Z] --- NUEVA COTIZACIÓN RECIBIDA ---
+[2025-03-29T22:53:13.811Z] Paciente: Octavio Romero | RUT: 18596082K | Email: octavio1709@gmail.com
+[2025-03-29T22:53:13.811Z] Resumen: {
+  "paciente": {
+    "nombre": "Octavio Romero",
+    "rut": "18596082K",
+    "email": "octavio1709@gmail.com",
+    "telefono": "+56971243283"
+  },
+  "cotizacion": [
+    {
+      "nombre": "17-Hidroxiprogesterona",
+      "precioUSD": 22.5,
+      "precioVES": 1568.25
+    }
+  ],
+  "totalUSD": 22.5,
+  "totalVES": 1568.25
+}
+[2025-03-29T22:53:13.822Z] ✅ Cotización guardada con ID: 1
