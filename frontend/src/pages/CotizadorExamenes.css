@@ -32,13 +32,13 @@ body {
   display: flex;
   flex-direction: row;
   gap: 24px;
-  padding: 2rem 200px;
+  padding: 2rem 5vw; /* en lugar de fijo 200px */
   width: 100%;
   max-width: 1366px;
-  height: calc(100vh - 80px);
   box-sizing: border-box;
   align-items: stretch;
 }
+
 
 .cotizador-left {
   flex: 1;
@@ -323,11 +323,25 @@ body {
   .cotizador-content {
     flex-direction: column;
     padding: 1rem;
+    height: auto;
+  }
+
+  .cotizador-left {
+    order: 1;
+    width: 100%;
   }
 
   .cotizador-right {
+    order: 2;
     width: 100%;
-    margin-top: 2rem;
+    margin-top: 1.5rem;
+    height: auto;
   }
-}
 
+  .modal-mobile .modal-box {
+    width: 95%;
+    max-height: 90vh;
+    overflow-y: auto;
+  }
+  
+}
