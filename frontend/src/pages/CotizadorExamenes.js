@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useMediaQuery } from 'react-responsive';
 import './CotizadorExamenes.css';
 import MailIcon from '../assets/Mail.svg';
 import ArrowLeftIcon from '../assets/ArrowLeft.svg';
@@ -14,6 +15,8 @@ export default function CotizadorExamenes() {
   const [modalInfo, setModalInfo] = useState(null);
   const [modoFormulario, setModoFormulario] = useState(false);
   const [cotizacionEnviada, setCotizacionEnviada] = useState(false);
+
+  const isMobile = useMediaQuery({ maxWidth: 768 });
 
   useEffect(() => {
     fetch(`${process.env.REACT_APP_API_URL}/api/exams`)
@@ -92,11 +95,10 @@ export default function CotizadorExamenes() {
   }
 
   return (
-    <div className="cotizador-wrapper">
+    <div className={`cotizador-wrapper ${isMobile ? 'mobile' : 'desktop'}`}>
       <div className="logo-header">LOGO AQUÍ</div>
 
       <div className="cotizador-content">
-        {/* IZQUIERDA */}
         <div className="cotizador-left">
           {!modoFormulario ? (
             <>
@@ -189,7 +191,6 @@ export default function CotizadorExamenes() {
           )}
         </div>
 
-        {/* DERECHA */}
         <div className="cotizador-right">
           {seleccionados.length === 0 ? (
             <>
@@ -214,9 +215,8 @@ export default function CotizadorExamenes() {
           )}
         </div>
 
-        {/* MODAL INFO */}
         {modalInfo && (
-          <div className="modal-overlay">
+          <div className={`modal-overlay ${isMobile ? 'modal-mobile' : ''}`}>
             <div className="modal-box">
               <h3>{modalInfo.nombre}</h3>
               <p>{modalInfo.informacion || 'Información no disponible (desactivado).'}</p>
@@ -228,4 +228,3 @@ export default function CotizadorExamenes() {
     </div>
   );
 }
-
