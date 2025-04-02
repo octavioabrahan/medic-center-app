@@ -301,12 +301,16 @@ body {
 }
 
 .thankyou-buttons {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem; /* ✅ espacio entre botones */
   margin-top: 2rem;
 }
 
 .thankyou-buttons button {
   padding: 0.7rem 1.2rem;
-  margin: 0 0.5rem;
+  width: 200px;
   border: none;
   background-color: #222;
   color: white;
