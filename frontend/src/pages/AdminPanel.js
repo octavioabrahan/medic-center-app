@@ -7,6 +7,11 @@ const AdminPanel = () => {
   const [medicos, setMedicos] = useState([]);
   const [especialidades, setEspecialidades] = useState([]);
 
+  const [nuevaEspecialidad, setNuevaEspecialidad] = useState({
+    nombre: '',
+    descripcion: ''
+  });
+
   const [nuevoMedico, setNuevoMedico] = useState({
     nombre: '',
     id_especialidad: '',
@@ -34,6 +39,16 @@ const AdminPanel = () => {
     const res = await fetch(`${API}/especialidades`);
     const data = await res.json();
     setEspecialidades(data);
+  };
+
+  const crearEspecialidad = async () => {
+    await fetch(`${API}/especialidades`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(nuevaEspecialidad),
+    });
+    setNuevaEspecialidad({ nombre: '', descripcion: '' });
+    fetchEspecialidades();
   };
 
   const crearMedico = async () => {
@@ -64,6 +79,21 @@ const AdminPanel = () => {
   return (
     <div className="admin-panel">
       <h2>Panel de Administración</h2>
+
+      <section>
+        <h3>Crear Especialidad</h3>
+        <input
+          placeholder="Nombre de la especialidad"
+          value={nuevaEspecialidad.nombre}
+          onChange={(e) => setNuevaEspecialidad({ ...nuevaEspecialidad, nombre: e.target.value })}
+        />
+        <input
+          placeholder="Descripción"
+          value={nuevaEspecialidad.descripcion}
+          onChange={(e) => setNuevaEspecialidad({ ...nuevaEspecialidad, descripcion: e.target.value })}
+        />
+        <button onClick={crearEspecialidad}>Guardar Especialidad</button>
+      </section>
 
       <section>
         <h3>Crear Médico</h3>
