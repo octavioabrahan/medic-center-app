@@ -2,7 +2,8 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import Home from './pages/Home';
 import AgendarHora from './pages/AgendamientoWeb';
-import CotizadorExamenes from './pages/CotizadorExamenes'; // 👈 este es nuevo
+import CotizadorExamenes from './pages/CotizadorExamenes';
+import AdminPanel from './pages/AdminPanel';
 
 function App() {
   return (
@@ -14,6 +15,7 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/cotizar" element={<CotizadorExamenes />} /> {/* 👈 este reemplaza el anterior */}
         <Route path="/agendar" element={<AgendarHora />} />
+        <Route path="/admin" element={<AdminPanel />} />
       </Routes>
     </Router>
   );
