@@ -2,74 +2,114 @@ import React, { useState, useEffect } from 'react';
 import { useMediaQuery } from 'react-responsive';
 import './AgendamientoWeb.css';
 
+const API = process.env.REACT_APP_API_URL;
+
 const AgendamientoWeb = () => {
   const isDesktop = useMediaQuery({ minWidth: 1224 });
+
   const [especialidades, setEspecialidades] = useState([]);
-  const [doctores, setDoctores] = useState([]);
+  const [medicos, setMedicos] = useState([]);
   const [citas, setCitas] = useState([]);
+
   const [formData, setFormData] = useState({
-    especialidad: '',
-    doctor: '',
+    id_especialidad: '',
+    id_medico: '',
     fecha: '',
-    hora: ''
+    hora: '',
+    nombre: '',
+    rut: '',
+    email: '',
+    telefono: ''
   });
 
   useEffect(() => {
-    // Cargar especialidades desde el backend
-    fetch('/api/especialidades')
-      .then(response => response.json())
+    fetch(`${API}/especialidades`)
+      .then(res => res.json())
       .then(data => setEspecialidades(data));
 
-    // Cargar doctores desde el backend
-    fetch('/api/doctores')
-      .then(response => response.json())
-      .then(data => setDoctores(data));
+    fetch(`${API}/medicos`)
+      .then(res => res.json())
+      .then(data => setMedicos(data));
 
-    // Cargar citas existentes desde el backend
-    fetch('/api/citas')
-      .then(response => response.json())
+    fetch(`${API}/citas`)
+      .then(res => res.json())
       .then(data => setCitas(data));
   }, []);
 
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Enviar la nueva cita al backend
-    fetch('/api/citas', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(formData)
-    })
-    .then(response => response.json())
-    .then(data => {
+
+    try {
+      // Paso 1: Registrar o buscar cliente
+      const clienteRes = await fetch(`${API}/clientes/register-or-find`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          nombre: formData.nombre,
+          rut: formData.rut,
+          email: formData.email,
+          telefono: formData.telefono
+        })
+      });
+
+      const clienteData = await clienteRes.json();
+      const id_cliente = clienteData.id_cliente;
+
+      // Paso 2: Crear cita con id_cliente
+      const citaBody = {
+        id_cliente,
+        id_medico: parseInt(formData.id_medico),
+        fecha_hora: `${formData.fecha}T${formData.hora}:00`,
+        estado: 'programada',
+        notas: ''
+      };
+
+      const citaRes = await fetch(`${API}/citas`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(citaBody)
+      });
+
+      const citaData = await citaRes.json();
       alert('Cita agendada con éxito');
-      setCitas([...citas, data]);
-    })
-    .catch(error => alert('Error al agendar la cita'));
+      setCitas(prev => [...prev, citaData]);
+
+    } catch (err) {
+      console.error(err);
+      alert('Error al registrar cliente o agendar la cita');
+    }
   };
 
   return (
     <div className={isDesktop ? 'agendamiento-container desktop' : 'agendamiento-container mobile'}>
       <h2>Agendar una Cita</h2>
       <form onSubmit={handleSubmit}>
+        <h4>Datos del Paciente</h4>
+        <input type="text" name="nombre" placeholder="Nombre completo" value={formData.nombre} onChange={handleChange} required />
+        <input type="text" name="rut" placeholder="RUT o cédula" value={formData.rut} onChange={handleChange} required />
+        <input type="email" name="email" placeholder="Correo electrónico" value={formData.email} onChange={handleChange} required />
+        <input type="text" name="telefono" placeholder="Teléfono" value={formData.telefono} onChange={handleChange} required />
+
+        <h4>Datos de la Cita</h4>
         <label>Especialidad:</label>
-        <select name="especialidad" value={formData.especialidad} onChange={handleChange} required>
+        <select name="id_especialidad" value={formData.id_especialidad} onChange={handleChange} required>
           <option value="">Seleccione una especialidad</option>
           {especialidades.map((esp) => (
-            <option key={esp.id} value={esp.nombre}>{esp.nombre}</option>
+            <option key={esp.id_especialidad} value={esp.id_especialidad}>{esp.nombre}</option>
           ))}
         </select>
 
-        <label>Doctor:</label>
-        <select name="doctor" value={formData.doctor} onChange={handleChange} required>
-          <option value="">Seleccione un doctor</option>
-          {doctores
-            .filter(doc => doc.especialidad === formData.especialidad)
-            .map((doc) => (
-              <option key={doc.id} value={doc.nombre}>{doc.nombre}</option>
+        <label>Médico:</label>
+        <select name="id_medico" value={formData.id_medico} onChange={handleChange} required>
+          <option value="">Seleccione un médico</option>
+          {medicos
+            .filter(m => m.id_especialidad.toString() === formData.id_especialidad)
+            .map((med) => (
+              <option key={med.id_medico} value={med.id_medico}>{med.nombre}</option>
             ))}
         </select>
 
@@ -85,7 +125,9 @@ const AgendamientoWeb = () => {
       <h3>Citas Agendadas</h3>
       <ul>
         {citas.map((cita, index) => (
-          <li key={index}>{`${cita.fecha} ${cita.hora} - ${cita.doctor} (${cita.especialidad})`}</li>
+          <li key={index}>
+            {new Date(cita.fecha_hora).toLocaleString()} - Médico ID {cita.id_medico}
+          </li>
         ))}
       </ul>
     </div>
