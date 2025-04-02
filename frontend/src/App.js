@@ -1,7 +1,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import Home from './pages/Home';
-import AgendarHora from './pages/AgendarHora';
+import AgendarHora from './pages/AgendamientoWeb';
 import CotizadorExamenes from './pages/CotizadorExamenes'; // 👈 este es nuevo
 
 function App() {
