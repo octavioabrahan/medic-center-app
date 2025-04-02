@@ -1,4 +1,4 @@
-const pool = require('../db');
+const pool = require('../models/db');
 
 // Obtener horarios por ID de médico
 exports.getHorariosByMedico = async (req, res) => {

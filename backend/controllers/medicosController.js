@@ -1,4 +1,4 @@
-const pool = require('../db');
+const pool = require('../models/db');
 
 // Obtener todos los médicos
 exports.getAllMedicos = async (req, res) => {
