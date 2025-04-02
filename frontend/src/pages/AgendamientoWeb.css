@@ -1,0 +1,61 @@
+.agendamiento-container {
+    padding: 20px;
+    font-family: Arial, sans-serif;
+  }
+  
+  .agendamiento-container h2, .agendamiento-container h3 {
+    color: #333;
+  }
+  
+  .agendamiento-container form {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .agendamiento-container label {
+    margin-top: 10px;
+  }
+  
+  .agendamiento-container select,
+  .agendamiento-container input {
+    padding: 8px;
+    margin-top: 5px;
+    font-size: 16px;
+  }
+  
+  .agendamiento-container button {
+    margin-top: 20px;
+    padding: 10px;
+    background-color: #0056b3;
+    color: white;
+    border: none;
+    cursor: pointer;
+  }
+  
+  .agendamiento-container button:hover {
+    background-color: #003d82;
+  }
+  
+  .agendamiento-container ul {
+    list-style-type: none;
+    padding: 0;
+  }
+  
+  .agendamiento-container li {
+    background-color: #f2f2f2;
+    margin-top: 5px;
+    padding: 10px;
+    border-radius: 5px;
+  }
+  
+  /* Estilos específicos para desktop */
+  .agendamiento-container.desktop {
+    max-width: 800px;
+    margin: auto;
+  }
+  
+  /* Estilos específicos para mobile */
+  .agendamiento-container.mobile {
+    padding: 10px;
+  }
+  

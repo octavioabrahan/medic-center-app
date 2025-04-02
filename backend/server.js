@@ -1,3 +1,6 @@
+const medicosRoutes = require('./routes/medicos');
+const especialidadesRoutes = require('./routes/especialidades');
+const horariosRoutes = require('./routes/horarios');
 const express = require('express');
 const cors = require('cors');
 const app = express();
@@ -15,6 +18,9 @@ app.use('/api/exams', examRoutes);
 app.use('/api/appointments', appointmentRoutes);
 app.use('/api/tasa-cambio', exchangeRateRoutes);
 app.use('/api/cotizaciones', quotesRoutes);
+app.use('/api/medicos', medicosRoutes);
+app.use('/api/especialidades', especialidadesRoutes);
+app.use('/api/horarios', horariosRoutes);
 
 app.listen(port, '0.0.0.0', () => {
   console.log(`Backend corriendo en http://localhost:${port}`);
