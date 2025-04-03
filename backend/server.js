@@ -5,7 +5,6 @@ const citasRoutes = require('./routes/citas');
 const clientesRoutes = require('./routes/clientes');
 const clientesAgendadosRoutes = require('./routes/clientesAgendados');
 const horariosDisponiblesRoutes = require('./routes/horariosDisponibles');
-const horariosRoutes = require('./routes/horarios');
 const express = require('express');
 const cors = require('cors');
 const app = express();
