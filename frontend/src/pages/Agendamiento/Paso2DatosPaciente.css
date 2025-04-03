@@ -1,0 +1,27 @@
+.paso2 {
+    padding: 2rem;
+  }
+  
+  .paso2 label {
+    display: block;
+    margin-top: 1rem;
+    font-weight: bold;
+  }
+  
+  .paso2 input {
+    width: 100%;
+    padding: 0.6rem;
+    margin-top: 0.25rem;
+    box-sizing: border-box;
+  }
+  
+  .error {
+    color: red;
+    font-size: 0.9rem;
+  }
+  
+  .acciones {
+    margin-top: 2rem;
+    text-align: right;
+  }
+  

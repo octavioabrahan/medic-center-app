@@ -1,0 +1,27 @@
+.paso1 {
+    padding: 2rem;
+  }
+  
+  .opciones-atencion {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  .opcion {
+    border: 1px solid #ccc;
+    padding: 1rem;
+    border-radius: 6px;
+    cursor: pointer;
+  }
+  
+  .opcion.seleccionado {
+    background-color: #e6f1ff;
+    border-color: #0055aa;
+  }
+  
+  .acciones {
+    margin-top: 2rem;
+    text-align: right;
+  }
+  

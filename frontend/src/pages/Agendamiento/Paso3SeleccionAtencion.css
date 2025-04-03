@@ -1,0 +1,26 @@
+.paso3 {
+    padding: 2rem;
+  }
+  
+  .paso3 label {
+    display: block;
+    margin-top: 1rem;
+    font-weight: bold;
+  }
+  
+  .paso3 select {
+    width: 100%;
+    padding: 0.6rem;
+    margin-top: 0.25rem;
+  }
+  
+  .error {
+    color: red;
+    font-size: 0.9rem;
+  }
+  
+  .acciones {
+    margin-top: 2rem;
+    text-align: right;
+  }
+  
