@@ -6,6 +6,8 @@ const API = `${process.env.REACT_APP_API_URL}/api`;
 const AdminPanel = () => {
   const [medicos, setMedicos] = useState([]);
   const [especialidades, setEspecialidades] = useState([]);
+  const [medicoSeleccionado, setMedicoSeleccionado] = useState('');
+const [horariosMedico, setHorariosMedico] = useState([]);
 
   const [nuevaEspecialidad, setNuevaEspecialidad] = useState({
     nombre: '',
@@ -71,9 +73,16 @@ const AdminPanel = () => {
     setNuevoHorario({ id_medico: '', semana_inicio: '', dia_semana: '', modalidad: '', hora_inicio: '', hora_fin: '', consultorio: '' });
   };
 
+  const cargarHorariosMedico = async (id_medico) => {
+    const res = await fetch(`${API}/horarios/medico/${id_medico}`);
+    const data = await res.json();
+    setHorariosMedico(data);
+  };
+  
   useEffect(() => {
-    fetchMedicos();
-    fetchEspecialidades();
+    fetch(`${API}/medicos`)
+      .then(res => res.json())
+      .then(data => setMedicos(data));
   }, []);
 
   return (
@@ -129,7 +138,46 @@ const AdminPanel = () => {
         <input placeholder="Consultorio" value={nuevoHorario.consultorio} onChange={(e) => setNuevoHorario({ ...nuevoHorario, consultorio: e.target.value })} />
         <button onClick={crearHorario}>Guardar Horario</button>
       </section>
+      <section>
+  <h3>Consultar horarios por médico</h3>
+  <select
+    value={medicoSeleccionado}
+    onChange={(e) => {
+      setMedicoSeleccionado(e.target.value);
+      cargarHorariosMedico(e.target.value);
+    }}
+  >
+    <option value="">Seleccionar Médico</option>
+    {medicos.map(m => (
+      <option key={m.id_medico} value={m.id_medico}>{m.nombre}</option>
+    ))}
+  </select>
 
+  {horariosMedico.length > 0 && (
+    <table className="tabla-horarios">
+      <thead>
+        <tr>
+          <th>Día</th>
+          <th>Modalidad</th>
+          <th>Inicio</th>
+          <th>Fin</th>
+          <th>Consultorio</th>
+        </tr>
+      </thead>
+      <tbody>
+        {horariosMedico.map((h, idx) => (
+          <tr key={idx}>
+            <td>{h.dia_semana}</td>
+            <td>{h.modalidad}</td>
+            <td>{h.hora_inicio}</td>
+            <td>{h.hora_fin}</td>
+            <td>{h.consultorio}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  )}
+</section>
       <section>
         <h3>Médicos Registrados</h3>
         <ul>
