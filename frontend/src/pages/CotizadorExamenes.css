@@ -32,11 +32,13 @@ body {
   display: flex;
   flex-direction: row;
   gap: 24px;
-  padding: 2rem 5vw;
+  padding: 2rem;
   flex-grow: 1;
   height: 100%;
   box-sizing: border-box;
   align-items: stretch;
+  max-width: 1200px;
+  margin: 0 auto; 
 }
 
 
