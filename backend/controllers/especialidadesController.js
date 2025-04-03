@@ -11,18 +11,18 @@ exports.getAllEspecialidades = async (req, res) => {
   }
 };
 
-// Crear una nueva especialidad
-exports.createEspecialidad = async (req, res) => {
-  const { nombre, descripcion } = req.body;
-
+// POST /api/especialidades
+exports.crearEspecialidad = async (req, res) => {
+  const { nombre, descripcion, tipo } = req.body;
   try {
-    const result = await pool.query(
-      'INSERT INTO especialidades (nombre, descripcion) VALUES ($1, $2) RETURNING *',
-      [nombre, descripcion]
-    );
+    const result = await pool.query(`
+      INSERT INTO especialidades (nombre, descripcion, tipo)
+      VALUES ($1, $2, $3) RETURNING *
+    `, [nombre, descripcion, tipo]);
+
     res.status(201).json(result.rows[0]);
-  } catch (error) {
-    console.error('Error al crear especialidad:', error);
-    res.status(500).json({ error: 'Error al crear especialidad' });
+  } catch (err) {
+    console.error('Error creando especialidad', err);
+    res.status(500).json({ error: 'No se pudo crear la especialidad' });
   }
 };

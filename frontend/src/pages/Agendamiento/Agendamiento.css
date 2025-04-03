@@ -1,0 +1,44 @@
+.agendamiento-flujo {
+    padding: 2rem;
+    max-width: 800px;
+    margin: auto;
+  }
+  
+  .opciones-atencion {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin: 1rem 0;
+  }
+  
+  .opcion {
+    border: 1px solid #ccc;
+    padding: 1rem;
+    border-radius: 8px;
+    cursor: pointer;
+  }
+  
+  .opcion.seleccionado {
+    border-color: #003366;
+    background-color: #f0f4ff;
+  }
+  
+  .acciones {
+    margin-top: 2rem;
+    text-align: right;
+  }
+  
+  .acciones button {
+    background-color: #003366;
+    color: white;
+    padding: 10px 24px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .acciones button:disabled {
+    background-color: #999;
+    cursor: not-allowed;
+  }
+  

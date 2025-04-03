@@ -11,8 +11,9 @@ const AdminPanel = () => {
 
   const [nuevaEspecialidad, setNuevaEspecialidad] = useState({
     nombre: '',
-    descripcion: ''
-  });
+    descripcion: '',
+    tipo: ''
+  });  
 
   const [nuevoMedico, setNuevoMedico] = useState({
     nombre: '',
@@ -99,8 +100,16 @@ const AdminPanel = () => {
           value={nuevaEspecialidad.descripcion}
           onChange={(e) => setNuevaEspecialidad({ ...nuevaEspecialidad, descripcion: e.target.value })}
         />
+        <select
+          value={nuevaEspecialidad.tipo}
+          onChange={(e) => setNuevaEspecialidad({ ...nuevaEspecialidad, tipo: e.target.value })}
+        >
+          <option value="">Seleccionar tipo</option>
+          <option value="consulta médica">Consulta médica</option>
+          <option value="estudio">Estudio</option>
+        </select>
         <button onClick={crearEspecialidad}>Guardar Especialidad</button>
-      </section>
+        </section>
 
       <section>
         <h3>Crear Médico</h3>
