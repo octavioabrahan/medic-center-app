@@ -1,10 +1,14 @@
 const express = require('express');
 const router = express.Router();
-const especialidadesController = require('../controllers/especialidadesController');
+const {
+  getAllEspecialidades,
+  crearEspecialidad
+} = require('../controllers/especialidadesController');
 
-router.get('/', especialidadesController.getAllEspecialidades);
-router.post('/', especialidadesController.createEspecialidad);
+// GET /api/especialidades
+router.get('/', getAllEspecialidades);
 
-// Otras rutas para actualizar y eliminar especialidades según sea necesario
+// POST /api/especialidades
+router.post('/', crearEspecialidad);
 
 module.exports = router;
