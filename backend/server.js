@@ -3,6 +3,7 @@ const especialidadesRoutes = require('./routes/especialidades');
 const horariosRoutes = require('./routes/horarios');
 const citasRoutes = require('./routes/citas');
 const clientesRoutes = require('./routes/clientes');
+const clientesAgendadosRoutes = require('./routes/clientesAgendados');
 const express = require('express');
 const cors = require('cors');
 const app = express();
@@ -25,8 +26,11 @@ app.use('/api/medicos', medicosRoutes);
 app.use('/api/especialidades', especialidadesRoutes);
 app.use('/api/horarios', horariosRoutes);
 app.use('/api/clientes', clientesRoutes);
+app.use('/api/clientes-web', clientesAgendadosRoutes);
+
 
 app.listen(port, '0.0.0.0', () => {
   console.log(`Backend corriendo en http://localhost:${port}`);
 });
+
 
