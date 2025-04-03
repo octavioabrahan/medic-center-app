@@ -20,4 +20,19 @@
     width: 100%;
     max-width: 400px;
   }
+  .tabla-horarios {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1rem;
+  }
+  
+  .tabla-horarios th, .tabla-horarios td {
+    border: 1px solid #ccc;
+    padding: 0.5rem;
+    text-align: left;
+  }
+  
+  .tabla-horarios th {
+    background-color: #f4f4f4;
+  }
   
