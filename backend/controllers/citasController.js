@@ -30,3 +30,13 @@ exports.getCitasByMedico = async (req, res) => {
     res.status(500).json({ error: 'Error al obtener citas' });
   }
 };
+
+exports.getAllCitas = async (req, res) => {
+  try {
+    const result = await pool.query('SELECT * FROM citas ORDER BY fecha_hora DESC');
+    res.json(result.rows);
+  } catch (error) {
+    console.error('Error al obtener citas:', error);
+    res.status(500).json({ error: 'Error al obtener citas' });
+  }
+};
