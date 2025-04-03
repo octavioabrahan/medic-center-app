@@ -1,61 +1,70 @@
 .agendamiento-container {
-    padding: 20px;
-    font-family: Arial, sans-serif;
-  }
-  
-  .agendamiento-container h2, .agendamiento-container h3 {
-    color: #333;
-  }
-  
-  .agendamiento-container form {
-    display: flex;
-    flex-direction: column;
-  }
-  
-  .agendamiento-container label {
-    margin-top: 10px;
-  }
-  
-  .agendamiento-container select,
-  .agendamiento-container input {
-    padding: 8px;
-    margin-top: 5px;
-    font-size: 16px;
-  }
-  
-  .agendamiento-container button {
-    margin-top: 20px;
-    padding: 10px;
-    background-color: #0056b3;
-    color: white;
-    border: none;
-    cursor: pointer;
-  }
-  
-  .agendamiento-container button:hover {
-    background-color: #003d82;
-  }
-  
-  .agendamiento-container ul {
-    list-style-type: none;
-    padding: 0;
-  }
-  
-  .agendamiento-container li {
-    background-color: #f2f2f2;
-    margin-top: 5px;
-    padding: 10px;
-    border-radius: 5px;
-  }
-  
-  /* Estilos específicos para desktop */
-  .agendamiento-container.desktop {
-    max-width: 800px;
-    margin: auto;
-  }
-  
-  /* Estilos específicos para mobile */
-  .agendamiento-container.mobile {
-    padding: 10px;
-  }
-  
+  padding: 2rem;
+  max-width: 900px;
+  margin: 0 auto;
+  font-family: 'Segoe UI', sans-serif;
+  background-color: #fff;
+  color: #333;
+}
+
+.volver {
+  color: #555;
+  margin-bottom: 1rem;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+h2 {
+  font-size: 24px;
+  margin-bottom: 0.5rem;
+}
+
+.subtitulo {
+  color: #666;
+  margin-bottom: 2rem;
+}
+
+.opciones-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.opcion-card {
+  flex: 1;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 1rem;
+  cursor: pointer;
+  background: #f9f9f9;
+  transition: border-color 0.2s ease;
+}
+
+.opcion-card:hover {
+  border-color: #003366;
+}
+
+.opcion-card.active {
+  border: 2px solid #003366;
+  background-color: #e9f0ff;
+}
+
+.acciones {
+  margin-top: 2rem;
+  text-align: right;
+}
+
+.acciones button {
+  background-color: #1e2e64;
+  color: #fff;
+  padding: 0.7rem 1.5rem;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.acciones button:hover {
+  background-color: #001f4d;
+}
