@@ -1,8 +1,11 @@
 const express = require('express');
 const router = express.Router();
-const horariosController = require('../controllers/horariosController');
+const controller = require('../controllers/horariosController');
 
-router.get('/:id_medico', horariosController.getHorariosByMedico);
-router.post('/', horariosController.createHorario);
+// GET /api/horarios/medico/:id_medico -> listado completo
+router.get('/medico/:id_medico', controller.getHorariosPorMedico);
+
+// GET /api/horarios/disponibles/:id_medico -> solo fechas disponibles
+router.get('/disponibles/:id_medico', controller.getFechasDisponibles);
 
 module.exports = router;

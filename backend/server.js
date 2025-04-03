@@ -5,6 +5,7 @@ const citasRoutes = require('./routes/citas');
 const clientesRoutes = require('./routes/clientes');
 const clientesAgendadosRoutes = require('./routes/clientesAgendados');
 const horariosDisponiblesRoutes = require('./routes/horariosDisponibles');
+const horariosRoutes = require('./routes/horarios');
 const express = require('express');
 const cors = require('cors');
 const app = express();
@@ -35,5 +36,3 @@ app.use('/api/horarios', horariosDisponiblesRoutes);
 app.listen(port, '0.0.0.0', () => {
   console.log(`Backend corriendo en http://localhost:${port}`);
 });
-
-

@@ -7,7 +7,7 @@ const AdminPanel = () => {
   const [medicos, setMedicos] = useState([]);
   const [especialidades, setEspecialidades] = useState([]);
   const [medicoSeleccionado, setMedicoSeleccionado] = useState('');
-const [horariosMedico, setHorariosMedico] = useState([]);
+  const [horariosMedico, setHorariosMedico] = useState([]);
 
   const [nuevaEspecialidad, setNuevaEspecialidad] = useState({
     nombre: '',
@@ -23,8 +23,7 @@ const [horariosMedico, setHorariosMedico] = useState([]);
 
   const [nuevoHorario, setNuevoHorario] = useState({
     id_medico: '',
-    semana_inicio: '',
-    dia_semana: '',
+    fecha: '',
     modalidad: '',
     hora_inicio: '',
     hora_fin: '',
@@ -70,7 +69,7 @@ const [horariosMedico, setHorariosMedico] = useState([]);
       body: JSON.stringify(nuevoHorario),
     });
     alert('Horario creado');
-    setNuevoHorario({ id_medico: '', semana_inicio: '', dia_semana: '', modalidad: '', hora_inicio: '', hora_fin: '', consultorio: '' });
+    setNuevoHorario({ id_medico: '', fecha: '', modalidad: '', hora_inicio: '', hora_fin: '', consultorio: '' });
   };
 
   const cargarHorariosMedico = async (id_medico) => {
@@ -78,11 +77,10 @@ const [horariosMedico, setHorariosMedico] = useState([]);
     const data = await res.json();
     setHorariosMedico(data);
   };
-  
+
   useEffect(() => {
-    fetch(`${API}/medicos`)
-      .then(res => res.json())
-      .then(data => setMedicos(data));
+    fetchMedicos();
+    fetchEspecialidades();
   }, []);
 
   return (
@@ -119,15 +117,14 @@ const [horariosMedico, setHorariosMedico] = useState([]);
       </section>
 
       <section>
-        <h3>Crear Horario Semanal</h3>
+        <h3>Crear Horario por Fecha</h3>
         <select value={nuevoHorario.id_medico} onChange={(e) => setNuevoHorario({ ...nuevoHorario, id_medico: e.target.value })}>
           <option value="">Seleccionar Médico</option>
           {medicos.map((m) => (
             <option key={m.id_medico} value={m.id_medico}>{m.nombre}</option>
           ))}
         </select>
-        <input type="date" value={nuevoHorario.semana_inicio} onChange={(e) => setNuevoHorario({ ...nuevoHorario, semana_inicio: e.target.value })} />
-        <input placeholder="Día (ej: lunes)" value={nuevoHorario.dia_semana} onChange={(e) => setNuevoHorario({ ...nuevoHorario, dia_semana: e.target.value })} />
+        <input type="date" value={nuevoHorario.fecha} onChange={(e) => setNuevoHorario({ ...nuevoHorario, fecha: e.target.value })} />
         <select value={nuevoHorario.modalidad} onChange={(e) => setNuevoHorario({ ...nuevoHorario, modalidad: e.target.value })}>
           <option value="">Modalidad</option>
           <option value="presencial">Presencial</option>
@@ -138,46 +135,48 @@ const [horariosMedico, setHorariosMedico] = useState([]);
         <input placeholder="Consultorio" value={nuevoHorario.consultorio} onChange={(e) => setNuevoHorario({ ...nuevoHorario, consultorio: e.target.value })} />
         <button onClick={crearHorario}>Guardar Horario</button>
       </section>
-      <section>
-  <h3>Consultar horarios por médico</h3>
-  <select
-    value={medicoSeleccionado}
-    onChange={(e) => {
-      setMedicoSeleccionado(e.target.value);
-      cargarHorariosMedico(e.target.value);
-    }}
-  >
-    <option value="">Seleccionar Médico</option>
-    {medicos.map(m => (
-      <option key={m.id_medico} value={m.id_medico}>{m.nombre}</option>
-    ))}
-  </select>
 
-  {horariosMedico.length > 0 && (
-    <table className="tabla-horarios">
-      <thead>
-        <tr>
-          <th>Día</th>
-          <th>Modalidad</th>
-          <th>Inicio</th>
-          <th>Fin</th>
-          <th>Consultorio</th>
-        </tr>
-      </thead>
-      <tbody>
-        {horariosMedico.map((h, idx) => (
-          <tr key={idx}>
-            <td>{h.dia_semana}</td>
-            <td>{h.modalidad}</td>
-            <td>{h.hora_inicio}</td>
-            <td>{h.hora_fin}</td>
-            <td>{h.consultorio}</td>
-          </tr>
-        ))}
-      </tbody>
-    </table>
-  )}
-</section>
+      <section>
+        <h3>Consultar horarios por médico</h3>
+        <select
+          value={medicoSeleccionado}
+          onChange={(e) => {
+            setMedicoSeleccionado(e.target.value);
+            cargarHorariosMedico(e.target.value);
+          }}
+        >
+          <option value="">Seleccionar Médico</option>
+          {medicos.map(m => (
+            <option key={m.id_medico} value={m.id_medico}>{m.nombre}</option>
+          ))}
+        </select>
+
+        {horariosMedico.length > 0 && (
+          <table className="tabla-horarios">
+            <thead>
+              <tr>
+                <th>Fecha</th>
+                <th>Modalidad</th>
+                <th>Inicio</th>
+                <th>Fin</th>
+                <th>Consultorio</th>
+              </tr>
+            </thead>
+            <tbody>
+              {horariosMedico.map((h, idx) => (
+                <tr key={idx}>
+                  <td>{new Date(h.fecha).toLocaleDateString()}</td>
+                  <td>{h.modalidad}</td>
+                  <td>{h.hora_inicio}</td>
+                  <td>{h.hora_fin}</td>
+                  <td>{h.consultorio}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
+      </section>
+
       <section>
         <h3>Médicos Registrados</h3>
         <ul>
