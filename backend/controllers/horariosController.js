@@ -39,3 +39,21 @@ exports.getFechasDisponibles = async (req, res) => {
     res.status(500).json({ error: 'Error al obtener fechas disponibles' });
   }
 };
+
+// POST /api/horarios
+exports.crearHorario = async (req, res) => {
+  const { id_medico, fecha, modalidad, hora_inicio, hora_fin, consultorio } = req.body;
+
+  try {
+    const insert = await pool.query(`
+      INSERT INTO horarios_medicos (id_medico, fecha, modalidad, hora_inicio, hora_fin, consultorio)
+      VALUES ($1, $2, $3, $4, $5, $6)
+      RETURNING *
+    `, [id_medico, fecha, modalidad, hora_inicio, hora_fin, consultorio]);
+
+    res.status(201).json(insert.rows[0]);
+  } catch (error) {
+    console.error('❌ Error al crear horario:', error);
+    res.status(500).json({ error: 'No se pudo crear el horario' });
+  }
+};
