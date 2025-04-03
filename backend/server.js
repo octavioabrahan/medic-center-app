@@ -4,6 +4,7 @@ const horariosRoutes = require('./routes/horarios');
 const citasRoutes = require('./routes/citas');
 const clientesRoutes = require('./routes/clientes');
 const clientesAgendadosRoutes = require('./routes/clientesAgendados');
+const horariosDisponiblesRoutes = require('./routes/horariosDisponibles');
 const express = require('express');
 const cors = require('cors');
 const app = express();
@@ -27,6 +28,8 @@ app.use('/api/especialidades', especialidadesRoutes);
 app.use('/api/horarios', horariosRoutes);
 app.use('/api/clientes', clientesRoutes);
 app.use('/api/clientes-web', clientesAgendadosRoutes);
+app.use('/api/horarios', horariosDisponiblesRoutes);
+
 
 
 app.listen(port, '0.0.0.0', () => {
