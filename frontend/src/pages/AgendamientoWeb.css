@@ -68,3 +68,41 @@ h2 {
 .acciones button:hover {
   background-color: #001f4d;
 }
+
+.step-wrapper label {
+  display: block;
+  font-weight: 500;
+  margin-top: 1rem;
+  margin-bottom: 0.2rem;
+}
+
+.step-wrapper input[type="text"],
+.step-wrapper input[type="email"],
+.step-wrapper input[type="date"] {
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.radio-group {
+  margin-top: 1rem;
+}
+
+.radio-group label {
+  margin-right: 1rem;
+}
+
+.checkbox-line {
+  margin-top: 1rem;
+  display: flex;
+  align-items: start;
+  gap: 0.5rem;
+}
+
+.hint {
+  font-size: 12px;
+  color: #777;
+  display: block;
+}
+
