@@ -362,7 +362,8 @@ body {
 @media (min-width: 769px) {
   .cotizador-right {
     height: 100%;
-    flex-grow: 1;
+    flex-grow: 0;
+    flex-shrink: 0;
   }
 }
 
