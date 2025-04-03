@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './Paso3SeleccionAtencion.css';
 
-const API = `${process.env.REACT_APP_API_URL}/api`;
+const API = `${process.env.REACT_APP_API_URL}`;
 
 const Paso3SeleccionAtencion = ({ onNext, onPrev, seleccion, setSeleccion }) => {
   const [especialidades, setEspecialidades] = useState([]);
