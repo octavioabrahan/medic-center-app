@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useMediaQuery } from 'react-responsive';
 import './AgendamientoWeb.css';
 
-const API = process.env.REACT_APP_API_URL;
+const API = `${process.env.REACT_APP_API_URL}/api`;;
 
 const AgendamientoWeb = () => {
   const isDesktop = useMediaQuery({ minWidth: 1224 });
