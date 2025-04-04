@@ -6,6 +6,10 @@ import { PrismaClient } from '@prisma/client';
 // Rutas externas
 import horarioRouter from './routes/horario';
 import excepcionRouter from './routes/excepciones';
+import disponibilidadRouter from './routes/disponibilidad';
+import especialidadesRouter from './routes/especialidades';
+import tipoAtencionRouter from './routes/tipoAtencion';
+import agendamientoRouter from './routes/agendamiento';
 
 // Config
 dotenv.config();
@@ -15,6 +19,10 @@ const port = process.env.PORT || 3002;
 // Middleware
 app.use(cors());
 app.use(express.json());
+app.use('/disponibilidad', disponibilidadRouter);
+app.use('/especialidades', especialidadesRouter);
+app.use('/tipo-atencion', tipoAtencionRouter);
+app.use('/agendamiento', agendamientoRouter);
 
 // Prisma
 const prisma = new PrismaClient();
