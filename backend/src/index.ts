@@ -13,7 +13,7 @@ import agendamientoRouter from './routes/agendamiento';
 import profesionalesRouter from './routes/profesionales';
 
 // Config
-dotenv.config();f
+dotenv.config();
 const app = express();
 const port = process.env.PORT || 3002;
 
