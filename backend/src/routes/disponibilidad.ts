@@ -4,21 +4,19 @@ import { PrismaClient } from '@prisma/client';
 const router = Router();
 const prisma = new PrismaClient();
 
-router.get('/', async (req: Request, res: Response): Promise<Response> => {
+router.get('/', async (req: Request, res: Response) => {
   const { fecha } = req.query;
 
   if (!fecha) {
-    return res.status(400).json({ error: 'Falta el parámetro "fecha"' });
+    res.status(400).json({ error: 'Falta el parámetro "fecha"' });
+    return;
   }
 
   try {
     const date = new Date(fecha as string);
     const diaSemana = date.getDay(); // Domingo = 0, Lunes = 1, ...
+    const dia = diaSemana === 0 ? 7 : diaSemana; // Ajustar a 1–7 como en tu base
 
-    // Ajustar para que sea 1–7 como en tu base
-    const dia = diaSemana === 0 ? 7 : diaSemana;
-
-    // Buscar doctores disponibles ese día, SIN excepciones
     const horariosBase = await prisma.horarioMedico.findMany({
       where: {
         dia_semana: dia,
@@ -35,7 +33,6 @@ router.get('/', async (req: Request, res: Response): Promise<Response> => {
       }
     });
 
-    // Filtrar los que NO tienen excepción "inhabilitado"
     const disponibles = [];
 
     for (const horario of horariosBase) {
@@ -62,7 +59,7 @@ router.get('/', async (req: Request, res: Response): Promise<Response> => {
     res.json(disponibles);
   } catch (error) {
     console.error('[ERROR /disponibilidad]:', error);
-    res.status(500).json({ error: 'Error al consultar disponibilidad', detail: error });
+    res.status(500).json({ error: 'Error al consultar disponibilidad' });
   }
 });
 
