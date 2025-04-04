@@ -13,7 +13,11 @@ model Persona {
   apellido   String
   email      String
   telefono   String
-  profesional Profesional?
+
+  profesional     Profesional?
+  hijos           Hijo[]
+  personaRoles    PersonaRol[]
+  agendamientos   Agendamiento[]
 
   @@map("personas")
 }
@@ -22,6 +26,7 @@ model Profesional {
   profesional_id   String   @id @default(uuid())
   cedula           String   @unique
   especialidad_id  String
+
   persona          Persona  @relation(fields: [cedula], references: [cedula])
   especialidad     Especialidad @relation(fields: [especialidad_id], references: [especialidad_id])
   horarios         HorarioMedico[]
@@ -35,7 +40,9 @@ model Especialidad {
   especialidad_id  String @id @default(uuid())
   nombre           String
   tipo_atencion_id Int
+
   profesionales    Profesional[]
+  agendamientos    Agendamiento[]
 
   tipoAtencion     TipoAtencion @relation(fields: [tipo_atencion_id], references: [tipo_atencion_id])
 
@@ -57,6 +64,7 @@ model Agendamiento {
   convenio         Boolean
   fecha_agendada   DateTime
   status           String   @default("pendiente")
+
   profesional_id   String
   especialidad_id  String
   tipo_atencion_id Int
@@ -101,9 +109,9 @@ model Hijo {
   apellidos_hijo String
   sexo           Boolean
   fecha_nac_hijo DateTime
-  representante  Persona @relation(fields: [cedula], references: [cedula])
-
   cedula         String
+
+  representante  Persona @relation(fields: [cedula], references: [cedula])
 
   @@map("hijos")
 }
@@ -120,6 +128,7 @@ model PersonaRol {
   id         Int     @id @default(autoincrement())
   cedula     String
   rol_id     Int
+
   persona    Persona @relation(fields: [cedula], references: [cedula])
   rol        Rol     @relation(fields: [rol_id], references: [rol_id])
 
