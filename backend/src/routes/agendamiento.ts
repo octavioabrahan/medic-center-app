@@ -1,11 +1,11 @@
 import express from 'express';
 import { PrismaClient } from '@prisma/client';
+import type { Request, Response, RequestHandler } from 'express';
 
 const router = express.Router();
 const prisma = new PrismaClient();
 
-// POST: crear agendamiento
-router.post('/', async (req, res) => {
+const crearAgendamiento: RequestHandler = async (req: Request, res: Response) => {
   const {
     cedula,
     fecha_agendada,
@@ -15,7 +15,6 @@ router.post('/', async (req, res) => {
     tipo_atencion_id
   } = req.body;
 
-  // Validación básica
   if (
     !cedula ||
     !fecha_agendada ||
@@ -24,8 +23,7 @@ router.post('/', async (req, res) => {
     !especialidad_id ||
     !tipo_atencion_id
   ) {
-    console.warn('⚠️ [POST /agendamiento] Faltan campos requeridos');
-    return res.status(400).json({ error: 'Faltan campos requeridos para agendar' });
+    return res.status(400).json({ error: 'Faltan campos requeridos' });
   }
 
   try {
@@ -40,12 +38,14 @@ router.post('/', async (req, res) => {
       }
     });
 
-    console.log('✅ [POST /agendamiento] Cita registrada con ID:', nuevoAgendamiento.agendamiento_id);
+    console.log('✅ [POST /agendamiento] Cita registrada:', nuevoAgendamiento.agendamiento_id);
     res.status(201).json(nuevoAgendamiento);
   } catch (error: any) {
     console.error('❌ [POST /agendamiento] Error:', error.message);
     res.status(500).json({ error: 'Error al registrar agendamiento', detail: error.message });
   }
-});
+};
+
+router.post('/', crearAgendamiento);
 
 export default router;
