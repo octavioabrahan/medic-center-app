@@ -4,7 +4,7 @@ import { PrismaClient } from '@prisma/client';
 const router = Router();
 const prisma = new PrismaClient();
 
-router.post('/', async (req, res) => {
+router.post('/', async function (req, res) {
   const {
     cedula,
     fecha_agendada,
