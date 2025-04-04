@@ -1,0 +1,121 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Persona {
+  cedula           String   @id
+  nombre           String
+  apellido         String
+  telefono         String?
+  email            String?
+  sexo             Boolean?
+  fecha_nacimiento DateTime?
+  seguro_medico    Boolean?
+
+  roles            PersonaRol[]
+  profesional      Profesional?
+  hijos            Hijo[]       @relation("Hijos", fields: [cedula], references: [representanteCedula])
+}
+
+model Rol {
+  id_rol      String        @id @default(uuid())
+  nombre_rol  String        @unique
+  descripcion String?
+
+  personas    PersonaRol[]
+}
+
+model PersonaRol {
+  cedula   String
+  id_rol   String
+  creado_at DateTime @default(now())
+  creado_desde String @default("frontend")
+
+  persona  Persona @relation(fields: [cedula], references: [cedula])
+  rol      Rol     @relation(fields: [id_rol], references: [id_rol])
+
+  @@id([cedula, id_rol])
+}
+
+model Hijo {
+  cedula             String   @id
+  representanteCedula String
+  numero_hijo        Int
+
+  representante      Persona @relation("Hijos", fields: [representanteCedula], references: [cedula])
+}
+
+model Especialidad {
+  especialidad_id String @id @default(uuid())
+  nombre          String
+
+  profesionales   Profesional[]
+}
+
+model Profesional {
+  profesional_id String @id @default(uuid())
+  cedula         String @unique
+  especialidad_id String
+
+  persona        Persona      @relation(fields: [cedula], references: [cedula])
+  especialidad   Especialidad @relation(fields: [especialidad_id], references: [especialidad_id])
+  horarios       HorarioMedico[]
+  excepciones    HorarioExcepcion[]
+}
+
+model HorarioMedico {
+  horario_id     Int      @id @default(autoincrement())
+  profesional_id String
+  dia_semana     Int
+  hora_inicio    String
+  hora_termino   String
+  valido_desde   DateTime
+  valido_hasta   DateTime
+
+  profesional    Profesional @relation(fields: [profesional_id], references: [profesional_id])
+}
+
+model HorarioExcepcion {
+  excepcion_id   Int    @id @default(autoincrement())
+  profesional_id String
+  fecha          DateTime
+  estado         String
+  hora_inicio    String?
+  hora_termino   String?
+  motivo         String?
+
+  profesional    Profesional @relation(fields: [profesional_id], references: [profesional_id])
+}
+
+model TipoAtencion {
+  tipo_atencion_id Int @id @default(autoincrement())
+  nombre           String
+  agendamientos    Agendamiento[]
+}
+
+enum EstadoAgendamiento {
+  pendiente
+  confirmada
+  cancelada
+}
+
+model Agendamiento {
+  agendamiento_id   Int     @id @default(autoincrement())
+  created_at        DateTime @default(now())
+  convenio          Boolean
+  fecha_agendada    DateTime?
+  status            EstadoAgendamiento @default(pendiente)
+
+  profesional_id    String
+  tipo_atencion_id  Int
+  cedula            String
+
+  profesional       Profesional @relation(fields: [profesional_id], references: [profesional_id])
+  tipo_atencion     TipoAtencion @relation(fields: [tipo_atencion_id], references: [tipo_atencion_id])
+  paciente          Persona     @relation(fields: [cedula], references: [cedula])
+}
