@@ -20,6 +20,7 @@ router.post('/', async (req, res) => {
       }
     });
 
+    console.log('✅ [POST /horario/excepcion] Excepción creada:', excepcion.excepcion_id);
     res.status(201).json(excepcion);
   } catch (error: any) {
     console.error('❌ [POST /horario/excepcion] Error:', error.message);

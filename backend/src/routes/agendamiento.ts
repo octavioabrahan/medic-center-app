@@ -1,11 +1,10 @@
 import express from 'express';
 import { PrismaClient } from '@prisma/client';
-import type { Request, Response, RequestHandler } from 'express';
 
 const router = express.Router();
 const prisma = new PrismaClient();
 
-const crearAgendamiento: RequestHandler = async (req: Request, res: Response) => {
+router.post('/', async (req, res) => {
   const {
     cedula,
     fecha_agendada,
@@ -44,8 +43,6 @@ const crearAgendamiento: RequestHandler = async (req: Request, res: Response) =>
     console.error('❌ [POST /agendamiento] Error:', error.message);
     res.status(500).json({ error: 'Error al registrar agendamiento', detail: error.message });
   }
-};
-
-router.post('/', crearAgendamiento);
+});
 
 export default router;
