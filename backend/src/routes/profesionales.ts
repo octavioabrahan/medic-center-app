@@ -5,7 +5,7 @@ const router = Router();
 const prisma = new PrismaClient();
 
 // GET: Listar todos los profesionales
-router.get('/', async (_req: Request, res: Response) => {
+router.get('/', async (_req: Request, res: Response): Promise<void> => {
   console.log('🔍 [GET /profesionales] Iniciando consulta...');
 
   try {
@@ -29,7 +29,7 @@ router.get('/', async (_req: Request, res: Response) => {
 });
 
 // POST: Crear nuevo profesional
-router.post('/', async (req: Request, res: Response) => {
+router.post('/', async (req: Request, res: Response): Promise<void> => {
   const { cedula, nombre, apellido, telefono, email, especialidad_id } = req.body;
 
   console.log('➕ [POST /profesionales] Recibido:', {
