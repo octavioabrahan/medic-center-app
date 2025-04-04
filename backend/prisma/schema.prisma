@@ -19,8 +19,10 @@ model Persona {
 
   roles            PersonaRol[]
   profesional      Profesional?
-  hijos            Hijo[]       @relation("Hijos", fields: [cedula], references: [representanteCedula])
+  hijos            Hijo[]       @relation("Hijos")
+  agendamientos    Agendamiento[] // ✅ campo inverso
 }
+
 
 model Rol {
   id_rol      String        @id @default(uuid())
@@ -66,6 +68,7 @@ model Profesional {
   especialidad   Especialidad @relation(fields: [especialidad_id], references: [especialidad_id])
   horarios       HorarioMedico[]
   excepciones    HorarioExcepcion[]
+  agendamientos  Agendamiento[]
 }
 
 model HorarioMedico {
