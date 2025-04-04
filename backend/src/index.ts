@@ -3,6 +3,10 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import { PrismaClient } from '@prisma/client';
 
+// 👉 NUEVAS IMPORTACIONES
+import horarioRouter from './routes/horario';
+import excepcionRouter from './routes/excepciones';
+
 // Config
 dotenv.config();
 const app = express();
@@ -60,6 +64,10 @@ app.post('/profesionales', async (req, res) => {
     res.status(500).json({ error: 'Error al crear profesional', detail: error });
   }
 });
+
+// 👉 REGISTRAMOS LAS RUTAS
+app.use('/horario', horarioRouter);
+app.use('/horario/excepcion', excepcionRouter);
 
 // Start server
 app.listen(port, () => {
