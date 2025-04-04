@@ -4,8 +4,8 @@ import dotenv from 'dotenv';
 import { PrismaClient } from '@prisma/client';
 
 // Rutas externas
-import horarioRouter from './routes/horario.ts';
-import excepcionRouter from './routes/excepciones.ts';
+import horarioRouter from './routes/horario';
+import excepcionRouter from './routes/excepciones';
 
 // Config
 dotenv.config();
