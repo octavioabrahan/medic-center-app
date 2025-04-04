@@ -4,41 +4,32 @@ import { PrismaClient } from '@prisma/client';
 const router = Router();
 const prisma = new PrismaClient();
 
-router.post('/', async (req: Request, res: Response) => {
+router.post('/', async (req: Request, res: Response): Promise<void> => {
+  const {
+    cedula,
+    fecha_agendada,
+    convenio,
+    profesional_id,
+    especialidad_id,
+    tipo_atencion_id
+  } = req.body;
+
   try {
-    const {
-      cedula,
-      nombre,
-      apellido,
-      email,
-      telefono,
-      fecha_agendada,
-      convenio,
-      profesional_id,
-      tipo_atencion_id
-    } = req.body;
-
-    // Guardar paciente si no existe
-    await prisma.persona.upsert({
-      where: { cedula },
-      update: { nombre, apellido, email, telefono },
-      create: { cedula, nombre, apellido, email, telefono }
-    });
-
-    const cita = await prisma.agendamiento.create({
+    const nuevaCita = await prisma.agendamiento.create({
       data: {
         cedula,
         fecha_agendada: new Date(fecha_agendada),
         convenio,
         profesional_id,
+        especialidad_id,
         tipo_atencion_id
       }
     });
 
-    res.status(201).json(cita);
-  } catch (error) {
-    console.error('[POST /agendamiento]', error);
-    res.status(500).json({ error: 'Error al registrar agendamiento' });
+    res.status(201).json(nuevaCita);
+  } catch (error: any) {
+    console.error('❌ [POST /agendamiento] Error:', error.message);
+    res.status(500).json({ error: 'No se pudo agendar la cita', detail: error.message });
   }
 });
 
