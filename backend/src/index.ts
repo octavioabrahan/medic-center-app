@@ -12,12 +12,12 @@ import tipoAtencionRouter from './routes/tipoAtencion';
 import agendamientoRouter from './routes/agendamiento';
 import profesionalesRouter from './routes/profesionales';
 
-console.log("🌍 DATABASE_URL desde process.env:", process.env.DATABASE_URL);
-
 // Config
-dotenv.config();
+dotenv.config();f
 const app = express();
 const port = process.env.PORT || 3002;
+
+console.log("🌍 DATABASE_URL desde process.env:", process.env.DATABASE_URL);
 
 // Middleware
 app.use(cors());
