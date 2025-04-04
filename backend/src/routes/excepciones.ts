@@ -4,7 +4,8 @@ import { PrismaClient } from '@prisma/client';
 const router = Router();
 const prisma = new PrismaClient();
 
-router.post('/', async (req: Request, res: Response): Promise<void> => {
+// POST: crear excepción en horario
+router.post('/', async (req, res) => {
   const { profesional_id, fecha, estado } = req.body;
 
   if (!profesional_id || !fecha || !estado) {
@@ -26,6 +27,5 @@ router.post('/', async (req: Request, res: Response): Promise<void> => {
     res.status(500).json({ error: 'No se pudo registrar la excepción', detail: error.message });
   }
 });
-
 
 export default router;
