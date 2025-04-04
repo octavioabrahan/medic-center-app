@@ -4,10 +4,8 @@ import { PrismaClient } from '@prisma/client';
 const router = Router();
 const prisma = new PrismaClient();
 
-// GET: Listar todos los profesionales
 router.get('/', async (_req: Request, res: Response): Promise<void> => {
   console.log('🔍 [GET /profesionales] Iniciando consulta...');
-
   try {
     const profesionales = await prisma.profesional.findMany({
       include: {
@@ -28,7 +26,6 @@ router.get('/', async (_req: Request, res: Response): Promise<void> => {
   }
 });
 
-// POST: Crear nuevo profesional
 router.post('/', async (req: Request, res: Response): Promise<void> => {
   const { cedula, nombre, apellido, telefono, email, especialidad_id } = req.body;
 
@@ -43,7 +40,8 @@ router.post('/', async (req: Request, res: Response): Promise<void> => {
 
   if (!cedula || !nombre || !apellido || !telefono || !email || !especialidad_id) {
     console.warn('⚠️ [POST /profesionales] Faltan campos obligatorios');
-    return res.status(400).json({ error: 'Faltan datos obligatorios' });
+    res.status(400).json({ error: 'Faltan datos obligatorios' });
+    return;
   }
 
   try {
@@ -60,7 +58,6 @@ router.post('/', async (req: Request, res: Response): Promise<void> => {
     });
 
     console.log('✅ [POST /profesionales] Profesional creado:', profesional.profesional_id);
-
     res.status(201).json({ persona, profesional });
   } catch (error: any) {
     console.error('❌ [POST /profesionales] Error inesperado:');
