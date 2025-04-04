@@ -10,6 +10,7 @@ import disponibilidadRouter from './routes/disponibilidad';
 import especialidadesRouter from './routes/especialidades';
 import tipoAtencionRouter from './routes/tipoAtencion';
 import agendamientoRouter from './routes/agendamiento';
+import profesionalesRouter from './routes/profesionales';
 
 console.log("🌍 DATABASE_URL desde process.env:", process.env.DATABASE_URL);
 
@@ -25,6 +26,7 @@ app.use('/disponibilidad', disponibilidadRouter);
 app.use('/especialidades', especialidadesRouter);
 app.use('/tipo-atencion', tipoAtencionRouter);
 app.use('/agendamiento', agendamientoRouter);
+app.use('/profesionales', profesionalesRouter);
 
 // Prisma
 const prisma = new PrismaClient();
