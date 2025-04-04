@@ -1,10 +1,9 @@
-import { Router } from 'express';
+import express from 'express';
 import { PrismaClient } from '@prisma/client';
 
-const router = Router();
+const router = express.Router();
 const prisma = new PrismaClient();
 
-// POST: crear excepción en horario
 router.post('/', async (req, res) => {
   const { profesional_id, fecha, estado } = req.body;
 

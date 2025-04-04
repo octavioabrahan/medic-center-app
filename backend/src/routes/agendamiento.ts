@@ -1,10 +1,11 @@
-import { Router, Request, Response } from 'express';
+import express from 'express';
 import { PrismaClient } from '@prisma/client';
 
-const router = Router();
+const router = express.Router();
 const prisma = new PrismaClient();
 
-router.post('/', async function (req, res) {
+// POST: crear agendamiento
+router.post('/', async (req, res) => {
   const {
     cedula,
     fecha_agendada,
@@ -14,8 +15,21 @@ router.post('/', async function (req, res) {
     tipo_atencion_id
   } = req.body;
 
+  // Validación básica
+  if (
+    !cedula ||
+    !fecha_agendada ||
+    typeof convenio === 'undefined' ||
+    !profesional_id ||
+    !especialidad_id ||
+    !tipo_atencion_id
+  ) {
+    console.warn('⚠️ [POST /agendamiento] Faltan campos requeridos');
+    return res.status(400).json({ error: 'Faltan campos requeridos para agendar' });
+  }
+
   try {
-    const nuevaCita = await prisma.agendamiento.create({
+    const nuevoAgendamiento = await prisma.agendamiento.create({
       data: {
         cedula,
         fecha_agendada: new Date(fecha_agendada),
@@ -26,32 +40,11 @@ router.post('/', async function (req, res) {
       }
     });
 
-    res.status(201).json(nuevaCita);
+    console.log('✅ [POST /agendamiento] Cita registrada con ID:', nuevoAgendamiento.agendamiento_id);
+    res.status(201).json(nuevoAgendamiento);
   } catch (error: any) {
     console.error('❌ [POST /agendamiento] Error:', error.message);
-    res.status(500).json({ error: 'No se pudo agendar la cita', detail: error.message });
-  }
-});
-
-router.get('/', async (_req: Request, res: Response) => {
-  try {
-    const agendamientos = await prisma.agendamiento.findMany({
-      include: {
-        paciente: true,
-        profesional: {
-          include: {
-            persona: true,
-            especialidad: true
-          }
-        },
-        tipo_atencion: true
-      }
-    });
-
-    res.json(agendamientos);
-  } catch (error) {
-    console.error('[GET /agendamiento]', error);
-    res.status(500).json({ error: 'Error al obtener agendamientos' });
+    res.status(500).json({ error: 'Error al registrar agendamiento', detail: error.message });
   }
 });
 
