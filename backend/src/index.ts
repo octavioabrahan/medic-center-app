@@ -11,6 +11,8 @@ import especialidadesRouter from './routes/especialidades';
 import tipoAtencionRouter from './routes/tipoAtencion';
 import agendamientoRouter from './routes/agendamiento';
 
+console.log("🌍 DATABASE_URL desde process.env:", process.env.DATABASE_URL);
+
 // Config
 dotenv.config();
 const app = express();
