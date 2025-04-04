@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from '../../services/axios';
+import ProfesionalForm from '../../components/ProfesionalForm';
+
 import {
   Box,
   Typography,
@@ -9,29 +11,33 @@ import {
   TableCell,
   TableBody,
   Paper,
-  CircularProgress
+  CircularProgress,
+  Button
 } from '@mui/material';
 
 const Profesionales = () => {
   const [profesionales, setProfesionales] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [formOpen, setFormOpen] = useState(false);
+
+  const fetchProfesionales = () => {
+    setLoading(true);
+    axios.get('/profesionales')
+      .then((res) => setProfesionales(res.data))
+      .catch((err) => console.error('Error al obtener profesionales:', err))
+      .finally(() => setLoading(false));
+  };
 
   useEffect(() => {
-    axios.get('/profesionales')
-      .then((res) => {
-        setProfesionales(res.data);
-      })
-      .catch((err) => {
-        console.error('Error al obtener profesionales:', err);
-      })
-      .finally(() => setLoading(false));
+    fetchProfesionales();
   }, []);
 
   return (
     <Box sx={{ p: 4 }}>
-      <Typography variant="h4" gutterBottom>
-        Profesionales
-      </Typography>
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+        <Typography variant="h4">Profesionales</Typography>
+        <Button variant="contained" onClick={() => setFormOpen(true)}>+ Agregar</Button>
+      </Box>
 
       {loading ? (
         <CircularProgress />
@@ -63,6 +69,12 @@ const Profesionales = () => {
           </Table>
         </Paper>
       )}
+
+      <ProfesionalForm
+        open={formOpen}
+        onClose={() => setFormOpen(false)}
+        onCreated={fetchProfesionales}
+      />
     </Box>
   );
 };
