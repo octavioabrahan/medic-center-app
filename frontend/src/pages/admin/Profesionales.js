@@ -12,22 +12,8 @@ import {
   CircularProgress
 } from '@mui/material';
 
-interface Profesional {
-  profesional_id: string;
-  cedula: string;
-  persona: {
-    nombre: string;
-    apellido: string;
-    email?: string;
-    telefono?: string;
-  };
-  especialidad: {
-    nombre: string;
-  };
-}
-
 const Profesionales = () => {
-  const [profesionales, setProfesionales] = useState<Profesional[]>([]);
+  const [profesionales, setProfesionales] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -65,12 +51,12 @@ const Profesionales = () => {
             <TableBody>
               {profesionales.map((p) => (
                 <TableRow key={p.profesional_id}>
-                  <TableCell>{p.persona.nombre}</TableCell>
-                  <TableCell>{p.persona.apellido}</TableCell>
+                  <TableCell>{p.persona?.nombre || '-'}</TableCell>
+                  <TableCell>{p.persona?.apellido || '-'}</TableCell>
                   <TableCell>{p.cedula}</TableCell>
-                  <TableCell>{p.especialidad.nombre}</TableCell>
-                  <TableCell>{p.persona.telefono || '—'}</TableCell>
-                  <TableCell>{p.persona.email || '—'}</TableCell>
+                  <TableCell>{p.especialidad?.nombre || '-'}</TableCell>
+                  <TableCell>{p.persona?.telefono || '—'}</TableCell>
+                  <TableCell>{p.persona?.email || '—'}</TableCell>
                 </TableRow>
               ))}
             </TableBody>
