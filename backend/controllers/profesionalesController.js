@@ -9,7 +9,7 @@ const ProfesionalesController = {
       [cedula, especialidad_id]
     );
     return rows[0].profesional_id;
-  }
+  },
 
   listar: async (req, res) => {
     try {
