@@ -9,6 +9,7 @@ import HorariosPage from "./pages/admin/HorariosPage";
 import EspecialidadesPage from "./pages/admin/EspecialidadesPage";
 import TipoAtencionPage from "./pages/admin/TipoAtencionPage";
 import RolesPage from "./pages/admin/RolesPage";
+import ExcepcionesPage from "./pages/admin/ExcepcionesPage";
 
 function App() {
   return (
@@ -26,6 +27,7 @@ function App() {
         <Route path="/admin/especialidades" element={<EspecialidadesPage />} />
         <Route path="/admin/tipo-atencion" element={<TipoAtencionPage />} />
         <Route path="/admin/roles" element={<RolesPage />} />
+        <Route path="/admin/excepciones" element={<ExcepcionesPage />} />
       </Routes>
     </Router>
   );
