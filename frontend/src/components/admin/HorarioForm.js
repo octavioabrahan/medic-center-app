@@ -1,5 +1,5 @@
 import { useState } from "react";
-import axios from "axios";
+import api from "../../api";
 
 function HorarioForm() {
   const [form, setForm] = useState({
@@ -17,7 +17,7 @@ function HorarioForm() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post("http://localhost:3001/api/horarios", form);
+      await api.post("/horarios", form);
       alert("Horario guardado");
     } catch (error) {
       console.error(error);

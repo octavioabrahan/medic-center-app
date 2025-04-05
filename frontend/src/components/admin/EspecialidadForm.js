@@ -1,5 +1,5 @@
 import { useState } from "react";
-import axios from "axios";
+import api from "../../api";
 
 function EspecialidadForm() {
   const [nombre, setNombre] = useState("");
@@ -7,7 +7,7 @@ function EspecialidadForm() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post("http://localhost:3001/api/especialidades", { nombre });
+      await api.post("/especialidades", { nombre });
       alert("Especialidad guardada");
     } catch (error) {
       console.error(error);

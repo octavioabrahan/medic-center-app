@@ -1,5 +1,5 @@
 import { useState } from "react";
-import axios from "axios";
+import api from "../../api";
 
 function TipoAtencionForm() {
   const [nombre, setNombre] = useState("");
@@ -7,7 +7,7 @@ function TipoAtencionForm() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post("http://localhost:3001/api/tipo-atencion", { nombre });
+      await api.post("/tipo-atencion", { nombre });
       alert("Tipo de atención guardado");
     } catch (error) {
       console.error(error);

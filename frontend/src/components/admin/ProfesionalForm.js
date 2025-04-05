@@ -1,5 +1,5 @@
 import { useState } from "react";
-import axios from "axios";
+import api from "../../api";
 
 function ProfesionalForm() {
   const [form, setForm] = useState({
@@ -15,7 +15,7 @@ function ProfesionalForm() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post("http://localhost:3001/api/profesionales", form);
+      await api.post("/profesionales", form);
       alert("Profesional creado con éxito");
     } catch (error) {
       alert("Error al crear profesional");
