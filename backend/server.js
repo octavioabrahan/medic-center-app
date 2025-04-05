@@ -33,6 +33,6 @@ app.use("/api/persona-roles", personaRolesRoutes);
 app.use("/api/profesional-roles", profesionalRolesRoutes);
 
 app.listen(port, '0.0.0.0', () => {
-  console.log(`Backend corriendo en http://localhost:${port}`);
+  console.log(`Backend corriendo en http://10.20.20.111:${port}`);
 });
 
