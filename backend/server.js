@@ -12,6 +12,7 @@ const profesionalesRoutes = require("./routes/profesionales");
 const especialidadesRoutes = require("./routes/especialidades");
 const tipoAtencionRoutes = require("./routes/tipoAtencion");
 const horariosRoutes = require("./routes/horarios");
+const rolesRoutes = require("./routes/roles");
 
 app.use(cors());
 app.use(express.json());
@@ -25,6 +26,7 @@ app.use("/api/profesionales", profesionalesRoutes);
 app.use("/api/especialidades", especialidadesRoutes);
 app.use("/api/tipo-atencion", tipoAtencionRoutes);
 app.use("/api/horarios", horariosRoutes);
+app.use("/api/roles", rolesRoutes);
 
 app.listen(port, '0.0.0.0', () => {
   console.log(`Backend corriendo en http://localhost:${port}`);
