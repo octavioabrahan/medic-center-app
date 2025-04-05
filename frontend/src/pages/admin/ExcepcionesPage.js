@@ -95,18 +95,28 @@ function ExcepcionesPage() {
           <h3>Fechas válidas según horario</h3>
           <ul>
             {fechasValidas.map((f, index) => {
-              const esExcepcion = excepciones.find((ex) => ex.fecha === f.fecha);
+              const yaCancelada = excepciones.find(
+                (ex) =>
+                  ex.fecha === f.fecha &&
+                  ex.estado === "cancelado" &&
+                  ex.hora_inicio === f.hora_inicio &&
+                  ex.hora_termino === f.hora_termino
+              );
               return (
                 <li key={index}>
                   <span
                     style={{
-                      textDecoration: esExcepcion ? "line-through" : "none",
-                      color: esExcepcion ? "red" : "black"
+                      textDecoration: yaCancelada ? "line-through" : "none",
+                      color: yaCancelada ? "red" : "black"
                     }}
                   >
                     {f.fecha} | {f.hora_inicio} - {f.hora_termino}
                   </span>
-                  {!esExcepcion && (
+                  {yaCancelada ? (
+                    <button disabled style={{ marginLeft: 10 }}>
+                      Cancelada
+                    </button>
+                  ) : (
                     <button
                       onClick={() =>
                         cancelarFecha(f.fecha, f.hora_inicio, f.hora_termino)
