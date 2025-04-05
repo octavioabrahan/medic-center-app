@@ -1,15 +1,15 @@
 const Model = require("../models/profesionalesModel");
 
 const ProfesionalesController = {
-  crear: async ({ cedula, nombre, apellido, especialidad_id }) => {
-    const { rows } = await db.query(
-      `INSERT INTO profesionales (profesional_id, cedula, especialidad_id)
-       VALUES (gen_random_uuid(), $1, $2)
-       RETURNING profesional_id`,
-      [cedula, especialidad_id]
-    );
-    return rows[0].profesional_id;
-  },
+  crear: async (req, res) => {
+    try {
+      const id = await Model.crear(req.body);
+      res.status(201).json({ profesional_id: id });
+    } catch (err) {
+      console.error("Error al crear profesional:", err);
+      res.status(500).json({ error: "Error al crear profesional" });
+    }
+  },  
 
   listar: async (req, res) => {
     try {
