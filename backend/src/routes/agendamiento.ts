@@ -1,7 +1,7 @@
-import express from 'express';
-import { PrismaClient } from '@prisma/client';
-
+const express = require('express');
 const router = express.Router();
+const { PrismaClient } = require('@prisma/client');
+
 const prisma = new PrismaClient();
 
 router.post('/', async (req, res) => {
@@ -37,12 +37,12 @@ router.post('/', async (req, res) => {
       }
     });
 
-    console.log('✅ [POST /agendamiento] Cita registrada:', nuevoAgendamiento.agendamiento_id);
+    console.log('✅ [POST /agendamiento] Agendado:', nuevoAgendamiento.agendamiento_id);
     res.status(201).json(nuevoAgendamiento);
-  } catch (error: any) {
+  } catch (error) {
     console.error('❌ [POST /agendamiento] Error:', error.message);
     res.status(500).json({ error: 'Error al registrar agendamiento', detail: error.message });
   }
 });
 
-export default router;
+module.exports = router;

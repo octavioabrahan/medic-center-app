@@ -1,7 +1,7 @@
-import express from 'express';
-import { PrismaClient } from '@prisma/client';
-
+const express = require('express');
 const router = express.Router();
+const { PrismaClient } = require('@prisma/client');
+
 const prisma = new PrismaClient();
 
 router.post('/', async (req, res) => {
@@ -22,10 +22,10 @@ router.post('/', async (req, res) => {
 
     console.log('✅ [POST /horario/excepcion] Excepción creada:', excepcion.excepcion_id);
     res.status(201).json(excepcion);
-  } catch (error: any) {
+  } catch (error) {
     console.error('❌ [POST /horario/excepcion] Error:', error.message);
     res.status(500).json({ error: 'No se pudo registrar la excepción', detail: error.message });
   }
 });
 
-export default router;
+module.exports = router;
