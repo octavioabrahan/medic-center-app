@@ -3,11 +3,15 @@ const Model = require("../models/especialidadesModel");
 const EspecialidadesController = {
   crear: async (req, res) => {
     try {
-      await Model.crear(req.body);
+      const { nombre } = req.body;
+      await db.query("INSERT INTO especialidades (nombre) VALUES ($1)", [nombre]);
       res.status(201).json({ mensaje: "Especialidad creada" });
     } catch (err) {
+      if (err.code === '23505') {
+        return res.status(400).json({ error: "Esta especialidad ya existe." });
+      }
       console.error(err);
-      res.status(500).json({ error: "Error al guardar especialidad" });
+      res.status(500).json({ error: "Error al crear especialidad" });
     }
   },
 

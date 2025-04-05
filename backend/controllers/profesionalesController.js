@@ -6,6 +6,9 @@ const ProfesionalesController = {
       const id = await Model.crear(req.body);
       res.status(201).json({ profesional_id: id });
     } catch (err) {
+      if (err.code === '23505') {
+        return res.status(400).json({ error: "Ya existe un profesional con esta cédula." });
+      }
       console.error("Error al crear profesional:", err);
       res.status(500).json({ error: "Error al crear profesional" });
     }
