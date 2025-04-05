@@ -7,34 +7,26 @@ function ProfesionalForm() {
     nombre: "",
     apellido: "",
     especialidad_id: "",
+    rol_id: ""
   });
 
   const [especialidades, setEspecialidades] = useState([]);
-
-  useEffect(() => {
-    async function fetchEspecialidades() {
-      try {
-        const res = await api.get("/especialidades");
-        setEspecialidades(res.data);
-      } catch (e) {
-        console.error("Error cargando especialidades:", e);
-      }
-    }
-    fetchEspecialidades();
-  }, []);
-
   const [roles, setRoles] = useState([]);
 
   useEffect(() => {
-    async function fetchRoles() {
+    async function fetchData() {
       try {
-        const res = await api.get("/roles");
-        setRoles(res.data);
+        const [espRes, rolesRes] = await Promise.all([
+          api.get("/especialidades"),
+          api.get("/roles"),
+        ]);
+        setEspecialidades(espRes.data);
+        setRoles(rolesRes.data);
       } catch (e) {
-        console.error("Error cargando roles:", e);
+        console.error("Error cargando datos:", e);
       }
     }
-    fetchRoles();
+    fetchData();
   }, []);
 
   const handleChange = (e) =>
@@ -43,7 +35,19 @@ function ProfesionalForm() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await api.post("/profesionales", form);
+      await api.post("/profesionales", {
+        cedula: form.cedula,
+        nombre: form.nombre,
+        apellido: form.apellido,
+        especialidad_id: form.especialidad_id
+      });
+
+      await api.post("/persona-roles", {
+        cedula: form.cedula,
+        id_rol: form.rol_id,
+        creado_desde: "panel"
+      });
+
       alert("Profesional creado con éxito");
     } catch (error) {
       alert("Error al crear profesional");
@@ -56,6 +60,7 @@ function ProfesionalForm() {
       <input name="cedula" placeholder="Cédula" onChange={handleChange} />
       <input name="nombre" placeholder="Nombre" onChange={handleChange} />
       <input name="apellido" placeholder="Apellido" onChange={handleChange} />
+
       <select name="especialidad_id" onChange={handleChange}>
         <option value="">Selecciona una especialidad</option>
         {especialidades.map((esp) => (
@@ -64,14 +69,16 @@ function ProfesionalForm() {
           </option>
         ))}
       </select>
-      <select name="id_rol" onChange={handleChange}>
+
+      <select name="rol_id" onChange={handleChange}>
         <option value="">Selecciona un rol</option>
-        {especialidades.map((esp) => (
+        {roles.map((rol) => (
           <option key={rol.id_rol} value={rol.id_rol}>
             {rol.nombre_rol}
           </option>
         ))}
       </select>
+
       <button type="submit">Guardar</button>
     </form>
   );

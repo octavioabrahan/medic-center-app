@@ -9,20 +9,26 @@ function HorarioForm() {
     hora_termino: "",
     valido_desde: "",
     valido_hasta: "",
+    tipo_atencion_id: ""
   });
 
   const [profesionales, setProfesionales] = useState([]);
+  const [tipos, setTipos] = useState([]);
 
   useEffect(() => {
-    async function fetchProfesionales() {
+    async function fetchData() {
       try {
-        const res = await api.get("/profesionales");
-        setProfesionales(res.data);
+        const [proRes, tipoRes] = await Promise.all([
+          api.get("/profesionales"),
+          api.get("/tipo-atencion"),
+        ]);
+        setProfesionales(proRes.data);
+        setTipos(tipoRes.data);
       } catch (e) {
-        console.error("Error cargando profesionales:", e);
+        console.error("Error cargando datos:", e);
       }
     }
-    fetchProfesionales();
+    fetchData();
   }, []);
 
   const handleChange = (e) =>
@@ -39,20 +45,6 @@ function HorarioForm() {
     }
   };
 
-  const [tipos, setTipos] = useState([]);
-
-  useEffect(() => {
-    async function fetchTipos() {
-      try {
-        const res = await api.get("/tipo-atencion");
-        setTipos(res.data);
-      } catch (e) {
-        console.error("Error cargando tipos de atención:", e);
-      }
-    }
-    fetchTipos();
-  }, []);  
-
   return (
     <form onSubmit={handleSubmit}>
       <select name="profesional_id" onChange={handleChange}>
@@ -63,19 +55,22 @@ function HorarioForm() {
           </option>
         ))}
       </select>
+
       <input name="dia_semana" placeholder="Día (0=Lunes, 6=Domingo)" onChange={handleChange} />
+      <input name="hora_inicio" type="time" onChange={handleChange} />
+      <input name="hora_termino" type="time" onChange={handleChange} />
+      <input name="valido_desde" type="date" onChange={handleChange} />
+      <input name="valido_hasta" type="date" onChange={handleChange} />
+
       <select name="tipo_atencion_id" onChange={handleChange}>
-        <option value="">Selecciona tipo atención</option>
-        {especialidades.map((tipo) => (
+        <option value="">Selecciona tipo de atención</option>
+        {tipos.map((tipo) => (
           <option key={tipo.tipo_atencion_id} value={tipo.tipo_atencion_id}>
             {tipo.nombre}
           </option>
         ))}
       </select>
-      <input name="hora_inicio" type="time" onChange={handleChange} />
-      <input name="hora_termino" type="time" onChange={handleChange} />
-      <input name="valido_desde" type="date" onChange={handleChange} />
-      <input name="valido_hasta" type="date" onChange={handleChange} />
+
       <button type="submit">Guardar</button>
     </form>
   );
