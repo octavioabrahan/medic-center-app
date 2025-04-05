@@ -1,10 +1,10 @@
-import { Router, Request, Response } from 'express';
+import express, { Request, Response, Router } from 'express';
 import { PrismaClient } from '@prisma/client';
 
-const router = Router();
 const prisma = new PrismaClient();
+const excepcionRouter: Router = express.Router();
 
-router.post('/', async (req: Request, res: Response) => {
+excepcionRouter.post('/', async (req: Request, res: Response) => {
   const { profesional_id, fecha, estado } = req.body;
 
   if (!profesional_id || !fecha || !estado) {
@@ -28,4 +28,4 @@ router.post('/', async (req: Request, res: Response) => {
   }
 });
 
-export default router;
+export default excepcionRouter;
