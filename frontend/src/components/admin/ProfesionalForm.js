@@ -1,27 +1,27 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import api from "../../api";
-
-const [especialidades, setEspecialidades] = useState([]);
-
-useEffect(() => {
-  async function fetchEspecialidades() {
-    try {
-      const res = await api.get("/especialidades");
-      setEspecialidades(res.data);
-    } catch (e) {
-      console.error("Error cargando especialidades:", e);
-    }
-  }
-  fetchEspecialidades();
-}, []);
 
 function ProfesionalForm() {
   const [form, setForm] = useState({
     cedula: "",
     nombre: "",
     apellido: "",
-    especialidad_id: ""
+    especialidad_id: "",
   });
+
+  const [especialidades, setEspecialidades] = useState([]);
+
+  useEffect(() => {
+    async function fetchEspecialidades() {
+      try {
+        const res = await api.get("/especialidades");
+        setEspecialidades(res.data);
+      } catch (e) {
+        console.error("Error cargando especialidades:", e);
+      }
+    }
+    fetchEspecialidades();
+  }, []);
 
   const handleChange = (e) =>
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -50,7 +50,6 @@ function ProfesionalForm() {
           </option>
         ))}
       </select>
-
       <button type="submit">Guardar</button>
     </form>
   );

@@ -1,19 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import api from "../../api";
-
-const [profesionales, setProfesionales] = useState([]);
-
-useEffect(() => {
-  async function fetchProfesionales() {
-    try {
-      const res = await api.get("/profesionales");
-      setProfesionales(res.data);
-    } catch (e) {
-      console.error("Error cargando profesionales:", e);
-    }
-  }
-  fetchProfesionales();
-}, []);
 
 function HorarioForm() {
   const [form, setForm] = useState({
@@ -22,8 +8,22 @@ function HorarioForm() {
     hora_inicio: "",
     hora_termino: "",
     valido_desde: "",
-    valido_hasta: ""
+    valido_hasta: "",
   });
+
+  const [profesionales, setProfesionales] = useState([]);
+
+  useEffect(() => {
+    async function fetchProfesionales() {
+      try {
+        const res = await api.get("/profesionales");
+        setProfesionales(res.data);
+      } catch (e) {
+        console.error("Error cargando profesionales:", e);
+      }
+    }
+    fetchProfesionales();
+  }, []);
 
   const handleChange = (e) =>
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -34,8 +34,8 @@ function HorarioForm() {
       await api.post("/horarios", form);
       alert("Horario guardado");
     } catch (error) {
-      console.error(error);
       alert("Error al guardar horario");
+      console.error(error);
     }
   };
 
@@ -47,14 +47,6 @@ function HorarioForm() {
           <option key={pro.profesional_id} value={pro.profesional_id}>
             {pro.nombre} {pro.apellido}
           </option>
-        ))}
-      </select>
-      <select name="tipo_atencion_id" onChange={handleChange}>
-        <option value="">Selecciona un tipo de atención</option>
-          {tipos.map((t) => (
-        <option key={t.tipo_atencion_id} value={t.tipo_atencion_id}>
-          {t.nombre}
-        </option>
         ))}
       </select>
       <input name="dia_semana" placeholder="Día (0=Lunes, 6=Domingo)" onChange={handleChange} />
