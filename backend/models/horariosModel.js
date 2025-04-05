@@ -7,22 +7,26 @@ const HorariosModel = {
     hora_inicio,
     hora_termino,
     valido_desde,
-    valido_hasta
+    valido_hasta,
+    tipo_atencion_id
   }) => {
-    const query = `
-      INSERT INTO horario_medico
-      (profesional_id, dia_semana, hora_inicio, hora_termino, valido_desde, valido_hasta)
-      VALUES ($1, $2, $3, $4, $5, $6)
-    `;
-    await db.query(query, [
-      profesional_id,
-      dia_semana,
-      hora_inicio,
-      hora_termino,
-      valido_desde,
-      valido_hasta
-    ]);
-  },
+    for (const dia of dia_semana) {
+      await db.query(
+        `INSERT INTO horario_medico
+        (profesional_id, dia_semana, hora_inicio, hora_termino, valido_desde, valido_hasta, tipo_atencion_id)
+        VALUES ($1, $2, $3, $4, $5, $6, $7)`,
+        [
+          profesional_id,
+          dia,
+          hora_inicio,
+          hora_termino,
+          valido_desde,
+          valido_hasta,
+          tipo_atencion_id
+        ]
+      );
+    }
+  },  
 
   listarPorProfesional: async (id) => {
     const result = await db.query(

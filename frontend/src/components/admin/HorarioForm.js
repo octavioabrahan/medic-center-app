@@ -4,7 +4,7 @@ import api from "../../api";
 function HorarioForm() {
   const [form, setForm] = useState({
     profesional_id: "",
-    dia_semana: "",
+    dia_semana: [],
     hora_inicio: "",
     hora_termino: "",
     valido_desde: "",
@@ -13,17 +13,17 @@ function HorarioForm() {
   });
 
   const [profesionales, setProfesionales] = useState([]);
-  const [tipos, setTipos] = useState([]);
+  const [tiposAtencion, setTiposAtencion] = useState([]);
 
   useEffect(() => {
     async function fetchData() {
       try {
-        const [proRes, tipoRes] = await Promise.all([
+        const [profesionalesRes, tiposRes] = await Promise.all([
           api.get("/profesionales"),
-          api.get("/tipo-atencion"),
+          api.get("/tipo-atencion")
         ]);
-        setProfesionales(proRes.data);
-        setTipos(tipoRes.data);
+        setProfesionales(profesionalesRes.data);
+        setTiposAtencion(tiposRes.data);
       } catch (e) {
         console.error("Error cargando datos:", e);
       }
@@ -31,42 +31,66 @@ function HorarioForm() {
     fetchData();
   }, []);
 
-  const handleChange = (e) =>
-    setForm({ ...form, [e.target.name]: e.target.value });
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setForm({ ...form, [name]: value });
+  };
+
+  const handleMultipleDays = (e) => {
+    const selected = Array.from(e.target.selectedOptions).map((opt) => parseInt(opt.value));
+    setForm({ ...form, dia_semana: selected });
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       await api.post("/horarios", form);
-      alert("Horario guardado");
+      alert("Horario creado con éxito");
     } catch (error) {
-      alert("Error al guardar horario");
+      alert("Error al crear horario");
       console.error(error);
     }
   };
+
+  const diasSemana = [
+    { valor: 0, nombre: "Lunes" },
+    { valor: 1, nombre: "Martes" },
+    { valor: 2, nombre: "Miércoles" },
+    { valor: 3, nombre: "Jueves" },
+    { valor: 4, nombre: "Viernes" },
+    { valor: 5, nombre: "Sábado" },
+    { valor: 6, nombre: "Domingo" }
+  ];
 
   return (
     <form onSubmit={handleSubmit}>
       <select name="profesional_id" onChange={handleChange}>
         <option value="">Selecciona un profesional</option>
-        {profesionales.map((pro) => (
-          <option key={pro.profesional_id} value={pro.profesional_id}>
-            {pro.nombre} {pro.apellido}
+        {profesionales.map((p) => (
+          <option key={p.profesional_id} value={p.profesional_id}>
+            {p.nombre} {p.apellido}
           </option>
         ))}
       </select>
 
-      <input name="dia_semana" placeholder="Día (0=Lunes, 6=Domingo)" onChange={handleChange} />
-      <input name="hora_inicio" type="time" onChange={handleChange} />
-      <input name="hora_termino" type="time" onChange={handleChange} />
-      <input name="valido_desde" type="date" onChange={handleChange} />
-      <input name="valido_hasta" type="date" onChange={handleChange} />
+      <select multiple name="dia_semana" onChange={handleMultipleDays}>
+        {diasSemana.map((dia) => (
+          <option key={dia.valor} value={dia.valor}>
+            {dia.nombre}
+          </option>
+        ))}
+      </select>
+
+      <input type="time" name="hora_inicio" onChange={handleChange} />
+      <input type="time" name="hora_termino" onChange={handleChange} />
+      <input type="date" name="valido_desde" onChange={handleChange} />
+      <input type="date" name="valido_hasta" onChange={handleChange} />
 
       <select name="tipo_atencion_id" onChange={handleChange}>
         <option value="">Selecciona tipo de atención</option>
-        {tipos.map((tipo) => (
-          <option key={tipo.tipo_atencion_id} value={tipo.tipo_atencion_id}>
-            {tipo.nombre}
+        {tiposAtencion.map((t) => (
+          <option key={t.tipo_atencion_id} value={t.tipo_atencion_id}>
+            {t.nombre}
           </option>
         ))}
       </select>
