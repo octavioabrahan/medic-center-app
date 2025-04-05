@@ -23,6 +23,8 @@ function ProfesionalForm() {
     fetchEspecialidades();
   }, []);
 
+  const [roles, setRoles] = useState([]);
+
   useEffect(() => {
     async function fetchRoles() {
       try {
@@ -65,8 +67,8 @@ function ProfesionalForm() {
       <select name="id_rol" onChange={handleChange}>
         <option value="">Selecciona un rol</option>
         {especialidades.map((esp) => (
-          <option key={esp.id_rol} value={esp.id_rol}>
-            {esp.nombre_rol}
+          <option key={rol.id_rol} value={rol.id_rol}>
+            {rol.nombre_rol}
           </option>
         ))}
       </select>

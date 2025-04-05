@@ -39,6 +39,20 @@ function HorarioForm() {
     }
   };
 
+  const [tipos, setTipos] = useState([]);
+
+  useEffect(() => {
+    async function fetchTipos() {
+      try {
+        const res = await api.get("/tipo-atencion");
+        setTipos(res.data);
+      } catch (e) {
+        console.error("Error cargando tipos de atención:", e);
+      }
+    }
+    fetchTipos();
+  }, []);  
+
   return (
     <form onSubmit={handleSubmit}>
       <select name="profesional_id" onChange={handleChange}>
@@ -50,6 +64,14 @@ function HorarioForm() {
         ))}
       </select>
       <input name="dia_semana" placeholder="Día (0=Lunes, 6=Domingo)" onChange={handleChange} />
+      <select name="tipo_atencion_id" onChange={handleChange}>
+        <option value="">Selecciona tipo atención</option>
+        {especialidades.map((tipo) => (
+          <option key={tipo.tipo_atencion_id} value={tipo.tipo_atencion_id}>
+            {tipo.nombre}
+          </option>
+        ))}
+      </select>
       <input name="hora_inicio" type="time" onChange={handleChange} />
       <input name="hora_termino" type="time" onChange={handleChange} />
       <input name="valido_desde" type="date" onChange={handleChange} />
