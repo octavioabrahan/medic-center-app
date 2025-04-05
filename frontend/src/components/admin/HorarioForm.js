@@ -1,6 +1,20 @@
 import { useState } from "react";
 import api from "../../api";
 
+const [profesionales, setProfesionales] = useState([]);
+
+useEffect(() => {
+  async function fetchProfesionales() {
+    try {
+      const res = await api.get("/profesionales");
+      setProfesionales(res.data);
+    } catch (e) {
+      console.error("Error cargando profesionales:", e);
+    }
+  }
+  fetchProfesionales();
+}, []);
+
 function HorarioForm() {
   const [form, setForm] = useState({
     profesional_id: "",
@@ -27,7 +41,22 @@ function HorarioForm() {
 
   return (
     <form onSubmit={handleSubmit}>
-      <input name="profesional_id" placeholder="ID Profesional" onChange={handleChange} />
+      <select name="profesional_id" onChange={handleChange}>
+        <option value="">Selecciona un profesional</option>
+        {profesionales.map((pro) => (
+          <option key={pro.profesional_id} value={pro.profesional_id}>
+            {pro.nombre} {pro.apellido}
+          </option>
+        ))}
+      </select>
+      <select name="tipo_atencion_id" onChange={handleChange}>
+        <option value="">Selecciona un tipo de atención</option>
+          {tipos.map((t) => (
+        <option key={t.tipo_atencion_id} value={t.tipo_atencion_id}>
+          {t.nombre}
+        </option>
+        ))}
+      </select>
       <input name="dia_semana" placeholder="Día (0=Lunes, 6=Domingo)" onChange={handleChange} />
       <input name="hora_inicio" type="time" onChange={handleChange} />
       <input name="hora_termino" type="time" onChange={handleChange} />

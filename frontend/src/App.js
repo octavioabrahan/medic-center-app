@@ -8,6 +8,7 @@ import ProfesionalesPage from "./pages/admin/ProfesionalesPage";
 import HorariosPage from "./pages/admin/HorariosPage";
 import EspecialidadesPage from "./pages/admin/EspecialidadesPage";
 import TipoAtencionPage from "./pages/admin/TipoAtencionPage";
+import RolesPage from "./pages/admin/RolesPage";
 
 function App() {
   return (
@@ -24,6 +25,7 @@ function App() {
         <Route path="/admin/horarios" element={<HorariosPage />} />
         <Route path="/admin/especialidades" element={<EspecialidadesPage />} />
         <Route path="/admin/tipo-atencion" element={<TipoAtencionPage />} />
+        <Route path="/admin/roles" element={<RolesPage />} />
       </Routes>
     </Router>
   );
