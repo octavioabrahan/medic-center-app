@@ -3,7 +3,6 @@ import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import Home from './pages/Home';
 import AgendarHora from './pages/AgendarHora';
 import CotizadorExamenes from './pages/CotizadorExamenes'; // 👈 este es nuevo
-import { Routes, Route } from "react-router-dom";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import ProfesionalesPage from "./pages/admin/ProfesionalesPage";
 import HorariosPage from "./pages/admin/HorariosPage";
