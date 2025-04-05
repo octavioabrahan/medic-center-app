@@ -53,13 +53,13 @@ function HorarioForm() {
   };
 
   const diasSemana = [
-    { valor: 0, nombre: "Lunes" },
-    { valor: 1, nombre: "Martes" },
-    { valor: 2, nombre: "Miércoles" },
-    { valor: 3, nombre: "Jueves" },
-    { valor: 4, nombre: "Viernes" },
-    { valor: 5, nombre: "Sábado" },
-    { valor: 6, nombre: "Domingo" }
+    { valor: 1, nombre: "Lunes" },
+    { valor: 2, nombre: "Martes" },
+    { valor: 3, nombre: "Miércoles" },
+    { valor: 4, nombre: "Jueves" },
+    { valor: 5, nombre: "Viernes" },
+    { valor: 6, nombre: "Sábado" },
+    { valor: 7, nombre: "Domingo" }
   ];
 
   return (
