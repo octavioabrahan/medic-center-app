@@ -87,6 +87,16 @@ function ExcepcionesPage() {
       console.error(err);
     }
   };
+  
+  const yaCancelada = (fecha, hora_inicio, hora_termino) => {
+    return excepciones.some(
+      (ex) =>
+        ex.fecha.startsWith(fecha) &&
+        ex.hora_inicio === hora_inicio &&
+        ex.hora_termino === hora_termino &&
+        ex.estado === "cancelado"
+    );
+  };
 
   return (
     <div>
@@ -116,38 +126,30 @@ function ExcepcionesPage() {
       <h3>Fechas válidas según horario</h3>
       <ul>
         {fechasValidas.map((f, index) => {
-          const yaCancelada = excepciones.some(
-            (ex) =>
-              ex.fecha === f.fecha &&
-              ex.hora_inicio === f.hora_inicio &&
-              ex.hora_termino === f.hora_termino &&
-              ex.estado === "cancelado"
-          );
-
+          const cancelada = yaCancelada(f.fecha, f.hora_inicio, f.hora_termino);
           return (
-            <li key={`${f.fecha}-${f.hora_inicio}-${f.hora_termino}`}>
+            <li key={`${f.fecha}-${f.hora_inicio}`}>
               <span
                 style={{
-                  textDecoration: yaCancelada ? "line-through" : "none",
-                  color: yaCancelada ? "red" : "black",
+                  textDecoration: cancelada ? "line-through" : "none",
+                  color: cancelada ? "gray" : "black",
                 }}
               >
                 {f.fecha} | {f.hora_inicio} - {f.hora_termino}
               </span>
-              {yaCancelada ? (
-                <button disabled style={{ marginLeft: 10 }}>
-                  Cancelada
-                </button>
-              ) : (
-                <button
-                  onClick={() =>
-                    cancelarFecha(f.fecha, f.hora_inicio, f.hora_termino)
-                  }
-                  style={{ marginLeft: 10 }}
-                >
-                  ❌ Cancelar
-                </button>
-              )}
+              <button
+                onClick={() =>
+                  cancelarFecha(f.fecha, f.hora_inicio, f.hora_termino)
+                }
+                disabled={cancelada}
+                style={{
+                  marginLeft: 10,
+                  backgroundColor: cancelada ? "#ccc" : "#f88",
+                  cursor: cancelada ? "not-allowed" : "pointer",
+                }}
+              >
+                {cancelada ? "Cancelada" : "❌ Cancelar"}
+              </button>
             </li>
           );
         })}
