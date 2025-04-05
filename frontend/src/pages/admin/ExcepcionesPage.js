@@ -4,14 +4,13 @@ import api from "../../api";
 function ExcepcionesPage() {
   const [profesionales, setProfesionales] = useState([]);
   const [profesionalSeleccionado, setProfesionalSeleccionado] = useState("");
-  const [excepciones, setExcepciones] = useState([]);
   const [fechasValidas, setFechasValidas] = useState([]);
+  const [excepciones, setExcepciones] = useState([]);
 
   const [form, setForm] = useState({
     fecha: "",
     hora_inicio: "",
     hora_termino: "",
-    estado: "cancelado",
     motivo: ""
   });
 
@@ -30,43 +29,48 @@ function ExcepcionesPage() {
     }
   }, [profesionalSeleccionado]);
 
-  const cargarExcepciones = async (id) => {
-    try {
-      const res = await api.get(`/excepciones/profesional/${id}`);
-      setExcepciones(res.data);
-    } catch (err) {
-      console.error("Error al cargar excepciones:", err);
-    }
+  const cargarFechasValidas = async (id) => {
+    const res = await api.get(`/horarios/fechas/${id}`);
+    setFechasValidas(res.data);
   };
 
-  const cargarFechasValidas = async (id) => {
-    try {
-      const res = await api.get(`/horarios/fechas/${id}`);
-      setFechasValidas(res.data);
-    } catch (err) {
-      console.error("Error al cargar fechas válidas:", err);
-    }
+  const cargarExcepciones = async (id) => {
+    const res = await api.get(`/excepciones/profesional/${id}`);
+    setExcepciones(res.data);
   };
 
   const handleChange = (e) =>
     setForm({ ...form, [e.target.name]: e.target.value });
+
+  const cancelarFecha = async (fecha, hora_inicio, hora_termino) => {
+    try {
+      await api.post("/excepciones", {
+        profesional_id: profesionalSeleccionado,
+        fecha,
+        estado: "cancelado",
+        hora_inicio,
+        hora_termino,
+        motivo: "Cancelación desde UI"
+      });
+      cargarExcepciones(profesionalSeleccionado);
+    } catch (err) {
+      alert("Error al cancelar fecha");
+      console.error(err);
+    }
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       await api.post("/excepciones", {
         profesional_id: profesionalSeleccionado,
-        ...form
+        ...form,
+        estado: "manual"
       });
       alert("Excepción registrada con éxito");
       cargarExcepciones(profesionalSeleccionado);
-      setForm({
-        fecha: "",
-        hora_inicio: "",
-        hora_termino: "",
-        estado: "cancelado",
-        motivo: ""
-      });
+      cargarFechasValidas(profesionalSeleccionado);
+      setForm({ fecha: "", hora_inicio: "", hora_termino: "", motivo: "" });
     } catch (err) {
       alert("Error al guardar excepción");
       console.error(err);
@@ -88,35 +92,36 @@ function ExcepcionesPage() {
 
       {profesionalSeleccionado && (
         <>
-          <h3>Excepciones actuales</h3>
-          <ul>
-            {excepciones.map((ex) => (
-              <li key={ex.excepcion_id}>
-                {ex.fecha} | {ex.hora_inicio} - {ex.hora_termino} | {ex.estado} | {ex.motivo}
-              </li>
-            ))}
-          </ul>
-
           <h3>Fechas válidas según horario</h3>
           <ul>
             {fechasValidas.map((f, index) => {
               const esExcepcion = excepciones.find((ex) => ex.fecha === f.fecha);
               return (
-                <li
-                  key={index}
-                  style={{
-                    textDecoration: esExcepcion ? "line-through" : "none",
-                    color: esExcepcion ? "red" : "black"
-                  }}
-                >
-                  {f.fecha} | {f.hora_inicio} - {f.hora_termino}
-                  {esExcepcion && ` (cancelado: ${esExcepcion.motivo})`}
+                <li key={index}>
+                  <span
+                    style={{
+                      textDecoration: esExcepcion ? "line-through" : "none",
+                      color: esExcepcion ? "red" : "black"
+                    }}
+                  >
+                    {f.fecha} | {f.hora_inicio} - {f.hora_termino}
+                  </span>
+                  {!esExcepcion && (
+                    <button
+                      onClick={() =>
+                        cancelarFecha(f.fecha, f.hora_inicio, f.hora_termino)
+                      }
+                      style={{ marginLeft: 10 }}
+                    >
+                      ❌ Cancelar
+                    </button>
+                  )}
                 </li>
               );
             })}
           </ul>
 
-          <h3>Registrar nueva excepción</h3>
+          <h3>Agregar excepción puntual</h3>
           <form onSubmit={handleSubmit}>
             <input
               type="date"
@@ -142,11 +147,11 @@ function ExcepcionesPage() {
             <input
               type="text"
               name="motivo"
+              placeholder="Motivo (opcional)"
               value={form.motivo}
               onChange={handleChange}
-              placeholder="Motivo (opcional)"
             />
-            <button type="submit">Guardar excepción</button>
+            <button type="submit">Agregar</button>
           </form>
         </>
       )}
