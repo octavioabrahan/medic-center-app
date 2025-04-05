@@ -35,17 +35,21 @@ function ProfesionalForm() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await api.post("/profesionales", {
+      // 1. Crear profesional y obtener ID
+      const res = await api.post("/profesionales", {
         cedula: form.cedula,
         nombre: form.nombre,
         apellido: form.apellido,
         especialidad_id: form.especialidad_id
       });
 
+      const profesional_id = res.data.profesional_id;
+
+      // 2. Asignar rol al profesional
       await api.post("/profesional-roles", {
-        profesional_id: idCreado, // si lo tienes del primer insert
+        profesional_id,
         id_rol: form.rol_id,
-        creado_desde: "panel",
+        creado_desde: "panel"
       });
 
       alert("Profesional creado con éxito");
