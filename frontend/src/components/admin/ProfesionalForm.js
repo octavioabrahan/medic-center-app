@@ -23,6 +23,18 @@ function ProfesionalForm() {
     fetchEspecialidades();
   }, []);
 
+  useEffect(() => {
+    async function fetchRoles() {
+      try {
+        const res = await api.get("/roles");
+        setRoles(res.data);
+      } catch (e) {
+        console.error("Error cargando roles:", e);
+      }
+    }
+    fetchRoles();
+  }, []);
+
   const handleChange = (e) =>
     setForm({ ...form, [e.target.name]: e.target.value });
 
@@ -47,6 +59,14 @@ function ProfesionalForm() {
         {especialidades.map((esp) => (
           <option key={esp.especialidad_id} value={esp.especialidad_id}>
             {esp.nombre}
+          </option>
+        ))}
+      </select>
+      <select name="id_rol" onChange={handleChange}>
+        <option value="">Selecciona un rol</option>
+        {especialidades.map((esp) => (
+          <option key={esp.id_rol} value={esp.id_rol}>
+            {esp.nombre_rol}
           </option>
         ))}
       </select>
