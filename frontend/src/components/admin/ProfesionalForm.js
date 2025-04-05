@@ -42,10 +42,10 @@ function ProfesionalForm() {
         especialidad_id: form.especialidad_id
       });
 
-      await api.post("/persona-roles", {
-        cedula: form.cedula,
+      await api.post("/profesional-roles", {
+        profesional_id: idCreado, // si lo tienes del primer insert
         id_rol: form.rol_id,
-        creado_desde: "panel"
+        creado_desde: "panel",
       });
 
       alert("Profesional creado con éxito");
