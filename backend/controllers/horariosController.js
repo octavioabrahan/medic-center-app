@@ -1,7 +1,5 @@
 const Model = require("../models/horariosModel");
 
-router.get("/fechas/:id", controller.listarFechasPorProfesional);
-
 const HorariosController = {
   crear: async (req, res) => {
     try {
