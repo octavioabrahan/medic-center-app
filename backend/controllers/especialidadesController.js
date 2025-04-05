@@ -9,6 +9,16 @@ const EspecialidadesController = {
       console.error(err);
       res.status(500).json({ error: "Error al guardar especialidad" });
     }
+  },
+
+  listar: async (req, res) => {
+    try {
+      const especialidades = await Model.listar();
+      res.json(especialidades);
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({ error: "Error al obtener especialidades" });
+    }
   }
 };
 

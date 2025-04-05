@@ -1,12 +1,17 @@
-const db = require('../database/db');
+const db = require('./db'); // PostgreSQL Pool
 
 const EspecialidadesModel = {
   crear: async ({ nombre }) => {
     const query = `
       INSERT INTO especialidades (especialidad_id, nombre)
-      VALUES (lower(hex(randomblob(16))), ?)
+      VALUES (gen_random_uuid(), $1)
     `;
-    await db.run(query, [nombre]);
+    await db.query(query, [nombre]);
+  },
+
+  listar: async () => {
+    const result = await db.query("SELECT * FROM especialidades ORDER BY nombre ASC");
+    return result.rows;
   }
 };
 

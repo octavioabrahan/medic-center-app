@@ -1,4 +1,4 @@
-const db = require('../database/db'); // Asumo que tenés esto configurado
+const db = require('./db'); // Asumo que tenés esto configurado
 
 const AgendamientoModel = {
   crearAgendamiento: async (datos) => {
