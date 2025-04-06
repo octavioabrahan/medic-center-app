@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import api from "../../api";
 
 function AgendamientoPrivadoForm() {
@@ -12,44 +12,28 @@ function AgendamientoPrivadoForm() {
     email: "",
     seguro_medico: false,
     profesional_id: "",
-    fecha_agendada: "",
-    convenio: false,
-    observaciones: ""
+    observaciones: "",
   });
 
-  const [sinCedula, setSinCedula] = useState(false);
-  const [numeroHijo, setNumeroHijo] = useState(1);
-  const [medicos, setMedicos] = useState([]);
-  const [fechasDisponibles, setFechasDisponibles] = useState([]);
+  const [profesionales, setProfesionales] = useState([]);
+  const [pacienteSinCedula, setPacienteSinCedula] = useState(false);
+  const [hijoNumero, setHijoNumero] = useState("");
 
   useEffect(() => {
-    async function fetchMedicos() {
+    const fetchProfesionales = async () => {
       try {
         const res = await api.get("/profesionales");
-        const medicosFiltrados = res.data.filter(m => m.rol === "Medico");
-        setMedicos(medicosFiltrados);
-      } catch (e) {
-        console.error("Error cargando médicos:", e);
+        const medicos = res.data.filter(
+          (p) => p.id_rol && p.id_rol.nombre_rol === "Medico"
+        );
+        setProfesionales(medicos);
+      } catch (err) {
+        console.error("Error cargando profesionales:", err);
       }
-    }
-    fetchMedicos();
-  }, []);
+    };
 
-  useEffect(() => {
-    async function cargarFechas() {
-      if (form.profesional_id) {
-        try {
-          const res = await api.get(`/horarios/fechas/${form.profesional_id}`);
-          setFechasDisponibles(res.data);
-        } catch (e) {
-          console.error("Error al cargar fechas disponibles:", e);
-        }
-      } else {
-        setFechasDisponibles([]);
-      }
-    }
-    cargarFechas();
-  }, [form.profesional_id]);
+    fetchProfesionales();
+  }, []);
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -60,131 +44,115 @@ function AgendamientoPrivadoForm() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    let datos = { ...form };
+    const payload = { ...form };
 
-    if (sinCedula) {
-      const cedulaBase = form.cedula.replace(/[^0-9]/g, "");
-      datos.cedula = `${cedulaBase}-${numeroHijo}`;
+    if (pacienteSinCedula && hijoNumero) {
+      payload.cedula = `${form.cedula}-${hijoNumero}`;
     }
 
     try {
-      await api.post("/agendamiento", datos);
-      alert("Agendamiento realizado correctamente");
-    } catch (error) {
-      alert("Error al registrar agendamiento");
-      console.error(error);
+      await api.post("/agendamiento", payload);
+      alert("Agendamiento creado con éxito");
+    } catch (err) {
+      console.error("Error al agendar:", err);
+      alert("Hubo un error al registrar el agendamiento");
     }
   };
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
       <h2>Agendamiento Particular</h2>
+
       <label>
         Cédula:
         <input
           name="cedula"
-          value={form.cedula}
           onChange={handleChange}
+          value={form.cedula}
+          disabled={pacienteSinCedula}
         />
       </label>
+
       <label>
         <input
           type="checkbox"
-          checked={sinCedula}
-          onChange={() => setSinCedula(!sinCedula)}
-        /> La persona que se atenderá no tiene cédula
+          checked={pacienteSinCedula}
+          onChange={(e) => setPacienteSinCedula(e.target.checked)}
+        />
+        La persona que se atenderá no tiene cédula
       </label>
 
-      {sinCedula && (
+      {pacienteSinCedula && (
         <label>
-          ¿Qué número de hijo es este menor?
+          ¿Qué número de hijo(a) es este menor?
           <input
             type="number"
-            value={numeroHijo}
-            min="1"
-            onChange={(e) => setNumeroHijo(e.target.value)}
+            value={hijoNumero}
+            onChange={(e) => setHijoNumero(e.target.value)}
+            min={1}
           />
         </label>
       )}
 
       <label>
         Nombre:
-        <input name="nombre" value={form.nombre} onChange={handleChange} />
+        <input name="nombre" onChange={handleChange} value={form.nombre} />
       </label>
+
       <label>
         Apellido:
-        <input name="apellido" value={form.apellido} onChange={handleChange} />
+        <input name="apellido" onChange={handleChange} value={form.apellido} />
       </label>
+
       <label>
         Fecha nacimiento:
-        <input type="date" name="fecha_nacimiento" value={form.fecha_nacimiento} onChange={handleChange} />
+        <input type="date" name="fecha_nacimiento" onChange={handleChange} value={form.fecha_nacimiento} />
       </label>
+
       <label>
         Sexo:
-        <select name="sexo" value={form.sexo} onChange={handleChange}>
+        <select name="sexo" onChange={handleChange} value={form.sexo}>
           <option value="">Selecciona</option>
           <option value="femenino">Femenino</option>
           <option value="masculino">Masculino</option>
         </select>
       </label>
+
       <label>
         Teléfono:
-        <input name="telefono" value={form.telefono} onChange={handleChange} />
+        <input name="telefono" onChange={handleChange} value={form.telefono} />
       </label>
+
       <label>
         Correo electrónico:
-        <input name="email" value={form.email} onChange={handleChange} />
+        <input name="email" onChange={handleChange} value={form.email} />
       </label>
+
       <label>
         ¿Tiene seguro médico?
         <input
           type="checkbox"
           name="seguro_medico"
-          checked={form.seguro_medico}
           onChange={handleChange}
+          checked={form.seguro_medico}
         />
       </label>
+
       <label>
         Profesional:
-        <select
-          name="profesional_id"
-          value={form.profesional_id}
-          onChange={handleChange}
-        >
+        <select name="profesional_id" onChange={handleChange} value={form.profesional_id}>
           <option value="">Selecciona un médico</option>
-          {medicos.map((med) => (
-            <option key={med.profesional_id} value={med.profesional_id}>
-              {med.nombre} {med.apellido}
+          {profesionales.map((p) => (
+            <option key={p.profesional_id} value={p.profesional_id}>
+              {p.nombre} {p.apellido}
             </option>
           ))}
         </select>
       </label>
 
-      {fechasDisponibles.length > 0 && (
-        <label>
-          Fecha disponible:
-          <select
-            name="fecha_agendada"
-            value={form.fecha_agendada}
-            onChange={handleChange}
-          >
-            <option value="">Selecciona una fecha</option>
-            {fechasDisponibles.map((fecha, i) => (
-              <option key={i} value={fecha.fecha}>
-                {fecha.fecha} | {fecha.hora_inicio} - {fecha.hora_termino}
-              </option>
-            ))}
-          </select>
-        </label>
-      )}
-
       <label>
         Observaciones:
-        <input
-          name="observaciones"
-          value={form.observaciones}
-          onChange={handleChange}
-        />
+        <input name="observaciones" onChange={handleChange} value={form.observaciones} />
       </label>
 
       <button type="submit">Agendar</button>
