@@ -1,33 +1,33 @@
-const db = require('./db'); // Asumo que tenés esto configurado
+const db = require("./db");
 
 const AgendamientoModel = {
-  crearAgendamiento: async (datos) => {
+  crear: async (datos) => {
     const {
-      convenio,
+      cedula,
       fecha_agendada,
-      status,
+      convenio,
       profesional_id,
       tipo_atencion_id,
-      cedula
+      observaciones
     } = datos;
 
-    const now = new Date().toISOString();
     const query = `
-      INSERT INTO agendamiento (created_at, convenio, fecha_agendada, status, profesional_id, tipo_atencion_id, cedula)
-      VALUES (?, ?, ?, ?, ?, ?, ?)
+      INSERT INTO agendamiento (
+        cedula, fecha_agendada, convenio,
+        profesional_id, tipo_atencion_id, observaciones
+      )
+      VALUES ($1, $2, $3, $4, $5, $6)
     `;
-    await db.run(query, [now, convenio, fecha_agendada, status, profesional_id, tipo_atencion_id, cedula]);
-  },
 
-  obtenerAgendamientosPorProfesionalYFecha: async (profesional_id, fecha) => {
-    const query = `
-      SELECT * FROM agendamiento
-      WHERE profesional_id = ? AND fecha_agendada = ?
-    `;
-    return await db.all(query, [profesional_id, fecha]);
-  },
-
-  // Puedes agregar más métodos como cancelar, actualizar status, etc.
+    await db.query(query, [
+      cedula,
+      fecha_agendada,
+      convenio,
+      profesional_id,
+      tipo_atencion_id,
+      observaciones || null
+    ]);
+  }
 };
 
 module.exports = AgendamientoModel;

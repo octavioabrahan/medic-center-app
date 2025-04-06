@@ -1,8 +1,7 @@
 const express = require("express");
 const router = express.Router();
-const controller = require("../controllers/agendamientoController");
+const controller = require("../controllers/pacientesController");
 
 router.post("/", controller.crear);
-router.get("/", controller.listar);
 
 module.exports = router;
