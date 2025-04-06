@@ -4,6 +4,8 @@ import api from "../../api";
 function AgendamientoPrivadoForm() {
   const [form, setForm] = useState({
     cedula: "",
+    sin_cedula: false,
+    numero_hijo: "",
     nombre: "",
     apellido: "",
     fecha_nacimiento: "",
@@ -12,106 +14,111 @@ function AgendamientoPrivadoForm() {
     email: "",
     seguro_medico: false,
     profesional_id: "",
-    observaciones: "",
+    observaciones: ""
   });
-
   const [profesionales, setProfesionales] = useState([]);
-  const [pacienteSinCedula, setPacienteSinCedula] = useState(false);
-  const [hijoNumero, setHijoNumero] = useState("");
 
   useEffect(() => {
-    const fetchProfesionales = async () => {
+    async function fetchProfesionales() {
       try {
-        const res = await api.get("/profesionales");
-        const medicos = res.data.filter(
-          (p) => p.id_rol && p.id_rol.nombre_rol === "Medico"
-        );
+        const response = await api.get("/profesionales");
+        const medicos = response.data.filter(p => p.nombre_rol === "Medico");
         setProfesionales(medicos);
       } catch (err) {
         console.error("Error cargando profesionales:", err);
       }
-    };
-
+    }
     fetchProfesionales();
   }, []);
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
-    const newValue = type === "checkbox" ? checked : value;
-    setForm({ ...form, [name]: newValue });
+    setForm({
+      ...form,
+      [name]: type === "checkbox" ? checked : value
+    });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    const payload = { ...form };
-
-    if (pacienteSinCedula && hijoNumero) {
-      payload.cedula = `${form.cedula}-${hijoNumero}`;
-    }
-
     try {
-      await api.post("/agendamiento", payload);
-      alert("Agendamiento creado con éxito");
+      await api.post("/agendamiento", form);
+      alert("Agendamiento registrado exitosamente");
     } catch (err) {
-      console.error("Error al agendar:", err);
-      alert("Hubo un error al registrar el agendamiento");
+      console.error("Error al registrar agendamiento:", err);
+      alert("Error al registrar agendamiento");
     }
   };
 
   return (
-    <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
+    <form onSubmit={handleSubmit}>
       <h2>Agendamiento Particular</h2>
 
       <label>
         Cédula:
         <input
           name="cedula"
-          onChange={handleChange}
           value={form.cedula}
-          disabled={pacienteSinCedula}
+          onChange={handleChange}
         />
       </label>
 
       <label>
         <input
           type="checkbox"
-          checked={pacienteSinCedula}
-          onChange={(e) => setPacienteSinCedula(e.target.checked)}
+          name="sin_cedula"
+          checked={form.sin_cedula}
+          onChange={handleChange}
         />
         La persona que se atenderá no tiene cédula
       </label>
 
-      {pacienteSinCedula && (
-        <label>
-          ¿Qué número de hijo(a) es este menor?
-          <input
-            type="number"
-            value={hijoNumero}
-            onChange={(e) => setHijoNumero(e.target.value)}
-            min={1}
-          />
-        </label>
+      {form.sin_cedula && (
+        <>
+          <label>
+            ¿Qué número de hijo(a) es este menor?
+            <input
+              name="numero_hijo"
+              value={form.numero_hijo}
+              onChange={handleChange}
+            />
+          </label>
+
+          <h3>Datos Paciente</h3>
+        </>
       )}
 
       <label>
         Nombre:
-        <input name="nombre" onChange={handleChange} value={form.nombre} />
+        <input
+          name="nombre"
+          value={form.nombre}
+          onChange={handleChange}
+        />
       </label>
 
       <label>
         Apellido:
-        <input name="apellido" onChange={handleChange} value={form.apellido} />
+        <input
+          name="apellido"
+          value={form.apellido}
+          onChange={handleChange}
+        />
       </label>
 
       <label>
         Fecha nacimiento:
-        <input type="date" name="fecha_nacimiento" onChange={handleChange} value={form.fecha_nacimiento} />
+        <input
+          type="date"
+          name="fecha_nacimiento"
+          value={form.fecha_nacimiento}
+          onChange={handleChange}
+        />
       </label>
 
       <label>
         Sexo:
-        <select name="sexo" onChange={handleChange} value={form.sexo}>
+        <select name="sexo" value={form.sexo} onChange={handleChange}>
           <option value="">Selecciona</option>
           <option value="femenino">Femenino</option>
           <option value="masculino">Masculino</option>
@@ -120,12 +127,20 @@ function AgendamientoPrivadoForm() {
 
       <label>
         Teléfono:
-        <input name="telefono" onChange={handleChange} value={form.telefono} />
+        <input
+          name="telefono"
+          value={form.telefono}
+          onChange={handleChange}
+        />
       </label>
 
       <label>
         Correo electrónico:
-        <input name="email" onChange={handleChange} value={form.email} />
+        <input
+          name="email"
+          value={form.email}
+          onChange={handleChange}
+        />
       </label>
 
       <label>
@@ -133,14 +148,18 @@ function AgendamientoPrivadoForm() {
         <input
           type="checkbox"
           name="seguro_medico"
-          onChange={handleChange}
           checked={form.seguro_medico}
+          onChange={handleChange}
         />
       </label>
 
       <label>
         Profesional:
-        <select name="profesional_id" onChange={handleChange} value={form.profesional_id}>
+        <select
+          name="profesional_id"
+          value={form.profesional_id}
+          onChange={handleChange}
+        >
           <option value="">Selecciona un médico</option>
           {profesionales.map((p) => (
             <option key={p.profesional_id} value={p.profesional_id}>
@@ -152,7 +171,11 @@ function AgendamientoPrivadoForm() {
 
       <label>
         Observaciones:
-        <input name="observaciones" onChange={handleChange} value={form.observaciones} />
+        <input
+          name="observaciones"
+          value={form.observaciones}
+          onChange={handleChange}
+        />
       </label>
 
       <button type="submit">Agendar</button>
