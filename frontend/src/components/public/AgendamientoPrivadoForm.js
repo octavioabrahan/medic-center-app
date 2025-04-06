@@ -1,226 +1,157 @@
-import { useState, useEffect } from "react";
-import api from "../../api";
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 
-function AgendamientoPrivadoForm() {
-  const [form, setForm] = useState({
-    cedula: "",
+const AgendamientoPrivadoForm = () => {
+  const [formData, setFormData] = useState({
+    cedula: '',
     sinCedula: false,
-    numeroHijo: "",
-    nombre: "",
-    apellido: "",
-    fecha_nacimiento: "",
-    sexo: "",
-    telefono: "",
-    email: "",
+    numeroHijo: '',
+    nombre: '',
+    apellido: '',
+    fecha_nacimiento: '',
+    sexo: '',
+    telefono: '',
+    email: '',
     seguro_medico: false,
-    profesional_id: "",
-    observaciones: "",
-    paciente_nombre: "",
-    paciente_apellido: "",
-    paciente_fecha_nacimiento: "",
-    paciente_sexo: ""
+    profesional_id: '',
+    observaciones: '',
+    representante_nombre: '',
+    representante_apellido: ''
   });
 
   const [profesionales, setProfesionales] = useState([]);
 
   useEffect(() => {
-    async function fetchProfesionales() {
+    const fetchProfesionales = async () => {
       try {
-        const res = await api.get("/profesionales");
-        setProfesionales(res.data);
+        const response = await axios.get('/api/profesionales');
+        setProfesionales(response.data);
       } catch (error) {
-        console.error("Error al cargar profesionales", error);
+        console.error('Error al cargar profesionales:', error);
       }
-    }
+    };
     fetchProfesionales();
   }, []);
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
-    setForm((prev) => ({
-      ...prev,
-      [name]: type === "checkbox" ? checked : value
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: type === 'checkbox' ? checked : value
     }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    const payload = {
-      cedula: form.cedula,
-      nombre: form.sinCedula ? form.paciente_nombre : form.nombre,
-      apellido: form.sinCedula ? form.paciente_apellido : form.apellido,
-      fecha_nacimiento: form.sinCedula ? form.paciente_fecha_nacimiento : form.fecha_nacimiento,
-      sexo: form.sinCedula ? form.paciente_sexo : form.sexo,
-      telefono: form.telefono,
-      email: form.email,
-      seguro_medico: form.seguro_medico,
-      profesional_id: form.profesional_id,
-      convenio: false,
-      observaciones: form.observaciones,
-      numero_hijo: form.sinCedula ? form.numeroHijo : null
-    };
-
     try {
-      await api.post("/agendamiento", payload);
-      alert("Agendamiento exitoso");
+      await axios.post('/api/agendamiento', {
+        ...formData,
+        representante_cedula: formData.sinCedula ? formData.cedula : null
+      });
+      alert('Agendamiento exitoso');
     } catch (error) {
-      alert("Error al agendar");
-      console.error(error);
+      console.error('Error al agendar:', error);
+      alert('Hubo un error al agendar.');
     }
   };
 
   return (
-    <form onSubmit={handleSubmit}>
+    <div>
       <h2>Agendamiento Particular</h2>
-
-      <label>
-        Cédula:
-        <input
-          name="cedula"
-          value={form.cedula}
-          onChange={handleChange}
-          required
-        />
-      </label>
-
-      <label>
-        <input
-          type="checkbox"
-          name="sinCedula"
-          checked={form.sinCedula}
-          onChange={handleChange}
-        />
-        La persona que se atenderá no tiene cédula
-      </label>
-
-      {form.sinCedula && (
-        <>
+      <form onSubmit={handleSubmit}>
+        <div>
+          <label>Cédula:</label>
+          <input type="text" name="cedula" value={formData.cedula} onChange={handleChange} />
           <label>
-            ¿Qué número de hijo(a) es este menor?
-            <input
-              name="numeroHijo"
-              value={form.numeroHijo}
-              onChange={handleChange}
-            />
+            <input type="checkbox" name="sinCedula" checked={formData.sinCedula} onChange={handleChange} />
+            La persona que se atenderá no tiene cédula
           </label>
+        </div>
 
-          <h3>Datos Paciente</h3>
-          <label>
-            Nombre:
-            <input
-              name="paciente_nombre"
-              value={form.paciente_nombre}
-              onChange={handleChange}
-            />
-          </label>
+        {formData.sinCedula && (
+          <fieldset>
+            <legend>Datos del representante legal</legend>
+            <div>
+              <label>¿Qué número de hijo(a) es este menor?</label>
+              <input type="text" name="numeroHijo" value={formData.numeroHijo} onChange={handleChange} />
+            </div>
+            <div>
+              <label>Nombre:</label>
+              <input type="text" name="representante_nombre" value={formData.representante_nombre} onChange={handleChange} />
+            </div>
+            <div>
+              <label>Apellidos:</label>
+              <input type="text" name="representante_apellido" value={formData.representante_apellido} onChange={handleChange} />
+            </div>
+            <div>
+              <label>Sexo:</label>
+              <select name="sexo" value={formData.sexo} onChange={handleChange}>
+                <option value="">Selecciona</option>
+                <option value="femenino">Femenino</option>
+                <option value="masculino">Masculino</option>
+              </select>
+            </div>
+            <div>
+              <label>Teléfono:</label>
+              <input type="text" name="telefono" value={formData.telefono} onChange={handleChange} />
+            </div>
+            <div>
+              <label>Correo electrónico:</label>
+              <input type="email" name="email" value={formData.email} onChange={handleChange} />
+            </div>
+          </fieldset>
+        )}
 
-          <label>
-            Apellido:
-            <input
-              name="paciente_apellido"
-              value={form.paciente_apellido}
-              onChange={handleChange}
-            />
-          </label>
-
-          <label>
-            Fecha nacimiento:
-            <input
-              type="date"
-              name="paciente_fecha_nacimiento"
-              value={form.paciente_fecha_nacimiento}
-              onChange={handleChange}
-            />
-          </label>
-
-          <label>
-            Sexo:
-            <select
-              name="paciente_sexo"
-              value={form.paciente_sexo}
-              onChange={handleChange}
-            >
+        <fieldset>
+          <legend>Datos Paciente</legend>
+          <div>
+            <label>Nombre:</label>
+            <input type="text" name="nombre" value={formData.nombre} onChange={handleChange} />
+          </div>
+          <div>
+            <label>Apellido:</label>
+            <input type="text" name="apellido" value={formData.apellido} onChange={handleChange} />
+          </div>
+          <div>
+            <label>Fecha nacimiento:</label>
+            <input type="date" name="fecha_nacimiento" value={formData.fecha_nacimiento} onChange={handleChange} />
+          </div>
+          <div>
+            <label>Sexo:</label>
+            <select name="sexo" value={formData.sexo} onChange={handleChange}>
               <option value="">Selecciona</option>
               <option value="femenino">Femenino</option>
               <option value="masculino">Masculino</option>
             </select>
-          </label>
-        </>
-      )}
+          </div>
+        </fieldset>
 
-      {!form.sinCedula && (
-        <>
-          <label>
-            Nombre:
-            <input name="nombre" value={form.nombre} onChange={handleChange} />
-          </label>
+        <div>
+          <label>¿Tiene seguro médico?</label>
+          <input type="checkbox" name="seguro_medico" checked={formData.seguro_medico} onChange={handleChange} />
+        </div>
 
-          <label>
-            Apellido:
-            <input name="apellido" value={form.apellido} onChange={handleChange} />
-          </label>
+        <div>
+          <label>Profesional:</label>
+          <select name="profesional_id" value={formData.profesional_id} onChange={handleChange}>
+            <option value="">Selecciona un médico</option>
+            {profesionales.map((prof) => (
+              <option key={prof.profesional_id} value={prof.profesional_id}>
+                {prof.nombre} {prof.apellido}
+              </option>
+            ))}
+          </select>
+        </div>
 
-          <label>
-            Fecha nacimiento:
-            <input type="date" name="fecha_nacimiento" value={form.fecha_nacimiento} onChange={handleChange} />
-          </label>
+        <div>
+          <label>Observaciones:</label>
+          <input type="text" name="observaciones" value={formData.observaciones} onChange={handleChange} />
+        </div>
 
-          <label>
-            Sexo:
-            <select name="sexo" value={form.sexo} onChange={handleChange}>
-              <option value="">Selecciona</option>
-              <option value="femenino">Femenino</option>
-              <option value="masculino">Masculino</option>
-            </select>
-          </label>
-        </>
-      )}
-
-      <label>
-        Teléfono:
-        <input name="telefono" value={form.telefono} onChange={handleChange} />
-      </label>
-
-      <label>
-        Correo electrónico:
-        <input name="email" value={form.email} onChange={handleChange} />
-      </label>
-
-      <label>
-        ¿Tiene seguro médico?
-        <input
-          type="checkbox"
-          name="seguro_medico"
-          checked={form.seguro_medico}
-          onChange={handleChange}
-        />
-      </label>
-
-      <label>
-        Profesional:
-        <select
-          name="profesional_id"
-          value={form.profesional_id}
-          onChange={handleChange}
-        >
-          <option value="">Selecciona un médico</option>
-          {profesionales.map((prof) => (
-            <option key={prof.profesional_id} value={prof.profesional_id}>
-              {prof.nombre} {prof.apellido}
-            </option>
-          ))}
-        </select>
-      </label>
-
-      <label>
-        Observaciones:
-        <input name="observaciones" value={form.observaciones} onChange={handleChange} />
-      </label>
-
-      <button type="submit">Agendar</button>
-    </form>
+        <button type="submit">Agendar</button>
+      </form>
+    </div>
   );
-}
+};
 
 export default AgendamientoPrivadoForm;
