@@ -10,6 +10,7 @@ import EspecialidadesPage from "./pages/admin/EspecialidadesPage";
 import TipoAtencionPage from "./pages/admin/TipoAtencionPage";
 import RolesPage from "./pages/admin/RolesPage";
 import ExcepcionesPage from "./pages/admin/ExcepcionesPage";
+import AgendamientoPrivadoForm from "./components/public/AgendamientoPrivadoForm";
 
 function App() {
   return (
@@ -28,6 +29,7 @@ function App() {
         <Route path="/admin/tipo-atencion" element={<TipoAtencionPage />} />
         <Route path="/admin/roles" element={<RolesPage />} />
         <Route path="/admin/excepciones" element={<ExcepcionesPage />} />
+        <Route path="/agendamiento/privado" element={<AgendamientoPrivadoForm />} />
       </Routes>
     </Router>
   );
