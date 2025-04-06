@@ -25,7 +25,7 @@ app.use('/api/exams', examRoutes);
 app.use('/api/appointments', appointmentRoutes);
 app.use('/api/tasa-cambio', exchangeRateRoutes);
 app.use('/api/cotizaciones', quotesRoutes);
-app.use('/api/agendamientos', agendamientoRoutes);
+app.use('/api/agendamiento', agendamientoRoutes);
 app.use("/api/profesionales", profesionalesRoutes);
 app.use("/api/especialidades", especialidadesRoutes);
 app.use("/api/tipo-atencion", tipoAtencionRoutes);
