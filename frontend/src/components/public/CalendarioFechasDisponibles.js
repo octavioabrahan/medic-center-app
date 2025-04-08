@@ -11,14 +11,31 @@ const CalendarioFechasDisponibles = ({ profesionalId, onFechaSeleccionada }) => 
     const fetchFechas = async () => {
       try {
         const res = await axios.get(`/api/horarios/fechas/${profesionalId}`);
-        const fechas = res.data.map(f => {
-          const fechaHora = new Date(`${f.fecha}T${f.hora_inicio}`);
-          // Usamos solo la fecha sin hora para el calendario
-          return new Date(fechaHora.getFullYear(), fechaHora.getMonth(), fechaHora.getDate());
-        });
-        setFechasDisponibles(fechas);
+        const fechasBase = res.data;
+
+        const exRes = await axios.get(`/api/excepciones/${profesionalId}`);
+        const excepciones = exRes.data;
+
+        const canceladas = excepciones
+          .filter(e => e.estado === 'cancelado')
+          .map(e => e.fecha);
+
+        const agregadas = excepciones
+          .filter(e => e.estado === 'manual')
+          .map(e => new Date(e.fecha));
+
+        const fechasFiltradas = fechasBase
+          .filter(f => !canceladas.includes(f.fecha))
+          .map(f => new Date(f.fecha));
+
+        const finalDates = [...fechasFiltradas, ...agregadas];
+
+        const unicas = Array.from(new Set(finalDates.map(d => d.toISOString().split('T')[0])))
+          .map(fechaStr => new Date(fechaStr));
+
+        setFechasDisponibles(unicas);
       } catch (error) {
-        console.error("Error cargando fechas:", error);
+        console.error("Error cargando fechas o excepciones:", error);
       }
     };
     if (profesionalId) fetchFechas();
