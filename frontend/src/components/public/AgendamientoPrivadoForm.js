@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
 
 const AgendamientoPrivadoForm = () => {
   const [formData, setFormData] = useState({
@@ -20,6 +22,8 @@ const AgendamientoPrivadoForm = () => {
   });
 
   const [profesionales, setProfesionales] = useState([]);
+  const [fechasDisponibles, setFechasDisponibles] = useState([]);
+  const [fechaAgendada, setFechaAgendada] = useState(null);
 
   useEffect(() => {
     const fetchProfesionales = async () => {
@@ -41,12 +45,24 @@ const AgendamientoPrivadoForm = () => {
     }));
   };
 
+  const handleProfesionalChange = async (e) => {
+    const profesionalId = e.target.value;
+    setFormData({ ...formData, profesional_id: profesionalId });
+    try {
+      const res = await axios.get(`/api/horarios/fechas/${profesionalId}`);
+      setFechasDisponibles(res.data);
+    } catch (error) {
+      console.error("Error cargando fechas:", error);
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       await axios.post('/api/agendamiento', {
         ...formData,
-        representante_cedula: formData.sinCedula ? formData.cedula : null
+        representante_cedula: formData.sinCedula ? formData.cedula : null,
+        fecha_agendada: fechaAgendada
       });
       alert('Agendamiento exitoso');
     } catch (error) {
@@ -133,7 +149,7 @@ const AgendamientoPrivadoForm = () => {
 
         <div>
           <label>Profesional:</label>
-          <select name="profesional_id" value={formData.profesional_id} onChange={handleChange}>
+          <select name="profesional_id" value={formData.profesional_id} onChange={handleProfesionalChange}>
             <option value="">Selecciona un médico</option>
             {profesionales.map((prof) => (
               <option key={prof.profesional_id} value={prof.profesional_id}>
@@ -142,6 +158,22 @@ const AgendamientoPrivadoForm = () => {
             ))}
           </select>
         </div>
+
+        {formData.profesional_id && (
+          <div>
+            <label>Seleccione fecha y hora disponible:</label>
+            <DatePicker
+              selected={fechaAgendada}
+              onChange={date => setFechaAgendada(date)}
+              showTimeSelect
+              timeFormat="HH:mm"
+              timeIntervals={30}
+              dateFormat="dd/MM/yyyy HH:mm"
+              includeDates={fechasDisponibles.map(fd => new Date(fd))}
+              placeholderText="Seleccione fecha y hora"
+            />
+          </div>
+        )}
 
         <div>
           <label>Observaciones:</label>
