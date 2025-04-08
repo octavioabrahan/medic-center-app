@@ -13,7 +13,7 @@ const CalendarioFechasDisponibles = ({ profesionalId, onFechaSeleccionada }) => 
         const res = await axios.get(`/api/horarios/fechas/${profesionalId}`);
         const fechasBase = res.data;
 
-        const exRes = await axios.get(`/api/excepciones/${profesionalId}`);
+        const exRes = await axios.get(`/api/excepciones/profesional/${profesionalId}`);
         const excepciones = exRes.data;
 
         const canceladas = excepciones
