@@ -22,15 +22,21 @@ const CalendarioFechasDisponibles = ({ profesionalId, onFechaSeleccionada }) => 
 
         const agregadas = excepciones
           .filter(e => e.estado === 'manual')
-          .map(e => new Date(e.fecha));
+          .map(e => {
+            const [year, month, day] = e.fecha.split('-').map(Number);
+            return new Date(year, month - 1, day);
+          });
 
         const fechasFiltradas = fechasBase
           .filter(f => !canceladas.includes(f.fecha))
-          .map(f => new Date(f.fecha));
+          .map(f => {
+            const [year, month, day] = f.fecha.split('-').map(Number);
+            return new Date(year, month - 1, day);
+          });
 
         const finalDates = [...fechasFiltradas, ...agregadas];
 
-        const unicas = Array.from(new Set(finalDates.map(d => d.toISOString().split('T')[0])))
+        const unicas = Array.from(new Set(finalDates.map(d => d.toDateString())))
           .map(fechaStr => new Date(fechaStr));
 
         setFechasDisponibles(unicas);
@@ -38,6 +44,7 @@ const CalendarioFechasDisponibles = ({ profesionalId, onFechaSeleccionada }) => 
         console.error("Error cargando fechas o excepciones:", error);
       }
     };
+
     if (profesionalId) fetchFechas();
   }, [profesionalId]);
 
