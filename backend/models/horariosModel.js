@@ -42,27 +42,71 @@ const HorariosModel = {
   },
 
   listarFechasPorProfesional: async (profesional_id) => {
-    const result = await db.query(
-      `SELECT * FROM horario_medico WHERE profesional_id = $1`,
+    // 1. Obtener horarios base
+    const horariosResult = await db.query(
+      `SELECT dia_semana, hora_inicio, hora_termino, valido_desde, valido_hasta, tipo_atencion_id
+       FROM horario_medico
+       WHERE profesional_id = $1`,
       [profesional_id]
     );
-    let fechas = [];
-    result.rows.forEach((row) => {
+
+    const horarios = horariosResult.rows;
+
+    // 2. Obtener excepciones
+    const excepcionesResult = await db.query(
+      `SELECT fecha, estado, hora_inicio, hora_termino
+       FROM horario_excepciones
+       WHERE profesional_id = $1`,
+      [profesional_id]
+    );
+
+    const excepciones = excepcionesResult.rows;
+
+    const fechasCanceladas = new Set(
+      excepciones
+        .filter(e => e.estado === 'cancelado')
+        .map(e => moment(e.fecha).format("YYYY-MM-DD"))
+    );
+
+    const fechasManuales = excepciones
+      .filter(e => e.estado === 'manual')
+      .map(e => ({
+        fecha: moment(e.fecha).format("YYYY-MM-DD"),
+        hora_inicio: e.hora_inicio,
+        hora_termino: e.hora_termino,
+        tipo_atencion_id: 1 // puedes ajustarlo si tienes más lógica
+      }));
+
+    // 3. Generar fechas desde horario base
+    let fechasDesdeHorario = [];
+
+    horarios.forEach((row) => {
       let fecha = moment(row.valido_desde);
       const hasta = moment(row.valido_hasta);
       while (fecha.isSameOrBefore(hasta)) {
         if (fecha.isoWeekday() === row.dia_semana) {
-          fechas.push({
-            fecha: fecha.format("YYYY-MM-DD"),
-            hora_inicio: row.hora_inicio,
-            hora_termino: row.hora_termino,
-            tipo_atencion_id: row.tipo_atencion_id
-          });
+          const fechaStr = fecha.format("YYYY-MM-DD");
+          if (!fechasCanceladas.has(fechaStr)) {
+            fechasDesdeHorario.push({
+              fecha: fechaStr,
+              hora_inicio: row.hora_inicio,
+              hora_termino: row.hora_termino,
+              tipo_atencion_id: row.tipo_atencion_id
+            });
+          }
         }
         fecha.add(1, 'day');
       }
     });
-    return fechas;
+
+    // 4. Unificar fechas (evitar duplicados por fecha)
+    const todas = [...fechasDesdeHorario, ...fechasManuales];
+    const fechasUnicasMap = new Map();
+    for (const f of todas) {
+      fechasUnicasMap.set(f.fecha, f);
+    }
+
+    return Array.from(fechasUnicasMap.values()).sort((a, b) => a.fecha.localeCompare(b.fecha));
   }
 };
 
