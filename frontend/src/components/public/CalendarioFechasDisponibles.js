@@ -10,28 +10,32 @@ const CalendarioFechasDisponibles = ({ profesionalId, onFechaSeleccionada }) => 
   useEffect(() => {
     const fetchFechas = async () => {
       try {
-        const res = await axios.get(`/api/horarios/fechas/${profesionalId}`);
-        const fechasBase = res.data;
+        const [resHorarios, resExcepciones] = await Promise.all([
+          axios.get(`/api/horarios/fechas/${profesionalId}`),
+          axios.get(`/api/excepciones/profesional/${profesionalId}`)
+        ]);
 
-        const exRes = await axios.get(`/api/excepciones/profesional/${profesionalId}`);
-        const excepciones = exRes.data;
+        const fechasBase = resHorarios.data; // [{ fecha: '2025-04-07' }, ...]
+        const excepciones = resExcepciones.data;
 
-        const canceladas = excepciones
-          .filter(e => e.estado === 'cancelado')
-          .map(e => e.fecha);
+        const canceladas = new Set(
+          excepciones
+            .filter(e => e.estado === 'cancelado')
+            .map(e => e.fecha)
+        );
 
         const agregadas = excepciones
           .filter(e => e.estado === 'manual')
           .map(e => {
-            const [year, month, day] = e.fecha.split('-').map(Number);
-            return new Date(year, month - 1, day);
+            const [y, m, d] = e.fecha.split('-').map(Number);
+            return new Date(y, m - 1, d);
           });
 
         const fechasFiltradas = fechasBase
-          .filter(f => !canceladas.includes(f.fecha))
+          .filter(f => !canceladas.has(f.fecha))
           .map(f => {
-            const [year, month, day] = f.fecha.split('-').map(Number);
-            return new Date(year, month - 1, day);
+            const [y, m, d] = f.fecha.split('-').map(Number);
+            return new Date(y, m - 1, d);
           });
 
         const finalDates = [...fechasFiltradas, ...agregadas];
