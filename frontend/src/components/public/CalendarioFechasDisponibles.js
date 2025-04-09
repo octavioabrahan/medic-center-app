@@ -18,21 +18,24 @@ const CalendarioFechasDisponibles = ({ profesionalId, onFechaSeleccionada }) => 
 
         const canceladas = excepciones
           .filter(e => e.estado === 'cancelado')
-          .map(e => e.fecha);
+          .map(e => {
+            const fecha = new Date(e.fecha);
+            return new Date(fecha.getFullYear(), fecha.getMonth(), fecha.getDate());
+          });
 
         const agregadas = excepciones
           .filter(e => e.estado === 'manual')
           .map(e => {
-            const [year, month, day] = e.fecha.split('-').map(Number);
-            return new Date(year, month - 1, day);
+            const fecha = new Date(e.fecha);
+            return new Date(fecha.getFullYear(), fecha.getMonth(), fecha.getDate());
           });
 
         const fechasFiltradas = fechasBase
-          .filter(f => !canceladas.includes(f.fecha))
           .map(f => {
-            const [year, month, day] = f.fecha.split('-').map(Number);
-            return new Date(year, month - 1, day);
-          });
+            const fecha = new Date(f.fecha);
+            return new Date(fecha.getFullYear(), fecha.getMonth(), fecha.getDate());
+          })
+          .filter(f => !canceladas.some(c => c.getTime() === f.getTime()));
 
         const finalDates = [...fechasFiltradas, ...agregadas];
 
