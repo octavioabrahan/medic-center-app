@@ -7,35 +7,30 @@ const CalendarioFechasDisponibles = ({ profesionalId, onFechaSeleccionada }) => 
   const [fechasDisponibles, setFechasDisponibles] = useState([]);
   const [fechaSeleccionada, setFechaSeleccionada] = useState(null);
 
-  const obtenerDiasDisponibles = (horarios) => {
+  const generarFechasDesdeHorarios = (horarios) => {
     const fechas = [];
-  
+
     horarios.forEach(horario => {
-      const {
-        dia_semana,
-        valido_desde,
-        valido_hasta
-      } = horario;
-  
-      let fechaInicio = new Date(valido_desde);
-      const fechaFin = new Date(valido_hasta);
-  
-      // Normalizar la hora a 00:00 para evitar errores de comparación
-      fechaInicio.setHours(0, 0, 0, 0);
-      fechaFin.setHours(0, 0, 0, 0);
-  
-      while (fechaInicio <= fechaFin) {
-        // En JS, getDay() => 0 = domingo, 1 = lunes, ..., 6 = sábado
-        if (fechaInicio.getDay() === dia_semana) {
-          fechas.push(new Date(fechaInicio)); // clonar la fecha
+      const diaSemana = horario.dia_semana; // 0 domingo ... 6 sábado
+      const desde = new Date(horario.valido_desde);
+      const hasta = new Date(horario.valido_hasta);
+
+      // Normaliza horas
+      desde.setHours(0, 0, 0, 0);
+      hasta.setHours(0, 0, 0, 0);
+
+      let fechaActual = new Date(desde);
+
+      while (fechaActual <= hasta) {
+        if (fechaActual.getDay() === diaSemana) {
+          fechas.push(new Date(fechaActual)); // clona fecha válida
         }
-        fechaInicio.setDate(fechaInicio.getDate() + 1);
+        fechaActual.setDate(fechaActual.getDate() + 1);
       }
     });
-  
+
     return fechas;
   };
-  
 
   useEffect(() => {
     const fetchFechas = async () => {
@@ -45,10 +40,10 @@ const CalendarioFechasDisponibles = ({ profesionalId, onFechaSeleccionada }) => 
           axios.get(`/api/excepciones/profesional/${profesionalId}`)
         ]);
 
-        const fechasBase = obtenerDiasDisponibles(resHorarios.data);
+        const fechasBase = generarFechasDesdeHorarios(resHorarios.data);
         const excepciones = resExcepciones.data;
 
-        const canceladas = new Set(
+        const canceladasSet = new Set(
           excepciones
             .filter(e => e.estado === 'cancelado')
             .map(e => new Date(e.fecha).toDateString())
@@ -57,22 +52,19 @@ const CalendarioFechasDisponibles = ({ profesionalId, onFechaSeleccionada }) => 
         const agregadas = excepciones
           .filter(e => e.estado === 'manual')
           .map(e => {
-            const fecha = new Date(e.fecha);
-            return new Date(fecha.getFullYear(), fecha.getMonth(), fecha.getDate());
+            const f = new Date(e.fecha);
+            return new Date(f.getFullYear(), f.getMonth(), f.getDate());
           });
 
-        // Filtrar las fechas base eliminando las canceladas
-        const fechasFiltradas = fechasBase.filter(
-          f => !canceladas.has(f.toDateString())
+        const filtradas = fechasBase.filter(
+          f => !canceladasSet.has(f.toDateString())
         );
 
-        const todas = [...fechasFiltradas, ...agregadas];
+        const todas = [...filtradas, ...agregadas];
 
-        // Quitar duplicados
-        const unicas = Array.from(new Set(todas.map(d => d.toDateString())))
+        const unicas = Array.from(new Set(todas.map(f => f.toDateString())))
           .map(str => new Date(str));
 
-        // Ordenar por fecha
         unicas.sort((a, b) => a - b);
 
         setFechasDisponibles(unicas);
