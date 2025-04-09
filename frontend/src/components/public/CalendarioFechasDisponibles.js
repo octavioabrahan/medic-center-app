@@ -9,27 +9,33 @@ const CalendarioFechasDisponibles = ({ profesionalId, onFechaSeleccionada }) => 
 
   const obtenerDiasDisponibles = (horarios) => {
     const fechas = [];
-
+  
     horarios.forEach(horario => {
       const {
         dia_semana,
         valido_desde,
         valido_hasta
       } = horario;
-
+  
       let fechaInicio = new Date(valido_desde);
       const fechaFin = new Date(valido_hasta);
-
+  
+      // Normalizar la hora a 00:00 para evitar errores de comparación
+      fechaInicio.setHours(0, 0, 0, 0);
+      fechaFin.setHours(0, 0, 0, 0);
+  
       while (fechaInicio <= fechaFin) {
+        // En JS, getDay() => 0 = domingo, 1 = lunes, ..., 6 = sábado
         if (fechaInicio.getDay() === dia_semana) {
-          fechas.push(new Date(fechaInicio));
+          fechas.push(new Date(fechaInicio)); // clonar la fecha
         }
         fechaInicio.setDate(fechaInicio.getDate() + 1);
       }
     });
-
+  
     return fechas;
   };
+  
 
   useEffect(() => {
     const fetchFechas = async () => {
