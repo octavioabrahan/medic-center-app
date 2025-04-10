@@ -19,10 +19,14 @@ const ProfesionalesModel = {
         p.nombre,
         p.apellido,
         e.nombre AS nombre_especialidad,
-        r.nombre_rol AS nombre_rol
+        r.nombre_rol AS nombre_rol,
+        ARRAY_REMOVE(ARRAY_AGG(s.nombre_servicio), NULL) AS servicios
       FROM profesionales p
       LEFT JOIN especialidades e ON p.especialidad_id = e.especialidad_id
       LEFT JOIN roles r ON p.id_rol = r.id_rol
+      LEFT JOIN profesional_servicio ps ON p.profesional_id = ps.profesional_id
+      LEFT JOIN servicio s ON ps.id_servicio = s.id_servicio
+      GROUP BY p.profesional_id, p.cedula, p.nombre, p.apellido, e.nombre, r.nombre_rol
       ORDER BY p.nombre, p.apellido
     `);
     return result.rows;
