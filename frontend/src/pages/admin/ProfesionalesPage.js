@@ -32,6 +32,7 @@ function ProfesionalesPage() {
             <th>Nombre</th>
             <th>Especialidad</th>
             <th>Rol</th>
+            <th>Categorías</th>
             <th>Servicios</th>
             <th>Acciones</th>
           </tr>
@@ -42,6 +43,7 @@ function ProfesionalesPage() {
               <td>{p.nombre} {p.apellido}</td>
               <td>{p.nombre_especialidad || "-"}</td>
               <td>{p.nombre_rol || "-"}</td>
+              <td>{p.categorias?.length ? p.categorias.join(", ") : "-"}</td>
               <td>{p.servicios?.length ? p.servicios.join(", ") : "-"}</td>
               <td>
                 <Link to={`/admin/profesionales/${p.profesional_id}/editar-servicios`}>
