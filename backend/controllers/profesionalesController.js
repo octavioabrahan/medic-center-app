@@ -1,3 +1,4 @@
+const db = require("../models/db");
 const Model = require("../models/profesionalesModel");
 
 const ProfesionalesController = {
