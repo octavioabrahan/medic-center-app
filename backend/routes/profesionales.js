@@ -4,8 +4,8 @@ const controller = require("../controllers/profesionalesController");
 
 router.post("/", controller.crear);
 router.get("/", controller.listar); // ✅ NUEVO
-router.post("/asignar-categorias", ProfesionalesController.asignarCategorias);
-router.post("/asignar-servicios", ProfesionalesController.asignarServicios);
-router.get("/relaciones/:id", ProfesionalesController.obtenerCategoriasYServicios);
+router.post("/asignar-categorias", controller.asignarCategorias);
+router.post("/asignar-servicios", controller.asignarServicios);
+router.get("/relaciones/:id", controller.obtenerCategoriasYServicios);
 
 module.exports = router;
