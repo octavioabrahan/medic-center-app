@@ -26,7 +26,6 @@ const AgendamientoPrivadoForm = () => {
   const [categorias, setCategorias] = useState([]);
   const [categoriaSeleccionada, setCategoriaSeleccionada] = useState(null);
 
-  const [especialidades, setEspecialidades] = useState([]);
   const [profesionales, setProfesionales] = useState([]);
   const [especialidadSeleccionada, setEspecialidadSeleccionada] = useState('');
   const [profesionalSeleccionado, setProfesionalSeleccionado] = useState('');
@@ -91,74 +90,72 @@ const AgendamientoPrivadoForm = () => {
           </div>
 
           {sinCedula && (
-            <>
-              <fieldset>
-                <legend>Datos del representante legal</legend>
-                <input placeholder="¿Qué número de hijo(a) es este menor?"
-                  value={datosRepresentante.numeroHijo}
-                  onChange={e =>
-                    setDatosRepresentante({ ...datosRepresentante, numeroHijo: e.target.value })
-                  } />
-                <input placeholder="Nombre"
-                  value={datosRepresentante.nombre}
-                  onChange={e =>
-                    setDatosRepresentante({ ...datosRepresentante, nombre: e.target.value })
-                  } />
-                <input placeholder="Apellidos"
-                  value={datosRepresentante.apellido}
-                  onChange={e =>
-                    setDatosRepresentante({ ...datosRepresentante, apellido: e.target.value })
-                  } />
-                <select
-                  value={datosRepresentante.sexo}
-                  onChange={e =>
-                    setDatosRepresentante({ ...datosRepresentante, sexo: e.target.value })
-                  }>
-                  <option value="">Sexo</option>
-                  <option value="F">Femenino</option>
-                  <option value="M">Masculino</option>
-                </select>
-                <input placeholder="Teléfono"
-                  value={datosRepresentante.telefono}
-                  onChange={e =>
-                    setDatosRepresentante({ ...datosRepresentante, telefono: e.target.value })
-                  } />
-                <input placeholder="Correo electrónico"
-                  value={datosRepresentante.email}
-                  onChange={e =>
-                    setDatosRepresentante({ ...datosRepresentante, email: e.target.value })
-                  } />
-              </fieldset>
-
-              <fieldset>
-                <legend>Datos del paciente</legend>
-                <input placeholder="Nombre"
-                  value={datosPaciente.nombre}
-                  onChange={e =>
-                    setDatosPaciente({ ...datosPaciente, nombre: e.target.value })
-                  } />
-                <input placeholder="Apellidos"
-                  value={datosPaciente.apellido}
-                  onChange={e =>
-                    setDatosPaciente({ ...datosPaciente, apellido: e.target.value })
-                  } />
-                <input type="date"
-                  value={datosPaciente.fechaNacimiento}
-                  onChange={e =>
-                    setDatosPaciente({ ...datosPaciente, fechaNacimiento: e.target.value })
-                  } />
-                <select
-                  value={datosPaciente.sexo}
-                  onChange={e =>
-                    setDatosPaciente({ ...datosPaciente, sexo: e.target.value })
-                  }>
-                  <option value="">Sexo</option>
-                  <option value="F">Femenino</option>
-                  <option value="M">Masculino</option>
-                </select>
-              </fieldset>
-            </>
+            <fieldset>
+              <legend>Datos del representante legal</legend>
+              <input placeholder="¿Qué número de hijo(a) es este menor?"
+                value={datosRepresentante.numeroHijo}
+                onChange={e =>
+                  setDatosRepresentante({ ...datosRepresentante, numeroHijo: e.target.value })
+                } />
+              <input placeholder="Nombre"
+                value={datosRepresentante.nombre}
+                onChange={e =>
+                  setDatosRepresentante({ ...datosRepresentante, nombre: e.target.value })
+                } />
+              <input placeholder="Apellidos"
+                value={datosRepresentante.apellido}
+                onChange={e =>
+                  setDatosRepresentante({ ...datosRepresentante, apellido: e.target.value })
+                } />
+              <select
+                value={datosRepresentante.sexo}
+                onChange={e =>
+                  setDatosRepresentante({ ...datosRepresentante, sexo: e.target.value })
+                }>
+                <option value="">Sexo</option>
+                <option value="F">Femenino</option>
+                <option value="M">Masculino</option>
+              </select>
+              <input placeholder="Teléfono"
+                value={datosRepresentante.telefono}
+                onChange={e =>
+                  setDatosRepresentante({ ...datosRepresentante, telefono: e.target.value })
+                } />
+              <input placeholder="Correo electrónico"
+                value={datosRepresentante.email}
+                onChange={e =>
+                  setDatosRepresentante({ ...datosRepresentante, email: e.target.value })
+                } />
+            </fieldset>
           )}
+
+          <fieldset>
+            <legend>Datos del paciente</legend>
+            <input placeholder="Nombre"
+              value={datosPaciente.nombre}
+              onChange={e =>
+                setDatosPaciente({ ...datosPaciente, nombre: e.target.value })
+              } />
+            <input placeholder="Apellidos"
+              value={datosPaciente.apellido}
+              onChange={e =>
+                setDatosPaciente({ ...datosPaciente, apellido: e.target.value })
+              } />
+            <input type="date"
+              value={datosPaciente.fechaNacimiento}
+              onChange={e =>
+                setDatosPaciente({ ...datosPaciente, fechaNacimiento: e.target.value })
+              } />
+            <select
+              value={datosPaciente.sexo}
+              onChange={e =>
+                setDatosPaciente({ ...datosPaciente, sexo: e.target.value })
+              }>
+              <option value="">Sexo</option>
+              <option value="F">Femenino</option>
+              <option value="M">Masculino</option>
+            </select>
+          </fieldset>
 
           <div>
             <label>
