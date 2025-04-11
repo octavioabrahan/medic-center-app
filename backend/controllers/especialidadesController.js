@@ -1,4 +1,5 @@
 const Model = require("../models/especialidadesModel");
+const db = require("../models/db");
 
 const EspecialidadesController = {
   crear: async (req, res) => {

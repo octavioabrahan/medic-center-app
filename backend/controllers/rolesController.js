@@ -1,4 +1,5 @@
 const Model = require("../models/rolesModel");
+const db = require("../models/db");
 
 const RolesController = {
   crear: async (req, res) => {
