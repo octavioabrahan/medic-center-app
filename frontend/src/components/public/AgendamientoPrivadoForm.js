@@ -3,168 +3,248 @@ import axios from 'axios';
 import CalendarioFechasDisponibles from './CalendarioFechasDisponibles';
 
 const AgendamientoPrivadoForm = () => {
-  const [formData, setFormData] = useState({
+  const [step, setStep] = useState(1);
+
+  const [sinCedula, setSinCedula] = useState(false);
+  const [datosRepresentante, setDatosRepresentante] = useState({
     cedula: '',
-    sinCedula: false,
-    numeroHijo: '',
     nombre: '',
     apellido: '',
-    fecha_nacimiento: '',
+    numeroHijo: '',
     sexo: '',
     telefono: '',
     email: '',
-    seguro_medico: false,
-    profesional_id: '',
-    observaciones: '',
-    representante_nombre: '',
-    representante_apellido: ''
   });
+  const [datosPaciente, setDatosPaciente] = useState({
+    nombre: '',
+    apellido: '',
+    fechaNacimiento: '',
+    sexo: '',
+  });
+  const [tieneSeguro, setTieneSeguro] = useState(false);
 
+  const [categorias, setCategorias] = useState([]);
+  const [categoriaSeleccionada, setCategoriaSeleccionada] = useState(null);
+
+  const [especialidades, setEspecialidades] = useState([]);
   const [profesionales, setProfesionales] = useState([]);
-  const [fechaAgendada, setFechaAgendada] = useState(null);
+  const [especialidadSeleccionada, setEspecialidadSeleccionada] = useState('');
+  const [profesionalSeleccionado, setProfesionalSeleccionado] = useState('');
+  const [fechaSeleccionada, setFechaSeleccionada] = useState(null);
 
   useEffect(() => {
-    const fetchProfesionales = async () => {
-      try {
-        const response = await axios.get('/api/profesionales');
-        setProfesionales(response.data);
-      } catch (error) {
-        console.error('Error al cargar profesionales:', error);
-      }
-    };
-    fetchProfesionales();
-  }, []);
-
-  const handleChange = (e) => {
-    const { name, value, type, checked } = e.target;
-    setFormData((prevData) => ({
-      ...prevData,
-      [name]: type === 'checkbox' ? checked : value
-    }));
-  };
-
-  const handleProfesionalChange = (e) => {
-    const profesionalId = e.target.value;
-    setFormData({ ...formData, profesional_id: profesionalId });
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      await axios.post('/api/agendamiento', {
-        ...formData,
-        representante_cedula: formData.sinCedula ? formData.cedula : null,
-        fecha_agendada: fechaAgendada
-      });
-      alert('Agendamiento exitoso');
-    } catch (error) {
-      console.error('Error al agendar:', error);
-      alert('Hubo un error al agendar.');
+    if (step === 2) {
+      axios.get('/api/categorias')
+        .then(res => setCategorias(res.data))
+        .catch(err => console.error('Error cargando categorías:', err));
     }
+  }, [step]);
+
+  useEffect(() => {
+    if (categoriaSeleccionada) {
+      axios.get('/api/profesionales')
+        .then(res => {
+          const filtrados = res.data.filter(p =>
+            p.categorias?.includes(categoriaSeleccionada.nombre_categoria)
+          );
+          setProfesionales(filtrados);
+        })
+        .catch(err => console.error('Error cargando profesionales:', err));
+    }
+  }, [categoriaSeleccionada]);
+
+  const handleSubmitPaso1 = (e) => {
+    e.preventDefault();
+    setStep(2);
+  };
+
+  const handleCategoriaClick = (cat) => {
+    setCategoriaSeleccionada(cat);
+    setEspecialidadSeleccionada('');
+    setProfesionalSeleccionado('');
   };
 
   return (
     <div>
-      <h2>Agendamiento Particular</h2>
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label>Cédula:</label>
-          <input type="text" name="cedula" value={formData.cedula} onChange={handleChange} />
-          <label>
-            <input type="checkbox" name="sinCedula" checked={formData.sinCedula} onChange={handleChange} />
-            La persona que se atenderá no tiene cédula
-          </label>
-        </div>
+      {step === 1 && (
+        <form onSubmit={handleSubmitPaso1}>
+          <h2>Agendamiento Particular</h2>
 
-        {formData.sinCedula && (
-          <fieldset>
-            <legend>Datos del representante legal</legend>
+          <div>
+            <label>Cédula:</label>
+            <input
+              type="text"
+              disabled={sinCedula}
+              value={datosRepresentante.cedula}
+              onChange={e =>
+                setDatosRepresentante({ ...datosRepresentante, cedula: e.target.value })
+              }
+            />
+            <label>
+              <input
+                type="checkbox"
+                checked={sinCedula}
+                onChange={() => setSinCedula(!sinCedula)}
+              />
+              La persona que se atenderá no tiene cédula
+            </label>
+          </div>
+
+          {sinCedula && (
+            <>
+              <fieldset>
+                <legend>Datos del representante legal</legend>
+                <input placeholder="¿Qué número de hijo(a) es este menor?"
+                  value={datosRepresentante.numeroHijo}
+                  onChange={e =>
+                    setDatosRepresentante({ ...datosRepresentante, numeroHijo: e.target.value })
+                  } />
+                <input placeholder="Nombre"
+                  value={datosRepresentante.nombre}
+                  onChange={e =>
+                    setDatosRepresentante({ ...datosRepresentante, nombre: e.target.value })
+                  } />
+                <input placeholder="Apellidos"
+                  value={datosRepresentante.apellido}
+                  onChange={e =>
+                    setDatosRepresentante({ ...datosRepresentante, apellido: e.target.value })
+                  } />
+                <select
+                  value={datosRepresentante.sexo}
+                  onChange={e =>
+                    setDatosRepresentante({ ...datosRepresentante, sexo: e.target.value })
+                  }>
+                  <option value="">Sexo</option>
+                  <option value="F">Femenino</option>
+                  <option value="M">Masculino</option>
+                </select>
+                <input placeholder="Teléfono"
+                  value={datosRepresentante.telefono}
+                  onChange={e =>
+                    setDatosRepresentante({ ...datosRepresentante, telefono: e.target.value })
+                  } />
+                <input placeholder="Correo electrónico"
+                  value={datosRepresentante.email}
+                  onChange={e =>
+                    setDatosRepresentante({ ...datosRepresentante, email: e.target.value })
+                  } />
+              </fieldset>
+
+              <fieldset>
+                <legend>Datos del paciente</legend>
+                <input placeholder="Nombre"
+                  value={datosPaciente.nombre}
+                  onChange={e =>
+                    setDatosPaciente({ ...datosPaciente, nombre: e.target.value })
+                  } />
+                <input placeholder="Apellidos"
+                  value={datosPaciente.apellido}
+                  onChange={e =>
+                    setDatosPaciente({ ...datosPaciente, apellido: e.target.value })
+                  } />
+                <input type="date"
+                  value={datosPaciente.fechaNacimiento}
+                  onChange={e =>
+                    setDatosPaciente({ ...datosPaciente, fechaNacimiento: e.target.value })
+                  } />
+                <select
+                  value={datosPaciente.sexo}
+                  onChange={e =>
+                    setDatosPaciente({ ...datosPaciente, sexo: e.target.value })
+                  }>
+                  <option value="">Sexo</option>
+                  <option value="F">Femenino</option>
+                  <option value="M">Masculino</option>
+                </select>
+              </fieldset>
+            </>
+          )}
+
+          <div>
+            <label>
+              ¿Tiene seguro médico?
+              <input
+                type="checkbox"
+                checked={tieneSeguro}
+                onChange={() => setTieneSeguro(!tieneSeguro)}
+              />
+            </label>
+          </div>
+
+          <button type="submit">Continuar</button>
+        </form>
+      )}
+
+      {step === 2 && (
+        <div>
+          <h2>Selecciona la especialidad, el médico y el día.</h2>
+
+          <div>
+            <h4>Selecciona la categoría de atención</h4>
+            {categorias.map(cat => (
+              <button
+                key={cat.id_categoria}
+                onClick={() => handleCategoriaClick(cat)}
+                style={{
+                  marginRight: '10px',
+                  background: categoriaSeleccionada?.id_categoria === cat.id_categoria ? '#ccc' : '#fff'
+                }}
+              >
+                {cat.nombre_categoria}
+              </button>
+            ))}
+          </div>
+
+          {categoriaSeleccionada && (
             <div>
-              <label>¿Qué número de hijo(a) es este menor?</label>
-              <input type="text" name="numeroHijo" value={formData.numeroHijo} onChange={handleChange} />
-            </div>
-            <div>
-              <label>Nombre:</label>
-              <input type="text" name="representante_nombre" value={formData.representante_nombre} onChange={handleChange} />
-            </div>
-            <div>
-              <label>Apellidos:</label>
-              <input type="text" name="representante_apellido" value={formData.representante_apellido} onChange={handleChange} />
-            </div>
-            <div>
-              <label>Sexo:</label>
-              <select name="sexo" value={formData.sexo} onChange={handleChange}>
-                <option value="">Selecciona</option>
-                <option value="femenino">Femenino</option>
-                <option value="masculino">Masculino</option>
+              <label>Especialidad:</label>
+              <select
+                value={especialidadSeleccionada}
+                onChange={e => setEspecialidadSeleccionada(e.target.value)}
+              >
+                <option value="">Selecciona una opción</option>
+                {[...new Set(profesionales.map(p => p.nombre_especialidad))]
+                  .filter(Boolean)
+                  .map((esp, i) => (
+                    <option key={i} value={esp}>{esp}</option>
+                  ))}
+              </select>
+
+              <label>Profesional:</label>
+              <select
+                value={profesionalSeleccionado}
+                onChange={e => setProfesionalSeleccionado(e.target.value)}
+              >
+                <option value="">Selecciona al profesional</option>
+                {profesionales
+                  .filter(p => !especialidadSeleccionada || p.nombre_especialidad === especialidadSeleccionada)
+                  .map(p => (
+                    <option key={p.profesional_id} value={p.profesional_id}>
+                      {p.nombre} {p.apellido}
+                    </option>
+                  ))}
               </select>
             </div>
+          )}
+
+          {profesionalSeleccionado && (
             <div>
-              <label>Teléfono:</label>
-              <input type="text" name="telefono" value={formData.telefono} onChange={handleChange} />
+              <CalendarioFechasDisponibles
+                profesionalId={profesionalSeleccionado}
+                onFechaSeleccionada={setFechaSeleccionada}
+              />
+
+              {fechaSeleccionada && (
+                <div style={{ marginTop: '20px' }}>
+                  <strong>Fecha seleccionada:</strong> {fechaSeleccionada.toLocaleDateString()}
+                  <br />
+                  <strong>Hora de inicio:</strong> Desde las 08:30 AM
+                </div>
+              )}
             </div>
-            <div>
-              <label>Correo electrónico:</label>
-              <input type="email" name="email" value={formData.email} onChange={handleChange} />
-            </div>
-          </fieldset>
-        )}
-
-        <fieldset>
-          <legend>Datos Paciente</legend>
-          <div>
-            <label>Nombre:</label>
-            <input type="text" name="nombre" value={formData.nombre} onChange={handleChange} />
-          </div>
-          <div>
-            <label>Apellido:</label>
-            <input type="text" name="apellido" value={formData.apellido} onChange={handleChange} />
-          </div>
-          <div>
-            <label>Fecha nacimiento:</label>
-            <input type="date" name="fecha_nacimiento" value={formData.fecha_nacimiento} onChange={handleChange} />
-          </div>
-          <div>
-            <label>Sexo:</label>
-            <select name="sexo" value={formData.sexo} onChange={handleChange}>
-              <option value="">Selecciona</option>
-              <option value="femenino">Femenino</option>
-              <option value="masculino">Masculino</option>
-            </select>
-          </div>
-        </fieldset>
-
-        <div>
-          <label>¿Tiene seguro médico?</label>
-          <input type="checkbox" name="seguro_medico" checked={formData.seguro_medico} onChange={handleChange} />
+          )}
         </div>
-
-        <div>
-          <label>Profesional:</label>
-          <select name="profesional_id" value={formData.profesional_id} onChange={handleProfesionalChange}>
-            <option value="">Selecciona un médico</option>
-            {profesionales.map((prof) => (
-              <option key={prof.profesional_id} value={prof.profesional_id}>
-                {prof.nombre} {prof.apellido}
-              </option>
-            ))}
-          </select>
-        </div>
-
-        {formData.profesional_id && (
-          <CalendarioFechasDisponibles
-            profesionalId={formData.profesional_id}
-            onFechaSeleccionada={setFechaAgendada}
-          />
-        )}
-
-        <div>
-          <label>Observaciones:</label>
-          <input type="text" name="observaciones" value={formData.observaciones} onChange={handleChange} />
-        </div>
-
-        <button type="submit">Agendar</button>
-      </form>
+      )}
     </div>
   );
 };
