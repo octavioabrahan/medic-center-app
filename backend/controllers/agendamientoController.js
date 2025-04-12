@@ -8,44 +8,48 @@ const AgendamientoController = {
     const datos = req.body;
 
     try {
-      // 1. Verificar si el paciente ya existe
+      // Validar existencia del paciente
       const check = await db.query("SELECT * FROM pacientes WHERE cedula = $1", [datos.cedula]);
+
       if (check.rowCount === 0) {
-        await PacientesModel.crear(datos);
+        // Crear paciente nuevo
+        await PacientesModel.crear({
+          cedula: datos.cedula,
+          ...datos.paciente,
+          ...(
+            datos.representante
+              ? {
+                  representante_nombre: datos.representante.nombre,
+                  representante_apellido: datos.representante.apellido,
+                  representante_email: datos.representante.email,
+                  representante_telefono: datos.representante.telefono
+                }
+              : {}
+          )
+        });
       }
 
-      // 2. Crear agendamiento
+      // Crear agendamiento
       await AgendamientoModel.crear(datos);
 
-      // 3. Determinar a quién enviar el correo
-      const email = datos.email;
-      const nombre = datos.nombre || datos.representante_nombre;
-      const fecha = datos.fecha_agendada;
-      const hora = datos.hora_inicio;
+      // Enviar email inmediato
+      const correoDestino = datos.representante?.email || datos.paciente.email;
+      const nombreDestinatario = datos.representante?.nombre || datos.paciente.nombre;
 
-      // 4. Enviar correo de confirmación
-      await enviarCorreo(
-        email,
-        "Confirmación de cita",
-        `<p>Hola ${nombre}, tu cita ha sido agendada para el <strong>${fecha}</strong> a las <strong>${hora}</strong>.</p>
-         <p>La atención será por orden de llegada según el horario del profesional.</p>`
-      );
+      const mensaje = `
+        <h2>¡Hola, ${nombreDestinatario}!</h2>
+        <p>Tu cita fue registrada con éxito:</p>
+        <ul>
+          <li><strong>Profesional:</strong> ${datos.detalle}</li>
+          <li><strong>Fecha:</strong> ${datos.fecha}</li>
+          <li><strong>Hora:</strong> ${datos.hora_inicio || 'por confirmar'}</li>
+        </ul>
+        <p>Gracias por confiar en nosotros.</p>
+      `;
 
-      // 5. Programar correo de recordatorio si la cita es con más de 24h de anticipación
-      const fechaHoraCita = new Date(`${fecha}T${hora}`);
-      const ahora = new Date();
-      const diferencia = fechaHoraCita - ahora;
-      const ms24h = 24 * 60 * 60 * 1000;
+      await enviarCorreo(correoDestino, "Confirmación de cita - Centro Médico", mensaje);
 
-      if (diferencia > ms24h) {
-        setTimeout(() => {
-          enviarCorreo(
-            email,
-            "Recordatorio de cita - Diagnocentro",
-            `<p>Hola ${nombre}, te recordamos que mañana tienes una cita agendada a las <strong>${hora}</strong>.</p>`
-          );
-        }, diferencia - ms24h);
-      }
+      // TODO: programar recordatorio 24 horas antes si aplica
 
       res.status(201).json({ mensaje: "Agendamiento registrado correctamente" });
     } catch (err) {
