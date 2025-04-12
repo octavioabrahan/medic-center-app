@@ -37,16 +37,15 @@ const AgendamientoModel = {
     const valores = [];
     const todosLosEstados = ['pendiente', 'confirmada', 'cancelada'];
   
-    if (typeof status === "string") {
-      if (status.trim() === "") {
-        // Si es "Todos", incluir todos los estados conocidos
-        valores.push(...todosLosEstados);
-        condiciones.push(`a.status IN (${todosLosEstados.map((_, i) => `$${valores.length - todosLosEstados.length + i + 1}`).join(', ')})`);
-      } else {
-        valores.push(status);
-        condiciones.push(`a.status = $${valores.length}`);
+    if (status) {
+      const estados = status.split(",").map(s => s.trim()).filter(Boolean);
+    
+      if (estados.length > 0) {
+        const placeholders = estados.map((_, i) => `$${valores.length + i + 1}`);
+        condiciones.push(`a.status IN (${placeholders.join(", ")})`);
+        valores.push(...estados);
       }
-    }
+    }    
   
     if (desde) {
       valores.push(desde);

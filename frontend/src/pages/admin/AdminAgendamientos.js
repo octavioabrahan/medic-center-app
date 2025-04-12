@@ -1,14 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 
-const estados = ["pendiente", "confirmada", "cancelada"];
+const TODOS_LOS_ESTADOS = ["pendiente", "confirmada", "cancelada"];
 
 const AdminAgendamientos = () => {
   const [agendamientos, setAgendamientos] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchParams, setSearchParams] = useSearchParams();
 
-  // ⚠️ Extraemos los valores de forma segura
   const status = searchParams.get("status")?.trim() || null;
   const desde = searchParams.get("desde") || null;
   const hasta = searchParams.get("hasta") || null;
@@ -33,7 +32,7 @@ const AdminAgendamientos = () => {
     };
 
     fetchAgendamientos();
-  }, [status, desde, hasta]); // ✅ ahora sí se actualiza correctamente
+  }, [status, desde, hasta]);
 
   const actualizarEstado = async (id, nuevoEstado) => {
     const confirmar = window.confirm(`¿Confirmar cambio a "${nuevoEstado}"?`);
@@ -59,7 +58,8 @@ const AdminAgendamientos = () => {
     const newParams = new URLSearchParams(searchParams);
 
     if (e.target.name === "status" && e.target.value === "") {
-      newParams.delete("status");
+      // Filtro "Todos" → enviar todos los estados como lista
+      newParams.set("status", TODOS_LOS_ESTADOS.join(","));
     } else {
       newParams.set(e.target.name, e.target.value);
     }
@@ -77,7 +77,7 @@ const AdminAgendamientos = () => {
           Estado:
           <select name="status" value={status || ""} onChange={handleFiltro}>
             <option value="">Todos</option>
-            {estados.map((s) => (
+            {TODOS_LOS_ESTADOS.map((s) => (
               <option key={s} value={s}>
                 {s}
               </option>
