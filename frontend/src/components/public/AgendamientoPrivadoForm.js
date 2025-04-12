@@ -15,7 +15,6 @@ const AgendamientoPrivadoForm = () => {
   const [tieneSeguro, setTieneSeguro] = useState(false);
 
   const [modoSeleccion, setModoSeleccion] = useState(null); // "consulta" o "estudio"
-  const [categorias, setCategorias] = useState([]);
   const [servicios, setServicios] = useState([]);
   const [profesionales, setProfesionales] = useState([]);
 
@@ -26,7 +25,6 @@ const AgendamientoPrivadoForm = () => {
 
   useEffect(() => {
     if (step === 2) {
-      axios.get('/api/categorias').then(res => setCategorias(res.data)).catch(console.error);
       axios.get('/api/servicios').then(res => setServicios(res.data)).catch(console.error);
       axios.get('/api/profesionales').then(res => setProfesionales(res.data)).catch(console.error);
     }
@@ -160,8 +158,12 @@ const AgendamientoPrivadoForm = () => {
 
               {fechaSeleccionada && (
                 <div style={{ marginTop: '20px' }}>
-                  <strong>Fecha seleccionada:</strong> {fechaSeleccionada.fecha.toLocaleDateString()}<br />
-                  <strong>Hora de inicio:</strong> Desde las {fechaSeleccionada.hora_inicio?.slice(0, 5)} hrs
+                  <strong>Fecha seleccionada:</strong>{' '}
+                  {(fechaSeleccionada.fecha ?? fechaSeleccionada).toLocaleDateString()}<br />
+                  <strong>Hora de inicio:</strong>{' '}
+                  {fechaSeleccionada.hora_inicio
+                    ? `Desde las ${fechaSeleccionada.hora_inicio.slice(0, 5)} hrs`
+                    : 'No disponible'}
                 </div>
               )}
             </div>
