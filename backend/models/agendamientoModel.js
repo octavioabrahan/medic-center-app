@@ -39,7 +39,7 @@ const AgendamientoModel = {
     if (status) {
       valores.push(status);
       condiciones.push(`a.status = $${valores.length}`);
-    }
+    }    
 
     if (desde) {
       valores.push(desde);
