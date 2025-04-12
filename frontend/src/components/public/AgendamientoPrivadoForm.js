@@ -59,10 +59,18 @@ const AgendamientoPrivadoForm = () => {
   };
 
   const handleCheckCedula = () => {
-    setSinCedula(!sinCedula);
-    if (!sinCedula) {
-      setDatosRepresentante(prev => ({ ...prev, nombre: '', apellido: '', numeroHijo: '', sexo: '', telefono: '', email: '' }));
-      setDatosPaciente(prev => ({ ...prev, telefono: '', email: '' }));
+    const nuevaCondicion = !sinCedula;
+    setSinCedula(nuevaCondicion);
+
+    if (nuevaCondicion) {
+      setDatosRepresentante(prev => ({
+        ...prev,
+        nombre: '', apellido: '', numeroHijo: '', sexo: '', telefono: '', email: ''
+      }));
+      setDatosPaciente(prev => ({
+        ...prev,
+        telefono: '', email: ''
+      }));
     }
   };
 
