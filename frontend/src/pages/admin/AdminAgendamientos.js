@@ -20,7 +20,7 @@ const AdminAgendamientos = () => {
         if (desde) params.append("desde", desde);
         if (hasta) params.append("hasta", hasta);
 
-        const res = await fetch(`/api/agendamientos?${params.toString()}`);
+        const res = await fetch(`${process.env.REACT_APP_API_URL}/api/agendamientos?${params.toString()}`);
         const data = await res.json();
         setAgendamientos(data);
       } catch (err) {
@@ -38,11 +38,11 @@ const AdminAgendamientos = () => {
     if (!confirmar) return;
 
     try {
-      await fetch(`/api/agendamientos/${id}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ status: nuevoEstado }),
-      });
+        await fetch(`${process.env.REACT_APP_API_URL}/api/agendamientos/${id}`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ status: nuevoEstado }),
+          });          
       // Refrescar
       setAgendamientos((prev) =>
         prev.map((a) =>
