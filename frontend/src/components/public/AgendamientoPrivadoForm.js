@@ -45,6 +45,17 @@ const AgendamientoPrivadoForm = () => {
     modoSeleccion === 'estudio' ? p.categorias?.includes('Estudio') : false
   );
 
+  const fechaMostrada = () => {
+    const f = fechaSeleccionada?.fecha ?? fechaSeleccionada;
+    if (!f || isNaN(new Date(f).getTime())) return '';
+    return new Date(f).toLocaleDateString();
+  };
+
+  const horaMostrada = () => {
+    if (!fechaSeleccionada || !fechaSeleccionada.hora_inicio) return 'No disponible';
+    return `Desde las ${fechaSeleccionada.hora_inicio.slice(0, 5)} hrs`;
+  };
+
   return (
     <div>
       {step === 1 && (
@@ -158,12 +169,8 @@ const AgendamientoPrivadoForm = () => {
 
               {fechaSeleccionada && (
                 <div style={{ marginTop: '20px' }}>
-                  <strong>Fecha seleccionada:</strong>{' '}
-                  {(fechaSeleccionada.fecha ?? fechaSeleccionada).toLocaleDateString()}<br />
-                  <strong>Hora de inicio:</strong>{' '}
-                  {fechaSeleccionada.hora_inicio && typeof fechaSeleccionada.hora_inicio === 'string'
-                    ? `Desde las ${fechaSeleccionada.hora_inicio.slice(0, 5)} hrs`
-                    : 'No disponible'}
+                  <strong>Fecha seleccionada:</strong> {fechaMostrada()}<br />
+                  <strong>Hora de inicio:</strong> {horaMostrada()}
                 </div>
               )}
             </div>
