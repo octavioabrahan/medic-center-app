@@ -87,15 +87,56 @@ const AgendamientoModel = {
     return result.rows;
   },
 
-  actualizarEstado: async (id, nuevoEstado) => {
+  actualizarEstado: async (id, nuevoEstado, cambiadoPor = "sistema") => {
+    const client = await db.connect();
+  
+    try {
+      await client.query("BEGIN");
+  
+      // Obtener estado actual
+      const current = await client.query(
+        `SELECT status FROM agendamiento WHERE agendamiento_id = $1`,
+        [id]
+      );
+      const estadoAnterior = current.rows[0]?.status;
+  
+      // Si no existe, abortar
+      if (!estadoAnterior) {
+        throw new Error("Agendamiento no encontrado");
+      }
+  
+      // Actualizar estado
+      await client.query(
+        `UPDATE agendamiento SET status = $1 WHERE agendamiento_id = $2`,
+        [nuevoEstado, id]
+      );
+  
+      // Registrar historial
+      await client.query(
+        `INSERT INTO agendamiento_historial (agendamiento_id, estado_anterior, estado_nuevo, cambiado_por)
+         VALUES ($1, $2, $3, $4)`,
+        [id, estadoAnterior, nuevoEstado, cambiadoPor]
+      );
+  
+      await client.query("COMMIT");
+      return nuevoEstado;
+    } catch (err) {
+      await client.query("ROLLBACK");
+      throw err;
+    } finally {
+      client.release();
+    }
+  },
+
+  listarHistorial: async (agendamientoId) => {
     const query = `
-      UPDATE agendamiento 
-      SET status = $1 
-      WHERE agendamiento_id = $2 
-      RETURNING status
+      SELECT historial_id, estado_anterior, estado_nuevo, cambiado_por, fecha_cambio
+      FROM agendamiento_historial
+      WHERE agendamiento_id = $1
+      ORDER BY fecha_cambio DESC
     `;
-    const result = await db.query(query, [nuevoEstado, id]);
-    return result.rows[0]?.status;
+    const result = await db.query(query, [agendamientoId]);
+    return result.rows;
   }
 };
 

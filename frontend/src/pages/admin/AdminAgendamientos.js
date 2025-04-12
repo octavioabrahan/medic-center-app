@@ -8,9 +8,9 @@ const AdminAgendamientos = () => {
   const [loading, setLoading] = useState(true);
   const [searchParams, setSearchParams] = useSearchParams();
 
+  // Valor por defecto si no hay status en la URL
   const status =
-  searchParams.get("status")?.trim() ||
-  TODOS_LOS_ESTADOS.join(","); // valor por defecto
+    searchParams.get("status")?.trim() || TODOS_LOS_ESTADOS.join(",");
   const desde = searchParams.get("desde") || null;
   const hasta = searchParams.get("hasta") || null;
 
@@ -37,7 +37,9 @@ const AdminAgendamientos = () => {
   }, [status, desde, hasta]);
 
   const actualizarEstado = async (id, nuevoEstado) => {
-    const confirmar = window.confirm(`¿Confirmar cambio a "${nuevoEstado}"?`);
+    const confirmar = window.confirm(
+      `¿Confirmar cambio de estado a "${nuevoEstado}"?`
+    );
     if (!confirmar) return;
 
     try {
@@ -60,7 +62,6 @@ const AdminAgendamientos = () => {
     const newParams = new URLSearchParams(searchParams);
 
     if (e.target.name === "status" && e.target.value === "") {
-      // Filtro "Todos" → enviar todos los estados como lista
       newParams.set("status", TODOS_LOS_ESTADOS.join(","));
     } else {
       newParams.set(e.target.name, e.target.value);
@@ -156,6 +157,15 @@ const AdminAgendamientos = () => {
                         Cancelar
                       </button>
                     </>
+                  )}
+                  {a.status === "cancelada" && (
+                    <button
+                      onClick={() =>
+                        actualizarEstado(a.agendamiento_id, "pendiente")
+                      }
+                    >
+                      Volver a activar
+                    </button>
                   )}
                 </td>
               </tr>

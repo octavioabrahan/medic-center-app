@@ -103,13 +103,23 @@ const AgendamientoController = {
     }
     
     try {
-      const actualizado = await AgendamientoModel.actualizarEstado(id, status);
+      const cambiadoPor = "sistema"; // más adelante, se puede usar req.user.nombre
+      const actualizado = await model.actualizarEstado(id, status, cambiadoPor);
       res.json({ status: actualizado });
     } catch (error) {
       console.error("Error al actualizar estado:", error);
       res.status(500).json({ error: "Error al actualizar el estado" });
     }
   }
+  exports.obtenerHistorial = async (req, res) => {
+    const { id } = req.params;
+    try {
+      const historial = await model.listarHistorial(id);
+      res.json(historial);
+    } catch (error) {
+      res.status(500).json({ error: "Error al obtener historial" });
+    }
+  },
 };
 
 module.exports = AgendamientoController;
