@@ -16,7 +16,7 @@ const AdminAgendamientos = () => {
     const fetchAgendamientos = async () => {
       try {
         const params = new URLSearchParams();
-        if (status) params.append("status", status);
+        if (status && status !== "") params.append("status", status);
         if (desde) params.append("desde", desde);
         if (hasta) params.append("hasta", hasta);
 
@@ -106,6 +106,8 @@ const AdminAgendamientos = () => {
           <thead>
             <tr>
               <th>Paciente</th>
+              <th>Email</th>
+              <th>Teléfono</th>
               <th>Profesional</th>
               <th>Fecha</th>
               <th>Tipo Atención</th>
@@ -119,6 +121,8 @@ const AdminAgendamientos = () => {
                 <td>
                   {a.paciente_nombre} {a.paciente_apellido}
                 </td>
+                <td>{a.paciente_email || "-"}</td>
+                <td>{a.paciente_telefono || "-"}</td>
                 <td>
                   {a.profesional_nombre} {a.profesional_apellido}
                 </td>
