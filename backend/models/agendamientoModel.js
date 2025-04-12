@@ -68,9 +68,9 @@ const AgendamientoModel = {
         pr.apellido AS profesional_apellido,
         ta.nombre AS tipo_atencion
       FROM agendamiento a
-      JOIN pacientes p ON a.cedula = p.cedula
-      JOIN profesionales pr ON a.profesional_id = pr.profesional_id
-      JOIN tipo_atencion ta ON a.tipo_atencion_id = ta.tipo_atencion_id
+      LEFT JOIN pacientes p ON a.cedula = p.cedula
+      LEFT JOIN profesionales pr ON a.profesional_id = pr.profesional_id
+      LEFT JOIN tipo_atencion ta ON a.tipo_atencion_id = ta.tipo_atencion_id
       ${where}
       ORDER BY a.fecha_agendada DESC
     `;
