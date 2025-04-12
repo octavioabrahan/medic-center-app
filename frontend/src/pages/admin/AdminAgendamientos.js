@@ -20,7 +20,9 @@ const AdminAgendamientos = () => {
         if (desde) params.append("desde", desde);
         if (hasta) params.append("hasta", hasta);
 
-        const res = await fetch(`${process.env.REACT_APP_API_URL}/api/agendamiento?${params.toString()}`);
+        const res = await fetch(
+          `${process.env.REACT_APP_API_URL}/api/agendamientos?${params.toString()}`
+        );
         const data = await res.json();
         setAgendamientos(data);
       } catch (err) {
@@ -38,12 +40,11 @@ const AdminAgendamientos = () => {
     if (!confirmar) return;
 
     try {
-        await fetch(`${process.env.REACT_APP_API_URL}/api/agendamiento/${id}`, {
-            method: "PUT",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ status: nuevoEstado }),
-          });          
-      // Refrescar
+      await fetch(`${process.env.REACT_APP_API_URL}/api/agendamientos/${id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ status: nuevoEstado }),
+      });
       setAgendamientos((prev) =>
         prev.map((a) =>
           a.agendamiento_id === id ? { ...a, status: nuevoEstado } : a
@@ -121,7 +122,7 @@ const AdminAgendamientos = () => {
                 <td>
                   {a.profesional_nombre} {a.profesional_apellido}
                 </td>
-                <td>{a.fecha_agendada}</td>
+                <td>{a.fecha_agendada?.split("T")[0]}</td>
                 <td>{a.tipo_atencion}</td>
                 <td>{a.status}</td>
                 <td>
