@@ -14,14 +14,14 @@ const AgendamientoPrivadoForm = () => {
   });
   const [tieneSeguro, setTieneSeguro] = useState(false);
 
-  const [modoSeleccion, setModoSeleccion] = useState(null); // "consulta" o "estudio"
+  const [modoSeleccion, setModoSeleccion] = useState(null);
   const [servicios, setServicios] = useState([]);
   const [profesionales, setProfesionales] = useState([]);
 
   const [especialidadSeleccionada, setEspecialidadSeleccionada] = useState('');
   const [servicioSeleccionado, setServicioSeleccionado] = useState('');
   const [profesionalSeleccionado, setProfesionalSeleccionado] = useState('');
-  const [fechaSeleccionada, setFechaSeleccionada] = useState(null); // { fecha: Date, hora_inicio: '08:30:00' }
+  const [fechaSeleccionada, setFechaSeleccionada] = useState(null);
 
   useEffect(() => {
     if (step === 2) {
@@ -39,6 +39,8 @@ const AgendamientoPrivadoForm = () => {
     setFechaSeleccionada(null);
   };
   const volverPaso1 = () => { setStep(1); setModoSeleccion(null); setProfesionalSeleccionado(''); };
+  const volverPaso2 = () => { setStep(2); };
+  const continuarPaso3 = () => { setStep(3); };
 
   const profesionalesFiltrados = profesionales.filter(p =>
     modoSeleccion === 'consulta' ? p.categorias?.includes('Consulta') :
@@ -170,11 +172,45 @@ const AgendamientoPrivadoForm = () => {
               {fechaSeleccionada && (
                 <div style={{ marginTop: '20px' }}>
                   <strong>Fecha seleccionada:</strong> {fechaMostrada()}<br />
-                  <strong>Hora de inicio:</strong> {horaMostrada()}
+                  <strong>Hora de inicio:</strong> {horaMostrada()}<br />
+                  <button onClick={continuarPaso3}>Continuar</button>
                 </div>
               )}
             </div>
           )}
+        </div>
+      )}
+
+      {step === 3 && (
+        <div>
+          <button onClick={volverPaso2}>← Volver al paso anterior</button>
+          <h2>Revisa y confirma tu solicitud</h2>
+          <p>Antes de enviar tu solicitud, revisa que toda la información esté correcta. Si necesitas corregir algo, puedes volver al paso anterior.</p>
+
+          <div>
+            <strong>Información de su cita</strong>
+            <p>Profesional: {profesionales.find(p => p.profesional_id === profesionalSeleccionado)?.nombre} {profesionales.find(p => p.profesional_id === profesionalSeleccionado)?.apellido}</p>
+            <p>Fecha: {fechaMostrada()}</p>
+            <p>Hora: {horaMostrada()}</p>
+          </div>
+
+          <div>
+            <strong>Información personal</strong>
+            {sinCedula && (
+              <div>
+                <p>Representante: {datosRepresentante.nombre} {datosRepresentante.apellido}</p>
+                <p>Teléfono: {datosRepresentante.telefono}</p>
+                <p>Correo: {datosRepresentante.email}</p>
+              </div>
+            )}
+            <div>
+              <p>Paciente: {datosPaciente.nombre} {datosPaciente.apellido}</p>
+              <p>Fecha nacimiento: {datosPaciente.fechaNacimiento}</p>
+              <p>Sexo: {datosPaciente.sexo === 'F' ? 'Femenino' : datosPaciente.sexo === 'M' ? 'Masculino' : '-'}</p>
+            </div>
+          </div>
+
+          <button>Enviar solicitud</button>
         </div>
       )}
     </div>
