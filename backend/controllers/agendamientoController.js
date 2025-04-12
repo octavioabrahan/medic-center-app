@@ -5,56 +5,65 @@ const { enviarCorreo } = require("../utils/mailer");
 
 const AgendamientoController = {
   crear: async (req, res) => {
-    const datos = req.body;
-
     try {
-      const check = await db.query("SELECT * FROM pacientes WHERE cedula = $1", [datos.cedula]);
+      const {
+        cedula,
+        paciente,
+        profesional_id,
+        fecha_agendada,
+        tipo_atencion,
+        detalle,
+        hora_inicio
+      } = req.body;
+
+      if (!paciente || !paciente.nombre || !paciente.apellido || !paciente.fecha_nacimiento || !paciente.sexo) {
+        return res.status(400).json({ error: "Faltan datos obligatorios del paciente." });
+      }
+
+      const cedulaPaciente = paciente.representante_cedula
+        ? paciente.representante_cedula
+        : cedula;
+
+      const check = await db.query("SELECT * FROM pacientes WHERE cedula = $1", [cedulaPaciente]);
 
       if (check.rowCount === 0) {
-        await PacientesModel.crear(datos);
+        await PacientesModel.crear({
+          cedula: cedulaPaciente,
+          nombre: paciente.nombre,
+          apellido: paciente.apellido,
+          fecha_nacimiento: paciente.fecha_nacimiento,
+          sexo: paciente.sexo,
+          telefono: paciente.telefono || null,
+          email: paciente.email || null,
+          seguro_medico: paciente.seguro_medico || false,
+          representante_cedula: paciente.representante_cedula || null,
+          representante_nombre: paciente.representante_nombre || null,
+          representante_apellido: paciente.representante_apellido || null
+        });
       }
 
-      const agendamiento = await AgendamientoModel.crear(datos);
-
-      // Enviar correo de confirmación inmediato
-      const emailDestino = datos.email || datos.representante_email;
-      const nombreDestino = datos.nombre;
-      const fechaCita = new Date(datos.fecha_agendada).toLocaleDateString("es-CL");
-      const mensajeHtml = `
-        <h2>Confirmación de Cita</h2>
-        <p>Hola ${nombreDestino}, tu cita ha sido agendada para el día <strong>${fechaCita}</strong>.</p>
-        <p>Gracias por confiar en nuestro centro médico.</p>
-      `;
+      await AgendamientoModel.crear({
+        cedula: cedulaPaciente,
+        fecha_agendada,
+        convenio: false,
+        profesional_id,
+        tipo_atencion_id: 1,
+        observaciones: detalle,
+        hora_inicio
+      });
 
       await enviarCorreo(
-        emailDestino,
-        "Confirmación de cita",
-        mensajeHtml
+        paciente.email || '',
+        "Confirmación de cita agendada",
+        `
+          <h3>Tu cita fue registrada correctamente</h3>
+          <p><strong>Paciente:</strong> ${paciente.nombre} ${paciente.apellido}</p>
+          <p><strong>Fecha:</strong> ${fecha_agendada}</p>
+          <p><strong>Hora:</strong> ${hora_inicio || 'No especificada'}</p>
+        `
       );
 
-      // Agendar recordatorio si la cita es en más de 24h
-      const fechaCitaTimestamp = new Date(datos.fecha_agendada).getTime();
-      const ahora = Date.now();
-      const diffHoras = (fechaCitaTimestamp - ahora) / (1000 * 60 * 60);
-
-      if (diffHoras >= 24) {
-        const jobTime = new Date(fechaCitaTimestamp - 24 * 60 * 60 * 1000); // 24h antes
-        const jobTimeISOString = jobTime.toISOString();
-
-        await db.query(
-          `INSERT INTO jobs_email (cedula, fecha_envio, asunto, cuerpo)
-           VALUES ($1, $2, $3, $4)`,
-          [
-            datos.cedula,
-            jobTimeISOString,
-            "Recordatorio de cita",
-            `Hola ${nombreDestino}, te recordamos que tienes una cita médica agendada para el día ${fechaCita}.`
-          ]
-        );
-      }
-
       res.status(201).json({ mensaje: "Agendamiento registrado correctamente" });
-
     } catch (err) {
       console.error("Error al crear agendamiento:", err);
       res.status(500).json({ error: "Error al crear agendamiento" });
