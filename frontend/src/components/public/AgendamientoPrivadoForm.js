@@ -77,6 +77,7 @@ const AgendamientoPrivadoForm = () => {
       representante_cedula: sinCedula ? datosRepresentante.cedula : null,
       representante_nombre: sinCedula ? datosRepresentante.nombre : null,
       representante_apellido: sinCedula ? datosRepresentante.apellido : null,
+      representante_sexo: sinCedula ? datosRepresentante.sexo.toUpperCase() : null,
       fecha_agendada: fechaSeleccionada?.fecha || fechaSeleccionada,
       profesional_id: profesionalSeleccionado,
       tipo_atencion_id: 1,
