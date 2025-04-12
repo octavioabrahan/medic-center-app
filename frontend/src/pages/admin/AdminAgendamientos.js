@@ -57,7 +57,13 @@ const AdminAgendamientos = () => {
 
   const handleFiltro = (e) => {
     const newParams = new URLSearchParams(searchParams);
-    newParams.set(e.target.name, e.target.value);
+  
+    if (e.target.name === "status" && e.target.value === "") {
+      newParams.delete("status"); // ← elimina por completo el filtro
+    } else {
+      newParams.set(e.target.name, e.target.value);
+    }
+  
     setSearchParams(newParams);
   };
 
