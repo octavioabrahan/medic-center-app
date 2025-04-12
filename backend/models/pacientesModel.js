@@ -37,7 +37,7 @@ const PacientesModel = {
       nombre,
       apellido,
       fecha_nacimiento,
-      sexo === 'femenino' ? 'F' : sexo === 'masculino' ? 'M' : null,
+      sexo ? sexo.toULowerCase() : null,
       telefono,
       email,
       seguro_medico,
