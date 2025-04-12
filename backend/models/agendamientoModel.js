@@ -36,7 +36,7 @@ const AgendamientoModel = {
     const condiciones = [];
     const valores = [];
   
-    if (status && status !== "") {
+    if (typeof status === "string" && status.trim() !== "") {
       valores.push(status);
       condiciones.push(`a.status = $${valores.length}`);
     }
