@@ -8,24 +8,19 @@ const AdminAgendamientos = () => {
   const [loading, setLoading] = useState(true);
   const [searchParams, setSearchParams] = useSearchParams();
 
-  const status = searchParams.get("status") || "";
-  const desde = searchParams.get("desde") || "";
-  const hasta = searchParams.get("hasta") || "";
+  // ⚠️ Extraemos los valores de forma segura
+  const status = searchParams.get("status")?.trim() || null;
+  const desde = searchParams.get("desde") || null;
+  const hasta = searchParams.get("hasta") || null;
 
   useEffect(() => {
     const fetchAgendamientos = async () => {
       try {
         const params = new URLSearchParams();
-        // IMPORTANTE: construir los params correctamente
-        if (searchParams.get("status")?.trim()) {
-          params.append("status", searchParams.get("status"));
-        }
-        if (searchParams.get("desde")) {
-          params.append("desde", searchParams.get("desde"));
-        }
-        if (searchParams.get("hasta")) {
-          params.append("hasta", searchParams.get("hasta"));
-        }
+        if (status) params.append("status", status);
+        if (desde) params.append("desde", desde);
+        if (hasta) params.append("hasta", hasta);
+
         const url = `${process.env.REACT_APP_API_URL}/api/agendamiento?${params.toString()}`;
         const res = await fetch(url);
         const data = await res.json();
@@ -36,8 +31,9 @@ const AdminAgendamientos = () => {
         setLoading(false);
       }
     };
+
     fetchAgendamientos();
-  }, [searchParams.toString()]); // 👈 clave: forzar efecto cuando cambia el string de los filtros
+  }, [status, desde, hasta]); // ✅ ahora sí se actualiza correctamente
 
   const actualizarEstado = async (id, nuevoEstado) => {
     const confirmar = window.confirm(`¿Confirmar cambio a "${nuevoEstado}"?`);
@@ -61,13 +57,13 @@ const AdminAgendamientos = () => {
 
   const handleFiltro = (e) => {
     const newParams = new URLSearchParams(searchParams);
-  
+
     if (e.target.name === "status" && e.target.value === "") {
-      newParams.delete("status"); // ← elimina por completo el filtro
+      newParams.delete("status");
     } else {
       newParams.set(e.target.name, e.target.value);
     }
-  
+
     setSearchParams(newParams);
   };
 
@@ -79,7 +75,7 @@ const AdminAgendamientos = () => {
       <div style={{ margin: "1rem 0" }}>
         <label>
           Estado:
-          <select name="status" value={status} onChange={handleFiltro}>
+          <select name="status" value={status || ""} onChange={handleFiltro}>
             <option value="">Todos</option>
             {estados.map((s) => (
               <option key={s} value={s}>
@@ -93,7 +89,7 @@ const AdminAgendamientos = () => {
           <input
             type="date"
             name="desde"
-            value={desde}
+            value={desde || ""}
             onChange={handleFiltro}
           />
         </label>
@@ -102,7 +98,7 @@ const AdminAgendamientos = () => {
           <input
             type="date"
             name="hasta"
-            value={hasta}
+            value={hasta || ""}
             onChange={handleFiltro}
           />
         </label>
