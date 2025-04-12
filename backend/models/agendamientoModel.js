@@ -35,24 +35,24 @@ const AgendamientoModel = {
   listar: async ({ status, desde, hasta }) => {
     const condiciones = [];
     const valores = [];
-
-    if (status) {
+  
+    if (status && status !== "") {
       valores.push(status);
       condiciones.push(`a.status = $${valores.length}`);
-    }    
-
+    }
+  
     if (desde) {
       valores.push(desde);
       condiciones.push(`a.fecha_agendada >= $${valores.length}`);
     }
-
+  
     if (hasta) {
       valores.push(hasta);
       condiciones.push(`a.fecha_agendada <= $${valores.length}`);
     }
-
+  
     const where = condiciones.length ? `WHERE ${condiciones.join(" AND ")}` : "";
-
+  
     const query = `
       SELECT 
         a.agendamiento_id,
@@ -64,6 +64,8 @@ const AgendamientoModel = {
         a.tipo_atencion_id,
         p.nombre AS paciente_nombre,
         p.apellido AS paciente_apellido,
+        p.email AS paciente_email,
+        p.telefono AS paciente_telefono,
         pr.nombre AS profesional_nombre,
         pr.apellido AS profesional_apellido,
         ta.nombre AS tipo_atencion
