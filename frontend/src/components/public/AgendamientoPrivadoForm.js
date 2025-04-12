@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import CalendarioFechasDisponibles from './CalendarioFechasDisponibles';
+import { useNavigate } from 'react-router-dom';
 
 const AgendamientoPrivadoForm = () => {
-  const [step, setStep] = useState(1);
+  const navigate = useNavigate();
 
+  const [step, setStep] = useState(1);
   const [sinCedula, setSinCedula] = useState(false);
+
   const [datosRepresentante, setDatosRepresentante] = useState({
     cedula: '', nombre: '', apellido: '', numeroHijo: '', sexo: '', telefono: '', email: ''
   });
@@ -30,33 +33,28 @@ const AgendamientoPrivadoForm = () => {
     }
   }, [step]);
 
-  const handleSubmitPaso1 = (e) => {
-    e.preventDefault();
-    setStep(2);
+  const handleCheckCedula = () => {
+    const nuevaCondicion = !sinCedula;
+    setSinCedula(nuevaCondicion);
+    if (nuevaCondicion) {
+      setDatosPaciente(prev => ({ ...prev, telefono: '', email: '' }));
+      setDatosRepresentante(prev => ({
+        ...prev, nombre: '', apellido: '', numeroHijo: '', sexo: '', telefono: '', email: ''
+      }));
+    } else {
+      setDatosRepresentante(prev => ({
+        ...prev, nombre: '', apellido: '', numeroHijo: '', sexo: '', telefono: '', email: ''
+      }));
+    }
   };
-
-  const handleSeleccionTipo = (tipo) => {
-    setModoSeleccion(tipo);
-    setEspecialidadSeleccionada('');
-    setServicioSeleccionado('');
-    setProfesionalSeleccionado('');
-    setFechaSeleccionada(null);
-  };
-
-  const volverPaso1 = () => setStep(1);
-  const volverPaso2 = () => setStep(2);
-  const continuarPaso3 = () => setStep(3);
 
   const profesionalesFiltrados = profesionales.filter(p =>
-    modoSeleccion === 'consulta'
-      ? p.categorias?.includes('Consulta')
-      : modoSeleccion === 'estudio'
-      ? p.categorias?.includes('Estudio')
-      : false
+    modoSeleccion === 'consulta' ? p.categorias?.includes('Consulta') :
+    modoSeleccion === 'estudio' ? p.categorias?.includes('Estudio') : false
   );
 
   const fechaMostrada = () => {
-    const f = fechaSeleccionada?.fecha || fechaSeleccionada;
+    const f = fechaSeleccionada?.fecha ?? fechaSeleccionada;
     if (!f || isNaN(new Date(f).getTime())) return '';
     return new Date(f).toLocaleDateString();
   };
@@ -66,52 +64,31 @@ const AgendamientoPrivadoForm = () => {
     return `Desde las ${fechaSeleccionada.hora_inicio.slice(0, 5)} hrs`;
   };
 
-  const handleCheckCedula = () => {
-    const nuevaCondicion = !sinCedula;
-    setSinCedula(nuevaCondicion);
-
-    if (nuevaCondicion) {
-      setDatosPaciente({ nombre: '', apellido: '', fechaNacimiento: '', sexo: '', telefono: '', email: '' });
-      setDatosRepresentante(prev => ({ ...prev, nombre: '', apellido: '', numeroHijo: '', sexo: '', telefono: '', email: '' }));
-    } else {
-      setDatosRepresentante(prev => ({ ...prev, nombre: '', apellido: '', numeroHijo: '', sexo: '', telefono: '', email: '' }));
-    }
-  };
-
   const enviarAgendamiento = async () => {
-    const datos = {
+    const payload = {
       cedula: datosRepresentante.cedula,
-      seguro_medico: tieneSeguro,
+      paciente: datosPaciente,
+      representante: sinCedula ? datosRepresentante : null,
       profesional_id: profesionalSeleccionado,
-      fecha_agendada: fechaSeleccionada?.fecha || fechaSeleccionada,
-      observaciones: '',
-      tipo_atencion_id: 1,
-      nombre: datosPaciente.nombre,
-      apellido: datosPaciente.apellido,
-      fecha_nacimiento: datosPaciente.fechaNacimiento,
-      sexo: datosPaciente.sexo,
-      email: sinCedula ? datosRepresentante.email : datosPaciente.email,
-      telefono: sinCedula ? datosRepresentante.telefono : datosPaciente.telefono,
-      representante_nombre: sinCedula ? datosRepresentante.nombre : null,
-      representante_apellido: sinCedula ? datosRepresentante.apellido : null,
-      representante_cedula: sinCedula ? datosRepresentante.cedula : null,
-      numeroHijo: sinCedula ? datosRepresentante.numeroHijo : null,
-      sin_cedula: sinCedula
+      fecha: fechaSeleccionada.fecha ?? fechaSeleccionada,
+      tiene_seguro: tieneSeguro,
+      tipo_atencion: modoSeleccion,
+      detalle: modoSeleccion === 'consulta' ? especialidadSeleccionada : servicioSeleccionado,
+      hora_inicio: fechaSeleccionada.hora_inicio ?? null
     };
 
     try {
-      await axios.post('/api/agendamiento', datos);
+      await axios.post('/api/agendamiento', payload);
       setStep(4);
-    } catch (error) {
-      console.error("Error al enviar agendamiento:", error);
-      alert("Ocurrió un error al enviar la solicitud. Intenta más tarde.");
+    } catch (err) {
+      alert('Error al registrar solicitud');
     }
   };
 
   return (
     <div>
       {step === 1 && (
-        <form onSubmit={handleSubmitPaso1}>
+        <form onSubmit={e => { e.preventDefault(); setStep(2); }}>
           <h2>Agendamiento Particular</h2>
           <div>
             <label>Cédula:</label>
@@ -129,9 +106,7 @@ const AgendamientoPrivadoForm = () => {
               <input placeholder="Nombre" value={datosRepresentante.nombre} onChange={e => setDatosRepresentante({ ...datosRepresentante, nombre: e.target.value })} />
               <input placeholder="Apellidos" value={datosRepresentante.apellido} onChange={e => setDatosRepresentante({ ...datosRepresentante, apellido: e.target.value })} />
               <select value={datosRepresentante.sexo} onChange={e => setDatosRepresentante({ ...datosRepresentante, sexo: e.target.value })}>
-                <option value="">Sexo</option>
-                <option value="F">Femenino</option>
-                <option value="M">Masculino</option>
+                <option value="">Sexo</option><option value="F">Femenino</option><option value="M">Masculino</option>
               </select>
               <input placeholder="Teléfono" value={datosRepresentante.telefono} onChange={e => setDatosRepresentante({ ...datosRepresentante, telefono: e.target.value })} />
               <input placeholder="Correo electrónico" value={datosRepresentante.email} onChange={e => setDatosRepresentante({ ...datosRepresentante, email: e.target.value })} />
@@ -144,9 +119,7 @@ const AgendamientoPrivadoForm = () => {
             <input placeholder="Apellidos" value={datosPaciente.apellido} onChange={e => setDatosPaciente({ ...datosPaciente, apellido: e.target.value })} />
             <input type="date" value={datosPaciente.fechaNacimiento} onChange={e => setDatosPaciente({ ...datosPaciente, fechaNacimiento: e.target.value })} />
             <select value={datosPaciente.sexo} onChange={e => setDatosPaciente({ ...datosPaciente, sexo: e.target.value })}>
-              <option value="">Sexo</option>
-              <option value="F">Femenino</option>
-              <option value="M">Masculino</option>
+              <option value="">Sexo</option><option value="F">Femenino</option><option value="M">Masculino</option>
             </select>
             {!sinCedula && (
               <>
@@ -169,13 +142,16 @@ const AgendamientoPrivadoForm = () => {
 
       {step === 2 && (
         <div>
-          <button onClick={volverPaso1}>← Volver al paso anterior</button>
+          <button onClick={() => setStep(1)}>← Volver al paso anterior</button>
           <h2>Selecciona la especialidad, el médico y el día.</h2>
-          <button onClick={() => handleSeleccionTipo('consulta')} style={{ marginRight: 8 }}>Consulta médica</button>
-          <button onClick={() => handleSeleccionTipo('estudio')}>Estudio</button>
+
+          <div style={{ marginBottom: '1rem' }}>
+            <button onClick={() => setModoSeleccion('consulta')} style={{ marginRight: 8 }}>Consulta médica</button>
+            <button onClick={() => setModoSeleccion('estudio')}>Estudio</button>
+          </div>
 
           {modoSeleccion === 'consulta' && (
-            <div>
+            <>
               <label>Especialidad:</label>
               <select value={especialidadSeleccionada} onChange={e => setEspecialidadSeleccionada(e.target.value)}>
                 <option value="">Selecciona una opción</option>
@@ -187,25 +163,20 @@ const AgendamientoPrivadoForm = () => {
               <label>Profesional:</label>
               <select value={profesionalSeleccionado} onChange={e => setProfesionalSeleccionado(e.target.value)}>
                 <option value="">Selecciona al profesional</option>
-                {profesionalesFiltrados.filter(p => !especialidadSeleccionada || p.nombre_especialidad === especialidadSeleccionada)
-                  .map(p => (
-                    <option key={p.profesional_id} value={p.profesional_id}>
-                      {p.nombre} {p.apellido}
-                    </option>
-                  ))}
+                {profesionalesFiltrados.filter(p => !especialidadSeleccionada || p.nombre_especialidad === especialidadSeleccionada).map(p => (
+                  <option key={p.profesional_id} value={p.profesional_id}>{p.nombre} {p.apellido}</option>
+                ))}
               </select>
-            </div>
+            </>
           )}
 
           {modoSeleccion === 'estudio' && (
-            <div>
+            <>
               <label>Servicio:</label>
               <select value={servicioSeleccionado} onChange={e => setServicioSeleccionado(e.target.value)}>
                 <option value="">Selecciona un servicio</option>
                 {servicios.map(s => (
-                  <option key={s.id_servicio} value={s.nombre_servicio}>
-                    {s.nombre_servicio}
-                  </option>
+                  <option key={s.id_servicio} value={s.nombre_servicio}>{s.nombre_servicio}</option>
                 ))}
               </select>
 
@@ -213,103 +184,78 @@ const AgendamientoPrivadoForm = () => {
               <select value={profesionalSeleccionado} onChange={e => setProfesionalSeleccionado(e.target.value)}>
                 <option value="">Selecciona al profesional</option>
                 {profesionalesFiltrados.map(p => (
-                  <option key={p.profesional_id} value={p.profesional_id}>
-                    {p.nombre} {p.apellido}
-                  </option>
+                  <option key={p.profesional_id} value={p.profesional_id}>{p.nombre} {p.apellido}</option>
                 ))}
               </select>
-            </div>
+            </>
           )}
 
           {profesionalSeleccionado && (
-            <div>
+            <>
               <CalendarioFechasDisponibles
                 profesionalId={profesionalSeleccionado}
                 onFechaSeleccionada={setFechaSeleccionada}
               />
-
               {fechaSeleccionada && (
                 <div style={{ marginTop: '20px' }}>
-                  <strong>Fecha seleccionada:</strong> {fechaMostrada()}
-                  <br />
+                  <strong>Fecha seleccionada:</strong> {fechaMostrada()}<br />
                   <strong>Hora de inicio:</strong> {horaMostrada()}
                 </div>
               )}
-            </div>
+            </>
           )}
 
-          <button onClick={continuarPaso3} disabled={!profesionalSeleccionado || !fechaSeleccionada}>
-            Continuar
+          <button onClick={() => setStep(3)} disabled={!fechaSeleccionada}>Continuar</button>
+        </div>
+      )}
+
+      {step === 3 && (
+        <div style={{ textAlign: 'center', padding: '2rem' }}>
+          <button onClick={() => setStep(2)} style={{ marginBottom: '1rem' }}>← Volver al paso anterior</button>
+          <h2 style={{ color: '#0a2472' }}>Revisa y confirma tu solicitud</h2>
+          <p>Confirma que todos los datos estén correctos antes de enviar tu solicitud.</p>
+
+          <div style={{ background: '#f8f8f8', padding: '1rem', borderRadius: '8px', maxWidth: '600px', margin: 'auto', marginTop: '1rem', textAlign: 'left' }}>
+            <div style={{ marginBottom: '1rem' }}>
+              <strong>🩺 {modoSeleccion === 'consulta' ? especialidadSeleccionada : servicioSeleccionado}</strong><br />
+              <strong>👤 {profesionales.find(p => p.profesional_id === profesionalSeleccionado)?.nombre} {profesionales.find(p => p.profesional_id === profesionalSeleccionado)?.apellido}</strong><br />
+              <strong>📅 {fechaMostrada()}</strong><br />
+              <strong>🕐 {horaMostrada()}</strong>
+            </div>
+
+            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+              {sinCedula && (
+                <div>
+                  <h4>Representante legal</h4>
+                  <p>{datosRepresentante.cedula}</p>
+                  <p>{datosRepresentante.nombre} {datosRepresentante.apellido}</p>
+                  <p>Hijo(a) #{datosRepresentante.numeroHijo}</p>
+                  <p>{datosRepresentante.telefono}</p>
+                  <p>{datosRepresentante.email}</p>
+                </div>
+              )}
+              <div>
+                <h4>Datos del paciente</h4>
+                <p>{datosPaciente.nombre} {datosPaciente.apellido}</p>
+                <p>{datosPaciente.fechaNacimiento}</p>
+                <p>{datosPaciente.sexo === 'F' ? 'Femenino' : 'Masculino'}</p>
+              </div>
+            </div>
+          </div>
+
+          <button onClick={enviarAgendamiento} style={{ marginTop: '1rem', background: '#0a2472', color: 'white', padding: '0.7rem 1.5rem', border: 'none', borderRadius: '6px' }}>
+            Enviar solicitud
           </button>
         </div>
       )}
 
-      {{step === 3 && (
-  <div style={{ textAlign: 'center', padding: '2rem' }}>
-    <button onClick={volverPaso2} style={{ marginBottom: '1rem' }}>← Volver al paso anterior</button>
-    <h2 style={{ color: '#0a2472' }}>Revisa y confirma tu solicitud</h2>
-    <p>Antes de enviar tu solicitud, revisa que toda la información esté correcta. Si necesitas corregir algo, puedes volver al paso anterior.</p>
-
-    <div style={{ background: '#f8f8f8', padding: '1rem', margin: '1rem auto', borderRadius: '8px', maxWidth: '600px', textAlign: 'left' }}>
-      <div style={{ marginBottom: '1rem', border: '1px solid #ccc', padding: '1rem', borderRadius: '6px' }}>
-        <strong>🩺 {modoSeleccion === 'consulta' ? especialidadSeleccionada : servicioSeleccionado}</strong><br />
-        <strong>👤 {profesionales.find(p => p.profesional_id === profesionalSeleccionado)?.nombre?.toUpperCase()} {profesionales.find(p => p.profesional_id === profesionalSeleccionado)?.apellido?.toUpperCase()}</strong><br />
-        <strong>📅 {fechaMostrada()}</strong><br />
-        <strong>🕐 {horaMostrada()}</strong>
-        <p style={{ fontSize: '0.9rem', color: '#555', marginTop: '0.5rem' }}>
-          La atención será por orden de llegada según el horario del profesional.
-        </p>
-      </div>
-
-      <div style={{ display: 'flex', gap: '2rem' }}>
-        {sinCedula && (
-          <div style={{ flex: 1 }}>
-            <h4 style={{ borderBottom: '1px solid #ccc' }}>Datos del representante legal</h4>
-            <p>📄 {datosRepresentante.cedula}</p>
-            <p>{datosRepresentante.nombre} {datosRepresentante.apellido}</p>
-            <p>👶 Hijo(a) número: {datosRepresentante.numeroHijo}</p>
-            <p>Sexo: {datosRepresentante.sexo === 'F' ? 'Femenino' : 'Masculino'}</p>
-            <p>📞 {datosRepresentante.telefono}</p>
-            <p>✉️ {datosRepresentante.email}</p>
-          </div>
-        )}
-        <div style={{ flex: 1 }}>
-          <h4 style={{ borderBottom: '1px solid #ccc' }}>Datos del paciente</h4>
-          <p>{datosPaciente.nombre} {datosPaciente.apellido}</p>
-          <p>🎂 {datosPaciente.fechaNacimiento}</p>
-          <p>Sexo: {datosPaciente.sexo === 'F' ? 'Femenino' : 'Masculino'}</p>
-        </div>
-      </div>
-    </div>
-
-    <button
-      onClick={enviarAgendamiento}
-      style={{
-        background: '#1d3a8a',
-        color: 'white',
-        padding: '0.6rem 1.5rem',
-        border: 'none',
-        borderRadius: '6px',
-        cursor: 'pointer'
-      }}
-    >
-      Enviar solicitud
-    </button>
-  </div>
-)}
-
-
       {step === 4 && (
         <div style={{ textAlign: 'center', padding: '2rem' }}>
-          <h2 style={{ color: '#1D2C4D' }}>Tu solicitud fue enviada correctamente.</h2>
-          <p style={{ fontSize: '1.1rem', color: '#1D2C4D' }}>
-            Te enviamos por correo la información de tu cita. Gracias por agendar con nosotros.
-          </p>
+          <h2 style={{ color: '#0a2472' }}>Tu solicitud fue enviada correctamente.</h2>
+          <p>Te enviamos por correo la información de tu cita. Gracias por agendar con nosotros.</p>
           <div style={{ marginTop: '2rem' }}>
-            <a href="/" style={{ marginRight: '1rem', textDecoration: 'none', color: '#1D2C4D' }}>Volver a la página principal</a>
-            <a href="/agendar" style={{ padding: '0.5rem 1rem', backgroundColor: '#233D91', color: 'white', borderRadius: '6px', textDecoration: 'none' }}>
-              Agendar otra cita
-            </a>
+            <button onClick={() => navigate('/')} style={{ marginRight: '1rem' }}>Volver a la página principal</button>
+            <button onClick={() => window.location.reload()} style={{ background: '#0a2472', color: 'white' }}>Agendar otra cita</button>
           </div>
         </div>
       )}
