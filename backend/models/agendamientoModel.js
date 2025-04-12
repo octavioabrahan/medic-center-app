@@ -35,10 +35,17 @@ const AgendamientoModel = {
   listar: async ({ status, desde, hasta }) => {
     const condiciones = [];
     const valores = [];
+    const todosLosEstados = ['pendiente', 'confirmada', 'cancelada'];
   
-    if (typeof status === "string" && status.trim() !== "") {
-      valores.push(status);
-      condiciones.push(`a.status = $${valores.length}`);
+    if (typeof status === "string") {
+      if (status.trim() === "") {
+        // Si es "Todos", incluir todos los estados conocidos
+        valores.push(...todosLosEstados);
+        condiciones.push(`a.status IN (${todosLosEstados.map((_, i) => `$${valores.length - todosLosEstados.length + i + 1}`).join(', ')})`);
+      } else {
+        valores.push(status);
+        condiciones.push(`a.status = $${valores.length}`);
+      }
     }
   
     if (desde) {
