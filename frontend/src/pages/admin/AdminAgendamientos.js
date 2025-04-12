@@ -8,7 +8,9 @@ const AdminAgendamientos = () => {
   const [loading, setLoading] = useState(true);
   const [searchParams, setSearchParams] = useSearchParams();
 
-  const status = searchParams.get("status")?.trim() || null;
+  const status =
+  searchParams.get("status")?.trim() ||
+  TODOS_LOS_ESTADOS.join(","); // valor por defecto
   const desde = searchParams.get("desde") || null;
   const hasta = searchParams.get("hasta") || null;
 
