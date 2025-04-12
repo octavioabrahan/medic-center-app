@@ -16,15 +16,26 @@ const AgendamientoController = {
         hora_inicio
       } = req.body;
 
-      if (!paciente || !paciente.nombre || !paciente.apellido || !paciente.fecha_nacimiento || !paciente.sexo) {
-        return res.status(400).json({ error: "Faltan datos obligatorios del paciente." });
+      if (
+        !paciente ||
+        !paciente.nombre ||
+        !paciente.apellido ||
+        !paciente.fecha_nacimiento ||
+        !paciente.sexo
+      ) {
+        return res
+          .status(400)
+          .json({ error: "Faltan datos obligatorios del paciente." });
       }
 
       const cedulaPaciente = paciente.representante_cedula
         ? paciente.representante_cedula
         : cedula;
 
-      const check = await db.query("SELECT * FROM pacientes WHERE cedula = $1", [cedulaPaciente]);
+      const check = await db.query(
+        "SELECT * FROM pacientes WHERE cedula = $1",
+        [cedulaPaciente]
+      );
 
       if (check.rowCount === 0) {
         await PacientesModel.crear({
@@ -53,17 +64,19 @@ const AgendamientoController = {
       });
 
       await enviarCorreo(
-        paciente.email || '',
+        paciente.email || "",
         "Confirmación de cita agendada",
         `
           <h3>Tu cita fue registrada correctamente</h3>
           <p><strong>Paciente:</strong> ${paciente.nombre} ${paciente.apellido}</p>
           <p><strong>Fecha:</strong> ${fecha_agendada}</p>
-          <p><strong>Hora:</strong> ${hora_inicio || 'No especificada'}</p>
+          <p><strong>Hora:</strong> ${hora_inicio || "No especificada"}</p>
         `
       );
 
-      res.status(201).json({ mensaje: "Agendamiento registrado correctamente" });
+      res
+        .status(201)
+        .json({ mensaje: "Agendamiento registrado correctamente" });
     } catch (err) {
       console.error("Error al crear agendamiento:", err);
       res.status(500).json({ error: "Error al crear agendamiento" });
@@ -72,15 +85,17 @@ const AgendamientoController = {
 
   listar: async (req, res) => {
     const { status, desde, hasta } = req.query;
-    
+
     try {
-      // Si se proporcionaron parámetros específicos, usar el método original
       if (status || desde || hasta) {
-        const resultados = await AgendamientoModel.listar({ status, desde, hasta });
+        const resultados = await AgendamientoModel.listar({
+          status,
+          desde,
+          hasta
+        });
         return res.json(resultados);
       }
-      
-      // De lo contrario, usar la nueva consulta que incluye datos del paciente
+
       const result = await db.query(`
         SELECT a.*, p.nombre, p.apellido, p.representante_nombre, p.representante_apellido
         FROM agendamiento a
@@ -93,33 +108,41 @@ const AgendamientoController = {
       res.status(500).json({ error: "Error al obtener los agendamientos" });
     }
   },
-  
+
   actualizarEstado: async (req, res) => {
     const { id } = req.params;
     const { status } = req.body;
-    
-    if (!['pendiente', 'confirmada', 'cancelada'].includes(status)) {
+
+    if (!["pendiente", "confirmada", "cancelada"].includes(status)) {
       return res.status(400).json({ error: "Estado inválido" });
     }
-    
+
     try {
-      const cambiadoPor = "sistema"; // más adelante, se puede usar req.user.nombre
-      const actualizado = await model.actualizarEstado(id, status, cambiadoPor);
+      const cambiadoPor = "sistema"; // para futuro: req.user.nombre
+      const actualizado = await AgendamientoModel.actualizarEstado(
+        id,
+        status,
+        cambiadoPor
+      );
       res.json({ status: actualizado });
     } catch (error) {
       console.error("Error al actualizar estado:", error);
       res.status(500).json({ error: "Error al actualizar el estado" });
     }
-  }
-  exports.obtenerHistorial = async (req, res) => {
+  },
+
+  obtenerHistorial: async (req, res) => {
     const { id } = req.params;
     try {
-      const historial = await model.listarHistorial(id);
+      const historial = await AgendamientoModel.listarHistorial(id);
       res.json(historial);
     } catch (error) {
-      res.status(500).json({ error: "Error al obtener historial" });
+      console.error("Error al obtener historial:", error);
+      res
+        .status(500)
+        .json({ error: "Error al obtener el historial del agendamiento" });
     }
-  },
+  }
 };
 
 module.exports = AgendamientoController;
