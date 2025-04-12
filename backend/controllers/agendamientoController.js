@@ -15,18 +15,17 @@ const AgendamientoController = {
         // Crear paciente nuevo
         await PacientesModel.crear({
           cedula: datos.cedula,
-          ...datos.paciente,
-          ...(
-            datos.representante
-              ? {
-                  representante_nombre: datos.representante.nombre,
-                  representante_apellido: datos.representante.apellido,
-                  representante_email: datos.representante.email,
-                  representante_telefono: datos.representante.telefono
-                }
-              : {}
-          )
-        });
+          nombre: datos.paciente.nombre,
+          apellido: datos.paciente.apellido,
+          fecha_nacimiento: datos.paciente.fechaNacimiento,
+          sexo: datos.paciente.sexo,
+          telefono: datos.paciente.telefono,
+          email: datos.paciente.email,
+          representante_nombre: datos.representante?.nombre || null,
+          representante_apellido: datos.representante?.apellido || null,
+          representante_telefono: datos.representante?.telefono || null,
+          representante_email: datos.representante?.email || null
+        });        
       }
 
       // Crear agendamiento
