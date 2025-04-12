@@ -244,14 +244,60 @@ const AgendamientoPrivadoForm = () => {
         </div>
       )}
 
-      {step === 3 && (
-        <div>
-          <button onClick={volverPaso2}>← Volver al paso anterior</button>
-          <h2>Revisa y confirma tu solicitud</h2>
-          <p>Confirma que todos los datos estén correctos antes de enviar tu solicitud.</p>
-          <button onClick={enviarAgendamiento}>Enviar solicitud</button>
+      {{step === 3 && (
+  <div style={{ textAlign: 'center', padding: '2rem' }}>
+    <button onClick={volverPaso2} style={{ marginBottom: '1rem' }}>← Volver al paso anterior</button>
+    <h2 style={{ color: '#0a2472' }}>Revisa y confirma tu solicitud</h2>
+    <p>Antes de enviar tu solicitud, revisa que toda la información esté correcta. Si necesitas corregir algo, puedes volver al paso anterior.</p>
+
+    <div style={{ background: '#f8f8f8', padding: '1rem', margin: '1rem auto', borderRadius: '8px', maxWidth: '600px', textAlign: 'left' }}>
+      <div style={{ marginBottom: '1rem', border: '1px solid #ccc', padding: '1rem', borderRadius: '6px' }}>
+        <strong>🩺 {modoSeleccion === 'consulta' ? especialidadSeleccionada : servicioSeleccionado}</strong><br />
+        <strong>👤 {profesionales.find(p => p.profesional_id === profesionalSeleccionado)?.nombre?.toUpperCase()} {profesionales.find(p => p.profesional_id === profesionalSeleccionado)?.apellido?.toUpperCase()}</strong><br />
+        <strong>📅 {fechaMostrada()}</strong><br />
+        <strong>🕐 {horaMostrada()}</strong>
+        <p style={{ fontSize: '0.9rem', color: '#555', marginTop: '0.5rem' }}>
+          La atención será por orden de llegada según el horario del profesional.
+        </p>
+      </div>
+
+      <div style={{ display: 'flex', gap: '2rem' }}>
+        {sinCedula && (
+          <div style={{ flex: 1 }}>
+            <h4 style={{ borderBottom: '1px solid #ccc' }}>Datos del representante legal</h4>
+            <p>📄 {datosRepresentante.cedula}</p>
+            <p>{datosRepresentante.nombre} {datosRepresentante.apellido}</p>
+            <p>👶 Hijo(a) número: {datosRepresentante.numeroHijo}</p>
+            <p>Sexo: {datosRepresentante.sexo === 'F' ? 'Femenino' : 'Masculino'}</p>
+            <p>📞 {datosRepresentante.telefono}</p>
+            <p>✉️ {datosRepresentante.email}</p>
+          </div>
+        )}
+        <div style={{ flex: 1 }}>
+          <h4 style={{ borderBottom: '1px solid #ccc' }}>Datos del paciente</h4>
+          <p>{datosPaciente.nombre} {datosPaciente.apellido}</p>
+          <p>🎂 {datosPaciente.fechaNacimiento}</p>
+          <p>Sexo: {datosPaciente.sexo === 'F' ? 'Femenino' : 'Masculino'}</p>
         </div>
-      )}
+      </div>
+    </div>
+
+    <button
+      onClick={enviarAgendamiento}
+      style={{
+        background: '#1d3a8a',
+        color: 'white',
+        padding: '0.6rem 1.5rem',
+        border: 'none',
+        borderRadius: '6px',
+        cursor: 'pointer'
+      }}
+    >
+      Enviar solicitud
+    </button>
+  </div>
+)}
+
 
       {step === 4 && (
         <div style={{ textAlign: 'center', padding: '2rem' }}>
