@@ -63,14 +63,12 @@ const AgendamientoPrivadoForm = () => {
     setSinCedula(nuevaCondicion);
 
     if (nuevaCondicion) {
-      setDatosRepresentante(prev => ({
-        ...prev,
-        nombre: '', apellido: '', numeroHijo: '', sexo: '', telefono: '', email: ''
-      }));
-      setDatosPaciente(prev => ({
-        ...prev,
-        telefono: '', email: ''
-      }));
+      // limpiar campos de paciente excepto la cédula
+      setDatosPaciente({ nombre: '', apellido: '', fechaNacimiento: '', sexo: '', telefono: '', email: '' });
+      setDatosRepresentante(prev => ({ ...prev, nombre: '', apellido: '', numeroHijo: '', sexo: '', telefono: '', email: '' }));
+    } else {
+      // limpiar campos de representante
+      setDatosRepresentante(prev => ({ ...prev, nombre: '', apellido: '', numeroHijo: '', sexo: '', telefono: '', email: '' }));
     }
   };
 
