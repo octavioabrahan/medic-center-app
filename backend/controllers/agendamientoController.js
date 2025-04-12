@@ -71,7 +71,16 @@ const AgendamientoController = {
   },
 
   listar: async (req, res) => {
+    const { status, desde, hasta } = req.query;
+    
     try {
+      // Si se proporcionaron parámetros específicos, usar el método original
+      if (status || desde || hasta) {
+        const resultados = await AgendamientoModel.listar({ status, desde, hasta });
+        return res.json(resultados);
+      }
+      
+      // De lo contrario, usar la nueva consulta que incluye datos del paciente
       const result = await db.query(`
         SELECT a.*, p.nombre, p.apellido, p.representante_nombre, p.representante_apellido
         FROM agendamiento a
@@ -82,6 +91,23 @@ const AgendamientoController = {
     } catch (err) {
       console.error("Error al listar agendamientos:", err);
       res.status(500).json({ error: "Error al obtener los agendamientos" });
+    }
+  },
+  
+  actualizarEstado: async (req, res) => {
+    const { id } = req.params;
+    const { status } = req.body;
+    
+    if (!['pendiente', 'confirmada', 'cancelada'].includes(status)) {
+      return res.status(400).json({ error: "Estado inválido" });
+    }
+    
+    try {
+      const actualizado = await AgendamientoModel.actualizarEstado(id, status);
+      res.json({ status: actualizado });
+    } catch (error) {
+      console.error("Error al actualizar estado:", error);
+      res.status(500).json({ error: "Error al actualizar el estado" });
     }
   }
 };
