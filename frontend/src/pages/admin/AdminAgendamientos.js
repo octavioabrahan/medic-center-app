@@ -16,13 +16,18 @@ const AdminAgendamientos = () => {
     const fetchAgendamientos = async () => {
       try {
         const params = new URLSearchParams();
-        if (status && status !== "") params.append("status", status);
-        if (desde) params.append("desde", desde);
-        if (hasta) params.append("hasta", hasta);
-
-        const res = await fetch(
-          `${process.env.REACT_APP_API_URL}/api/agendamiento?${params.toString()}`
-        );
+        // IMPORTANTE: construir los params correctamente
+        if (searchParams.get("status")?.trim()) {
+          params.append("status", searchParams.get("status"));
+        }
+        if (searchParams.get("desde")) {
+          params.append("desde", searchParams.get("desde"));
+        }
+        if (searchParams.get("hasta")) {
+          params.append("hasta", searchParams.get("hasta"));
+        }
+        const url = `${process.env.REACT_APP_API_URL}/api/agendamiento?${params.toString()}`;
+        const res = await fetch(url);
         const data = await res.json();
         setAgendamientos(data);
       } catch (err) {
@@ -31,9 +36,8 @@ const AdminAgendamientos = () => {
         setLoading(false);
       }
     };
-
     fetchAgendamientos();
-  }, [status, desde, hasta]);
+  }, [searchParams.toString()]); // 👈 clave: forzar efecto cuando cambia el string de los filtros
 
   const actualizarEstado = async (id, nuevoEstado) => {
     const confirmar = window.confirm(`¿Confirmar cambio a "${nuevoEstado}"?`);
