@@ -161,7 +161,7 @@ const AgendamientoPrivadoForm = () => {
                   <strong>Fecha seleccionada:</strong>{' '}
                   {(fechaSeleccionada.fecha ?? fechaSeleccionada).toLocaleDateString()}<br />
                   <strong>Hora de inicio:</strong>{' '}
-                  {fechaSeleccionada.hora_inicio
+                  {fechaSeleccionada.hora_inicio && typeof fechaSeleccionada.hora_inicio === 'string'
                     ? `Desde las ${fechaSeleccionada.hora_inicio.slice(0, 5)} hrs`
                     : 'No disponible'}
                 </div>
