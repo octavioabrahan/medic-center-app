@@ -31,7 +31,6 @@ const AgendamientoPrivadoForm = () => {
   }, [step]);
 
   const handleSubmitPaso1 = (e) => { e.preventDefault(); setStep(2); };
-
   const handleSeleccionTipo = (tipo) => {
     setModoSeleccion(tipo);
     setEspecialidadSeleccionada('');
@@ -39,7 +38,6 @@ const AgendamientoPrivadoForm = () => {
     setProfesionalSeleccionado('');
     setFechaSeleccionada(null);
   };
-
   const volverPaso1 = () => { setStep(1); setModoSeleccion(null); setProfesionalSeleccionado(''); };
   const volverPaso2 = () => { setStep(2); };
   const continuarPaso3 = () => { setStep(3); };
@@ -126,8 +124,109 @@ const AgendamientoPrivadoForm = () => {
         </form>
       )}
 
-      {/* Step 2 y 3 permanecen sin cambios */}
+      {step === 2 && (
+        <div>
+          <button onClick={volverPaso1}>← Volver al paso anterior</button>
+          <h2>Selecciona la especialidad, el médico y el día.</h2>
 
+          <div style={{ marginBottom: '1rem' }}>
+            <button onClick={() => handleSeleccionTipo('consulta')} style={{ marginRight: 8 }}>Consulta médica</button>
+            <button onClick={() => handleSeleccionTipo('estudio')}>Estudio</button>
+          </div>
+
+          {modoSeleccion === 'consulta' && (
+            <div>
+              <label>Especialidad:</label>
+              <select value={especialidadSeleccionada} onChange={e => setEspecialidadSeleccionada(e.target.value)}>
+                <option value="">Selecciona una opción</option>
+                {[...new Set(profesionalesFiltrados.map(p => p.nombre_especialidad))].filter(Boolean).map((esp, i) => (
+                  <option key={i} value={esp}>{esp}</option>
+                ))}
+              </select>
+
+              <label>Profesional:</label>
+              <select value={profesionalSeleccionado} onChange={e => setProfesionalSeleccionado(e.target.value)}>
+                <option value="">Selecciona al profesional</option>
+                {profesionalesFiltrados
+                  .filter(p => !especialidadSeleccionada || p.nombre_especialidad === especialidadSeleccionada)
+                  .map(p => (
+                    <option key={p.profesional_id} value={p.profesional_id}>{p.nombre} {p.apellido}</option>
+                  ))}
+              </select>
+            </div>
+          )}
+
+          {modoSeleccion === 'estudio' && (
+            <div>
+              <label>Servicio:</label>
+              <select value={servicioSeleccionado} onChange={e => setServicioSeleccionado(e.target.value)}>
+                <option value="">Selecciona un servicio</option>
+                {servicios.map(s => (
+                  <option key={s.id_servicio} value={s.nombre_servicio}>{s.nombre_servicio}</option>
+                ))}
+              </select>
+
+              <label>Profesional:</label>
+              <select value={profesionalSeleccionado} onChange={e => setProfesionalSeleccionado(e.target.value)}>
+                <option value="">Selecciona al profesional</option>
+                {profesionalesFiltrados.map(p => (
+                  <option key={p.profesional_id} value={p.profesional_id}>{p.nombre} {p.apellido}</option>
+                ))}
+              </select>
+            </div>
+          )}
+
+          {profesionalSeleccionado && (
+            <div>
+              <CalendarioFechasDisponibles
+                profesionalId={profesionalSeleccionado}
+                onFechaSeleccionada={data => setFechaSeleccionada(data)}
+              />
+
+              {fechaSeleccionada && (
+                <div style={{ marginTop: '20px' }}>
+                  <strong>Fecha seleccionada:</strong> {fechaMostrada()}<br />
+                  <strong>Hora de inicio:</strong> {horaMostrada()}<br />
+                  <button onClick={continuarPaso3}>Continuar</button>
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+      )}
+
+      {step === 3 && (
+        <div>
+          <button onClick={volverPaso2}>← Volver al paso anterior</button>
+          <h2>Revisa y confirma tu solicitud</h2>
+          <p>Antes de enviar tu solicitud, revisa que toda la información esté correcta. Si necesitas corregir algo, puedes volver al paso anterior.</p>
+
+          <div>
+            <strong>Información de su cita</strong>
+            <p>Profesional: {profesionales.find(p => p.profesional_id === profesionalSeleccionado)?.nombre} {profesionales.find(p => p.profesional_id === profesionalSeleccionado)?.apellido}</p>
+            <p>Fecha: {fechaMostrada()}</p>
+            <p>Hora: {horaMostrada()}</p>
+          </div>
+
+          <div>
+            <strong>Información personal</strong>
+            {sinCedula && (
+              <div>
+                <p>Representante: {datosRepresentante.nombre} {datosRepresentante.apellido}</p>
+                <p>Teléfono: {datosRepresentante.telefono}</p>
+                <p>Correo: {datosRepresentante.email}</p>
+              </div>
+            )}
+            <div>
+              <p>Paciente: {datosPaciente.nombre} {datosPaciente.apellido}</p>
+              <p>Fecha nacimiento: {datosPaciente.fechaNacimiento}</p>
+              <p>Sexo: {datosPaciente.sexo === 'F' ? 'Femenino' : datosPaciente.sexo === 'M' ? 'Masculino' : '-'}</p>
+            </div>
+          </div>
+
+          <button>Enviar solicitud</button>
+        </div>
+      )}
     </div>
   );
 };
