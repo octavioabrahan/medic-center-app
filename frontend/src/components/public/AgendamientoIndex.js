@@ -1,66 +1,72 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import './AgendamientoIndex.css';
+import './Agendamiento.css';
+import logo from '../../assets/logo_header.png';
 
 const AgendamientoIndex = () => {
-  const [seleccion, setSeleccion] = useState('');
+  const [opcionSeleccionada, setOpcionSeleccionada] = useState('');
   const navigate = useNavigate();
 
-  const continuar = () => {
-    if (seleccion === 'privado') navigate('/agendamiento/privado');
-    else if (seleccion === 'convenio') navigate('/agendamiento/empresa');
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (opcionSeleccionada === 'privado') {
+      navigate('/agendamiento/privado');
+    } else if (opcionSeleccionada === 'convenio') {
+      navigate('/agendamiento/convenio');
+    }
   };
 
   return (
     <div className="agendamiento-container">
-      <div className="agendamiento-header">
-        <a href="/">← Volver a la página principal</a>
+      <header className="agendamiento-header">
         <img
-          src="/logo_header.png"
+          src={logo}
           alt="Logo Diagnocentro"
           className="agendamiento-logo"
         />
-      </div>
+      </header>
 
-      <div className="agendamiento-content">
-        <h2>¿Cómo se pagará la cita?</h2>
-        <p className="agendamiento-subtitle">
+      <form className="agendamiento-form" onSubmit={handleSubmit}>
+        <h1>¿Cómo se pagará la cita?</h1>
+        <p>
           Selecciona la opción que corresponde al tipo de atención de la persona que se va a atender.
           Esto nos permitirá mostrar solo los pasos y documentos necesarios según cada caso.
         </p>
 
-        <div className="agendamiento-opciones">
-          <label className={`opcion ${seleccion === 'privado' ? 'seleccionado' : ''}`}>
+        <div className="opciones-seleccion">
+          <label className={`opcion-box ${opcionSeleccionada === 'privado' ? 'seleccionada' : ''}`}>
             <input
               type="radio"
+              name="tipo"
               value="privado"
-              checked={seleccion === 'privado'}
-              onChange={() => setSeleccion('privado')}
+              checked={opcionSeleccionada === 'privado'}
+              onChange={() => setOpcionSeleccionada('privado')}
             />
-            <div>
-              <strong>Atención particular</strong>
-              <p>La persona pagará la consulta directamente, con o sin seguro médico.</p>
-            </div>
+            <strong>Atención particular</strong>
+            <span>
+              La persona pagará la consulta directamente, con o sin seguro médico.
+            </span>
           </label>
 
-          <label className={`opcion ${seleccion === 'convenio' ? 'seleccionado' : ''}`}>
+          <label className={`opcion-box ${opcionSeleccionada === 'convenio' ? 'seleccionada' : ''}`}>
             <input
               type="radio"
+              name="tipo"
               value="convenio"
-              checked={seleccion === 'convenio'}
-              onChange={() => setSeleccion('convenio')}
+              checked={opcionSeleccionada === 'convenio'}
+              onChange={() => setOpcionSeleccionada('convenio')}
             />
-            <div>
-              <strong>Atención por convenio</strong>
-              <p>La persona trabaja en una empresa o institución que tiene convenio con el centro médico.</p>
-            </div>
+            <strong>Atención por convenio</strong>
+            <span>
+              La persona trabaja en una empresa o institución que tiene convenio con el centro médico.
+            </span>
           </label>
         </div>
 
-        <button className="boton-continuar" onClick={continuar} disabled={!seleccion}>
+        <button type="submit" disabled={!opcionSeleccionada}>
           Continuar
         </button>
-      </div>
+      </form>
     </div>
   );
 };
