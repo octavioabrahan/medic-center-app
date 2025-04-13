@@ -1,4 +1,8 @@
-.form-wrapper {
+body {
+    background-color: #FBFBFC;
+  }
+  
+  .form-wrapper {
     font-family: 'Arial', sans-serif;
     background-color: #fdfdfd;
     min-height: 100vh;
@@ -23,8 +27,8 @@
   }
   
   .form-title {
-    font-size: 1.8rem;
     color: #0a2472;
+    font-size: 1.5rem;
     text-align: center;
     margin-bottom: 2rem;
   }
@@ -48,14 +52,20 @@
     margin-bottom: 1rem;
   }
   
-  input,
-  select {
-    padding: 0.6rem;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    font-size: 0.95rem;
+  .form-container {
+    background-color: #FBFBFC;
+    padding: 2rem;
+    max-width: 800px;
+    margin: auto;
+  }
+  
+  input, select {
     width: 100%;
-    box-sizing: border-box;
+    padding: 10px;
+    margin-top: 0.3rem;
+    margin-bottom: 1rem;
+    border-radius: 6px;
+    border: 1px solid #ccc;
   }
   
   select:invalid {
@@ -68,6 +78,39 @@
     gap: 0.5rem;
     font-size: 0.95rem;
     color: #333;
+  }
+  
+  .fieldset-box {
+    background-color: #f7f9fc;
+    padding: 1rem;
+    border-radius: 8px;
+    margin-top: 1.5rem;
+    border: 1px solid #e0e0e0;
+  }
+  
+  .radio-group {
+    display: flex;
+    gap: 1rem;
+    margin: 0.5rem 0 1rem;
+  }
+  
+  .radio-group label {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+  }
+  
+  .checkbox-group {
+    display: flex;
+    flex-direction: column;
+    margin: 1rem 0;
+  }
+  
+  .input-hint {
+    color: #666;
+    font-size: 0.9rem;
+    margin-top: -0.5rem;
+    margin-bottom: 1rem;
   }
   
   .boton-principal {
@@ -86,6 +129,16 @@
     background-color: #142a61;
   }
   
+  .boton-continuar {
+    background-color: #1a3a8a;
+    color: white;
+    padding: 10px 20px;
+    float: right;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+  }
+  
   .form-actions {
     display: flex;
     justify-content: flex-end;
@@ -101,4 +154,3 @@
       justify-content: center;
     }
   }
-  
