@@ -19,9 +19,7 @@ const AgendamientoIndex = () => {
       </div>
 
       <div className="agendamiento-content">
-        <div className="volver-top">
-          <a href="/">← Volver a la página principal</a>
-        </div>
+        <a href="/" className="volver-link">← Volver a la página principal</a>
 
         <h2>¿Cómo se pagará la cita?</h2>
         <p className="agendamiento-subtitle">

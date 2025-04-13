@@ -1,86 +1,90 @@
 .agendamiento-container {
-  max-width: 900px;
-  margin: 0 auto;
-  padding: 2rem;
+  font-family: 'Arial', sans-serif;
+  padding: 0;
+  margin: 0;
+  background-color: #f9f9f9;
+  min-height: 100vh;
+}
+
+.agendamiento-header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 1rem 0 0.5rem;
+  border-bottom: 1px solid #ccc;
+  background-color: white;
 }
 
 .agendamiento-logo {
-  display: block;
-  margin: 0 auto 1rem auto;
-  max-height: 60px;
+  max-height: 55px;
+  width: auto;
 }
 
 .agendamiento-content {
-  border-top: 1px solid #ccc;
-  padding-top: 2rem;
-  position: relative;
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .agendamiento-content h2 {
-  text-align: center;
   font-size: 1.8rem;
   color: #0a2472;
   margin-bottom: 1rem;
+  text-align: center;
 }
 
 .agendamiento-subtitle {
+  font-size: 1rem;
+  color: #555;
   text-align: center;
   max-width: 700px;
-  margin: 0 auto 2rem auto;
-  color: #444;
-  font-size: 1rem;
+  margin-bottom: 2rem;
 }
 
 .agendamiento-opciones {
   display: flex;
-  flex-wrap: wrap;
   gap: 1rem;
+  flex-wrap: wrap;
   justify-content: center;
   margin-bottom: 2rem;
+  width: 100%;
 }
 
 .opcion {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
   border: 1px solid #ccc;
   border-radius: 8px;
   padding: 1rem;
-  width: 100%;
-  max-width: 360px;
-  display: flex;
-  gap: 0.5rem;
-  align-items: flex-start;
   cursor: pointer;
-  transition: border-color 0.3s;
+  width: 100%;
+  max-width: 400px;
   background-color: white;
+  transition: border 0.2s;
 }
 
 .opcion.seleccionado {
-  border-color: #1a3a8a;
-  background-color: #f5f9ff;
+  border: 2px solid #1a3a8a;
+  background-color: #eef2fb;
 }
 
 .opcion input[type="radio"] {
-  margin-top: 5px;
-}
-
-.opcion strong {
-  display: block;
-  font-weight: 600;
-  margin-bottom: 0.25rem;
-  color: #000;
+  margin-top: 4px;
 }
 
 .boton-continuar {
-  position: absolute;
-  bottom: -4rem;
-  right: 0;
-  margin: 1rem 0;
-  padding: 0.6rem 1.2rem;
   background-color: #1a3a8a;
   color: white;
+  padding: 10px 24px;
   border: none;
-  border-radius: 6px;
-  font-weight: 500;
+  border-radius: 5px;
   cursor: pointer;
+  align-self: flex-end;
+  transition: background 0.3s;
 }
 
 .boton-continuar:disabled {
@@ -88,36 +92,35 @@
   cursor: not-allowed;
 }
 
-.link-volver {
-  position: absolute;
-  top: 0;
-  left: 0;
-  font-size: 0.9rem;
+.volver-link {
+  align-self: flex-start;
+  margin-bottom: 2rem;
+  font-size: 0.95rem;
   color: #1a3a8a;
-  margin-top: 1rem;
+  text-decoration: none;
+}
+
+.volver-link:hover {
+  text-decoration: underline;
 }
 
 @media (max-width: 768px) {
-  .agendamiento-container {
-    padding: 1rem;
-  }
-
   .agendamiento-opciones {
     flex-direction: column;
-    align-items: center;
+    align-items: stretch;
+  }
+
+  .opcion {
+    max-width: 100%;
   }
 
   .boton-continuar {
-    position: static;
-    display: block;
+    align-self: center;
     width: 100%;
-    margin-top: 2rem;
+    max-width: 300px;
   }
 
-  .link-volver {
-    position: static;
-    display: block;
-    text-align: left;
-    margin-bottom: 1rem;
+  .volver-link {
+    align-self: center;
   }
 }
