@@ -229,6 +229,10 @@ body {
   .volver-btn-gris {
     color: #6B7280 !important;
   }  
+
+  .fila {
+    flex-direction: row;
+  }  
   
   @media (max-width: 600px) {
     .radio-group {
