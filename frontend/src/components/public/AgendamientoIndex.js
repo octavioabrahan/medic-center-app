@@ -1,79 +1,66 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import './AgendamientoIndex.css';
 
 const AgendamientoIndex = () => {
-  const [opcion, setOpcion] = useState('');
+  const [seleccion, setSeleccion] = useState('');
   const navigate = useNavigate();
 
-  const handleContinuar = () => {
-    if (opcion === 'privado') navigate('/agendamiento/privado');
-    else if (opcion === 'convenio') navigate('/agendamiento/convenio');
+  const continuar = () => {
+    if (seleccion === 'privado') navigate('/agendamiento/privado');
+    else if (seleccion === 'convenio') navigate('/agendamiento/empresa');
   };
 
   return (
-    <div style={{ padding: '2rem', textAlign: 'center' }}>
-      <a href="/" style={{ display: 'block', marginBottom: '1rem' }}>← Volver a la página principal</a>
-
-      <h2 style={{ color: '#1a3a8a' }}>¿Cómo se pagará la cita?</h2>
-      <p style={{ maxWidth: 600, margin: '0 auto 2rem', color: '#444' }}>
-        Selecciona la opción que corresponde al tipo de atención de la persona que se va a atender.
-        Esto nos permitirá mostrar solo los pasos y documentos necesarios según cada caso.
-      </p>
-
-      <div style={{ display: 'flex', justifyContent: 'center', gap: '2rem', marginBottom: '2rem' }}>
-        <div
-          onClick={() => setOpcion('privado')}
-          style={{
-            border: '1px solid #ccc',
-            padding: '1.5rem',
-            borderRadius: '8px',
-            cursor: 'pointer',
-            maxWidth: 300,
-            backgroundColor: opcion === 'privado' ? '#e5efff' : 'white',
-            boxShadow: opcion === 'privado' ? '0 0 0 2px #1a3a8a' : 'none'
-          }}
-        >
-          <strong>Atención particular</strong>
-          <p style={{ fontSize: '0.9rem', marginTop: '0.5rem' }}>
-            La persona pagará la consulta directamente, con o sin seguro médico.
-          </p>
-        </div>
-
-        <div
-          onClick={() => setOpcion('convenio')}
-          style={{
-            border: '1px solid #ccc',
-            padding: '1.5rem',
-            borderRadius: '8px',
-            cursor: 'pointer',
-            maxWidth: 300,
-            backgroundColor: opcion === 'convenio' ? '#e5efff' : 'white',
-            boxShadow: opcion === 'convenio' ? '0 0 0 2px #1a3a8a' : 'none'
-          }}
-        >
-          <strong>Atención por convenio</strong>
-          <p style={{ fontSize: '0.9rem', marginTop: '0.5rem' }}>
-            La persona trabaja en una empresa o institución que tiene convenio con el centro médico.
-          </p>
-        </div>
+    <div className="agendamiento-container">
+      <div className="agendamiento-header">
+        <a href="/">← Volver a la página principal</a>
+        <img
+          src="/logo_header.png"
+          alt="Logo Diagnocentro"
+          className="agendamiento-logo"
+        />
       </div>
 
-      <button
-        disabled={!opcion}
-        onClick={handleContinuar}
-        style={{
-          background: '#1a3a8a',
-          color: 'white',
-          border: 'none',
-          padding: '0.5rem 1.5rem',
-          fontSize: '1rem',
-          borderRadius: '4px',
-          cursor: opcion ? 'pointer' : 'not-allowed',
-          opacity: opcion ? 1 : 0.5
-        }}
-      >
-        Continuar
-      </button>
+      <div className="agendamiento-content">
+        <h2>¿Cómo se pagará la cita?</h2>
+        <p className="agendamiento-subtitle">
+          Selecciona la opción que corresponde al tipo de atención de la persona que se va a atender.
+          Esto nos permitirá mostrar solo los pasos y documentos necesarios según cada caso.
+        </p>
+
+        <div className="agendamiento-opciones">
+          <label className={`opcion ${seleccion === 'privado' ? 'seleccionado' : ''}`}>
+            <input
+              type="radio"
+              value="privado"
+              checked={seleccion === 'privado'}
+              onChange={() => setSeleccion('privado')}
+            />
+            <div>
+              <strong>Atención particular</strong>
+              <p>La persona pagará la consulta directamente, con o sin seguro médico.</p>
+            </div>
+          </label>
+
+          <label className={`opcion ${seleccion === 'convenio' ? 'seleccionado' : ''}`}>
+            <input
+              type="radio"
+              value="convenio"
+              checked={seleccion === 'convenio'}
+              onChange={() => setSeleccion('convenio')}
+            />
+            <div>
+              <strong>Atención por convenio</strong>
+              <p>La persona trabaja en una empresa o institución que tiene convenio con el centro médico.</p>
+            </div>
+          </label>
+        </div>
+
+        <button className="boton-continuar" onClick={continuar} disabled={!seleccion}>
+          Continuar
+        </button>
+      </div>
     </div>
   );
 };
