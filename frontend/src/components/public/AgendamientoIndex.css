@@ -71,7 +71,7 @@
 
 .boton-continuar {
   position: absolute;
-  bottom: 0;
+  bottom: -3rem;
   right: 0;
   margin: 1rem 0;
   padding: 0.6rem 1.2rem;
