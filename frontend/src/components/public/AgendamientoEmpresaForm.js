@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import CalendarioFechasDisponibles from './CalendarioFechasDisponibles';
-import './AgendamientoEmpresa.css';
+import './AgendamientoEmpresaForm.css';
 import logo from '../../assets/logo_header.png';
 
 const AgendamientoEmpresaForm = () => {
