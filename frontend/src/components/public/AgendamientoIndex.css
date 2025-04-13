@@ -1,116 +1,95 @@
-.agendamiento-index {
-    font-family: 'Segoe UI', sans-serif;
-    padding: 0;
-    margin: 0;
-    background-color: #fff;
-    min-height: 100vh;
+
+.agendamiento-container {
     display: flex;
     flex-direction: column;
+    min-height: 100vh;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #fcfcfc;
+    color: #333;
   }
   
   .agendamiento-header {
     display: flex;
-    justify-content: center;
-    padding: 20px 0;
-    border-bottom: 1px solid #e0e0e0;
-  }
-  
-  .agendamiento-header-container {
-    display: flex;
+    flex-direction: column;
     align-items: center;
-    justify-content: space-between;
-    padding: 12px 24px;
-    flex-wrap: wrap;
+    border-bottom: 1px solid #ccc;
+    padding: 1rem;
   }
   
-  .logo-header {
-    height: 48px;
-    margin-top: 4px;
-  }
-
   .agendamiento-logo {
-    max-height: 60px;
-    width: auto;
+    height: 60px;
+    object-fit: contain;
   }
   
-  .divider {
-    border: 0;
-    height: 1px;
-    background: #ccc;
-    margin: 0;
-  }
-  
-  .volver-link {
-    margin-top: 3rem;
-    text-align: center;
-    font-size: 0.9rem;
-  }
-
-  .volver-link a {
-    color: #222;
-    text-decoration: none;
-  }
-
-  .volver-link a:hover {
-    text-decoration: underline;
-  }
-  
-  .agendamiento-main {
-    padding: 2rem 1.5rem;
-    max-width: 800px;
-    margin: 0 auto;
+  .agendamiento-content {
+    max-width: 960px;
+    margin: 2rem auto;
+    padding: 0 1rem;
     text-align: center;
   }
   
-  .agendamiento-main h2 {
-    color: #0a2472;
+  .agendamiento-content h2 {
     font-size: 1.8rem;
-    margin-bottom: 0.5rem;
+    color: #0a2472;
+    margin-bottom: 1rem;
   }
   
   .agendamiento-subtitle {
-    color: #555;
     font-size: 1rem;
+    color: #666;
     margin-bottom: 2rem;
-    max-width: 600px;
-    margin-left: auto;
-    margin-right: auto;
   }
   
   .agendamiento-opciones {
     display: flex;
-    flex-direction: column;
+    justify-content: center;
+    flex-wrap: wrap;
     gap: 1rem;
     margin-bottom: 2rem;
   }
   
   .opcion {
-    border: 1px solid #ccc;
-    padding: 1rem;
-    border-radius: 6px;
-    cursor: pointer;
-    text-align: left;
     display: flex;
-    gap: 1rem;
     align-items: flex-start;
+    padding: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    max-width: 400px;
+    width: 100%;
+    cursor: pointer;
+    background-color: white;
+    transition: border-color 0.3s;
   }
   
   .opcion input {
     margin-top: 4px;
+    margin-right: 0.8rem;
   }
   
   .opcion.seleccionado {
-    border-color: #1a3a8a;
-    background-color: #f0f4ff;
+    border-color: #0a2472;
+    box-shadow: 0 0 0 1px #0a2472;
+  }
+  
+  .opcion strong {
+    font-size: 1rem;
+    display: block;
+    margin-bottom: 0.2rem;
+  }
+  
+  .opcion p {
+    font-size: 0.9rem;
+    color: #444;
+    margin: 0;
   }
   
   .boton-continuar {
     background-color: #1a3a8a;
-    color: #fff;
-    padding: 10px 20px;
-    font-weight: bold;
+    color: white;
+    padding: 0.6rem 1.5rem;
     border: none;
-    border-radius: 4px;
+    border-radius: 6px;
+    font-size: 1rem;
     cursor: pointer;
   }
   
@@ -119,19 +98,24 @@
     cursor: not-allowed;
   }
   
-  /* Responsive */
-  @media (min-width: 768px) {
+  .volver-link {
+    text-align: center;
+    margin-top: auto;
+    padding: 2rem 1rem;
+    font-size: 0.95rem;
+  }
+  
+  @media (max-width: 768px) {
     .agendamiento-opciones {
-      flex-direction: row;
-      justify-content: center;
+      flex-direction: column;
+      align-items: center;
+    }
+  
+    .agendamiento-content h2 {
+      font-size: 1.5rem;
     }
   
     .opcion {
-      width: 45%;
-    }
-  
-    .volver-link {
-      font-size: 1rem;
+      max-width: 100%;
     }
   }
-  
