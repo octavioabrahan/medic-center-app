@@ -190,10 +190,10 @@ const AgendamientoEmpresaForm = () => {
         )}
         {step === 2 && (
   <div>
-    <button onClick={() => setStep(1)} className="volver-btn">← Volver al paso anterior</button>
+    <button onClick={() => setStep(1)} className="volver-btn volver-btn-gris">← Volver al paso anterior</button>
     <h2 className="titulo-principal">Selecciona la especialidad, el médico y el día.</h2>
 
-    <label style={{ marginBottom: '0.5rem', display: 'block' }}>Selecciona la categoría de atención</label>
+    <label style={{ marginBottom: '1rem', display: 'block' }}>Selecciona la categoría de atención</label>
     <div className="selector-botones-radio">
       <label className={modoSeleccion === 'consulta' ? 'radio-opcion activo' : 'radio-opcion'}>
         <input
@@ -203,7 +203,7 @@ const AgendamientoEmpresaForm = () => {
           checked={modoSeleccion === 'consulta'}
           onChange={() => setModoSeleccion('consulta')}
         />
-        Consulta médica
+        <span>Consulta médica</span>
       </label>
       <label className={modoSeleccion === 'estudio' ? 'radio-opcion activo' : 'radio-opcion'}>
         <input
@@ -213,7 +213,7 @@ const AgendamientoEmpresaForm = () => {
           checked={modoSeleccion === 'estudio'}
           onChange={() => setModoSeleccion('estudio')}
         />
-        Estudio
+        <span>Estudio</span>
       </label>
     </div>
 
