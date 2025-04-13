@@ -9,18 +9,24 @@ const AgendamientoModel = {
       profesional_id,
       tipo_atencion_id,
       observaciones,
-      hora_inicio
+      hora_inicio,
+      id_empresa
     } = datos;
-
+  
     const query = `
       INSERT INTO agendamiento (
-        cedula, fecha_agendada, convenio,
-        profesional_id, tipo_atencion_id, observaciones,
-        hora_inicio
+        cedula,
+        fecha_agendada,
+        convenio,
+        profesional_id,
+        tipo_atencion_id,
+        observaciones,
+        hora_inicio,
+        id_empresa
       )
-      VALUES ($1, $2, $3, $4, $5, $6, $7)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
     `;
-
+  
     await db.query(query, [
       cedula,
       fecha_agendada,
@@ -28,7 +34,8 @@ const AgendamientoModel = {
       profesional_id,
       tipo_atencion_id,
       observaciones || null,
-      hora_inicio || null
+      hora_inicio || null,
+      id_empresa || null
     ]);
   },
 

@@ -13,9 +13,10 @@ const PacientesModel = {
       seguro_medico,
       representante_cedula,
       representante_nombre,
-      representante_apellido
+      representante_apellido,
+      id_empresa
     } = datos;
-
+  
     const query = `
       INSERT INTO pacientes (
         cedula,
@@ -28,10 +29,11 @@ const PacientesModel = {
         seguro_medico,
         representante_cedula,
         representante_nombre,
-        representante_apellido
-      ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
+        representante_apellido,
+        id_empresa
+      ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
     `;
-
+  
     await db.query(query, [
       cedula,
       nombre,
@@ -43,9 +45,10 @@ const PacientesModel = {
       seguro_medico,
       representante_cedula,
       representante_nombre,
-      representante_apellido
+      representante_apellido,
+      id_empresa || null
     ]);
-  }
+  }  
 };
 
 module.exports = PacientesModel;
