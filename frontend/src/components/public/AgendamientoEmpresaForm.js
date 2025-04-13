@@ -188,13 +188,14 @@ const AgendamientoEmpresaForm = () => {
             </div>
           </form>
         )}
-        {step === 2 && (
+        /* Paso 2 actualizado visualmente con estilo flat y colores acorde a Figma */
+{step === 2 && (
   <div>
     <button onClick={() => setStep(1)} className="volver-btn volver-btn-gris">← Volver al paso anterior</button>
     <h2 className="titulo-principal">Selecciona la especialidad, el médico y el día.</h2>
 
     <label style={{ marginBottom: '1rem', display: 'block' }}>Selecciona la categoría de atención</label>
-    <div className="selector-botones-radio">
+    <div className="selector-botones-radio fila">
       <label className={modoSeleccion === 'consulta' ? 'radio-opcion activo' : 'radio-opcion'}>
         <input
           type="radio"
@@ -305,7 +306,6 @@ const AgendamientoEmpresaForm = () => {
     </div>
   </div>
 )}
-
         {step === 3 && (
           <div className="confirmacion">
             <button onClick={() => setStep(2)} className="volver-btn">← Volver al paso anterior</button>
