@@ -4,15 +4,12 @@ import CalendarioFechasDisponibles from './CalendarioFechasDisponibles';
 
 const AgendamientoEmpresaForm = () => {
   const [step, setStep] = useState(1);
-
   const [empresas, setEmpresas] = useState([]);
-  const [idEmpresa, setIdEmpresa] = useState('');
-
+  const [empresaId, setEmpresaId] = useState('');
   const [parentesco, setParentesco] = useState('titular');
-  const [archivoOrden, setArchivoOrden] = useState(null); // Reservado para lógica posterior
 
   const [datosRepresentante, setDatosRepresentante] = useState({
-    cedula: '', nombre: '', apellido: '', telefono: '', email: ''
+    cedula: '', nombre: '', apellido: '', telefono: '', email: '', numeroHijo: '1'
   });
   const [datosPaciente, setDatosPaciente] = useState({
     cedula: '', nombre: '', apellido: '', fechaNacimiento: '', sexo: '', telefono: '', email: ''
@@ -28,11 +25,10 @@ const AgendamientoEmpresaForm = () => {
   const [fechaSeleccionada, setFechaSeleccionada] = useState(null);
 
   useEffect(() => {
-    axios.get('/api/empresas')
-      .then(res => {
-        const activas = res.data.filter(e => e.activa);
-        setEmpresas(activas);
-      }).catch(console.error);
+    axios.get('/api/empresas').then(res => {
+      const activas = res.data.filter(e => e.activa);
+      setEmpresas(activas);
+    }).catch(console.error);
   }, []);
 
   useEffect(() => {
@@ -51,20 +47,26 @@ const AgendamientoEmpresaForm = () => {
   );
 
   const enviarAgendamiento = async () => {
+    const esTitular = parentesco === 'titular';
+
+    const representanteCedula = !esTitular
+      ? `${datosRepresentante.cedula}-${datosRepresentante.numeroHijo}`
+      : null;
+
     const payload = {
-      cedula: datosPaciente.cedula,
+      cedula: esTitular ? datosPaciente.cedula : datosRepresentante.cedula,
       paciente: {
         nombre: datosPaciente.nombre,
         apellido: datosPaciente.apellido,
         fecha_nacimiento: datosPaciente.fechaNacimiento,
         sexo: datosPaciente.sexo,
-        telefono: datosPaciente.telefono,
-        email: datosPaciente.email,
-        representante_cedula: parentesco !== 'titular' ? datosRepresentante.cedula : null,
-        representante_nombre: parentesco !== 'titular' ? datosRepresentante.nombre : null,
-        representante_apellido: parentesco !== 'titular' ? datosRepresentante.apellido : null,
-        id_empresa: idEmpresa,
-        seguro_medico: false
+        telefono: esTitular ? datosPaciente.telefono : datosRepresentante.telefono,
+        email: esTitular ? datosPaciente.email : datosRepresentante.email,
+        representante_cedula: representanteCedula,
+        representante_nombre: !esTitular ? datosRepresentante.nombre : null,
+        representante_apellido: !esTitular ? datosRepresentante.apellido : null,
+        seguro_medico: false,
+        id_empresa: empresaId
       },
       profesional_id: profesionalSeleccionado,
       fecha_agendada: fechaSeleccionada?.fecha || fechaSeleccionada,
@@ -78,22 +80,21 @@ const AgendamientoEmpresaForm = () => {
       setStep(4);
     } catch (err) {
       console.error('Error al crear agendamiento:', err);
-      alert('Hubo un error al agendar. Intenta nuevamente.');
+      alert('Error al agendar. Verifica los datos e intenta de nuevo.');
     }
   };
 
   return (
     <div>
-      {/* Paso 1 */}
       {step === 1 && (
         <form onSubmit={e => { e.preventDefault(); setStep(2); }}>
           <h2>Agendamiento por Convenio</h2>
 
           <label>Empresa:</label>
-          <select value={idEmpresa} onChange={e => setIdEmpresa(e.target.value)} required>
+          <select value={empresaId} onChange={e => setEmpresaId(e.target.value)} required>
             <option value="">Seleccionar empresa</option>
-            {empresas.map(emp => (
-              <option key={emp.id_empresa} value={emp.id_empresa}>{emp.nombre_empresa}</option>
+            {empresas.map(e => (
+              <option key={e.id_empresa} value={e.id_empresa}>{e.nombre_empresa}</option>
             ))}
           </select>
 
@@ -105,12 +106,15 @@ const AgendamientoEmpresaForm = () => {
             <option value="otro">Otro</option>
           </select>
 
-          {parentesco !== 'titular' && (
+          {!['titular'].includes(parentesco) && (
             <fieldset>
               <legend>Datos del trabajador</legend>
               <input placeholder="Cédula"
                 value={datosRepresentante.cedula}
                 onChange={e => setDatosRepresentante({ ...datosRepresentante, cedula: e.target.value })} />
+              <input placeholder="Número de hijo(a)"
+                value={datosRepresentante.numeroHijo}
+                onChange={e => setDatosRepresentante({ ...datosRepresentante, numeroHijo: e.target.value })} />
               <input placeholder="Nombre"
                 value={datosRepresentante.nombre}
                 onChange={e => setDatosRepresentante({ ...datosRepresentante, nombre: e.target.value })} />
@@ -155,24 +159,14 @@ const AgendamientoEmpresaForm = () => {
               onChange={e => setDatosPaciente({ ...datosPaciente, email: e.target.value })} />
           </fieldset>
 
-          {/* Aquí irá el botón para adjuntar orden médica */}
-          {parentesco !== 'titular' && (
-            <div style={{ marginTop: '1rem' }}>
-              <label>Orden médica:</label>
-              <input type="file" disabled />
-              <small>(Pendiente por implementar)</small>
-            </div>
-          )}
-
           <button type="submit">Continuar</button>
         </form>
       )}
 
-      {/* Paso 2 */}
       {step === 2 && (
         <div>
           <button onClick={() => setStep(1)}>← Volver al paso anterior</button>
-          <h2>Selecciona la especialidad, el médico y el día.</h2>
+          <h2>Selecciona la especialidad, el médico y el día</h2>
 
           <div style={{ marginBottom: '1rem' }}>
             <button onClick={() => setModoSeleccion('consulta')} style={{ marginRight: 8 }}>
@@ -188,10 +182,12 @@ const AgendamientoEmpresaForm = () => {
                   <label>Especialidad:</label>
                   <select value={especialidadSeleccionada}
                     onChange={e => setEspecialidadSeleccionada(e.target.value)}>
-                    <option value="">Selecciona una opción</option>
-                    {[...new Set(profesionalesFiltrados.map(p => p.nombre_especialidad))].filter(Boolean).map((esp, i) => (
-                      <option key={i} value={esp}>{esp}</option>
-                    ))}
+                    <option value="">Selecciona</option>
+                    {[...new Set(profesionalesFiltrados.map(p => p.nombre_especialidad))]
+                      .filter(Boolean)
+                      .map((esp, i) => (
+                        <option key={i} value={esp}>{esp}</option>
+                      ))}
                   </select>
                 </>
               )}
@@ -214,9 +210,8 @@ const AgendamientoEmpresaForm = () => {
                 onChange={e => setProfesionalSeleccionado(e.target.value)}>
                 <option value="">Selecciona al profesional</option>
                 {profesionalesFiltrados
-                  .filter(p =>
-                    !especialidadSeleccionada || p.nombre_especialidad === especialidadSeleccionada
-                  ).map(p => (
+                  .filter(p => modoSeleccion === 'consulta' ? p.nombre_especialidad === especialidadSeleccionada : true)
+                  .map(p => (
                     <option key={p.profesional_id} value={p.profesional_id}>
                       {p.nombre} {p.apellido}
                     </option>
@@ -224,16 +219,17 @@ const AgendamientoEmpresaForm = () => {
               </select>
 
               {profesionalSeleccionado && (
-                <CalendarioFechasDisponibles
-                  profesionalId={profesionalSeleccionado}
-                  onFechaSeleccionada={setFechaSeleccionada}
-                />
-              )}
-
-              {fechaSeleccionada && (
-                <button onClick={enviarAgendamiento} style={{ marginTop: '1rem' }}>
-                  Enviar solicitud
-                </button>
+                <>
+                  <CalendarioFechasDisponibles
+                    profesionalId={profesionalSeleccionado}
+                    onFechaSeleccionada={setFechaSeleccionada}
+                  />
+                  {fechaSeleccionada && (
+                    <button onClick={enviarAgendamiento} style={{ marginTop: '1rem' }}>
+                      Enviar solicitud
+                    </button>
+                  )}
+                </>
               )}
             </>
           )}
