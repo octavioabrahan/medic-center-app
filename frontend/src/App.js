@@ -15,7 +15,7 @@ import ProfesionalAsignarServicios from './pages/admin/ProfesionalAsignarServici
 import AdminAgendamientos from "./pages/admin/AdminAgendamientos";
 import AdminEmpresas from "./pages/admin/AdminEmpresas";
 import AgendamientoEmpresaForm from "./components/public/AgendamientoEmpresaForm";
-import AgendamientoIndex from './pages/public/AgendamientoIndex';
+import AgendamientoIndex from './components/public/AgendamientoIndex';
 
 function App() {
   return (
