@@ -188,7 +188,6 @@ const AgendamientoEmpresaForm = () => {
             </div>
           </form>
         )}
-{/* Paso 2 actualizado visualmente con estilo flat y colores acorde a Figma */}
 {step === 2 && (
   <div>
     <button onClick={() => setStep(1)} className="volver-btn volver-btn-gris">← Volver al paso anterior</button>
