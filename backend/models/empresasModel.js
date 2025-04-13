@@ -12,9 +12,26 @@ const EmpresasModel = {
   },
 
   listar: async () => {
-    const result = await db.query(`SELECT * FROM empresas ORDER BY nombre_empresa`);
+    const result = await db.query(
+      `SELECT * FROM empresas WHERE activa = true ORDER BY nombre_empresa`
+    );
     return result.rows;
-  }
+  },
+
+  actualizar: async ({ id_empresa, nombre_empresa, rif }) => {
+    const query = `
+      UPDATE empresas
+      SET nombre_empresa = $1, rif = $2
+      WHERE id_empresa = $3
+    `;
+    await db.query(query, [nombre_empresa, rif, id_empresa]);
+  },
+  
+  desactivar: async (id_empresa) => {
+    const query = `UPDATE empresas SET activa = false WHERE id_empresa = $1`;
+    await db.query(query, [id_empresa]);
+  },
+  
 };
 
 module.exports = EmpresasModel;

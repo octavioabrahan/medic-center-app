@@ -25,7 +25,30 @@ const EmpresasController = {
       console.error("Error al listar empresas:", err);
       res.status(500).json({ error: "Error al obtener empresas" });
     }
-  }
+  },
+
+  actualizar: async (req, res) => {
+    const { id_empresa, nombre_empresa, rif } = req.body;
+    try {
+      await model.actualizar({ id_empresa, nombre_empresa, rif });
+      res.json({ mensaje: "Empresa actualizada" });
+    } catch (err) {
+      console.error("Error al actualizar empresa:", err);
+      res.status(500).json({ error: "Error al actualizar empresa" });
+    }
+  },
+  
+  desactivar: async (req, res) => {
+    const { id } = req.params;
+    try {
+      await model.desactivar(id);
+      res.json({ mensaje: "Empresa desactivada" });
+    } catch (err) {
+      console.error("Error al desactivar empresa:", err);
+      res.status(500).json({ error: "Error al desactivar empresa" });
+    }
+  },
+  
 };
 
 module.exports = EmpresasController;
