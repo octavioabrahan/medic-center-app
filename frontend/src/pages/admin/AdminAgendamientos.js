@@ -8,7 +8,10 @@ const AdminAgendamientos = () => {
   const [loading, setLoading] = useState(true);
   const [searchParams, setSearchParams] = useSearchParams();
 
-  // Valor por defecto si no hay status en la URL
+  const [mostrarHistorial, setMostrarHistorial] = useState(false);
+  const [historial, setHistorial] = useState([]);
+  const [historialDe, setHistorialDe] = useState(null);
+
   const status =
     searchParams.get("status")?.trim() || TODOS_LOS_ESTADOS.join(",");
   const desde = searchParams.get("desde") || null;
@@ -68,6 +71,26 @@ const AdminAgendamientos = () => {
     }
 
     setSearchParams(newParams);
+  };
+
+  const abrirHistorial = async (id) => {
+    try {
+      const res = await fetch(
+        `${process.env.REACT_APP_API_URL}/api/agendamiento/${id}/historial`
+      );
+      const data = await res.json();
+      setHistorial(data);
+      setHistorialDe(id);
+      setMostrarHistorial(true);
+    } catch (err) {
+      alert("Error al obtener historial");
+    }
+  };
+
+  const cerrarHistorial = () => {
+    setMostrarHistorial(false);
+    setHistorial([]);
+    setHistorialDe(null);
   };
 
   return (
@@ -167,11 +190,71 @@ const AdminAgendamientos = () => {
                       Volver a activar
                     </button>
                   )}
+                  <br />
+                  <button
+                    onClick={() => abrirHistorial(a.agendamiento_id)}
+                    style={{ marginTop: "0.5rem" }}
+                  >
+                    Historial
+                  </button>
                 </td>
               </tr>
             ))}
           </tbody>
         </table>
+      )}
+
+      {/* Modal historial */}
+      {mostrarHistorial && (
+        <div
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            background: "rgba(0,0,0,0.6)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center"
+          }}
+        >
+          <div
+            style={{
+              background: "#fff",
+              padding: "1.5rem",
+              borderRadius: "8px",
+              width: "600px",
+              maxHeight: "80vh",
+              overflowY: "auto"
+            }}
+          >
+            <h3>Historial de Agendamiento #{historialDe}</h3>
+            <table border="1" cellPadding="6" style={{ width: "100%" }}>
+              <thead>
+                <tr>
+                  <th>Anterior</th>
+                  <th>Nuevo</th>
+                  <th>Quién</th>
+                  <th>Cuándo</th>
+                </tr>
+              </thead>
+              <tbody>
+                {historial.map((h) => (
+                  <tr key={h.historial_id}>
+                    <td>{h.estado_anterior}</td>
+                    <td>{h.estado_nuevo}</td>
+                    <td>{h.cambiado_por}</td>
+                    <td>{new Date(h.fecha_cambio).toLocaleString()}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+            <div style={{ marginTop: "1rem", textAlign: "right" }}>
+              <button onClick={cerrarHistorial}>Cerrar</button>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );
