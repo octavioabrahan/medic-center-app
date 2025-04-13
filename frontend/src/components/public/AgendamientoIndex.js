@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import './Agendamiento.css';
+import './AgendamientoIndex.css';
 import logo from '../../assets/logo_header.png';
 
 const AgendamientoIndex = () => {
