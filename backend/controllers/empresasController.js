@@ -1,10 +1,5 @@
 const model = require("../models/empresasModel");
 
-const yaExiste = await model.existeRif(rif);
-if (yaExiste) {
-  return res.status(400).json({ error: "Ya existe una empresa con ese RIF." });
-}
-
 const EmpresasController = {
   crear: async (req, res) => {
     const { nombre_empresa, rif } = req.body;
@@ -14,6 +9,12 @@ const EmpresasController = {
     }
 
     try {
+      // Verificación de RIF movida aquí donde tiene acceso a la variable rif
+      const yaExiste = await model.existeRif(rif);
+      if (yaExiste) {
+        return res.status(400).json({ error: "Ya existe una empresa con ese RIF." });
+      }
+
       const empresa = await model.crear({ nombre_empresa, rif });
       res.status(201).json(empresa);
     } catch (err) {
@@ -63,8 +64,7 @@ const EmpresasController = {
       console.error("Error al activar empresa:", err);
       res.status(500).json({ error: "Error al activar empresa" });
     }
-  },  
-  
+  }
 };
 
 module.exports = EmpresasController;
