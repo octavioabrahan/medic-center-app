@@ -80,8 +80,7 @@ body {
   input[type="text"],
   input[type="email"],
   input[type="date"],
-  input[type="number"],
-  select {
+  input[type="number"] {
     width: 100%;
     padding: 0.6rem;
     margin-bottom: 1rem;
@@ -89,8 +88,38 @@ body {
     border: 1px solid #ccc;
   }
   
+  /* Updated select styling to look less disabled */
+  select {
+    width: 100%;
+    padding: 0.6rem;
+    margin-bottom: 1rem;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    color: #333; /* Make the text darker even for placeholders */
+    background-color: white; /* Ensure background is white */
+    cursor: pointer; /* Add pointer cursor to indicate interactivity */
+    appearance: auto; /* Restore native dropdown appearance */
+  }
+  
+  /* Style the placeholder option specifically */
+  select option[value=""] {
+    color: #333;
+  }
+  
+  /* Add a slight hover effect to indicate interactivity */
+  select:hover {
+    border-color: #999;
+  }
+  
+  /* When the select is focused */
+  select:focus {
+    outline: none;
+    border-color: #1a3a8a;
+    box-shadow: 0 0 0 2px rgba(26, 58, 138, 0.1);
+  }
+  
   select:invalid {
-    color: #888;
+    color: #333; /* Changed from #888 to make it look less disabled */
   }
   
   .checkbox-row {
