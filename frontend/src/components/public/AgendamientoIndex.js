@@ -40,15 +40,15 @@ const AgendamientoIndex = () => {
         </div>
 
         <div
-          onClick={() => setOpcion('empresa')}
+          onClick={() => setOpcion('convenio')}
           style={{
             border: '1px solid #ccc',
             padding: '1.5rem',
             borderRadius: '8px',
             cursor: 'pointer',
             maxWidth: 300,
-            backgroundColor: opcion === 'empresa' ? '#e5efff' : 'white',
-            boxShadow: opcion === 'empresa' ? '0 0 0 2px #1a3a8a' : 'none'
+            backgroundColor: opcion === 'convenio' ? '#e5efff' : 'white',
+            boxShadow: opcion === 'convenio' ? '0 0 0 2px #1a3a8a' : 'none'
           }}
         >
           <strong>Atención por convenio</strong>
