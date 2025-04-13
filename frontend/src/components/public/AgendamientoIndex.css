@@ -9,7 +9,10 @@
   }
   
   .agendamiento-header {
-    background-color: #fff;
+    display: flex;
+    justify-content: center;
+    padding: 20px 0;
+    border-bottom: 1px solid #e0e0e0;
   }
   
   .agendamiento-header-container {
@@ -24,6 +27,11 @@
     height: 48px;
     margin-top: 4px;
   }
+
+  .agendamiento-logo {
+    max-height: 60px;
+    width: auto;
+  }
   
   .divider {
     border: 0;
@@ -33,10 +41,18 @@
   }
   
   .volver-link {
-    font-size: 0.95rem;
-    color: #333;
+    margin-top: 3rem;
+    text-align: center;
+    font-size: 0.9rem;
+  }
+
+  .volver-link a {
+    color: #222;
     text-decoration: none;
-    margin-bottom: 8px;
+  }
+
+  .volver-link a:hover {
+    text-decoration: underline;
   }
   
   .agendamiento-main {
