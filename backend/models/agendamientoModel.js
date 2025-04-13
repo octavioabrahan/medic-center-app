@@ -43,9 +43,16 @@ const AgendamientoModel = {
     const condiciones = [];
     const valores = [];
     if (status) {
-      valores.push(status);
-      condiciones.push(`a.status = $${valores.length}`);
-    }
+      if (status.includes(',')) {
+        const estados = status.split(',');
+        const placeholders = estados.map((_, i) => `$${valores.length + i + 1}`);
+        condiciones.push(`a.status IN (${placeholders.join(', ')})`);
+        valores.push(...estados);
+      } else {
+        valores.push(status);
+        condiciones.push(`a.status = $${valores.length}`);
+      }
+    }    
     if (desde) {
       valores.push(desde);
       condiciones.push(`a.fecha_agendada >= $${valores.length}`);
