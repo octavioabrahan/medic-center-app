@@ -186,8 +186,8 @@ const AgendamientoEmpresaForm = () => {
               value={datosPaciente.sexo}
               onChange={e => setDatosPaciente({ ...datosPaciente, sexo: e.target.value })}>
               <option value="">Sexo</option>
-              <option value="f">Femenino</option>
-              <option value="m">Masculino</option>
+              <option value="femenino">Femenino</option>
+              <option value="masculino">Masculino</option>
             </select>
             {!sinCedula && (
               <>
