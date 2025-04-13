@@ -193,11 +193,11 @@ body {
     gap: 1rem;
   }
 
-  .selector-botones-radio {
+  .selector-botones-radio.fila {
     display: flex;
+    flex-direction: row;
     gap: 1rem;
-    margin-bottom: 2rem;
-  }
+  }  
   
   .radio-opcion {
     display: flex;
@@ -231,8 +231,11 @@ body {
   }  
 
   .fila {
+    display: flex;
     flex-direction: row;
-  }  
+    gap: 1rem;
+  }
+   
   
   @media (max-width: 600px) {
     .radio-group {
