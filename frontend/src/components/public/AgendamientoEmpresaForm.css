@@ -1,7 +1,7 @@
 body {
     background-color: #FBFBFC;
-    margin: 0;
     font-family: 'Segoe UI', sans-serif;
+    margin: 0;
   }
   
   .form-wrapper {
@@ -13,7 +13,7 @@ body {
   
   .form-header {
     background-color: #ffffff;
-    border-bottom: 1px solid #ddd;
+    border-bottom: 1px solid #E5E7EB;
     padding: 1rem 1.5rem;
     text-align: center;
   }
@@ -59,7 +59,6 @@ body {
     font-size: 1rem;
     margin-bottom: 1rem;
     transition: border 0.2s;
-    appearance: none;
   }
   
   input:focus,
@@ -113,6 +112,7 @@ body {
   
   .boton-container {
     text-align: right;
+    margin-top: 2rem;
   }
   
   .boton-continuar {
@@ -125,13 +125,18 @@ body {
     cursor: pointer;
   }
   
-  .boton-continuar:hover {
+  .boton-continuar:disabled {
+    background-color: #d1d5db;
+    cursor: not-allowed;
+  }
+  
+  .boton-continuar:hover:not(:disabled) {
     background-color: #0a2472;
   }
   
   .volver-btn {
     background: none;
-    color: #1a3a8a;
+    color: #6B7280;
     border: none;
     font-weight: 500;
     font-size: 0.95rem;
@@ -148,32 +153,39 @@ body {
     margin-bottom: 1rem;
   }
   
-  .selector-botones {
+  .selector-botones-radio {
     display: flex;
+    flex-direction: row;
     gap: 1rem;
     margin-bottom: 1.5rem;
   }
   
-  .selector-botones button {
-    flex: 1;
-    padding: 0.6rem 1rem;
-    border-radius: 6px;
-    font-size: 0.95rem;
-    border: 1px solid #1a3a8a;
-    background-color: white;
-    color: #1a3a8a;
-    cursor: pointer;
-  }
-  
-  .selector-botones button.activo {
-    background-color: #1a3a8a;
-    color: white;
-  }
-  
-  .form-actions {
+  .radio-opcion {
     display: flex;
-    justify-content: flex-end;
-    margin-top: 2rem;
+    align-items: center;
+    gap: 0.5rem;
+    border: 1px solid #D1D5DB;
+    background-color: #fff;
+    border-radius: 8px;
+    padding: 0.6rem 1.2rem;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    user-select: none;
+  }
+  
+  .radio-opcion input[type="radio"] {
+    accent-color: #1a3a8a;
+    margin: 0;
+  }
+  
+  .radio-opcion:hover {
+    border-color: #1a3a8a;
+  }
+  
+  .radio-opcion.activo {
+    border: 1px solid #1a3a8a;
+    background-color: #F3F4F6;
   }
   
   .confirmacion .resumen {
@@ -192,50 +204,6 @@ body {
     justify-content: center;
     gap: 1rem;
   }
-
-  .selector-botones-radio.fila {
-    display: flex;
-    flex-direction: row;
-    gap: 1rem;
-  }  
-  
-  .radio-opcion {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    background-color: #fff;
-    border: 1px solid #D1D5DB;
-    border-radius: 8px;
-    padding: 0.75rem 1.25rem;
-    font-size: 1rem;
-    cursor: pointer;
-    transition: all 0.2s ease;
-  }
-  
-  .radio-opcion input[type="radio"] {
-    accent-color: #1a3a8a; /* color azul del sistema */
-    margin: 0;
-  }
-  
-  .radio-opcion:hover {
-    border-color: #1a3a8a;
-  }
-  
-  .radio-opcion.activo {
-    border-color: #1a3a8a;
-    background-color: #F3F4F6;
-  }
-  
-  .volver-btn-gris {
-    color: #6B7280 !important;
-  }  
-
-  .fila {
-    display: flex;
-    flex-direction: row;
-    gap: 1rem;
-  }
-   
   
   @media (max-width: 600px) {
     .radio-group {
@@ -243,12 +211,11 @@ body {
       align-items: flex-start;
     }
   
-    .selector-botones {
+    .selector-botones-radio {
       flex-direction: column;
     }
   
-    .boton-container,
-    .form-actions {
+    .boton-container {
       justify-content: center;
     }
   
