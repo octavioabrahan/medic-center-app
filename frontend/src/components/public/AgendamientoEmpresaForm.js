@@ -3,7 +3,6 @@ import axios from 'axios';
 import CalendarioFechasDisponibles from './CalendarioFechasDisponibles';
 import './AgendamientoEmpresaForm.css';
 import logo from '../../assets/logo_header.png';
-import { FaArrowLeft } from 'react-icons/fa';
 
 const AgendamientoEmpresaForm = () => {
   const [step, setStep] = useState(1);
@@ -23,6 +22,7 @@ const AgendamientoEmpresaForm = () => {
   const [modoSeleccion, setModoSeleccion] = useState(null);
   const [servicios, setServicios] = useState([]);
   const [profesionales, setProfesionales] = useState([]);
+
   const [especialidadSeleccionada, setEspecialidadSeleccionada] = useState('');
   const [servicioSeleccionado, setServicioSeleccionado] = useState('');
   const [profesionalSeleccionado, setProfesionalSeleccionado] = useState('');
@@ -36,8 +36,8 @@ const AgendamientoEmpresaForm = () => {
 
   useEffect(() => {
     if (step === 2) {
-      axios.get('/api/servicios').then(res => setServicios(res.data));
-      axios.get('/api/profesionales').then(res => setProfesionales(res.data));
+      axios.get('/api/servicios').then(res => setServicios(res.data)).catch(console.error);
+      axios.get('/api/profesionales').then(res => setProfesionales(res.data)).catch(console.error);
     }
   }, [step]);
 
@@ -49,13 +49,6 @@ const AgendamientoEmpresaForm = () => {
         : false
   );
 
-  const handleCheckCedula = () => {
-    const nuevaCondicion = !sinCedula;
-    setSinCedula(nuevaCondicion);
-    setDatosPaciente(prev => ({ ...prev, telefono: '', email: '' }));
-    setDatosRepresentante(prev => ({ ...prev, nombre: '', apellido: '', numeroHijo: '', telefono: '', email: '' }));
-  };
-
   const fechaMostrada = () => {
     const f = fechaSeleccionada?.fecha ?? fechaSeleccionada;
     if (!f || isNaN(new Date(f).getTime())) return '';
@@ -65,6 +58,13 @@ const AgendamientoEmpresaForm = () => {
   const horaMostrada = () => {
     if (!fechaSeleccionada || !fechaSeleccionada.hora_inicio) return 'No disponible';
     return `Desde las ${fechaSeleccionada.hora_inicio.slice(0, 5)} hrs`;
+  };
+
+  const handleCheckCedula = () => {
+    const nuevaCondicion = !sinCedula;
+    setSinCedula(nuevaCondicion);
+    setDatosPaciente(prev => ({ ...prev, telefono: '', email: '' }));
+    setDatosRepresentante(prev => ({ ...prev, nombre: '', apellido: '', numeroHijo: '', telefono: '', email: '' }));
   };
 
   const enviarAgendamiento = async () => {
@@ -105,6 +105,8 @@ const AgendamientoEmpresaForm = () => {
         <img src={logo} alt="Logo Diagnocentro" className="form-logo" />
       </div>
       <div className="form-body">
+
+        {/* Paso 1 */}
         {step === 1 && (
           <form className="form-step" onSubmit={e => { e.preventDefault(); setStep(2); }}>
             <h2 className="form-title">Completa los datos del paciente que asistirá a la cita</h2>
@@ -163,14 +165,123 @@ const AgendamientoEmpresaForm = () => {
               ¿Tiene seguro médico?
             </label>
 
-            {/* Aquí se integrará más adelante el campo subir archivo */}
             <div className="form-actions">
               <button type="submit" className="boton-principal">Continuar</button>
             </div>
           </form>
         )}
 
-        {/* Paso 2 y siguientes seguirán aquí (puedo seguir escribiéndolos si me lo pides) */}
+        {/* Paso 2 */}
+        {step === 2 && (
+          <div className="form-step">
+            <button onClick={() => setStep(1)} className="volver-btn">← Volver al paso anterior</button>
+            <h2 className="form-title">Selecciona el tipo de atención y profesional</h2>
+            <div className="selector-botones">
+              <button onClick={() => setModoSeleccion('consulta')} className={modoSeleccion === 'consulta' ? 'activo' : ''}>Consulta médica</button>
+              <button onClick={() => setModoSeleccion('estudio')} className={modoSeleccion === 'estudio' ? 'activo' : ''}>Estudio</button>
+            </div>
+
+            {modoSeleccion === 'consulta' && (
+              <>
+                <label>Especialidad</label>
+                <select value={especialidadSeleccionada} onChange={e => setEspecialidadSeleccionada(e.target.value)}>
+                  <option value="">Selecciona una opción</option>
+                  {[...new Set(profesionalesFiltrados.map(p => p.nombre_especialidad))].filter(Boolean).map((esp, i) => (
+                    <option key={i} value={esp}>{esp}</option>
+                  ))}
+                </select>
+
+                <label>Profesional</label>
+                <select value={profesionalSeleccionado} onChange={e => setProfesionalSeleccionado(e.target.value)}>
+                  <option value="">Selecciona al profesional</option>
+                  {profesionalesFiltrados
+                    .filter(p => !especialidadSeleccionada || p.nombre_especialidad === especialidadSeleccionada)
+                    .map(p => (
+                      <option key={p.profesional_id} value={p.profesional_id}>
+                        {p.nombre} {p.apellido}
+                      </option>
+                    ))}
+                </select>
+              </>
+            )}
+
+            {modoSeleccion === 'estudio' && (
+              <>
+                <label>Servicio</label>
+                <select value={servicioSeleccionado} onChange={e => setServicioSeleccionado(e.target.value)}>
+                  <option value="">Selecciona un servicio</option>
+                  {servicios.map(s => (
+                    <option key={s.id_servicio} value={s.nombre_servicio}>
+                      {s.nombre_servicio}
+                    </option>
+                  ))}
+                </select>
+
+                <label>Profesional</label>
+                <select value={profesionalSeleccionado} onChange={e => setProfesionalSeleccionado(e.target.value)}>
+                  <option value="">Selecciona al profesional</option>
+                  {profesionalesFiltrados.map(p => (
+                    <option key={p.profesional_id} value={p.profesional_id}>
+                      {p.nombre} {p.apellido}
+                    </option>
+                  ))}
+                </select>
+              </>
+            )}
+
+            {profesionalSeleccionado && (
+              <>
+                <CalendarioFechasDisponibles
+                  profesionalId={profesionalSeleccionado}
+                  onFechaSeleccionada={setFechaSeleccionada}
+                />
+                {fechaSeleccionada && (
+                  <div style={{ marginTop: '20px' }}>
+                    <strong>Fecha seleccionada:</strong> {fechaMostrada()}<br />
+                    <strong>Hora de inicio:</strong> {horaMostrada()}
+                  </div>
+                )}
+              </>
+            )}
+
+            <div className="form-actions">
+              <button onClick={() => setStep(3)} className="boton-principal" disabled={!fechaSeleccionada}>Continuar</button>
+            </div>
+          </div>
+        )}
+
+        {/* Paso 3 */}
+        {step === 3 && (
+          <div className="form-step confirmacion">
+            <button onClick={() => setStep(2)} className="volver-btn">← Volver al paso anterior</button>
+            <h2 className="form-title">Revisa y confirma tu solicitud</h2>
+
+            <div className="resumen">
+              <p><strong>🩺</strong> {modoSeleccion === 'consulta' ? especialidadSeleccionada : servicioSeleccionado}</p>
+              <p><strong>👤</strong> {profesionales.find(p => p.profesional_id === profesionalSeleccionado)?.nombre} {profesionales.find(p => p.profesional_id === profesionalSeleccionado)?.apellido}</p>
+              <p><strong>📅</strong> {fechaMostrada()}</p>
+              <p><strong>🕐</strong> {horaMostrada()}</p>
+            </div>
+
+            <div className="form-actions">
+              <button onClick={enviarAgendamiento} className="boton-principal">Enviar solicitud</button>
+            </div>
+          </div>
+        )}
+
+        {/* Paso 4 */}
+        {step === 4 && (
+          <div className="form-step confirmacion-final">
+            <h2 className="form-title">Tu solicitud fue enviada correctamente.</h2>
+            <p>Te enviamos por correo la información de tu cita.</p>
+            <div className="form-actions" style={{ justifyContent: 'center', gap: '1rem', marginTop: '2rem' }}>
+              <a href="/" className="boton-principal">Volver al inicio</a>
+              <button className="boton-principal" onClick={() => window.location.reload()}>
+                Agendar otra cita
+              </button>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
