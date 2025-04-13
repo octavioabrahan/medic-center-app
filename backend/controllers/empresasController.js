@@ -1,5 +1,10 @@
 const model = require("../models/empresasModel");
 
+const yaExiste = await model.existeRif(rif);
+if (yaExiste) {
+  return res.status(400).json({ error: "Ya existe una empresa con ese RIF." });
+}
+
 const EmpresasController = {
   crear: async (req, res) => {
     const { nombre_empresa, rif } = req.body;
@@ -48,6 +53,17 @@ const EmpresasController = {
       res.status(500).json({ error: "Error al desactivar empresa" });
     }
   },
+
+  activar: async (req, res) => {
+    const { id } = req.params;
+    try {
+      await model.activar(id);
+      res.json({ mensaje: "Empresa activada" });
+    } catch (err) {
+      console.error("Error al activar empresa:", err);
+      res.status(500).json({ error: "Error al activar empresa" });
+    }
+  },  
   
 };
 

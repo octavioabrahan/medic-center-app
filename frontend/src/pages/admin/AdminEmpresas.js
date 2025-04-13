@@ -40,9 +40,10 @@ const AdminEmpresas = () => {
         body: JSON.stringify({ nombre_empresa: nombre, rif })
       });
 
+      const data = await res.json();
+
       if (!res.ok) {
-        const { error } = await res.json();
-        throw new Error(error || "Error al registrar la empresa");
+        throw new Error(data.error || "Error al registrar la empresa");
       }
 
       setNombre("");
@@ -89,13 +90,23 @@ const AdminEmpresas = () => {
     if (!confirmar) return;
 
     try {
-      await fetch(
-        `${process.env.REACT_APP_API_URL}/api/empresas/${id_empresa}`,
-        { method: "DELETE" }
-      );
+      await fetch(`${process.env.REACT_APP_API_URL}/api/empresas/${id_empresa}`, {
+        method: "DELETE"
+      });
       cargarEmpresas();
     } catch (err) {
       alert("Error al desactivar empresa.");
+    }
+  };
+
+  const activarEmpresa = async (id_empresa) => {
+    try {
+      await fetch(`${process.env.REACT_APP_API_URL}/api/empresas/${id_empresa}/activar`, {
+        method: "PATCH"
+      });
+      cargarEmpresas();
+    } catch (err) {
+      alert("Error al activar empresa.");
     }
   };
 
@@ -144,6 +155,7 @@ const AdminEmpresas = () => {
           <tr>
             <th>Nombre</th>
             <th>RIF</th>
+            <th>Estado</th>
             <th>Acciones</th>
           </tr>
         </thead>
@@ -174,6 +186,7 @@ const AdminEmpresas = () => {
                   e.rif
                 )}
               </td>
+              <td>{e.activa ? "Activa" : "Desactivada"}</td>
               <td>
                 {editando === e.id_empresa ? (
                   <>
@@ -185,12 +198,21 @@ const AdminEmpresas = () => {
                 ) : (
                   <>
                     <button onClick={() => iniciarEdicion(e)}>Editar</button>
-                    <button
-                      onClick={() => desactivarEmpresa(e.id_empresa)}
-                      style={{ marginLeft: "0.5rem" }}
-                    >
-                      Desactivar
-                    </button>
+                    {e.activa ? (
+                      <button
+                        onClick={() => desactivarEmpresa(e.id_empresa)}
+                        style={{ marginLeft: "0.5rem" }}
+                      >
+                        Desactivar
+                      </button>
+                    ) : (
+                      <button
+                        onClick={() => activarEmpresa(e.id_empresa)}
+                        style={{ marginLeft: "0.5rem" }}
+                      >
+                        Activar
+                      </button>
+                    )}
                   </>
                 )}
               </td>
