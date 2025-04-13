@@ -234,6 +234,31 @@ body {
     border: 2px solid #1a3a8a;
     background-color: #F9FAFB;
   }
+  .form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    align-items: start;
+    margin-top: 2rem;
+  }
+  
+  .info-fecha-hora {
+    border: 1px solid #D1D5DB;
+    border-radius: 8px;
+    padding: 1.25rem 1.5rem;
+    background-color: #ffffff;
+    font-size: 1rem;
+    margin-top: 1rem;
+  }
+  
+  .info-fecha-hora p {
+    margin: 0.5rem 0;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #1F2937;
+  }
+  
   
   
   @media (max-width: 600px) {
