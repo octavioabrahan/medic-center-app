@@ -1,56 +1,86 @@
-.agendamiento-container {
-    max-width: 900px;
-    margin: 0 auto;
-    padding: 1rem;
-    font-family: 'Arial', sans-serif;
+.agendamiento-index {
+    font-family: 'Segoe UI', sans-serif;
+    padding: 0;
+    margin: 0;
+    background-color: #fff;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
   }
   
   .agendamiento-header {
+    background-color: #fff;
+  }
+  
+  .agendamiento-header-container {
     display: flex;
-    justify-content: space-between;
     align-items: center;
-    margin-bottom: 1.5rem;
+    justify-content: space-between;
+    padding: 12px 24px;
+    flex-wrap: wrap;
   }
   
-  .agendamiento-logo {
-    height: 50px;
+  .logo-header {
+    height: 48px;
+    margin-top: 4px;
   }
   
-  .agendamiento-content {
+  .divider {
+    border: 0;
+    height: 1px;
+    background: #ccc;
+    margin: 0;
+  }
+  
+  .volver-link {
+    font-size: 0.95rem;
+    color: #333;
+    text-decoration: none;
+    margin-bottom: 8px;
+  }
+  
+  .agendamiento-main {
+    padding: 2rem 1.5rem;
+    max-width: 800px;
+    margin: 0 auto;
     text-align: center;
+  }
+  
+  .agendamiento-main h2 {
+    color: #0a2472;
+    font-size: 1.8rem;
+    margin-bottom: 0.5rem;
   }
   
   .agendamiento-subtitle {
     color: #555;
-    margin: 0 auto 1.5rem;
-    max-width: 600px;
     font-size: 1rem;
+    margin-bottom: 2rem;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
   }
   
   .agendamiento-opciones {
     display: flex;
+    flex-direction: column;
     gap: 1rem;
-    flex-direction: row;
-    justify-content: center;
-    flex-wrap: wrap;
     margin-bottom: 2rem;
   }
   
   .opcion {
     border: 1px solid #ccc;
-    border-radius: 8px;
     padding: 1rem;
-    width: 300px;
+    border-radius: 6px;
     cursor: pointer;
-    transition: border 0.2s ease;
-  }
-  
-  .opcion:hover {
-    border-color: #1a3a8a;
+    text-align: left;
+    display: flex;
+    gap: 1rem;
+    align-items: flex-start;
   }
   
   .opcion input {
-    margin-right: 10px;
+    margin-top: 4px;
   }
   
   .opcion.seleccionado {
@@ -60,32 +90,32 @@
   
   .boton-continuar {
     background-color: #1a3a8a;
-    color: white;
+    color: #fff;
+    padding: 10px 20px;
+    font-weight: bold;
     border: none;
-    padding: 0.8rem 1.6rem;
-    font-size: 1rem;
     border-radius: 4px;
     cursor: pointer;
   }
   
   .boton-continuar:disabled {
-    background-color: #999;
+    background-color: #ccc;
     cursor: not-allowed;
   }
   
   /* Responsive */
-  @media (max-width: 768px) {
+  @media (min-width: 768px) {
     .agendamiento-opciones {
-      flex-direction: column;
-      align-items: center;
+      flex-direction: row;
+      justify-content: center;
     }
   
     .opcion {
-      width: 100%;
+      width: 45%;
     }
   
-    .agendamiento-logo {
-      height: 40px;
+    .volver-link {
+      font-size: 1rem;
     }
   }
   

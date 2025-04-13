@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './AgendamientoIndex.css';
-import logo from '../../assets/logo_header.png';
+import logoHeader from '../../assets/logo_header.png';
 
 const AgendamientoIndex = () => {
   const [seleccion, setSeleccion] = useState('');
@@ -9,21 +9,20 @@ const AgendamientoIndex = () => {
 
   const continuar = () => {
     if (seleccion === 'privado') navigate('/agendamiento/privado');
-    else if (seleccion === 'convenio') navigate('/agendamiento/convenio');
+    else if (seleccion === 'convenio') navigate('/agendamiento/empresa');
   };
 
   return (
-    <div className="agendamiento-container">
-      <div className="agendamiento-header">
-        <a href="/">← Volver a la página principal</a>
-        <img
-          src={logo}
-          alt="Logo Diagnocentro"
-          className="agendamiento-logo"
-        />
-      </div>
+    <div className="agendamiento-index">
+      <header className="agendamiento-header">
+        <div className="agendamiento-header-container">
+          <a href="/" className="volver-link">← Volver a la página principal</a>
+          <img src={logoHeader} alt="Logo Diagnocentro" className="logo-header" />
+        </div>
+        <hr className="divider" />
+      </header>
 
-      <div className="agendamiento-content">
+      <main className="agendamiento-main">
         <h2>¿Cómo se pagará la cita?</h2>
         <p className="agendamiento-subtitle">
           Selecciona la opción que corresponde al tipo de atención de la persona que se va a atender.
@@ -61,7 +60,7 @@ const AgendamientoIndex = () => {
         <button className="boton-continuar" onClick={continuar} disabled={!seleccion}>
           Continuar
         </button>
-      </div>
+      </main>
     </div>
   );
 };
