@@ -13,6 +13,7 @@ import ExcepcionesPage from "./pages/admin/ExcepcionesPage";
 import AgendamientoPrivadoForm from "./components/public/AgendamientoPrivadoForm";
 import ProfesionalAsignarServicios from './pages/admin/ProfesionalAsignarServicios';
 import AdminAgendamientos from "./pages/admin/AdminAgendamientos";
+import AdminEmpresas from "./pages/admin/AdminEmpresas";
 
 function App() {
   return (
@@ -34,6 +35,7 @@ function App() {
         <Route path="/agendamiento/privado" element={<AgendamientoPrivadoForm />} />
         <Route path="/admin/profesionales/:id/editar-servicios" element={<ProfesionalAsignarServicios />} />
         <Route path="/admin/agendamientos" element={<AdminAgendamientos />} />
+        <Route path="/admin/empresas" element={<AdminEmpresas />} />
       </Routes>
     </Router>
   );
