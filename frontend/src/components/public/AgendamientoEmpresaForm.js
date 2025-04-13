@@ -3,6 +3,8 @@ import axios from 'axios';
 import CalendarioFechasDisponibles from './CalendarioFechasDisponibles';
 import './AgendamientoEmpresaForm.css';
 import logo from '../../assets/logo_header.png';
+import { DayPicker } from 'react-day-picker';
+import 'react-day-picker/dist/style.css';
 
 const AgendamientoEmpresaForm = () => {
   const [step, setStep] = useState(1);
@@ -280,10 +282,16 @@ const AgendamientoEmpresaForm = () => {
 
         {profesionalSeleccionado && (
           <div className="calendario-y-info">
-            <CalendarioFechasDisponibles
-              profesionalId={profesionalSeleccionado}
-              onFechaSeleccionada={setFechaSeleccionada}
-            />
+            <div>
+              <label>Selecciona el día de atención</label>
+              <DayPicker
+                mode="single"
+                selected={fechaSeleccionada}
+                onSelect={setFechaSeleccionada}
+                fromDate={new Date()}
+                modifiersClassNames={{ selected: 'selected-day' }}
+              />
+            </div>
             <div className="info-fecha-hora">
               <p><strong>📅</strong> {fechaSeleccionada ? fechaMostrada() : '-'}</p>
               <p><strong>🕒</strong> {horaMostrada()}</p>
