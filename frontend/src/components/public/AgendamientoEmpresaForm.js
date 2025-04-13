@@ -240,82 +240,116 @@ const AgendamientoEmpresaForm = () => {
 
       {/* Paso 2 */}
       {step === 2 && (
-        <div className="form-body">
-          <button onClick={() => setStep(1)} className="volver-btn">← Volver al paso anterior</button>
-          <h2 className="form-title">Selecciona el tipo de atención y profesional</h2>
-          <div className="selector-botones">
-            <button onClick={() => setModoSeleccion('consulta')} className={modoSeleccion === 'consulta' ? 'activo' : ''}>Consulta médica</button>
-            <button onClick={() => setModoSeleccion('estudio')} className={modoSeleccion === 'estudio' ? 'activo' : ''}>Estudio</button>
-          </div>
+  <div className="form-body">
+    <button onClick={() => setStep(1)} className="volver-btn">← Volver al paso anterior</button>
 
-          {modoSeleccion === 'consulta' && (
-            <>
-              <label>Especialidad</label>
-              <select value={especialidadSeleccionada} onChange={e => setEspecialidadSeleccionada(e.target.value)}>
-                <option value="">Selecciona una opción</option>
-                {[...new Set(profesionalesFiltrados.map(p => p.nombre_especialidad))].filter(Boolean).map((esp, i) => (
-                  <option key={i} value={esp}>{esp}</option>
-                ))}
-              </select>
+    <form className="form-container" onSubmit={e => { e.preventDefault(); setStep(3); }}>
+      <h2 className="form-title">Selecciona el tipo de atención y profesional</h2>
 
-              <label>Profesional</label>
-              <select value={profesionalSeleccionado} onChange={e => setProfesionalSeleccionado(e.target.value)}>
-                <option value="">Selecciona al profesional</option>
-                {profesionalesFiltrados
-                  .filter(p => !especialidadSeleccionada || p.nombre_especialidad === especialidadSeleccionada)
-                  .map(p => (
-                    <option key={p.profesional_id} value={p.profesional_id}>
-                      {p.nombre} {p.apellido}
-                    </option>
-                  ))}
-              </select>
-            </>
-          )}
+      <div className="selector-botones">
+        <button
+          type="button"
+          onClick={() => setModoSeleccion('consulta')}
+          className={modoSeleccion === 'consulta' ? 'activo' : ''}
+        >
+          Consulta médica
+        </button>
+        <button
+          type="button"
+          onClick={() => setModoSeleccion('estudio')}
+          className={modoSeleccion === 'estudio' ? 'activo' : ''}
+        >
+          Estudio
+        </button>
+      </div>
 
-          {modoSeleccion === 'estudio' && (
-            <>
-              <label>Servicio</label>
-              <select value={servicioSeleccionado} onChange={e => setServicioSeleccionado(e.target.value)}>
-                <option value="">Selecciona un servicio</option>
-                {servicios.map(s => (
-                  <option key={s.id_servicio} value={s.nombre_servicio}>
-                    {s.nombre_servicio}
-                  </option>
-                ))}
-              </select>
+      {modoSeleccion === 'consulta' && (
+        <>
+          <label>Especialidad</label>
+          <select
+            required
+            value={especialidadSeleccionada}
+            onChange={e => setEspecialidadSeleccionada(e.target.value)}
+          >
+            <option value="">Selecciona una opción</option>
+            {[...new Set(profesionalesFiltrados.map(p => p.nombre_especialidad))].filter(Boolean).map((esp, i) => (
+              <option key={i} value={esp}>{esp}</option>
+            ))}
+          </select>
 
-              <label>Profesional</label>
-              <select value={profesionalSeleccionado} onChange={e => setProfesionalSeleccionado(e.target.value)}>
-                <option value="">Selecciona al profesional</option>
-                {profesionalesFiltrados.map(p => (
-                  <option key={p.profesional_id} value={p.profesional_id}>
-                    {p.nombre} {p.apellido}
-                  </option>
-                ))}
-              </select>
-            </>
-          )}
-
-          {profesionalSeleccionado && (
-            <>
-              <CalendarioFechasDisponibles
-                profesionalId={profesionalSeleccionado}
-                onFechaSeleccionada={setFechaSeleccionada}
-              />
-              {fechaSeleccionada && (
-                <div style={{ marginTop: '20px' }}>
-                  <strong>Fecha seleccionada:</strong> {fechaMostrada()}<br />
-                  <strong>Hora de inicio:</strong> {horaMostrada()}
-                </div>
-              )}
-            </>
-          )}
-
-          <div className="form-actions">
-            <button onClick={() => setStep(3)} className="boton-principal" disabled={!fechaSeleccionada}>Continuar</button>
-          </div>
-        </div>
+          <label>Profesional</label>
+          <select
+            required
+            value={profesionalSeleccionado}
+            onChange={e => setProfesionalSeleccionado(e.target.value)}
+          >
+            <option value="">Selecciona al profesional</option>
+            {profesionalesFiltrados
+              .filter(p => !especialidadSeleccionada || p.nombre_especialidad === especialidadSeleccionada)
+              .map(p => (
+                <option key={p.profesional_id} value={p.profesional_id}>
+                  {p.nombre} {p.apellido}
+                </option>
+              ))}
+          </select>
+        </>
       )}
+
+      {modoSeleccion === 'estudio' && (
+        <>
+          <label>Servicio</label>
+          <select
+            required
+            value={servicioSeleccionado}
+            onChange={e => setServicioSeleccionado(e.target.value)}
+          >
+            <option value="">Selecciona un servicio</option>
+            {servicios.map(s => (
+              <option key={s.id_servicio} value={s.nombre_servicio}>
+                {s.nombre_servicio}
+              </option>
+            ))}
+          </select>
+
+          <label>Profesional</label>
+          <select
+            required
+            value={profesionalSeleccionado}
+            onChange={e => setProfesionalSeleccionado(e.target.value)}
+          >
+            <option value="">Selecciona al profesional</option>
+            {profesionalesFiltrados.map(p => (
+              <option key={p.profesional_id} value={p.profesional_id}>
+                {p.nombre} {p.apellido}
+              </option>
+            ))}
+          </select>
+        </>
+      )}
+
+      {profesionalSeleccionado && (
+        <>
+          <CalendarioFechasDisponibles
+            profesionalId={profesionalSeleccionado}
+            onFechaSeleccionada={setFechaSeleccionada}
+          />
+          {fechaSeleccionada && (
+            <div className="form-grupo">
+              <p><strong>Fecha seleccionada:</strong> {fechaMostrada()}</p>
+              <p><strong>Hora de inicio:</strong> {horaMostrada()}</p>
+            </div>
+          )}
+        </>
+      )}
+
+      <div className="form-actions">
+        <button type="submit" className="boton-principal" disabled={!fechaSeleccionada}>
+          Continuar
+        </button>
+      </div>
+    </form>
+  </div>
+)}
 
       {/* Paso 3 */}
       {step === 3 && (
