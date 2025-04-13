@@ -193,22 +193,28 @@ const AgendamientoEmpresaForm = () => {
     <button onClick={() => setStep(1)} className="volver-btn">← Volver al paso anterior</button>
     <h2 className="titulo-principal">Selecciona la especialidad, el médico y el día.</h2>
 
-    <label>Selecciona la categoría de atención</label>
-    <div className="selector-botones">
-      <button
-        type="button"
-        onClick={() => setModoSeleccion('consulta')}
-        className={modoSeleccion === 'consulta' ? 'activo' : ''}
-      >
+    <label style={{ marginBottom: '0.5rem', display: 'block' }}>Selecciona la categoría de atención</label>
+    <div className="selector-botones-radio">
+      <label className={modoSeleccion === 'consulta' ? 'radio-opcion activo' : 'radio-opcion'}>
+        <input
+          type="radio"
+          name="categoria"
+          value="consulta"
+          checked={modoSeleccion === 'consulta'}
+          onChange={() => setModoSeleccion('consulta')}
+        />
         Consulta médica
-      </button>
-      <button
-        type="button"
-        onClick={() => setModoSeleccion('estudio')}
-        className={modoSeleccion === 'estudio' ? 'activo' : ''}
-      >
+      </label>
+      <label className={modoSeleccion === 'estudio' ? 'radio-opcion activo' : 'radio-opcion'}>
+        <input
+          type="radio"
+          name="categoria"
+          value="estudio"
+          checked={modoSeleccion === 'estudio'}
+          onChange={() => setModoSeleccion('estudio')}
+        />
         Estudio
-      </button>
+      </label>
     </div>
 
     {modoSeleccion === 'consulta' && (
