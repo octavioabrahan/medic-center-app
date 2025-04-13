@@ -7,7 +7,7 @@ const AgendamientoIndex = () => {
 
   const handleContinuar = () => {
     if (opcion === 'privado') navigate('/agendamiento/privado');
-    else if (opcion === 'empresa') navigate('/agendamiento/empresa');
+    else if (opcion === 'convenio') navigate('/agendamiento/convenio');
   };
 
   return (
