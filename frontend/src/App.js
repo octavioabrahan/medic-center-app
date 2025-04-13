@@ -15,6 +15,7 @@ import ProfesionalAsignarServicios from './pages/admin/ProfesionalAsignarServici
 import AdminAgendamientos from "./pages/admin/AdminAgendamientos";
 import AdminEmpresas from "./pages/admin/AdminEmpresas";
 import AgendamientoEmpresaForm from "./components/public/AgendamientoEmpresaForm";
+import AgendamientoIndex from './pages/public/AgendamientoIndex';
 
 function App() {
   return (
@@ -24,7 +25,7 @@ function App() {
       </nav>
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/cotizar" element={<CotizadorExamenes />} /> {/* 👈 este reemplaza el anterior */}
+        <Route path="/cotizar" element={<CotizadorExamenes />} />
         <Route path="/agendar" element={<AgendarHora />} />
         <Route path="/admin" element={<AdminDashboard />} />
         <Route path="/admin/profesionales" element={<ProfesionalesPage />} />
@@ -38,6 +39,7 @@ function App() {
         <Route path="/admin/agendamientos" element={<AdminAgendamientos />} />
         <Route path="/admin/empresas" element={<AdminEmpresas />} />
         <Route path="/agendamiento/convenio" element={<AgendamientoEmpresaForm />} />
+        <Route path="/agendamiento" element={<AgendamientoIndex />} />
       </Routes>
     </Router>
   );
