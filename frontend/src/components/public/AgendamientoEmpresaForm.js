@@ -4,17 +4,19 @@ import CalendarioFechasDisponibles from './CalendarioFechasDisponibles';
 
 const AgendamientoEmpresaForm = () => {
   const [step, setStep] = useState(1);
+  const [sinCedula, setSinCedula] = useState(false);
   const [empresas, setEmpresas] = useState([]);
-  const [empresaId, setEmpresaId] = useState('');
-  const [parentesco, setParentesco] = useState('titular');
+  const [empresaSeleccionada, setEmpresaSeleccionada] = useState('');
 
   const [datosRepresentante, setDatosRepresentante] = useState({
-    cedula: '', nombre: '', apellido: '', telefono: '', email: '', numeroHijo: '1'
-  });
-  const [datosPaciente, setDatosPaciente] = useState({
-    cedula: '', nombre: '', apellido: '', fechaNacimiento: '', sexo: '', telefono: '', email: ''
+    cedula: '', nombre: '', apellido: '', numeroHijo: '', telefono: '', email: ''
   });
 
+  const [datosPaciente, setDatosPaciente] = useState({
+    nombre: '', apellido: '', fechaNacimiento: '', sexo: '', telefono: '', email: ''
+  });
+
+  const [tieneSeguro, setTieneSeguro] = useState(false);
   const [modoSeleccion, setModoSeleccion] = useState(null);
   const [servicios, setServicios] = useState([]);
   const [profesionales, setProfesionales] = useState([]);
@@ -26,9 +28,8 @@ const AgendamientoEmpresaForm = () => {
 
   useEffect(() => {
     axios.get('/api/empresas').then(res => {
-      const activas = res.data.filter(e => e.activa);
-      setEmpresas(activas);
-    }).catch(console.error);
+      setEmpresas(res.data.filter(e => e.activa));
+    });
   }, []);
 
   useEffect(() => {
@@ -38,6 +39,32 @@ const AgendamientoEmpresaForm = () => {
     }
   }, [step]);
 
+  const handleCheckCedula = () => {
+    const nuevaCondicion = !sinCedula;
+    setSinCedula(nuevaCondicion);
+
+    if (nuevaCondicion) {
+      setDatosPaciente(prev => ({ ...prev, telefono: '', email: '' }));
+      setDatosRepresentante(prev => ({
+        ...prev,
+        nombre: '',
+        apellido: '',
+        numeroHijo: '',
+        telefono: '',
+        email: ''
+      }));
+    } else {
+      setDatosRepresentante(prev => ({
+        ...prev,
+        nombre: '',
+        apellido: '',
+        numeroHijo: '',
+        telefono: '',
+        email: ''
+      }));
+    }
+  };
+
   const profesionalesFiltrados = profesionales.filter(p =>
     modoSeleccion === 'consulta'
       ? p.categorias?.includes('Consulta')
@@ -46,27 +73,34 @@ const AgendamientoEmpresaForm = () => {
         : false
   );
 
-  const enviarAgendamiento = async () => {
-    const esTitular = parentesco === 'titular';
+  const fechaMostrada = () => {
+    const f = fechaSeleccionada?.fecha ?? fechaSeleccionada;
+    if (!f || isNaN(new Date(f).getTime())) return '';
+    return new Date(f).toLocaleDateString();
+  };
 
-    const representanteCedula = !esTitular
-      ? `${datosRepresentante.cedula}-${datosRepresentante.numeroHijo}`
-      : null;
+  const horaMostrada = () => {
+    if (!fechaSeleccionada || !fechaSeleccionada.hora_inicio) return 'No disponible';
+    return `Desde las ${fechaSeleccionada.hora_inicio.slice(0, 5)} hrs`;
+  };
+
+  const enviarAgendamiento = async () => {
+    const representanteCedula = sinCedula ? `${datosRepresentante.cedula}-${datosRepresentante.numeroHijo}` : null;
 
     const payload = {
-      cedula: esTitular ? datosPaciente.cedula : datosRepresentante.cedula,
+      cedula: datosRepresentante.cedula,
       paciente: {
         nombre: datosPaciente.nombre,
         apellido: datosPaciente.apellido,
         fecha_nacimiento: datosPaciente.fechaNacimiento,
         sexo: datosPaciente.sexo,
-        telefono: esTitular ? datosPaciente.telefono : datosRepresentante.telefono,
-        email: esTitular ? datosPaciente.email : datosRepresentante.email,
+        telefono: sinCedula ? datosRepresentante.telefono : datosPaciente.telefono,
+        email: sinCedula ? datosRepresentante.email : datosPaciente.email,
+        seguro_medico: tieneSeguro,
         representante_cedula: representanteCedula,
-        representante_nombre: !esTitular ? datosRepresentante.nombre : null,
-        representante_apellido: !esTitular ? datosRepresentante.apellido : null,
-        seguro_medico: false,
-        id_empresa: empresaId
+        representante_nombre: sinCedula ? datosRepresentante.nombre : null,
+        representante_apellido: sinCedula ? datosRepresentante.apellido : null,
+        id_empresa: empresaSeleccionada
       },
       profesional_id: profesionalSeleccionado,
       fecha_agendada: fechaSeleccionada?.fecha || fechaSeleccionada,
@@ -80,38 +114,45 @@ const AgendamientoEmpresaForm = () => {
       setStep(4);
     } catch (err) {
       console.error('Error al crear agendamiento:', err);
-      alert('Error al agendar. Verifica los datos e intenta de nuevo.');
+      alert('Hubo un error al agendar. Intenta nuevamente.');
     }
   };
 
   return (
     <div>
+      {/* Paso 1 */}
       {step === 1 && (
         <form onSubmit={e => { e.preventDefault(); setStep(2); }}>
           <h2>Agendamiento por Convenio</h2>
 
-          <label>Empresa:</label>
-          <select value={empresaId} onChange={e => setEmpresaId(e.target.value)} required>
-            <option value="">Seleccionar empresa</option>
+          <label>Empresa con la que tiene convenio</label>
+          <select required value={empresaSeleccionada} onChange={e => setEmpresaSeleccionada(e.target.value)}>
+            <option value="">Selecciona una empresa</option>
             {empresas.map(e => (
               <option key={e.id_empresa} value={e.id_empresa}>{e.nombre_empresa}</option>
             ))}
           </select>
 
-          <label>Parentesco con el trabajador:</label>
-          <select value={parentesco} onChange={e => setParentesco(e.target.value)}>
-            <option value="titular">Soy el trabajador</option>
-            <option value="hijo">Hijo(a)</option>
-            <option value="conyuge">Cónyuge</option>
-            <option value="otro">Otro</option>
-          </select>
+          <div>
+            <label>Cédula:</label>
+            <input
+              type="text"
+              value={datosRepresentante.cedula}
+              onChange={e => setDatosRepresentante({ ...datosRepresentante, cedula: e.target.value })}
+            />
+            <label>
+              <input
+                type="checkbox"
+                checked={sinCedula}
+                onChange={handleCheckCedula}
+              />
+              La persona que se atenderá no tiene cédula
+            </label>
+          </div>
 
-          {!['titular'].includes(parentesco) && (
+          {sinCedula && (
             <fieldset>
-              <legend>Datos del trabajador</legend>
-              <input placeholder="Cédula"
-                value={datosRepresentante.cedula}
-                onChange={e => setDatosRepresentante({ ...datosRepresentante, cedula: e.target.value })} />
+              <legend>Datos del representante legal</legend>
               <input placeholder="Número de hijo(a)"
                 value={datosRepresentante.numeroHijo}
                 onChange={e => setDatosRepresentante({ ...datosRepresentante, numeroHijo: e.target.value })} />
@@ -132,9 +173,6 @@ const AgendamientoEmpresaForm = () => {
 
           <fieldset>
             <legend>Datos del paciente</legend>
-            <input placeholder="Cédula"
-              value={datosPaciente.cedula}
-              onChange={e => setDatosPaciente({ ...datosPaciente, cedula: e.target.value })} />
             <input placeholder="Nombre"
               value={datosPaciente.nombre}
               onChange={e => setDatosPaciente({ ...datosPaciente, nombre: e.target.value })} />
@@ -151,23 +189,38 @@ const AgendamientoEmpresaForm = () => {
               <option value="f">Femenino</option>
               <option value="m">Masculino</option>
             </select>
-            <input placeholder="Teléfono"
-              value={datosPaciente.telefono}
-              onChange={e => setDatosPaciente({ ...datosPaciente, telefono: e.target.value })} />
-            <input placeholder="Correo electrónico"
-              value={datosPaciente.email}
-              onChange={e => setDatosPaciente({ ...datosPaciente, email: e.target.value })} />
+            {!sinCedula && (
+              <>
+                <input placeholder="Teléfono"
+                  value={datosPaciente.telefono}
+                  onChange={e => setDatosPaciente({ ...datosPaciente, telefono: e.target.value })} />
+                <input placeholder="Correo electrónico"
+                  value={datosPaciente.email}
+                  onChange={e => setDatosPaciente({ ...datosPaciente, email: e.target.value })} />
+              </>
+            )}
           </fieldset>
+
+          <div>
+            <label>
+              ¿Tiene seguro médico?
+              <input
+                type="checkbox"
+                checked={tieneSeguro}
+                onChange={() => setTieneSeguro(!tieneSeguro)}
+              />
+            </label>
+          </div>
 
           <button type="submit">Continuar</button>
         </form>
       )}
 
+      {/* Paso 2 */}
       {step === 2 && (
         <div>
           <button onClick={() => setStep(1)}>← Volver al paso anterior</button>
-          <h2>Selecciona la especialidad, el médico y el día</h2>
-
+          <h2>Selecciona la especialidad, el médico y el día.</h2>
           <div style={{ marginBottom: '1rem' }}>
             <button onClick={() => setModoSeleccion('consulta')} style={{ marginRight: 8 }}>
               Consulta médica
@@ -175,74 +228,125 @@ const AgendamientoEmpresaForm = () => {
             <button onClick={() => setModoSeleccion('estudio')}>Estudio</button>
           </div>
 
-          {modoSeleccion && (
+          {modoSeleccion === 'consulta' && (
             <>
-              {modoSeleccion === 'consulta' && (
-                <>
-                  <label>Especialidad:</label>
-                  <select value={especialidadSeleccionada}
-                    onChange={e => setEspecialidadSeleccionada(e.target.value)}>
-                    <option value="">Selecciona</option>
-                    {[...new Set(profesionalesFiltrados.map(p => p.nombre_especialidad))]
-                      .filter(Boolean)
-                      .map((esp, i) => (
-                        <option key={i} value={esp}>{esp}</option>
-                      ))}
-                  </select>
-                </>
-              )}
-
-              {modoSeleccion === 'estudio' && (
-                <>
-                  <label>Servicio:</label>
-                  <select value={servicioSeleccionado}
-                    onChange={e => setServicioSeleccionado(e.target.value)}>
-                    <option value="">Selecciona un servicio</option>
-                    {servicios.map(s => (
-                      <option key={s.id_servicio} value={s.nombre_servicio}>{s.nombre_servicio}</option>
-                    ))}
-                  </select>
-                </>
-              )}
+              <label>Especialidad:</label>
+              <select value={especialidadSeleccionada}
+                onChange={e => setEspecialidadSeleccionada(e.target.value)}
+              >
+                <option value="">Selecciona una opción</option>
+                {[...new Set(profesionalesFiltrados.map(p => p.nombre_especialidad))].filter(Boolean).map((esp, i) => (
+                  <option key={i} value={esp}>{esp}</option>
+                ))}
+              </select>
 
               <label>Profesional:</label>
               <select value={profesionalSeleccionado}
-                onChange={e => setProfesionalSeleccionado(e.target.value)}>
+                onChange={e => setProfesionalSeleccionado(e.target.value)}
+              >
                 <option value="">Selecciona al profesional</option>
                 {profesionalesFiltrados
-                  .filter(p => modoSeleccion === 'consulta' ? p.nombre_especialidad === especialidadSeleccionada : true)
+                  .filter(p => !especialidadSeleccionada || p.nombre_especialidad === especialidadSeleccionada)
                   .map(p => (
                     <option key={p.profesional_id} value={p.profesional_id}>
                       {p.nombre} {p.apellido}
                     </option>
                   ))}
               </select>
+            </>
+          )}
 
-              {profesionalSeleccionado && (
-                <>
-                  <CalendarioFechasDisponibles
-                    profesionalId={profesionalSeleccionado}
-                    onFechaSeleccionada={setFechaSeleccionada}
-                  />
-                  {fechaSeleccionada && (
-                    <button onClick={enviarAgendamiento} style={{ marginTop: '1rem' }}>
-                      Enviar solicitud
-                    </button>
-                  )}
-                </>
+          {modoSeleccion === 'estudio' && (
+            <>
+              <label>Servicio:</label>
+              <select value={servicioSeleccionado}
+                onChange={e => setServicioSeleccionado(e.target.value)}
+              >
+                <option value="">Selecciona un servicio</option>
+                {servicios.map(s => (
+                  <option key={s.id_servicio} value={s.nombre_servicio}>
+                    {s.nombre_servicio}
+                  </option>
+                ))}
+              </select>
+
+              <label>Profesional:</label>
+              <select value={profesionalSeleccionado}
+                onChange={e => setProfesionalSeleccionado(e.target.value)}
+              >
+                <option value="">Selecciona al profesional</option>
+                {profesionalesFiltrados.map(p => (
+                  <option key={p.profesional_id} value={p.profesional_id}>
+                    {p.nombre} {p.apellido}
+                  </option>
+                ))}
+              </select>
+            </>
+          )}
+
+          {profesionalSeleccionado && (
+            <>
+              <CalendarioFechasDisponibles
+                profesionalId={profesionalSeleccionado}
+                onFechaSeleccionada={setFechaSeleccionada}
+              />
+              {fechaSeleccionada && (
+                <div style={{ marginTop: '20px' }}>
+                  <strong>Fecha seleccionada:</strong> {fechaMostrada()}<br />
+                  <strong>Hora de inicio:</strong> {horaMostrada()}
+                </div>
               )}
             </>
           )}
+
+          <button onClick={() => setStep(3)} disabled={!fechaSeleccionada}>
+            Continuar
+          </button>
         </div>
       )}
 
+      {/* Paso 3: Confirmación */}
+      {step === 3 && (
+        <div style={{ textAlign: 'center', padding: '2rem' }}>
+          <button onClick={() => setStep(2)} style={{ marginBottom: '1rem' }}>← Volver al paso anterior</button>
+          <h2 style={{ color: '#0a2472' }}>Revisa y confirma tu solicitud</h2>
+          <div style={{ background: '#f8f8f8', padding: '1rem', borderRadius: '8px', maxWidth: '600px', margin: 'auto' }}>
+            <p><strong>🩺</strong> {modoSeleccion === 'consulta' ? especialidadSeleccionada : servicioSeleccionado}</p>
+            <p><strong>👤</strong> {profesionales.find(p => p.profesional_id === profesionalSeleccionado)?.nombre} {profesionales.find(p => p.profesional_id === profesionalSeleccionado)?.apellido}</p>
+            <p><strong>📅</strong> {fechaMostrada()}</p>
+            <p><strong>🕐</strong> {horaMostrada()}</p>
+          </div>
+
+          <div style={{ marginTop: '2rem' }}>
+            {sinCedula && (
+              <>
+                <h4>Representante legal</h4>
+                <p>{datosRepresentante.nombre} {datosRepresentante.apellido}</p>
+                <p>{datosRepresentante.telefono} | {datosRepresentante.email}</p>
+              </>
+            )}
+            <h4>Paciente</h4>
+            <p>{datosPaciente.nombre} {datosPaciente.apellido}</p>
+            <p>{datosPaciente.fechaNacimiento} | {datosPaciente.sexo}</p>
+          </div>
+
+          <button onClick={enviarAgendamiento} style={{ marginTop: '2rem', background: '#1a3a8a', color: 'white', padding: '10px 20px' }}>
+            Enviar solicitud
+          </button>
+        </div>
+      )}
+
+      {/* Paso 4: Confirmación final */}
       {step === 4 && (
         <div style={{ textAlign: 'center', padding: '2rem' }}>
           <h2>Tu solicitud fue enviada correctamente.</h2>
-          <p>Te hemos enviado un correo con los detalles.</p>
-          <button onClick={() => window.location.reload()} style={{ marginTop: '1rem' }}>
-            Agendar otra cita
-          </button>
+          <p>Te enviamos por correo la información de tu cita.</p>
+          <div style={{ marginTop: '2rem' }}>
+            <a href="/" style={{ marginRight: '1rem' }}>Volver a la página principal</a>
+            <button onClick={() => window.location.reload()} style={{ background: '#1a3a8a', color: 'white', padding: '8px 16px', border: 'none' }}>
+              Agendar otra cita
+            </button>
+          </div>
         </div>
       )}
     </div>
