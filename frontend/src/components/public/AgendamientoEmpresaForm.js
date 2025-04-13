@@ -1,280 +1,252 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import CalendarioFechasDisponibles from './CalendarioFechasDisponibles';
 
 const AgendamientoEmpresaForm = () => {
-  const [paso, setPaso] = useState(1);
+  const [step, setStep] = useState(1);
+
   const [empresas, setEmpresas] = useState([]);
-  const [especialidades, setEspecialidades] = useState([]);
-  const [profesionales, setProfesionales] = useState([]);
-  const [form, setForm] = useState({
-    id_empresa: "",
-    parentesco: "titular",
-    representante_cedula: "",
-    representante_nombre: "",
-    representante_apellido: "",
-    archivo_orden: null,
-    cedula: "",
-    nombre: "",
-    apellido: "",
-    fecha_nacimiento: "",
-    sexo: "",
-    telefono: "",
-    email: "",
-    categoria: "",
-    tipo_atencion_id: "",
-    profesional_id: "",
-    fecha_agendada: "",
-    hora_inicio: "",
-    observaciones: ""
+  const [idEmpresa, setIdEmpresa] = useState('');
+
+  const [parentesco, setParentesco] = useState('titular');
+  const [archivoOrden, setArchivoOrden] = useState(null); // Reservado para lógica posterior
+
+  const [datosRepresentante, setDatosRepresentante] = useState({
+    cedula: '', nombre: '', apellido: '', telefono: '', email: ''
+  });
+  const [datosPaciente, setDatosPaciente] = useState({
+    cedula: '', nombre: '', apellido: '', fechaNacimiento: '', sexo: '', telefono: '', email: ''
   });
 
-  const [errores, setErrores] = useState({});
-  const [mensajeFinal, setMensajeFinal] = useState("");
+  const [modoSeleccion, setModoSeleccion] = useState(null);
+  const [servicios, setServicios] = useState([]);
+  const [profesionales, setProfesionales] = useState([]);
+
+  const [especialidadSeleccionada, setEspecialidadSeleccionada] = useState('');
+  const [servicioSeleccionado, setServicioSeleccionado] = useState('');
+  const [profesionalSeleccionado, setProfesionalSeleccionado] = useState('');
+  const [fechaSeleccionada, setFechaSeleccionada] = useState(null);
 
   useEffect(() => {
-    const cargarDatos = async () => {
-      const [empRes, espRes, profRes] = await Promise.all([
-        fetch(`${process.env.REACT_APP_API_URL}/api/empresas`),
-        fetch(`${process.env.REACT_APP_API_URL}/api/tipo-atencion`),
-        fetch(`${process.env.REACT_APP_API_URL}/api/profesionales`)
-      ]);
-      const [empresasData, especialidadesData, profesionalesData] = await Promise.all([
-        empRes.json(),
-        espRes.json(),
-        profRes.json()
-      ]);
-      setEmpresas(empresasData.filter(e => e.activa));
-      setEspecialidades(especialidadesData);
-      setProfesionales(profesionalesData);
-    };
-
-    cargarDatos();
+    axios.get('/api/empresas')
+      .then(res => {
+        const activas = res.data.filter(e => e.activa);
+        setEmpresas(activas);
+      }).catch(console.error);
   }, []);
 
-  const handleChange = (e) => {
-    const { name, value, type, files } = e.target;
-    if (type === "file") {
-      setForm({ ...form, [name]: files[0] });
-    } else {
-      setForm({ ...form, [name]: value });
+  useEffect(() => {
+    if (step === 2) {
+      axios.get('/api/servicios').then(res => setServicios(res.data)).catch(console.error);
+      axios.get('/api/profesionales').then(res => setProfesionales(res.data)).catch(console.error);
     }
-  };
+  }, [step]);
 
-  const validarPaso = () => {
-    const err = {};
+  const profesionalesFiltrados = profesionales.filter(p =>
+    modoSeleccion === 'consulta'
+      ? p.categorias?.includes('Consulta')
+      : modoSeleccion === 'estudio'
+        ? p.categorias?.includes('Estudio')
+        : false
+  );
 
-    if (paso === 1) {
-      if (!form.id_empresa) err.id_empresa = "Empresa requerida";
-      if (!form.nombre) err.nombre = "Nombre requerido";
-      if (!form.apellido) err.apellido = "Apellido requerido";
-      if (!form.fecha_nacimiento) err.fecha_nacimiento = "Fecha requerida";
-      if (!form.sexo) err.sexo = "Sexo requerido";
-      if (!form.telefono) err.telefono = "Teléfono requerido";
-      if (!form.email) err.email = "Email requerido";
-      if (!form.cedula) err.cedula = "Cédula requerida";
-
-      if (form.parentesco !== "titular") {
-        if (!form.representante_cedula) err.representante_cedula = "Cédula del trabajador requerida";
-        if (!form.representante_nombre) err.representante_nombre = "Nombre del trabajador requerido";
-        if (!form.representante_apellido) err.representante_apellido = "Apellido del trabajador requerido";
-        if (!form.archivo_orden) err.archivo_orden = "Debes adjuntar la orden médica";
-      }
-    }
-
-    if (paso === 2 && !form.categoria) {
-      err.categoria = "Selecciona una categoría";
-    }
-
-    if (paso === 3) {
-      if (!form.tipo_atencion_id) err.tipo_atencion_id = "Selecciona una especialidad o estudio";
-      if (!form.profesional_id) err.profesional_id = "Selecciona un profesional";
-      if (!form.fecha_agendada) err.fecha_agendada = "Selecciona una fecha";
-      if (!form.hora_inicio) err.hora_inicio = "Selecciona una hora";
-    }
-
-    setErrores(err);
-    return Object.keys(err).length === 0;
-  };
-
-  const siguientePaso = () => {
-    if (validarPaso()) setPaso(paso + 1);
-  };
-
-  const anteriorPaso = () => {
-    setPaso(paso - 1);
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    const data = {
-      cedula: form.parentesco === "titular" ? form.cedula : `${form.representante_cedula}-1`,
-      fecha_agendada: form.fecha_agendada,
-      hora_inicio: form.hora_inicio,
-      profesional_id: form.profesional_id,
-      tipo_atencion_id: form.tipo_atencion_id,
-      detalle: form.observaciones,
+  const enviarAgendamiento = async () => {
+    const payload = {
+      cedula: datosPaciente.cedula,
       paciente: {
-        nombre: form.nombre,
-        apellido: form.apellido,
-        fecha_nacimiento: form.fecha_nacimiento,
-        sexo: form.sexo,
-        telefono: form.telefono,
-        email: form.email,
-        representante_cedula: form.parentesco === "titular" ? null : form.representante_cedula,
-        representante_nombre: form.parentesco === "titular" ? null : form.representante_nombre,
-        representante_apellido: form.parentesco === "titular" ? null : form.representante_apellido,
-        id_empresa: form.id_empresa,
+        nombre: datosPaciente.nombre,
+        apellido: datosPaciente.apellido,
+        fecha_nacimiento: datosPaciente.fechaNacimiento,
+        sexo: datosPaciente.sexo,
+        telefono: datosPaciente.telefono,
+        email: datosPaciente.email,
+        representante_cedula: parentesco !== 'titular' ? datosRepresentante.cedula : null,
+        representante_nombre: parentesco !== 'titular' ? datosRepresentante.nombre : null,
+        representante_apellido: parentesco !== 'titular' ? datosRepresentante.apellido : null,
+        id_empresa: idEmpresa,
         seguro_medico: false
-      }
+      },
+      profesional_id: profesionalSeleccionado,
+      fecha_agendada: fechaSeleccionada?.fecha || fechaSeleccionada,
+      tipo_atencion: modoSeleccion,
+      detalle: modoSeleccion === 'consulta' ? especialidadSeleccionada : servicioSeleccionado,
+      hora_inicio: fechaSeleccionada?.hora_inicio || null
     };
 
     try {
-      const res = await fetch(`${process.env.REACT_APP_API_URL}/api/agendamiento`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data)
-      });
-
-      if (!res.ok) throw new Error("Error al agendar");
-      setMensajeFinal("Tu solicitud fue enviada correctamente.");
-      setPaso(5);
+      await axios.post('/api/agendamiento', payload);
+      setStep(4);
     } catch (err) {
-      alert("No se pudo registrar el agendamiento.");
+      console.error('Error al crear agendamiento:', err);
+      alert('Hubo un error al agendar. Intenta nuevamente.');
     }
   };
 
   return (
-    <div className="form-wrapper" style={{ padding: "2rem", maxWidth: 700, margin: "0 auto" }}>
-      {paso < 5 && paso > 1 && (
-        <button onClick={anteriorPaso} style={{ marginBottom: "1rem" }}>
-          ← Volver al paso anterior
-        </button>
+    <div>
+      {/* Paso 1 */}
+      {step === 1 && (
+        <form onSubmit={e => { e.preventDefault(); setStep(2); }}>
+          <h2>Agendamiento por Convenio</h2>
+
+          <label>Empresa:</label>
+          <select value={idEmpresa} onChange={e => setIdEmpresa(e.target.value)} required>
+            <option value="">Seleccionar empresa</option>
+            {empresas.map(emp => (
+              <option key={emp.id_empresa} value={emp.id_empresa}>{emp.nombre_empresa}</option>
+            ))}
+          </select>
+
+          <label>Parentesco con el trabajador:</label>
+          <select value={parentesco} onChange={e => setParentesco(e.target.value)}>
+            <option value="titular">Soy el trabajador</option>
+            <option value="hijo">Hijo(a)</option>
+            <option value="conyuge">Cónyuge</option>
+            <option value="otro">Otro</option>
+          </select>
+
+          {parentesco !== 'titular' && (
+            <fieldset>
+              <legend>Datos del trabajador</legend>
+              <input placeholder="Cédula"
+                value={datosRepresentante.cedula}
+                onChange={e => setDatosRepresentante({ ...datosRepresentante, cedula: e.target.value })} />
+              <input placeholder="Nombre"
+                value={datosRepresentante.nombre}
+                onChange={e => setDatosRepresentante({ ...datosRepresentante, nombre: e.target.value })} />
+              <input placeholder="Apellidos"
+                value={datosRepresentante.apellido}
+                onChange={e => setDatosRepresentante({ ...datosRepresentante, apellido: e.target.value })} />
+              <input placeholder="Teléfono"
+                value={datosRepresentante.telefono}
+                onChange={e => setDatosRepresentante({ ...datosRepresentante, telefono: e.target.value })} />
+              <input placeholder="Correo electrónico"
+                value={datosRepresentante.email}
+                onChange={e => setDatosRepresentante({ ...datosRepresentante, email: e.target.value })} />
+            </fieldset>
+          )}
+
+          <fieldset>
+            <legend>Datos del paciente</legend>
+            <input placeholder="Cédula"
+              value={datosPaciente.cedula}
+              onChange={e => setDatosPaciente({ ...datosPaciente, cedula: e.target.value })} />
+            <input placeholder="Nombre"
+              value={datosPaciente.nombre}
+              onChange={e => setDatosPaciente({ ...datosPaciente, nombre: e.target.value })} />
+            <input placeholder="Apellidos"
+              value={datosPaciente.apellido}
+              onChange={e => setDatosPaciente({ ...datosPaciente, apellido: e.target.value })} />
+            <input type="date"
+              value={datosPaciente.fechaNacimiento}
+              onChange={e => setDatosPaciente({ ...datosPaciente, fechaNacimiento: e.target.value })} />
+            <select
+              value={datosPaciente.sexo}
+              onChange={e => setDatosPaciente({ ...datosPaciente, sexo: e.target.value })}>
+              <option value="">Sexo</option>
+              <option value="f">Femenino</option>
+              <option value="m">Masculino</option>
+            </select>
+            <input placeholder="Teléfono"
+              value={datosPaciente.telefono}
+              onChange={e => setDatosPaciente({ ...datosPaciente, telefono: e.target.value })} />
+            <input placeholder="Correo electrónico"
+              value={datosPaciente.email}
+              onChange={e => setDatosPaciente({ ...datosPaciente, email: e.target.value })} />
+          </fieldset>
+
+          {/* Aquí irá el botón para adjuntar orden médica */}
+          {parentesco !== 'titular' && (
+            <div style={{ marginTop: '1rem' }}>
+              <label>Orden médica:</label>
+              <input type="file" disabled />
+              <small>(Pendiente por implementar)</small>
+            </div>
+          )}
+
+          <button type="submit">Continuar</button>
+        </form>
       )}
 
-      <form onSubmit={handleSubmit}>
-        {paso === 1 && (
-          <>
-            <h3>1. Datos del paciente</h3>
+      {/* Paso 2 */}
+      {step === 2 && (
+        <div>
+          <button onClick={() => setStep(1)}>← Volver al paso anterior</button>
+          <h2>Selecciona la especialidad, el médico y el día.</h2>
 
-            <label>Empresa</label>
-            <select name="id_empresa" value={form.id_empresa} onChange={handleChange}>
-              <option value="">Selecciona empresa</option>
-              {empresas.map((e) => (
-                <option key={e.id_empresa} value={e.id_empresa}>
-                  {e.nombre_empresa}
-                </option>
-              ))}
-            </select>
-            {errores.id_empresa && <p>{errores.id_empresa}</p>}
-
-            <label>Parentesco</label>
-            <select name="parentesco" value={form.parentesco} onChange={handleChange}>
-              <option value="titular">Soy el trabajador</option>
-              <option value="hijo">Hijo(a)</option>
-              <option value="conyuge">Cónyuge</option>
-              <option value="otro">Otro</option>
-            </select>
-
-            {form.parentesco !== "titular" && (
-              <>
-                <label>Cédula del trabajador</label>
-                <input name="representante_cedula" value={form.representante_cedula} onChange={handleChange} />
-                <label>Nombre del trabajador</label>
-                <input name="representante_nombre" value={form.representante_nombre} onChange={handleChange} />
-                <label>Apellido del trabajador</label>
-                <input name="representante_apellido" value={form.representante_apellido} onChange={handleChange} />
-                <label>Orden médica</label>
-                <input type="file" name="archivo_orden" onChange={handleChange} />
-              </>
-            )}
-
-            <label>Cédula del paciente</label>
-            <input name="cedula" value={form.cedula} onChange={handleChange} />
-            <label>Nombre</label>
-            <input name="nombre" value={form.nombre} onChange={handleChange} />
-            <label>Apellido</label>
-            <input name="apellido" value={form.apellido} onChange={handleChange} />
-            <label>Fecha nacimiento</label>
-            <input type="date" name="fecha_nacimiento" value={form.fecha_nacimiento} onChange={handleChange} />
-            <label>Sexo</label>
-            <select name="sexo" value={form.sexo} onChange={handleChange}>
-              <option value="">Seleccionar</option>
-              <option value="m">Masculino</option>
-              <option value="f">Femenino</option>
-            </select>
-            <label>Teléfono</label>
-            <input name="telefono" value={form.telefono} onChange={handleChange} />
-            <label>Email</label>
-            <input name="email" value={form.email} onChange={handleChange} />
-          </>
-        )}
-
-        {paso === 2 && (
-          <>
-            <h3>2. ¿Qué necesitas?</h3>
-            <button type="button" onClick={() => { setForm({ ...form, categoria: "consulta" }); siguientePaso(); }}>
+          <div style={{ marginBottom: '1rem' }}>
+            <button onClick={() => setModoSeleccion('consulta')} style={{ marginRight: 8 }}>
               Consulta médica
             </button>
-            <button type="button" onClick={() => { setForm({ ...form, categoria: "estudio" }); siguientePaso(); }}>
-              Estudio
-            </button>
-            {errores.categoria && <p>{errores.categoria}</p>}
-          </>
-        )}
+            <button onClick={() => setModoSeleccion('estudio')}>Estudio</button>
+          </div>
 
-        {paso === 3 && (
-          <>
-            <h3>3. Selecciona atención</h3>
-            <label>{form.categoria === "consulta" ? "Especialidad" : "Estudio"}</label>
-            <select name="tipo_atencion_id" value={form.tipo_atencion_id} onChange={handleChange}>
-              <option value="">Selecciona</option>
-              {especialidades.map((e) => (
-                <option key={e.tipo_atencion_id} value={e.tipo_atencion_id}>
-                  {e.nombre}
-                </option>
-              ))}
-            </select>
+          {modoSeleccion && (
+            <>
+              {modoSeleccion === 'consulta' && (
+                <>
+                  <label>Especialidad:</label>
+                  <select value={especialidadSeleccionada}
+                    onChange={e => setEspecialidadSeleccionada(e.target.value)}>
+                    <option value="">Selecciona una opción</option>
+                    {[...new Set(profesionalesFiltrados.map(p => p.nombre_especialidad))].filter(Boolean).map((esp, i) => (
+                      <option key={i} value={esp}>{esp}</option>
+                    ))}
+                  </select>
+                </>
+              )}
 
-            <label>Profesional</label>
-            <select name="profesional_id" value={form.profesional_id} onChange={handleChange}>
-              <option value="">Selecciona</option>
-              {profesionales.map((p) => (
-                <option key={p.profesional_id} value={p.profesional_id}>
-                  {p.nombre} {p.apellido}
-                </option>
-              ))}
-            </select>
+              {modoSeleccion === 'estudio' && (
+                <>
+                  <label>Servicio:</label>
+                  <select value={servicioSeleccionado}
+                    onChange={e => setServicioSeleccionado(e.target.value)}>
+                    <option value="">Selecciona un servicio</option>
+                    {servicios.map(s => (
+                      <option key={s.id_servicio} value={s.nombre_servicio}>{s.nombre_servicio}</option>
+                    ))}
+                  </select>
+                </>
+              )}
 
-            <label>Fecha</label>
-            <input type="date" name="fecha_agendada" value={form.fecha_agendada} onChange={handleChange} />
-            <label>Hora</label>
-            <input type="time" name="hora_inicio" value={form.hora_inicio} onChange={handleChange} />
-            <label>Observaciones (opcional)</label>
-            <textarea name="observaciones" value={form.observaciones} onChange={handleChange} />
-          </>
-        )}
+              <label>Profesional:</label>
+              <select value={profesionalSeleccionado}
+                onChange={e => setProfesionalSeleccionado(e.target.value)}>
+                <option value="">Selecciona al profesional</option>
+                {profesionalesFiltrados
+                  .filter(p =>
+                    !especialidadSeleccionada || p.nombre_especialidad === especialidadSeleccionada
+                  ).map(p => (
+                    <option key={p.profesional_id} value={p.profesional_id}>
+                      {p.nombre} {p.apellido}
+                    </option>
+                  ))}
+              </select>
 
-        {paso === 4 && (
-          <>
-            <h3>4. Revisa tu solicitud</h3>
-            <ul>
-              <li><strong>Paciente:</strong> {form.nombre} {form.apellido}</li>
-              <li><strong>Empresa:</strong> {empresas.find(e => e.id_empresa === form.id_empresa)?.nombre_empresa}</li>
-              <li><strong>Tipo de atención:</strong> {form.categoria}</li>
-              <li><strong>Fecha:</strong> {form.fecha_agendada} a las {form.hora_inicio}</li>
-            </ul>
-            <p>Si todo está correcto, presiona "Enviar".</p>
-          </>
-        )}
+              {profesionalSeleccionado && (
+                <CalendarioFechasDisponibles
+                  profesionalId={profesionalSeleccionado}
+                  onFechaSeleccionada={setFechaSeleccionada}
+                />
+              )}
 
-        {paso < 4 && <button type="button" onClick={siguientePaso}>Continuar</button>}
-        {paso === 4 && <button type="submit">Enviar</button>}
-      </form>
+              {fechaSeleccionada && (
+                <button onClick={enviarAgendamiento} style={{ marginTop: '1rem' }}>
+                  Enviar solicitud
+                </button>
+              )}
+            </>
+          )}
+        </div>
+      )}
 
-      {paso === 5 && (
-        <div style={{ marginTop: "2rem" }}>
-          <h3>{mensajeFinal}</h3>
+      {step === 4 && (
+        <div style={{ textAlign: 'center', padding: '2rem' }}>
+          <h2>Tu solicitud fue enviada correctamente.</h2>
           <p>Te hemos enviado un correo con los detalles.</p>
+          <button onClick={() => window.location.reload()} style={{ marginTop: '1rem' }}>
+            Agendar otra cita
+          </button>
         </div>
       )}
     </div>
