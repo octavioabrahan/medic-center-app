@@ -19,6 +19,10 @@ const AgendamientoIndex = () => {
       </div>
 
       <div className="agendamiento-content">
+        <div className="volver-top">
+          <a href="/">← Volver a la página principal</a>
+        </div>
+
         <h2>¿Cómo se pagará la cita?</h2>
         <p className="agendamiento-subtitle">
           Selecciona la opción que corresponde al tipo de atención de la persona que se va a atender.
@@ -56,10 +60,6 @@ const AgendamientoIndex = () => {
         <button className="boton-continuar" onClick={continuar} disabled={!seleccion}>
           Continuar
         </button>
-
-        <div className="volver-link">
-          <a href="/">← Volver a la página principal</a>
-        </div>
       </div>
     </div>
   );

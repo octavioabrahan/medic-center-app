@@ -19,15 +19,30 @@
   object-fit: contain;
 }
 
-.agendamiento-content h2 {
+.agendamiento-content {
   text-align: center;
+  position: relative;
+}
+
+.volver-top {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.volver-top a {
+  text-decoration: none;
+  color: #1a3a8a;
+  font-size: 0.95rem;
+}
+
+.agendamiento-content h2 {
   font-size: 1.8rem;
   color: #0a2472;
   margin-bottom: 0.5rem;
 }
 
 .agendamiento-subtitle {
-  text-align: center;
   margin-bottom: 2rem;
   color: #555;
   max-width: 700px;
@@ -81,17 +96,6 @@
   cursor: not-allowed;
 }
 
-.volver-link {
-  margin-top: 2rem;
-  text-align: center;
-}
-
-.volver-link a {
-  text-decoration: none;
-  color: #1a3a8a;
-  font-size: 0.95rem;
-}
-
 @media screen and (max-width: 768px) {
   .agendamiento-opciones {
     flex-direction: column;
@@ -112,5 +116,11 @@
 
   .agendamiento-subtitle {
     font-size: 0.95rem;
+  }
+
+  .volver-top {
+    position: static;
+    text-align: left;
+    margin-bottom: 1rem;
   }
 }
