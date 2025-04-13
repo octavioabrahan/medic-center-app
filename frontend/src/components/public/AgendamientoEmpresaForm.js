@@ -284,13 +284,10 @@ const AgendamientoEmpresaForm = () => {
           <div className="calendario-y-info">
             <div>
               <label>Selecciona el día de atención</label>
-              <DayPicker
-                mode="single"
-                selected={fechaSeleccionada}
-                onSelect={setFechaSeleccionada}
-                fromDate={new Date()}
-                modifiersClassNames={{ selected: 'selected-day' }}
-              />
+              <CalendarioFechasDisponibles
+  profesionalId={profesionalSeleccionado}
+  onFechaSeleccionada={setFechaSeleccionada}
+/>
             </div>
             <div className="info-fecha-hora">
               <p><strong>📅</strong> {fechaSeleccionada ? fechaMostrada() : '-'}</p>
@@ -312,6 +309,7 @@ const AgendamientoEmpresaForm = () => {
     </div>
   </div>
 )}
+
         {step === 3 && (
           <div className="confirmacion">
             <button onClick={() => setStep(2)} className="volver-btn">← Volver al paso anterior</button>
