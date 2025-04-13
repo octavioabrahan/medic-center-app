@@ -222,72 +222,74 @@ const AgendamientoEmpresaForm = () => {
     </div>
 
     {(modoSeleccion === 'consulta' || modoSeleccion === 'estudio') && (
-      <div className="form-grid">
-        <div>
-          {modoSeleccion === 'consulta' ? (
-            <>
-              <label>Especialidad</label>
-              <select
-                value={especialidadSeleccionada}
-                onChange={e => setEspecialidadSeleccionada(e.target.value)}
-              >
-                <option value="">Selecciona una opción</option>
-                {[...new Set(profesionalesFiltrados.map(p => p.nombre_especialidad))]
-                  .filter(Boolean)
-                  .map((esp, i) => (
-                    <option key={i} value={esp}>{esp}</option>
+      <div className="form-grid-vertical">
+        <div className="grid-2-cols">
+          <div>
+            {modoSeleccion === 'consulta' ? (
+              <>
+                <label>Especialidad</label>
+                <select
+                  value={especialidadSeleccionada}
+                  onChange={e => setEspecialidadSeleccionada(e.target.value)}
+                >
+                  <option value="">Selecciona una opción</option>
+                  {[...new Set(profesionalesFiltrados.map(p => p.nombre_especialidad))]
+                    .filter(Boolean)
+                    .map((esp, i) => (
+                      <option key={i} value={esp}>{esp}</option>
+                    ))}
+                </select>
+              </>
+            ) : (
+              <>
+                <label>Servicio</label>
+                <select
+                  value={servicioSeleccionado}
+                  onChange={e => setServicioSeleccionado(e.target.value)}
+                >
+                  <option value="">Selecciona un servicio</option>
+                  {servicios.map(s => (
+                    <option key={s.id_servicio} value={s.nombre_servicio}>
+                      {s.nombre_servicio}
+                    </option>
                   ))}
-              </select>
-            </>
-          ) : (
-            <>
-              <label>Servicio</label>
-              <select
-                value={servicioSeleccionado}
-                onChange={e => setServicioSeleccionado(e.target.value)}
-              >
-                <option value="">Selecciona un servicio</option>
-                {servicios.map(s => (
-                  <option key={s.id_servicio} value={s.nombre_servicio}>
-                    {s.nombre_servicio}
+                </select>
+              </>
+            )}
+          </div>
+
+          <div>
+            <label>Profesional</label>
+            <select
+              value={profesionalSeleccionado}
+              onChange={e => setProfesionalSeleccionado(e.target.value)}
+            >
+              <option value="">Selecciona al profesional</option>
+              {profesionalesFiltrados
+                .filter(p => modoSeleccion === 'consulta'
+                  ? (!especialidadSeleccionada || p.nombre_especialidad === especialidadSeleccionada)
+                  : true)
+                .map(p => (
+                  <option key={p.profesional_id} value={p.profesional_id}>
+                    {p.nombre} {p.apellido}
                   </option>
                 ))}
-              </select>
-            </>
-          )}
-
-          <label>Profesional</label>
-          <select
-            value={profesionalSeleccionado}
-            onChange={e => setProfesionalSeleccionado(e.target.value)}
-          >
-            <option value="">Selecciona al profesional</option>
-            {profesionalesFiltrados
-              .filter(p => modoSeleccion === 'consulta'
-                ? (!especialidadSeleccionada || p.nombre_especialidad === especialidadSeleccionada)
-                : true)
-              .map(p => (
-                <option key={p.profesional_id} value={p.profesional_id}>
-                  {p.nombre} {p.apellido}
-                </option>
-              ))}
-          </select>
+            </select>
+          </div>
         </div>
 
-        <div>
-          {profesionalSeleccionado && (
-            <>
-              <CalendarioFechasDisponibles
-                profesionalId={profesionalSeleccionado}
-                onFechaSeleccionada={setFechaSeleccionada}
-              />
-              <div className="info-fecha-hora">
-                <p><strong>📅</strong> {fechaSeleccionada ? fechaMostrada() : '-'}</p>
-                <p><strong>🕒</strong> {horaMostrada()}</p>
-              </div>
-            </>
-          )}
-        </div>
+        {profesionalSeleccionado && (
+          <div className="calendario-y-info">
+            <CalendarioFechasDisponibles
+              profesionalId={profesionalSeleccionado}
+              onFechaSeleccionada={setFechaSeleccionada}
+            />
+            <div className="info-fecha-hora">
+              <p><strong>📅</strong> {fechaSeleccionada ? fechaMostrada() : '-'}</p>
+              <p><strong>🕒</strong> {horaMostrada()}</p>
+            </div>
+          </div>
+        )}
       </div>
     )}
 
@@ -302,7 +304,6 @@ const AgendamientoEmpresaForm = () => {
     </div>
   </div>
 )}
-
         {step === 3 && (
           <div className="confirmacion">
             <button onClick={() => setStep(2)} className="volver-btn">← Volver al paso anterior</button>
