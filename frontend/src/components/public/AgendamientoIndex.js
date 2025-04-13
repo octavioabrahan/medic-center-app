@@ -9,7 +9,7 @@ const AgendamientoIndex = () => {
 
   const continuar = () => {
     if (seleccion === 'privado') navigate('/agendamiento/privado');
-    else if (seleccion === 'convenio') navigate('/agendamiento/empresa');
+    else if (seleccion === 'convenio') navigate('/agendamiento/convenio');
   };
 
   return (
