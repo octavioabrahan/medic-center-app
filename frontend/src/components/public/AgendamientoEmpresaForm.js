@@ -63,7 +63,6 @@ const AgendamientoEmpresaForm = () => {
   const handleCheckCedula = () => {
     const nuevaCondicion = !sinCedula;
     setSinCedula(nuevaCondicion);
-    
     if (nuevaCondicion) {
       setDatosPaciente(prev => ({ ...prev, telefono: '', email: '' }));
     }
@@ -107,152 +106,8 @@ const AgendamientoEmpresaForm = () => {
         <img src={logo} alt="Logo Diagnocentro" className="form-logo" />
       </div>
       <div className="form-body">
-
-        {/* Paso 1 - Actualizado con el segundo snippet */}
-        {step === 1 && (
-          <form className="form-contenido" onSubmit={e => { e.preventDefault(); setStep(2); }}>
-            <h2 className="titulo-principal">Completa los datos del paciente que asistirá a la cita</h2>
-
-            <label>Empresa con la que tiene convenio</label>
-            <select
-              required
-              value={empresaSeleccionada}
-              onChange={e => setEmpresaSeleccionada(e.target.value)}
-            >
-              <option value="">Selecciona una empresa</option>
-              {empresas.map(e => (
-                <option key={e.id_empresa} value={e.id_empresa}>{e.nombre_empresa}</option>
-              ))}
-            </select>
-
-            <label>Cédula</label>
-            <input
-              required
-              type="text"
-              value={datosRepresentante.cedula}
-              onChange={e => setDatosRepresentante({ ...datosRepresentante, cedula: e.target.value })}
-            />
-
-            <label className="checkbox-linea">
-              <input
-                type="checkbox"
-                checked={sinCedula}
-                onChange={handleCheckCedula}
-              />
-              La persona que se atenderá no tiene cédula.
-            </label>
-
-            {sinCedula && (
-              <div className="form-grupo">
-                <h3>Datos del representante legal</h3>
-
-                <label>Nombre</label>
-                <input 
-                  type="text"
-                  required 
-                  value={datosRepresentante.nombre} 
-                  onChange={e => setDatosRepresentante({ ...datosRepresentante, nombre: e.target.value })} 
-                />
-
-                <label>Apellidos</label>
-                <input 
-                  type="text"
-                  required 
-                  value={datosRepresentante.apellido} 
-                  onChange={e => setDatosRepresentante({ ...datosRepresentante, apellido: e.target.value })} 
-                />
-
-                <label>¿Qué número de hijo(a) es este menor?</label>
-                <input 
-                  type="number"
-                  required 
-                  placeholder="1 si es el primero, 2 si es el segundo..."
-                  value={datosRepresentante.numeroHijo} 
-                  onChange={e => setDatosRepresentante({ ...datosRepresentante, numeroHijo: e.target.value })} 
-                />
-
-                <label>Sexo</label>
-                <div className="radio-group">
-                  <label><input type="radio" name="sexo-representante" required value="femenino" checked={datosRepresentante.sexo === 'femenino'} onChange={e => setDatosRepresentante({ ...datosRepresentante, sexo: e.target.value })} /> Femenino</label>
-                  <label><input type="radio" name="sexo-representante" required value="masculino" checked={datosRepresentante.sexo === 'masculino'} onChange={e => setDatosRepresentante({ ...datosRepresentante, sexo: e.target.value })} /> Masculino</label>
-                </div>
-
-                <label>Teléfono</label>
-                <input 
-                  type="text"
-                  required 
-                  value={datosRepresentante.telefono} 
-                  onChange={e => setDatosRepresentante({ ...datosRepresentante, telefono: e.target.value })} 
-                />
-
-                <label>Correo electrónico</label>
-                <input 
-                  type="email"
-                  required 
-                  value={datosRepresentante.email} 
-                  onChange={e => setDatosRepresentante({ ...datosRepresentante, email: e.target.value })} 
-                />
-              </div>
-            )}
-
-            <div className="form-grupo">
-              <h3>Datos del paciente</h3>
-
-              <label>Nombre</label>
-              <input 
-                type="text"
-                required 
-                value={datosPaciente.nombre} 
-                onChange={e => setDatosPaciente({ ...datosPaciente, nombre: e.target.value })} 
-              />
-
-              <label>Apellidos</label>
-              <input 
-                type="text"
-                required 
-                value={datosPaciente.apellido} 
-                onChange={e => setDatosPaciente({ ...datosPaciente, apellido: e.target.value })} 
-              />
-
-              <label>Fecha de nacimiento</label>
-              <input 
-                type="date"
-                required 
-                value={datosPaciente.fechaNacimiento} 
-                onChange={e => setDatosPaciente({ ...datosPaciente, fechaNacimiento: e.target.value })} 
-              />
-
-              <label>Sexo</label>
-              <div className="radio-group">
-                <label><input type="radio" name="sexo-paciente" required value="femenino" checked={datosPaciente.sexo === 'femenino'} onChange={e => setDatosPaciente({ ...datosPaciente, sexo: e.target.value })} /> Femenino</label>
-                <label><input type="radio" name="sexo-paciente" required value="masculino" checked={datosPaciente.sexo === 'masculino'} onChange={e => setDatosPaciente({ ...datosPaciente, sexo: e.target.value })} /> Masculino</label>
-              </div>
-            </div>
-
-            <div className="form-grupo">
-              <h3>Seguro médico</h3>
-              <p>¿La persona que se va a atender tiene seguro médico?</p>
-              <div className="radio-group">
-                <label>
-                  <input type="radio" name="seguro" value="si" checked={tieneSeguro === 'si'} onChange={() => setTieneSeguro('si')} required />
-                  Sí, tiene seguro
-                </label>
-                <label>
-                  <input type="radio" name="seguro" value="no" checked={tieneSeguro === 'no'} onChange={() => setTieneSeguro('no')} required />
-                  No, no tiene seguro
-                </label>
-              </div>
-            </div>
-
-            <div className="boton-container">
-              <button type="submit" className="boton-continuar">Continuar</button>
-            </div>
-          </form>
-        )}
-
-        {/* Paso 2 */}
         {step === 2 && (
-          <div className="form-step">
+          <div>
             <button onClick={() => setStep(1)} className="volver-btn">← Volver al paso anterior</button>
             <h2 className="form-title">Selecciona el tipo de atención y profesional</h2>
             <div className="selector-botones">
@@ -329,28 +184,24 @@ const AgendamientoEmpresaForm = () => {
           </div>
         )}
 
-        {/* Paso 3 */}
         {step === 3 && (
-          <div className="form-step confirmacion">
+          <div className="confirmacion">
             <button onClick={() => setStep(2)} className="volver-btn">← Volver al paso anterior</button>
             <h2 className="form-title">Revisa y confirma tu solicitud</h2>
-
             <div className="resumen">
               <p><strong>🩺</strong> {modoSeleccion === 'consulta' ? especialidadSeleccionada : servicioSeleccionado}</p>
               <p><strong>👤</strong> {profesionales.find(p => p.profesional_id === profesionalSeleccionado)?.nombre} {profesionales.find(p => p.profesional_id === profesionalSeleccionado)?.apellido}</p>
               <p><strong>📅</strong> {fechaMostrada()}</p>
               <p><strong>🕐</strong> {horaMostrada()}</p>
             </div>
-
             <div className="form-actions">
               <button onClick={enviarAgendamiento} className="boton-principal">Enviar solicitud</button>
             </div>
           </div>
         )}
 
-        {/* Paso 4 */}
         {step === 4 && (
-          <div className="form-step confirmacion-final">
+          <div className="confirmacion-final">
             <h2 className="form-title">Tu solicitud fue enviada correctamente.</h2>
             <p>Te enviamos por correo la información de tu cita.</p>
             <div className="form-actions" style={{ justifyContent: 'center', gap: '1rem', marginTop: '2rem' }}>
