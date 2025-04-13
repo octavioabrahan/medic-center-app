@@ -15,11 +15,7 @@ const AgendamientoIndex = () => {
   return (
     <div className="agendamiento-container">
       <div className="agendamiento-header">
-        <img
-          src={logo}
-          alt="Logo Diagnocentro"
-          className="agendamiento-logo"
-        />
+        <img src={logo} alt="Logo Diagnocentro" className="agendamiento-logo" />
       </div>
 
       <div className="agendamiento-content">
