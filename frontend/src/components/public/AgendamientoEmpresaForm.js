@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import CalendarioFechasDisponibles from './CalendarioFechasDisponibles';
-import './AgendamientoEmpresaForm.css';
+import './AgendamientoEmpresa.css';
 import logo from '../../assets/logo_header.png';
 
 const AgendamientoEmpresaForm = () => {
@@ -18,7 +18,7 @@ const AgendamientoEmpresaForm = () => {
     nombre: '', apellido: '', fechaNacimiento: '', sexo: '', telefono: '', email: ''
   });
 
-  const [tieneSeguro, setTieneSeguro] = useState(false);
+  const [tieneSeguro, setTieneSeguro] = useState('');
   const [modoSeleccion, setModoSeleccion] = useState(null);
   const [servicios, setServicios] = useState([]);
   const [profesionales, setProfesionales] = useState([]);
@@ -29,9 +29,9 @@ const AgendamientoEmpresaForm = () => {
   const [fechaSeleccionada, setFechaSeleccionada] = useState(null);
 
   useEffect(() => {
-    axios.get('/api/empresas').then(res => {
-      setEmpresas(res.data.filter(e => e.activa));
-    });
+    fetch('/api/empresas')
+      .then(res => res.json())
+      .then(data => setEmpresas(data.filter(e => e.activa)));
   }, []);
 
   useEffect(() => {
@@ -63,8 +63,10 @@ const AgendamientoEmpresaForm = () => {
   const handleCheckCedula = () => {
     const nuevaCondicion = !sinCedula;
     setSinCedula(nuevaCondicion);
-    setDatosPaciente(prev => ({ ...prev, telefono: '', email: '' }));
-    setDatosRepresentante(prev => ({ ...prev, nombre: '', apellido: '', numeroHijo: '', telefono: '', email: '' }));
+    
+    if (nuevaCondicion) {
+      setDatosPaciente(prev => ({ ...prev, telefono: '', email: '' }));
+    }
   };
 
   const enviarAgendamiento = async () => {
@@ -78,7 +80,7 @@ const AgendamientoEmpresaForm = () => {
         sexo: datosPaciente.sexo,
         telefono: sinCedula ? datosRepresentante.telefono : datosPaciente.telefono,
         email: sinCedula ? datosRepresentante.email : datosPaciente.email,
-        seguro_medico: tieneSeguro,
+        seguro_medico: tieneSeguro === 'si',
         representante_cedula: representanteCedula,
         representante_nombre: sinCedula ? datosRepresentante.nombre : null,
         representante_apellido: sinCedula ? datosRepresentante.apellido : null,
@@ -106,10 +108,10 @@ const AgendamientoEmpresaForm = () => {
       </div>
       <div className="form-body">
 
-        {/* Paso 1 - Actualizado con el nuevo código */}
+        {/* Paso 1 - Actualizado con el segundo snippet */}
         {step === 1 && (
-          <form className="form-container" onSubmit={e => { e.preventDefault(); setStep(2); }}>
-            <h2 className="form-title">Completa los datos del paciente que asistirá a la cita</h2>
+          <form className="form-contenido" onSubmit={e => { e.preventDefault(); setStep(2); }}>
+            <h2 className="titulo-principal">Completa los datos del paciente que asistirá a la cita</h2>
 
             <label>Empresa con la que tiene convenio</label>
             <select
@@ -131,75 +133,120 @@ const AgendamientoEmpresaForm = () => {
               onChange={e => setDatosRepresentante({ ...datosRepresentante, cedula: e.target.value })}
             />
 
-            <div className="checkbox-group">
-              <label>
-                <input
-                  type="checkbox"
-                  checked={sinCedula}
-                  onChange={handleCheckCedula}
-                />
-                La persona que se atenderá no tiene cédula.
-              </label>
-              <p className="input-hint">Si marcas esta opción, deberás ingresar la cédula del representante legal. Después te pediremos los datos del paciente.</p>
-            </div>
+            <label className="checkbox-linea">
+              <input
+                type="checkbox"
+                checked={sinCedula}
+                onChange={handleCheckCedula}
+              />
+              La persona que se atenderá no tiene cédula.
+            </label>
 
             {sinCedula && (
-              <fieldset className="fieldset-box">
-                <legend>Datos del representante legal</legend>
+              <div className="form-grupo">
+                <h3>Datos del representante legal</h3>
 
                 <label>Nombre</label>
-                <input required value={datosRepresentante.nombre} onChange={e => setDatosRepresentante({ ...datosRepresentante, nombre: e.target.value })} />
+                <input 
+                  type="text"
+                  required 
+                  value={datosRepresentante.nombre} 
+                  onChange={e => setDatosRepresentante({ ...datosRepresentante, nombre: e.target.value })} 
+                />
 
                 <label>Apellidos</label>
-                <input required value={datosRepresentante.apellido} onChange={e => setDatosRepresentante({ ...datosRepresentante, apellido: e.target.value })} />
+                <input 
+                  type="text"
+                  required 
+                  value={datosRepresentante.apellido} 
+                  onChange={e => setDatosRepresentante({ ...datosRepresentante, apellido: e.target.value })} 
+                />
 
                 <label>¿Qué número de hijo(a) es este menor?</label>
-                <p className="input-hint">El sistema generará automáticamente una cédula para tu hijo con el número que ingreses para identificarlo</p>
-                <input required placeholder="Digita 1 si es el primero, 2 si es el segundo, etc." value={datosRepresentante.numeroHijo} onChange={e => setDatosRepresentante({ ...datosRepresentante, numeroHijo: e.target.value })} />
+                <input 
+                  type="number"
+                  required 
+                  placeholder="1 si es el primero, 2 si es el segundo..."
+                  value={datosRepresentante.numeroHijo} 
+                  onChange={e => setDatosRepresentante({ ...datosRepresentante, numeroHijo: e.target.value })} 
+                />
 
                 <label>Sexo</label>
                 <div className="radio-group">
-                  <label><input type="radio" name="sexoRepresentante" required value="femenino" checked={datosRepresentante.sexo === 'femenino'} onChange={e => setDatosRepresentante({ ...datosRepresentante, sexo: e.target.value })} /> Femenino</label>
-                  <label><input type="radio" name="sexoRepresentante" required value="masculino" checked={datosRepresentante.sexo === 'masculino'} onChange={e => setDatosRepresentante({ ...datosRepresentante, sexo: e.target.value })} /> Masculino</label>
+                  <label><input type="radio" name="sexo-representante" required value="femenino" checked={datosRepresentante.sexo === 'femenino'} onChange={e => setDatosRepresentante({ ...datosRepresentante, sexo: e.target.value })} /> Femenino</label>
+                  <label><input type="radio" name="sexo-representante" required value="masculino" checked={datosRepresentante.sexo === 'masculino'} onChange={e => setDatosRepresentante({ ...datosRepresentante, sexo: e.target.value })} /> Masculino</label>
                 </div>
 
                 <label>Teléfono</label>
-                <input required value={datosRepresentante.telefono} onChange={e => setDatosRepresentante({ ...datosRepresentante, telefono: e.target.value })} />
+                <input 
+                  type="text"
+                  required 
+                  value={datosRepresentante.telefono} 
+                  onChange={e => setDatosRepresentante({ ...datosRepresentante, telefono: e.target.value })} 
+                />
 
                 <label>Correo electrónico</label>
-                <input required type="email" value={datosRepresentante.email} onChange={e => setDatosRepresentante({ ...datosRepresentante, email: e.target.value })} />
-              </fieldset>
+                <input 
+                  type="email"
+                  required 
+                  value={datosRepresentante.email} 
+                  onChange={e => setDatosRepresentante({ ...datosRepresentante, email: e.target.value })} 
+                />
+              </div>
             )}
 
-            <fieldset className="fieldset-box">
-              <legend>Datos del paciente</legend>
+            <div className="form-grupo">
+              <h3>Datos del paciente</h3>
 
               <label>Nombre</label>
-              <input required value={datosPaciente.nombre} onChange={e => setDatosPaciente({ ...datosPaciente, nombre: e.target.value })} />
+              <input 
+                type="text"
+                required 
+                value={datosPaciente.nombre} 
+                onChange={e => setDatosPaciente({ ...datosPaciente, nombre: e.target.value })} 
+              />
 
               <label>Apellidos</label>
-              <input required value={datosPaciente.apellido} onChange={e => setDatosPaciente({ ...datosPaciente, apellido: e.target.value })} />
+              <input 
+                type="text"
+                required 
+                value={datosPaciente.apellido} 
+                onChange={e => setDatosPaciente({ ...datosPaciente, apellido: e.target.value })} 
+              />
 
               <label>Fecha de nacimiento</label>
-              <input required type="date" value={datosPaciente.fechaNacimiento} onChange={e => setDatosPaciente({ ...datosPaciente, fechaNacimiento: e.target.value })} />
+              <input 
+                type="date"
+                required 
+                value={datosPaciente.fechaNacimiento} 
+                onChange={e => setDatosPaciente({ ...datosPaciente, fechaNacimiento: e.target.value })} 
+              />
 
               <label>Sexo</label>
               <div className="radio-group">
-                <label><input type="radio" name="sexoPaciente" required value="femenino" checked={datosPaciente.sexo === 'femenino'} onChange={e => setDatosPaciente({ ...datosPaciente, sexo: e.target.value })} /> Femenino</label>
-                <label><input type="radio" name="sexoPaciente" required value="masculino" checked={datosPaciente.sexo === 'masculino'} onChange={e => setDatosPaciente({ ...datosPaciente, sexo: e.target.value })} /> Masculino</label>
+                <label><input type="radio" name="sexo-paciente" required value="femenino" checked={datosPaciente.sexo === 'femenino'} onChange={e => setDatosPaciente({ ...datosPaciente, sexo: e.target.value })} /> Femenino</label>
+                <label><input type="radio" name="sexo-paciente" required value="masculino" checked={datosPaciente.sexo === 'masculino'} onChange={e => setDatosPaciente({ ...datosPaciente, sexo: e.target.value })} /> Masculino</label>
               </div>
-            </fieldset>
+            </div>
 
-            <fieldset className="fieldset-box">
-              <legend>Seguro médico</legend>
+            <div className="form-grupo">
+              <h3>Seguro médico</h3>
               <p>¿La persona que se va a atender tiene seguro médico?</p>
               <div className="radio-group">
-                <label><input type="radio" name="seguro" required checked={tieneSeguro} onChange={() => setTieneSeguro(true)} /> Sí, tiene seguro</label>
-                <label><input type="radio" name="seguro" required checked={!tieneSeguro} onChange={() => setTieneSeguro(false)} /> No, no tiene seguro</label>
+                <label>
+                  <input type="radio" name="seguro" value="si" checked={tieneSeguro === 'si'} onChange={() => setTieneSeguro('si')} required />
+                  Sí, tiene seguro
+                </label>
+                <label>
+                  <input type="radio" name="seguro" value="no" checked={tieneSeguro === 'no'} onChange={() => setTieneSeguro('no')} required />
+                  No, no tiene seguro
+                </label>
               </div>
-            </fieldset>
+            </div>
 
-            <button type="submit" className="boton-continuar">Continuar</button>
+            <div className="boton-container">
+              <button type="submit" className="boton-continuar">Continuar</button>
+            </div>
           </form>
         )}
 
