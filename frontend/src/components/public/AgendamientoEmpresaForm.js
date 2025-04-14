@@ -199,152 +199,129 @@ const AgendamientoEmpresaForm = () => {
         )}
 {step === 2 && (
   <div className="form-step2">
-    <button onClick={() => setStep(1)} className="volver-btn volver-btn-gris">← Volver al paso anterior</button>
+    <button onClick={() => setStep(1)} className="volver-btn">← Volver al paso anterior</button>
     <h2 className="titulo-principal">Selecciona la especialidad, el médico y el día.</h2>
 
-    <label style={{ marginBottom: '1rem', display: 'block' }}>Selecciona la categoría de atención</label>
-    <div className="selector-botones-radio" style={{ display: 'flex', gap: '1rem' }}>
-      <label className={modoSeleccion === 'consulta' ? 'opcion-card activa' : 'opcion-card'}>
-        <input
-          type="radio"
-          name="categoria"
-          value="consulta"
-          checked={modoSeleccion === 'consulta'}
-          onChange={() => setModoSeleccion('consulta')}
-          required
-        />
-        <div>
+    {/* Tipo de atención */}
+    <div>
+      <label>Selecciona la categoría de atención</label>
+      <div className="selector-botones-radio">
+        <label className={`opcion-card ${modoSeleccion === 'consulta' ? 'activa' : ''}`}>
+          <input
+            type="radio"
+            name="categoria"
+            value="consulta"
+            checked={modoSeleccion === 'consulta'}
+            onChange={() => setModoSeleccion('consulta')}
+          />
           <strong>Consulta médica</strong>
-        </div>
-      </label>
-      <label className={modoSeleccion === 'estudio' ? 'opcion-card activa' : 'opcion-card'}>
-        <input
-          type="radio"
-          name="categoria"
-          value="estudio"
-          checked={modoSeleccion === 'estudio'}
-          onChange={() => setModoSeleccion('estudio')}
-          required
-        />
-        <div>
+        </label>
+        <label className={`opcion-card ${modoSeleccion === 'estudio' ? 'activa' : ''}`}>
+          <input
+            type="radio"
+            name="categoria"
+            value="estudio"
+            checked={modoSeleccion === 'estudio'}
+            onChange={() => setModoSeleccion('estudio')}
+          />
           <strong>Estudio</strong>
-        </div>
-      </label>
+        </label>
+      </div>
     </div>
 
-    {(modoSeleccion === 'consulta' || modoSeleccion === 'estudio') && (
-      <div className="form-row">
-        <div className="form-column">
-          {modoSeleccion === 'consulta' ? (
-            <>
-              <label>
-                Especialidad <span className="asterisk">*</span>
-              </label>
-              <select
-                value={especialidadSeleccionada}
-                onChange={e => setEspecialidadSeleccionada(e.target.value)}
-                required
-              >
-                <option value="">Selecciona una opción</option>
-                {[...new Set(profesionalesFiltrados.map(p => p.nombre_especialidad))]
-                  .filter(Boolean)
-                  .map((esp, i) => (
-                    <option key={i} value={esp}>
-                      {esp}
-                    </option>
-                  ))}
-              </select>
-            </>
-          ) : (
-            <>
-              <label>
-                Servicio <span className="asterisk">*</span>
-              </label>
-              <select
-                value={servicioSeleccionado}
-                onChange={e => setServicioSeleccionado(e.target.value)}
-                required
-              >
-                <option value="">Selecciona un servicio</option>
-                {servicios.map(s => (
-                  <option key={s.id_servicio} value={s.nombre_servicio}>
-                    {s.nombre_servicio}
-                  </option>
-                ))}
-              </select>
-            </>
-          )}
-        </div>
-
-        <div className="form-column">
-          <label>
-            Profesional <span className="asterisk">*</span>
-          </label>
-          <select
-            value={profesionalSeleccionado}
-            onChange={e => {
-              const id = e.target.value;
-              setProfesionalSeleccionado(id);
-              setFechaSeleccionada(null); // reinicia la fecha al cambiar profesional
-              const profesional = profesionales.find(p => p.profesional_id === id);
-              if (modoSeleccion === 'consulta' && profesional?.nombre_especialidad) {
-                setEspecialidadSeleccionada(profesional.nombre_especialidad);
-              }
-            }}
-            required
-          >
-            <option value="">Selecciona al profesional</option>
-            {profesionalesFiltrados
-              .filter(p =>
-                modoSeleccion === 'consulta'
-                  ? (!especialidadSeleccionada || p.nombre_especialidad === especialidadSeleccionada)
-                  : true
-              )
-              .map(p => (
-                <option key={p.profesional_id} value={p.profesional_id}>
-                  {p.nombre} {p.apellido}
-                </option>
-              ))}
-          </select>
-        </div>
+    {/* Especialidad y Profesional */}
+    <div className="form-row">
+      <div className="form-column">
+        <label>Especialidad <span className="asterisk">*</span></label>
+        <select
+          required
+          value={especialidadSeleccionada}
+          onChange={(e) => {
+            setEspecialidadSeleccionada(e.target.value);
+            setProfesionalSeleccionado('');
+            setFechaSeleccionada(null);
+          }}
+        >
+          <option value="">Selecciona una especialidad</option>
+          {especialidades.map((esp, i) => (
+            <option key={i} value={esp}>
+              {esp}
+            </option>
+          ))}
+        </select>
       </div>
-    )}
-
-    {profesionalSeleccionado && (
-      <div className="calendar-section">
-        <div className="calendar-wrapper">
-          <label>
-            Selecciona el día de atención <span className="asterisk">*</span>
-          </label>
-          <CalendarioFechasDisponiblesDayPicker
-            profesionalId={profesionalSeleccionado}
-            fechaSeleccionada={fechaSeleccionada}
-            setFechaSeleccionada={setFechaSeleccionada}
-          />
-        </div>
-        <div className="info-fecha-hora">
-          <p>
-            <strong>📅</strong> {fechaSeleccionada ? fechaMostrada() : '-'}
-          </p>
-          <p>
-            <strong>🕒</strong> {fechaSeleccionada ? horaMostrada() : 'No disponible'}
-          </p>
-        </div>
+      <div className="form-column">
+        <label>Profesional <span className="asterisk">*</span></label>
+        <select
+          required
+          value={profesionalSeleccionado}
+          onChange={e => {
+            setProfesionalSeleccionado(e.target.value);
+            const seleccionado = profesionalesFiltrados.find(p => p.profesional_id === e.target.value);
+            if (seleccionado) {
+              setEspecialidadSeleccionada(seleccionado.nombre_especialidad);
+            }
+            setFechaSeleccionada(null);
+          }}
+        >
+          <option value="">Selecciona al profesional</option>
+          {profesionalesFiltrados
+            .filter(p =>
+              modoSeleccion === 'consulta'
+                ? (!especialidadSeleccionada || p.nombre_especialidad === especialidadSeleccionada)
+                : true
+            )
+            .map(p => (
+              <option key={p.profesional_id} value={p.profesional_id}>
+                {p.nombre} {p.apellido}
+              </option>
+            ))}
+        </select>
       </div>
-    )}
+    </div>
+
+    {/* Calendario y resumen de fecha */}
+    <div className="calendar-section">
+      <div className="calendar-wrapper">
+        <label>Selecciona el día de atención <span className="asterisk">*</span></label>
+        <CalendarioFechasDisponiblesDayPicker
+          profesionalId={profesionalSeleccionado}
+          fechaSeleccionada={fechaSeleccionada}
+          setFechaSeleccionada={setFechaSeleccionada}
+        />
+      </div>
+      <div className="info-fecha-hora">
+        {fechaSeleccionada?.fecha ? (
+          <>
+            <p>📅 {new Date(fechaSeleccionada.fecha).toLocaleDateString('es-CL', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}</p>
+            <p>🕒 Desde las {fechaSeleccionada.hora_inicio?.slice(0, 5)} hasta las {fechaSeleccionada.hora_termino?.slice(0, 5)} hrs</p>
+          </>
+        ) : (
+          <>
+            <p>📅 -</p>
+            <p>🕒 No disponible</p>
+          </>
+        )}
+      </div>
+    </div>
 
     <div className="boton-container">
       <button
-        onClick={() => setStep(3)}
+        type="button"
         className="boton-continuar"
-        disabled={!fechaSeleccionada || !especialidadSeleccionada || !profesionalSeleccionado || (modoSeleccion === 'estudio' && !servicioSeleccionado)}
+        onClick={() => setStep(3)}
+        disabled={
+          !modoSeleccion ||
+          !especialidadSeleccionada ||
+          !profesionalSeleccionado ||
+          !fechaSeleccionada
+        }
       >
         Continuar
       </button>
     </div>
   </div>
 )}
-
         {step === 3 && (
           <div className="confirmacion">
             <button onClick={() => setStep(2)} className="volver-btn">← Volver al paso anterior</button>
