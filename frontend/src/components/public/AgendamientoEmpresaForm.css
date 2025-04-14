@@ -36,14 +36,11 @@ body {
 
 /* === PASO 2 NUEVO === */
 
-.form-step2.nuevo-estilo {
-  width: 100%;
-  background-color: rgba(32, 55, 122, 0.02);
-  padding: 2rem;
-  border-radius: 12px;
-  display: flex;
-  flex-direction: column;
-  gap: 2rem;
+.form-step2.nuevo-estilo > .tarjeta-seleccion:not(.calendar-wrapper):not(.info-fecha-hora) {
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  padding: 0;
 }
 
 .titulo-principal {
@@ -187,6 +184,25 @@ select:focus {
   cursor: pointer;
   margin-bottom: 1rem;
   text-align: left;
+}
+
+.form-step1 {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.form-step1 .form-column {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.form-step1 input[type="text"],
+.form-step1 input[type="number"],
+.form-step1 input[type="date"],
+.form-step1 select {
+  margin-bottom: 0;
 }
 
 /* === RESPONSIVE === */
