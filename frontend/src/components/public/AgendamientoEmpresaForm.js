@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-//import CalendarioFechasDisponibles from './CalendarioFechasDisponibles';
 import CalendarioFechasDisponiblesDayPicker from './CalendarioFechasDisponiblesDayPicker';
 import './AgendamientoEmpresaForm.css';
 import logo from '../../assets/logo_header.png';
@@ -19,7 +18,6 @@ const AgendamientoEmpresaForm = () => {
     nombre: '', apellido: '', fechaNacimiento: '', sexo: '', telefono: '', email: ''
   });
 
-  const [tipoAtencion, setTipoAtencion] = useState(null);
   const [tieneSeguro, setTieneSeguro] = useState('');
   const [modoSeleccion, setModoSeleccion] = useState(null);
   const [servicios, setServicios] = useState([]);
@@ -29,7 +27,6 @@ const AgendamientoEmpresaForm = () => {
   const [servicioSeleccionado, setServicioSeleccionado] = useState('');
   const [profesionalSeleccionado, setProfesionalSeleccionado] = useState('');
   const [fechaSeleccionada, setFechaSeleccionada] = useState(null);
-  //const [fechasDisponibles, setFechasDisponibles] = useState([]);
 
   useEffect(() => {
     fetch('/api/empresas')
@@ -44,11 +41,6 @@ const AgendamientoEmpresaForm = () => {
     }
   }, [step]);
 
-  const handleTipoAtencionChange = (value) => {
-    setTipoAtencion(value);
-    setFormData({ ...formData, tipo_atencion: value });
-  };
-
   const profesionalesFiltrados = profesionales.filter(p =>
     modoSeleccion === 'consulta'
       ? p.categorias?.includes('Consulta')
@@ -56,6 +48,10 @@ const AgendamientoEmpresaForm = () => {
         ? p.categorias?.includes('Estudio')
         : false
   );
+
+  useEffect(() => {
+    setProfesionalSeleccionado('');
+  }, [especialidadSeleccionada, servicioSeleccionado]);
 
   const fechaMostrada = () => {
     const fecha = fechaSeleccionada?.dateObj;
@@ -67,13 +63,13 @@ const AgendamientoEmpresaForm = () => {
       day: 'numeric'
     }).replace(/,/g, '').replace(/^./, str => str.toUpperCase());
   };
-  
+
   const horaMostrada = () => {
     if (!fechaSeleccionada || !fechaSeleccionada.hora_inicio || !fechaSeleccionada.hora_termino) return 'No disponible';
     const inicio = fechaSeleccionada.hora_inicio.slice(0, 5);
     const termino = fechaSeleccionada.hora_termino.slice(0, 5);
     return `Desde las ${inicio} hasta las ${termino} hrs`;
-  };  
+  };
 
   const handleCheckCedula = () => {
     const nuevaCondicion = !sinCedula;
@@ -203,6 +199,7 @@ const AgendamientoEmpresaForm = () => {
             </div>
           </form>
         )}
+
 {step === 2 && (
   <div className="form-step2 nuevo-estilo">
     <button onClick={() => setStep(1)} className="volver-btn volver-btn-gris">
@@ -354,6 +351,8 @@ const AgendamientoEmpresaForm = () => {
     </div>
   </div>
 )}
+
+        {/* Paso 3 */}
         {step === 3 && (
           <div className="confirmacion">
             <button onClick={() => setStep(2)} className="volver-btn">← Volver al paso anterior</button>
@@ -370,6 +369,7 @@ const AgendamientoEmpresaForm = () => {
           </div>
         )}
 
+        {/* Paso 4 */}
         {step === 4 && (
           <div className="confirmacion-final">
             <h2 className="form-title">Tu solicitud fue enviada correctamente.</h2>
