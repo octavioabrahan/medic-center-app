@@ -143,6 +143,7 @@ select:focus {
   flex-wrap: wrap;
   margin-top: 0.5rem;
   justify-content: center;
+  width: 100%;
 }
 
 .opcion-card {
@@ -154,11 +155,15 @@ select:focus {
   padding: 0.8rem 1rem;
   font-size: 1rem;
   background-color: white;
-  width: 240px;
+  width: 100%;
+  min-height: 44px;
+  max-width: 420px; /* igual que los select */
   cursor: pointer;
   transition: all 0.2s ease;
   line-height: 1.4;
   word-break: break-word;
+  flex-wrap: wrap;
+  justify-content: flex-start;
 }
 
 .opcion-card input[type="radio"] {
@@ -195,6 +200,7 @@ select:focus {
   gap: 2rem;
   flex-wrap: wrap;
   justify-content: center;
+  width: 100%;
 }
 
 .form-column {
@@ -271,6 +277,9 @@ select:focus {
   color: #20377A;
 }
 
+.form-step2 > *:not(:last-child) {
+  margin-bottom: 1.5rem;
+}
 /* === Responsive === */
 
 @media (max-width: 700px) {
