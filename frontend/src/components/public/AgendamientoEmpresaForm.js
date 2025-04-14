@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-//import CalendarioFechasDisponibles from './CalendarioFechasDisponibles';
+import CalendarioFechasDisponibles from './CalendarioFechasDisponibles';
 import './AgendamientoEmpresaForm.css';
 import logo from '../../assets/logo_header.png';
-import { DayPicker } from 'react-day-picker';
-import 'react-day-picker/dist/style.css';
+//import { DayPicker } from 'react-day-picker';
+//import 'react-day-picker/dist/style.css';
 
 const AgendamientoEmpresaForm = () => {
   const [step, setStep] = useState(1);
@@ -29,7 +29,7 @@ const AgendamientoEmpresaForm = () => {
   const [servicioSeleccionado, setServicioSeleccionado] = useState('');
   const [profesionalSeleccionado, setProfesionalSeleccionado] = useState('');
   const [fechaSeleccionada, setFechaSeleccionada] = useState(null);
-
+  
   useEffect(() => {
     fetch('/api/empresas')
       .then(res => res.json())
@@ -42,53 +42,6 @@ const AgendamientoEmpresaForm = () => {
       axios.get('/api/profesionales').then(res => setProfesionales(res.data)).catch(console.error);
     }
   }, [step]);
-
-  useEffect(() => {
-    const fetchFechasDisponibles = async () => {
-      if (!profesionalSeleccionado) return;
-  
-      try {
-        const [resHorarios, resExcepciones] = await Promise.all([
-          fetch(`/api/horarios/fechas/${profesionalSeleccionado}`),
-          fetch(`/api/excepciones/profesional/${profesionalSeleccionado}`)
-        ]);
-  
-        const fechasBase = await resHorarios.json(); // [{ fecha: '2025-04-07' }, ...]
-        const excepciones = await resExcepciones.json();
-  
-        const canceladas = new Set(
-          excepciones
-            .filter(e => e.estado === 'cancelado')
-            .map(e => e.fecha)
-        );
-  
-        const agregadas = excepciones
-          .filter(e => e.estado === 'manual')
-          .map(e => {
-            const [y, m, d] = e.fecha.split('-').map(Number);
-            return new Date(y, m - 1, d);
-          });
-  
-        const fechasFiltradas = fechasBase
-          .filter(f => !canceladas.has(f.fecha))
-          .map(f => {
-            const [y, m, d] = f.fecha.split('-').map(Number);
-            return new Date(y, m - 1, d);
-          });
-  
-        const finalDates = [...fechasFiltradas, ...agregadas];
-  
-        const unicas = Array.from(new Set(finalDates.map(d => d.toDateString())))
-          .map(fechaStr => new Date(fechaStr));
-  
-        setFechasDisponibles(unicas);
-      } catch (error) {
-        console.error("Error cargando fechas o excepciones:", error);
-      }
-    };
-  
-    fetchFechasDisponibles();
-  }, [profesionalSeleccionado]);
 
   const profesionalesFiltrados = profesionales.filter(p =>
     modoSeleccion === 'consulta'
@@ -331,18 +284,10 @@ const AgendamientoEmpresaForm = () => {
           <div className="calendario-y-info">
             <div>
               <label>Selecciona el día de atención</label>
-              <DayPicker
-                mode="single"
-                selected={fechaSeleccionada}
-                onSelect={setFechaSeleccionada}
-                fromDate={new Date()}
-                disabled={profesionalSeleccionado === ''}
-                modifiers={{
-                  disponible: date => fechasDisponibles.some(d => new Date(d).toDateString() === date.toDateString())
-                }}
-                modifiersClassNames={{ disponible: 'rdp-day-available' }}
-                modifiersStyles={{ disponible: { backgroundColor: '#E0F2FE', color: '#0369A1' } }}
-              />
+              <CalendarioFechasDisponibles
+  profesionalId={profesionalSeleccionado}
+  onFechaSeleccionada={setFechaSeleccionada}
+/>
             </div>
             <div className="info-fecha-hora">
               <p><strong>📅</strong> {fechaSeleccionada ? fechaMostrada() : '-'}</p>
