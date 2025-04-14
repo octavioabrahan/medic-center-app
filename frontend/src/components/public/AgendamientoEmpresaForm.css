@@ -193,11 +193,11 @@ select:focus {
 }
 
 .tarjeta-seleccion {
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  gap: 1.25rem;
-  align-items: center;
+  background-color: #fff;
+  padding: 1rem 1.25rem;
+  border: 1px solid #E5E7EB;
+  border-radius: 8px;
+  margin-bottom: 2rem;
 }
 
 /* === Paso 2 optimizado === */
@@ -233,6 +233,12 @@ select:focus {
   background-color: #fff;
   height: 48px !important;
   border-radius: 8px;
+}
+
+.form-column label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
 }
 
 select option {
@@ -320,7 +326,22 @@ select option {
   color: #20377A;
 }
 
+.info-fecha-hora p {
+  margin: 0.5rem 0;
+}
 /* === Responsive === */
+
+@media (max-width: 1024px) and (min-width: 769px) {
+  .form-row.triple {
+    flex-direction: column;
+    gap: 2rem;
+  }
+
+  .calendar-section {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}
 
 @media (max-width: 768px) {
   .form-body {
