@@ -247,73 +247,74 @@ const AgendamientoEmpresaForm = () => {
       </div>
     </div>
 
-    {/* Selector de especialidad o servicio + profesional */}
-    <div className="tarjeta-seleccion">
-      <div className="form-row triple">
-        <div className="form-column">
-          <label className="etiqueta-grupo">
-            {modoSeleccion === 'consulta' ? 'Especialidad' : 'Servicio'} <span className="asterisk">*</span>
-          </label>
-          <select
-            value={modoSeleccion === 'consulta' ? especialidadSeleccionada : servicioSeleccionado}
-            onChange={e =>
-              modoSeleccion === 'consulta'
-                ? setEspecialidadSeleccionada(e.target.value)
-                : setServicioSeleccionado(e.target.value)
-            }
-            required
-          >
-            <option value="">Selecciona una opción</option>
-            {(modoSeleccion === 'consulta'
-              ? [...new Set(profesionalesFiltrados.map(p => p.nombre_especialidad))]
-              : servicios.map(s => s.nombre_servicio))
-              .filter(Boolean)
-              .map((item, i) => (
-                <option key={i} value={item}>{item}</option>
-              ))}
-          </select>
-        </div>
-
-        <div className="form-column">
-          <label className="etiqueta-grupo">
-            Profesional <span className="asterisk">*</span>
-          </label>
-          <select
-            value={profesionalSeleccionado}
-            onChange={e => {
-              const id = e.target.value;
-              setProfesionalSeleccionado(id);
-              setFechaSeleccionada(null);
-
-              const profesional = profesionales.find(p => p.profesional_id === id);
-
-              if (modoSeleccion === 'consulta' && profesional?.nombre_especialidad) {
-                setEspecialidadSeleccionada(profesional.nombre_especialidad);
-              }
-              if (modoSeleccion === 'estudio' && profesional?.nombre_servicio) {
-                setServicioSeleccionado(profesional.nombre_servicio);
-              }
-            }}
-            required
-          >
-            <option value="">Selecciona al profesional</option>
-            {profesionalesFiltrados
-              .filter(p =>
+    {/* 👇 Mostrar campos solo si se eligió un tipo de atención */}
+    {modoSeleccion && (
+      <div className="tarjeta-seleccion">
+        <div className="form-row triple">
+          <div className="form-column">
+            <label className="etiqueta-grupo">
+              {modoSeleccion === 'consulta' ? 'Especialidad' : 'Servicio'} <span className="asterisk">*</span>
+            </label>
+            <select
+              value={modoSeleccion === 'consulta' ? especialidadSeleccionada : servicioSeleccionado}
+              onChange={e =>
                 modoSeleccion === 'consulta'
-                  ? (!especialidadSeleccionada || p.nombre_especialidad === especialidadSeleccionada)
-                  : (!servicioSeleccionado || p.nombre_servicio === servicioSeleccionado)
-              )
-              .map(p => (
-                <option key={p.profesional_id} value={p.profesional_id}>
-                  {p.nombre} {p.apellido}
-                </option>
-              ))}
-          </select>
+                  ? setEspecialidadSeleccionada(e.target.value)
+                  : setServicioSeleccionado(e.target.value)
+              }
+              required
+            >
+              <option value="">Selecciona una opción</option>
+              {(modoSeleccion === 'consulta'
+                ? [...new Set(profesionalesFiltrados.map(p => p.nombre_especialidad))]
+                : servicios.map(s => s.nombre_servicio))
+                .filter(Boolean)
+                .map((item, i) => (
+                  <option key={i} value={item}>{item}</option>
+                ))}
+            </select>
+          </div>
+
+          <div className="form-column">
+            <label className="etiqueta-grupo">
+              Profesional <span className="asterisk">*</span>
+            </label>
+            <select
+              value={profesionalSeleccionado}
+              onChange={e => {
+                const id = e.target.value;
+                setProfesionalSeleccionado(id);
+                setFechaSeleccionada(null);
+
+                const profesional = profesionales.find(p => p.profesional_id === id);
+                if (modoSeleccion === 'consulta' && profesional?.nombre_especialidad) {
+                  setEspecialidadSeleccionada(profesional.nombre_especialidad);
+                }
+                if (modoSeleccion === 'estudio' && profesional?.nombre_servicio) {
+                  setServicioSeleccionado(profesional.nombre_servicio);
+                }
+              }}
+              required
+            >
+              <option value="">Selecciona al profesional</option>
+              {profesionalesFiltrados
+                .filter(p =>
+                  modoSeleccion === 'consulta'
+                    ? (!especialidadSeleccionada || p.nombre_especialidad === especialidadSeleccionada)
+                    : (!servicioSeleccionado || p.nombre_servicio === servicioSeleccionado)
+                )
+                .map(p => (
+                  <option key={p.profesional_id} value={p.profesional_id}>
+                    {p.nombre} {p.apellido}
+                  </option>
+                ))}
+            </select>
+          </div>
         </div>
       </div>
-    </div>
+    )}
 
-    {/* Calendario de selección de fecha */}
+    {/* Mostrar calendario solo si hay profesional seleccionado */}
     {profesionalSeleccionado && (
       <div className="calendar-section">
         <div className="calendar-wrapper">
@@ -351,6 +352,7 @@ const AgendamientoEmpresaForm = () => {
     </div>
   </div>
 )}
+
 
         {/* Paso 3 */}
         {step === 3 && (
