@@ -234,22 +234,6 @@ const AgendamientoEmpresaForm = () => {
       </label>
     </div>
 
-    <label>Teléfono</label>
-    <input
-      type="text"
-      required
-      value={datosPaciente.telefono}
-      onChange={e => setDatosPaciente({ ...datosPaciente, telefono: e.target.value })}
-    />
-
-    <label>Correo electrónico</label>
-    <input
-      type="email"
-      required
-      value={datosPaciente.email}
-      onChange={e => setDatosPaciente({ ...datosPaciente, email: e.target.value })}
-    />
-
     {/* Seguro médico */}
     <h3>Seguro médico</h3>
     <p>¿La persona que se va a atender tiene seguro médico?</p>
