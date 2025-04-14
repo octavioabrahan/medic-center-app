@@ -52,14 +52,14 @@ const AgendamientoEmpresaForm = () => {
   );
 
   const fechaMostrada = () => {
-    const f = fechaSeleccionada?.fecha ?? fechaSeleccionada;
-    if (!f || isNaN(new Date(f).getTime())) return '';
-    return new Date(f).toLocaleDateString('es-CL', {
+    const fecha = fechaSeleccionada?.dateObj;
+    if (!fecha || !(fecha instanceof Date)) return '';
+    return fecha.toLocaleDateString('es-CL', {
       weekday: 'long',
       year: 'numeric',
       month: 'long',
       day: 'numeric'
-    });
+    }).replace(/,/g, '').replace(/^./, str => str.toUpperCase());
   };
   
   const horaMostrada = () => {
