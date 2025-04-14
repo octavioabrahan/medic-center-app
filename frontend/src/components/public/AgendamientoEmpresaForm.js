@@ -28,6 +28,7 @@ const AgendamientoEmpresaForm = () => {
   const [servicioSeleccionado, setServicioSeleccionado] = useState('');
   const [profesionalSeleccionado, setProfesionalSeleccionado] = useState('');
   const [fechaSeleccionada, setFechaSeleccionada] = useState(null);
+  const [fechasDisponibles, setFechasDisponibles] = useState([]);
 
   useEffect(() => {
     fetch('/api/empresas')
@@ -41,7 +42,23 @@ const AgendamientoEmpresaForm = () => {
       axios.get('/api/profesionales').then(res => setProfesionales(res.data)).catch(console.error);
     }
   }, [step]);
-    
+
+  useEffect(() => {
+    if (profesionalSeleccionado) {
+      axios.get(/api/fechas-disponibles/${profesionalSeleccionado})
+        .then(res => {
+          // Convertir strings en fechas Date reales
+          const fechasComoDate = res.data.map(f => new Date(f));
+          setFechasDisponibles(fechasComoDate);
+        })
+        .catch(err => {
+          console.error('Error al obtener fechas disponibles:', err);
+          setFechasDisponibles([]);
+        });
+    }
+  }, [profesionalSeleccionado]);
+  
+  
   const profesionalesFiltrados = profesionales.filter(p =>
     modoSeleccion === 'consulta'
       ? p.categorias?.includes('Consulta')
@@ -58,7 +75,7 @@ const AgendamientoEmpresaForm = () => {
 
   const horaMostrada = () => {
     if (!fechaSeleccionada || !fechaSeleccionada.hora_inicio) return 'No disponible';
-    return `Desde las ${fechaSeleccionada.hora_inicio.slice(0, 5)} hrs`;
+    return Desde las ${fechaSeleccionada.hora_inicio.slice(0, 5)} hrs;
   };
 
   const handleCheckCedula = () => {
@@ -70,7 +87,7 @@ const AgendamientoEmpresaForm = () => {
   };
 
   const enviarAgendamiento = async () => {
-    const representanteCedula = sinCedula ? `${datosRepresentante.cedula}-${datosRepresentante.numeroHijo}` : null;
+    const representanteCedula = sinCedula ? ${datosRepresentante.cedula}-${datosRepresentante.numeroHijo} : null;
     const payload = {
       cedula: datosRepresentante.cedula,
       paciente: {
@@ -207,7 +224,7 @@ const AgendamientoEmpresaForm = () => {
                 checked={modoSeleccion === 'consulta'}
                 onChange={() => setModoSeleccion('consulta')}
               />
-              <div><strongom>Consulta médica</strong></div>
+              <div><strong>Consulta médica</strong></div>
             </label>
             <label className={modoSeleccion === 'estudio' ? 'opcion-card activa' : 'opcion-card'}>
               <input
@@ -258,23 +275,18 @@ const AgendamientoEmpresaForm = () => {
             <div>
               <label>Profesional</label>
               <select
-                 value={profesionalSeleccionado}
-                 onChange={e => setProfesionalSeleccionado(e.target.value)}
-               >
-                 <option value="">Selecciona al profesional</option>
-                 {profesionalesFiltrados
-                   .filter(p => {
-                     if (modoSeleccion === 'consulta') {
-                       return !especialidadSeleccionada || p.nombre_especialidad === especialidadSeleccionada;
-                     }
-                     return true;
-                   })
-                   .map(p => (
-                     <option key={p.profesional_id} value={p.profesional_id}>
-                       {p.nombre} {p.apellido}
-                     </option>
-                   ))}
-               </select>
+                value={profesionalSeleccionado}
+                onChange={e => setProfesionalSeleccionado(e.target.value)}
+              >
+                <option value="">Selecciona al profesional</option>
+                {profesionalesFiltrados
+                  .filter(p => modoSeleccion !== 'consulta' || !especialidadSeleccionada || p.nombre_especialidad === especialidadSeleccionada)
+                  .map(p => (
+                    <option key={p.profesional_id} value={p.profesional_id}>
+                      {p.nombre} {p.apellido}
+                    </option>
+                  ))}
+              </select>
             </div>
           </div>
 
@@ -283,10 +295,11 @@ const AgendamientoEmpresaForm = () => {
               <div>
                 <label>Selecciona el día de atención</label>
                 <CalendarioFechasDisponiblesDayPicker
-                profesionalId={profesionalSeleccionado}
-                fechaSeleccionada={fechaSeleccionada}
-                setFechaSeleccionada={setFechaSeleccionada}
-              />
+                  profesionalId={profesionalSeleccionado}
+                  fechaSeleccionada={fechaSeleccionada}
+                  setFechaSeleccionada={setFechaSeleccionada}
+                  fechasDisponibles={fechasDisponibles}
+                />
               </div>
 
               <div className="info-fecha-hora">
