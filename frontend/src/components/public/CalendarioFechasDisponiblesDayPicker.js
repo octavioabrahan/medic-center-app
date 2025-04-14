@@ -54,7 +54,13 @@ const CalendarioFechasDisponiblesDayPicker = ({ profesionalId, fechaSeleccionada
           }));
 
         const combinadas = [...validas, ...agregadas];
-        setFechasDisponibles(combinadas);
+
+        const fechasConDateObj = combinadas.map(f => ({
+          ...f,
+          dateObj: parseFechaLocal(f.fecha)
+        }));
+
+        setFechasDisponibles(fechasConDateObj);
       } catch (error) {
         console.error("Error cargando fechas o excepciones:", error);
       }
@@ -64,14 +70,20 @@ const CalendarioFechasDisponiblesDayPicker = ({ profesionalId, fechaSeleccionada
   }, [profesionalId]);
 
   const isFechaDisponible = (date) => {
-    const f = formatDate(date);
-    return fechasDisponibles.some(d => d.fecha === f);
+    return fechasDisponibles.some(d =>
+      d.dateObj.getFullYear() === date.getFullYear() &&
+      d.dateObj.getMonth() === date.getMonth() &&
+      d.dateObj.getDate() === date.getDate()
+    );
   };
 
   const handleSelect = (date) => {
     if (!date) return;
-    const f = formatDate(date);
-    const match = fechasDisponibles.find(d => d.fecha === f);
+    const match = fechasDisponibles.find(d =>
+      d.dateObj.getFullYear() === date.getFullYear() &&
+      d.dateObj.getMonth() === date.getMonth() &&
+      d.dateObj.getDate() === date.getDate()
+    );
     if (match) {
       setFechaSeleccionada(match);
     }
@@ -81,11 +93,7 @@ const CalendarioFechasDisponiblesDayPicker = ({ profesionalId, fechaSeleccionada
     <div className="calendario-wrapper">
       <DayPicker
         mode="single"
-        selected={
-          fechaSeleccionada?.fecha
-            ? parseFechaLocal(fechaSeleccionada.fecha)
-            : undefined
-        }
+        selected={fechaSeleccionada?.dateObj}
         onSelect={handleSelect}
         disabled={(date) => !isFechaDisponible(date)}
         locale={es}
