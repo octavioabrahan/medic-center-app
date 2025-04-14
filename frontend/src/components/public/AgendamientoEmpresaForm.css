@@ -181,36 +181,38 @@ select:focus {
 
 /* === Paso 2 === */
 
-.form-step2 > * {
-  margin-bottom: 1.75rem;
+.form-step2 {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
 }
 
 .form-row {
   display: flex;
   gap: 2rem;
   flex-wrap: wrap;
-  justify-content: space-between;
-  width: 100%;
+  justify-content: center;
 }
 
 .form-column {
   flex: 1;
-  min-width: 260px;
+  min-width: 280px;
+  max-width: 480px;
 }
 
 .calendar-section {
   display: flex;
+  justify-content: center;
+  align-items: flex-start;
   gap: 2rem;
   flex-wrap: wrap;
-  align-items: flex-start;
-  width: 100%;
+  min-height: 240px; /* Fuerza altura estable para evitar saltos */
 }
 
 .calendar-wrapper {
-  flex: 2;
-  padding: 0;
-  border: none;
-  background: transparent;
+  flex: 1;
+  min-width: 280px;
+  max-width: 400px;
 }
 
 .info-fecha-hora {
@@ -225,13 +227,15 @@ select:focus {
   height: fit-content;
 }
 
-.info-fecha-hora p {
-  margin: 0.5rem 0;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  color: #1F2937;
-  font-weight: 500;
+.info-fecha-hora {
+  min-width: 240px;
+  max-width: 260px;
+  min-height: 124px; /* Esto mantiene la altura del box, incluso cuando está vacío */
+  padding: 1rem 1.25rem;
+  border-radius: 8px;
+  border: 1px solid #D1D5DB;
+  background-color: white;
+  font-size: 1rem;
 }
 
 /* === Calendario React Day Picker === */
@@ -281,17 +285,20 @@ select:focus {
     align-items: center;
   }
 
-  .form-row,
+  .form-row {
+    flex-direction: column;
+    align-items: center;
+  }
+
   .calendar-section {
     flex-direction: column;
-    gap: 1.5rem;
     align-items: center;
   }
 
   .form-column,
+  .calendar-wrapper,
   .info-fecha-hora {
     width: 100%;
-    min-width: unset;
     max-width: 100%;
   }
 
