@@ -7,9 +7,17 @@ import { es } from 'date-fns/locale';
 const CalendarioFechasDisponiblesDayPicker = ({ profesionalId, fechaSeleccionada, setFechaSeleccionada }) => {
   const [fechasDisponibles, setFechasDisponibles] = useState([]);
 
+  const parseFechaLocal = (fechaStr) => {
+    const [y, m, d] = fechaStr.split('-').map(Number);
+    return new Date(y, m - 1, d); // mes 0-indexed
+  };
+
   const formatDate = (input) => {
     const date = new Date(input);
-    return date.toISOString().split('T')[0]; // yyyy-mm-dd
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
   };
 
   useEffect(() => {
@@ -19,16 +27,16 @@ const CalendarioFechasDisponiblesDayPicker = ({ profesionalId, fechaSeleccionada
           axios.get(`/api/horarios/fechas/${profesionalId}`),
           axios.get(`/api/excepciones/profesional/${profesionalId}`)
         ]);
-  
+
         const horarios = resHorarios.data;
         const excepciones = resExcepciones.data;
-  
+
         const canceladas = new Set(
           excepciones
             .filter(e => e.estado === 'cancelado')
             .map(e => formatDate(e.fecha))
         );
-  
+
         const agregadas = excepciones
           .filter(e => e.estado === 'manual')
           .map(e => ({
@@ -36,8 +44,7 @@ const CalendarioFechasDisponiblesDayPicker = ({ profesionalId, fechaSeleccionada
             hora_inicio: e.hora_inicio,
             hora_termino: e.hora_termino
           }));
-  
-        // Solo las fechas válidas que no estén canceladas
+
         const validas = horarios
           .filter(h => !canceladas.has(formatDate(h.fecha)))
           .map(h => ({
@@ -45,26 +52,22 @@ const CalendarioFechasDisponiblesDayPicker = ({ profesionalId, fechaSeleccionada
             hora_inicio: h.hora_inicio,
             hora_termino: h.hora_termino
           }));
-  
+
         const combinadas = [...validas, ...agregadas];
-  
-        // Guardar para validación y selección
         setFechasDisponibles(combinadas);
       } catch (error) {
         console.error("Error cargando fechas o excepciones:", error);
       }
     };
-  
+
     if (profesionalId) fetchFechas();
   }, [profesionalId]);
-  
-  // Función para validar días habilitados
+
   const isFechaDisponible = (date) => {
     const f = formatDate(date);
     return fechasDisponibles.some(d => d.fecha === f);
   };
-  
-  // Función para seleccionar con hora
+
   const handleSelect = (date) => {
     if (!date) return;
     const f = formatDate(date);
@@ -73,13 +76,16 @@ const CalendarioFechasDisponiblesDayPicker = ({ profesionalId, fechaSeleccionada
       setFechaSeleccionada(match);
     }
   };
-  
 
   return (
     <div className="calendario-wrapper">
       <DayPicker
         mode="single"
-        selected={fechaSeleccionada?.fecha ? new Date(fechaSeleccionada.fecha) : undefined}
+        selected={
+          fechaSeleccionada?.fecha
+            ? parseFechaLocal(fechaSeleccionada.fecha)
+            : undefined
+        }
         onSelect={handleSelect}
         disabled={(date) => !isFechaDisponible(date)}
         locale={es}
