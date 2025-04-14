@@ -94,11 +94,11 @@ select:focus {
 }
 
 .boton-container {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-top: 2rem;
   width: 100%;
+  max-width: 840px;
+  margin: 2rem auto 0;
+  display: flex;
+  justify-content: flex-end;
 }
 
 .boton-continuar,
@@ -210,11 +210,11 @@ select:focus {
 }
 
 .form-row.triple {
-  width: 100%;
+  max-width: 840px;
+  margin: 0 auto;
   display: flex;
   gap: 1rem;
   justify-content: space-between;
-  flex-wrap: wrap;
 }
 
 .form-column {
@@ -232,12 +232,12 @@ select:focus {
 }
 
 .calendar-section {
-  width: 100%;
+  max-width: 840px;
+  margin: 0 auto;
   display: flex;
   gap: 1.5rem;
-  align-items: flex-start;
   justify-content: space-between;
-  flex-wrap: wrap;
+  align-items: flex-start;
 }
 
 .calendar-wrapper {
