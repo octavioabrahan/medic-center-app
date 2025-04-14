@@ -46,13 +46,18 @@ const AgendamientoEmpresaForm = () => {
   useEffect(() => {
     if (profesionalSeleccionado) {
       axios.get(`/api/fechas-disponibles/${profesionalSeleccionado}`)
-        .then(res => setFechasDisponibles(res.data))
+        .then(res => {
+          // Convertir strings en fechas Date reales
+          const fechasComoDate = res.data.map(f => new Date(f));
+          setFechasDisponibles(fechasComoDate);
+        })
         .catch(err => {
           console.error('Error al obtener fechas disponibles:', err);
           setFechasDisponibles([]);
         });
     }
   }, [profesionalSeleccionado]);
+  
   
   const profesionalesFiltrados = profesionales.filter(p =>
     modoSeleccion === 'consulta'
