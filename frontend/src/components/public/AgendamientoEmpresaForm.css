@@ -1,6 +1,6 @@
 body {
   background-color: #FBFBFC;
-  font-family: 'Inter', 'Segoe UI', sans-serif;
+  font-family: 'Segoe UI', sans-serif;
   margin: 0;
 }
 
@@ -13,215 +13,232 @@ body {
 
 .form-header {
   background-color: #ffffff;
-  border-bottom: 1px solid #D9D9D9;
-  padding: 24px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-wrap: wrap;
+  border-bottom: 1px solid #E5E7EB;
+  padding: 1rem 1.5rem;
+  text-align: center;
 }
 
 .form-logo {
-  max-height: 60px;
+  max-height: 50px;
   width: auto;
 }
 
 .form-body {
-  background: rgba(32, 55, 122, 0.02);
-  padding: 32px 24px;
+  max-width: 960px;
+  width: 100%;
+  margin: 2rem auto;
+  padding: 0 1.5rem;
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  gap: 2.5rem;
   align-items: center;
 }
 
-.form-container {
-  width: 100%;
-  max-width: 960px;
-  min-width: 360px;
-  display: flex;
-  flex-direction: column;
-  gap: 32px;
+h2.titulo-principal,
+.form-title {
+  font-size: 1.5rem;
+  color: #20377A;
+  font-weight: 600;
+  text-align: center;
 }
 
-.titulo-principal {
-  font-size: 24px;
-  font-weight: 600;
-  color: #20377A;
-  text-align: center;
+form label {
+  font-weight: 500;
+  display: block;
+  margin-bottom: 0.3rem;
+  font-size: 1rem;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="date"],
+input[type="number"],
+select {
+  width: 100%;
+  padding: 0.65rem 0.75rem;
+  border: 1px solid #D1D5DB;
+  border-radius: 8px;
+  background-color: #fff;
+  font-size: 1rem;
+  margin-bottom: 1.25rem;
+  transition: border 0.2s;
+}
+
+input:focus,
+select:focus {
+  border-color: #1a3a8a;
+  outline: none;
+}
+
+.input-with-icon {
+  position: relative;
+}
+
+.input-with-icon input {
+  padding-left: 2.2rem;
+}
+
+.input-with-icon svg {
+  position: absolute;
+  left: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #888;
+}
+
+.checkbox-linea {
+  display: flex;
+  align-items: center;
+  font-size: 0.95rem;
+  margin: 1rem 0;
+}
+
+.boton-container {
+  text-align: right;
+  margin-top: 2rem;
+  width: 100%;
+}
+
+.boton-continuar {
+  background-color: #20377A;
+  color: white;
+  border: none;
+  padding: 0.7rem 1.5rem;
+  font-size: 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.boton-continuar:disabled {
+  background-color: #d1d5db;
+  cursor: not-allowed;
+}
+
+.boton-continuar:hover:not(:disabled) {
+  background-color: #0a2472;
 }
 
 .volver-btn {
   background: none;
+  color: #6B7280;
   border: none;
-  color: #303030;
-  font-size: 16px;
+  font-weight: 500;
+  font-size: 0.95rem;
   cursor: pointer;
-  padding: 12px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.radio-group {
-  display: flex;
-  gap: 24px;
-  flex-wrap: wrap;
-}
-
-.radio-option {
-  flex: 1 1 0;
-  max-width: 100%;
-  padding: 12px;
-  background: white;
-  border-radius: 8px;
-  border: 1px solid #D9D9D9;
-  display: flex;
-  align-items: center;
-  gap: 24px;
-  cursor: pointer;
-}
-
-.radio-option.activo {
-  border-color: #20377A;
-}
-
-.radio-option input[type="radio"] {
-  appearance: none;
-  border-radius: 9999px;
-  width: 16px;
-  height: 16px;
-  outline: 1px solid #20377A;
-  background: white;
-  position: relative;
-}
-
-.radio-option input[type="radio"]:checked::after {
-  content: '';
-  width: 10px;
-  height: 10px;
-  background: #14214B;
-  border-radius: 50%;
-  position: absolute;
-  top: 3px;
-  left: 3px;
-}
-
-.radio-option label {
-  font-size: 16px;
-  color: #1E1E1E;
-  cursor: pointer;
-}
-
-.form-row {
-  display: flex;
-  gap: 24px;
-  flex-wrap: wrap;
-}
-
-.form-column {
-  flex: 1 1 0;
-  min-width: 240px;
-}
-
-label {
-  display: block;
-  margin-bottom: 8px;
-  font-size: 16px;
-  color: #1E1E1E;
-  font-weight: 400;
-}
-
-select, input[type="text"], input[type="email"], input[type="number"], input[type="date"] {
-  width: 100%;
-  height: 40px;
-  padding: 12px 16px;
-  font-size: 16px;
-  background: white;
-  border-radius: 8px;
-  border: 1px solid #D9D9D9;
-  font-family: 'Inter', sans-serif;
-  box-sizing: border-box;
-}
-
-.calendar-section {
-  display: flex;
-  justify-content: flex-start;
-  align-items: flex-start;
-  gap: 24px;
-  flex-wrap: wrap;
-}
-
-.calendar-wrapper {
-  width: 100%;
-  max-width: 100%;
-  background: transparent;
-  border: none;
   padding: 0;
+  margin-bottom: 1rem;
+  text-align: left;
 }
 
-.info-fecha-hora {
-  padding: 24px;
-  background: white;
-  border-radius: 8px;
-  border: 1px solid #D9D9D9;
-  min-width: 240px;
-  max-width: 260px;
-  font-size: 16px;
-  color: #1E1E1E;
+.input-hint {
+  font-size: 0.85rem;
+  color: #666;
+  margin-top: -0.5rem;
+  margin-bottom: 1rem;
+}
+
+.selector-botones-radio {
   display: flex;
-  flex-direction: column;
-  gap: 24px;
-}
-
-.info-fecha-hora p {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin: 0;
-  font-weight: 600;
-}
-
-.opcion-radio-container {
-  width: 100%;
-  background-color: white;
-  border-radius: 8px;
-  border: 1px solid #D9D9D9;
-  padding: 12px;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+  margin-top: 0.5rem;
 }
 
 .opcion-card {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 0.75rem;
+  border: 1px solid #D1D5DB;
+  border-radius: 8px;
+  padding: 0.8rem 1rem;
   font-size: 1rem;
+  background-color: white;
+  width: 240px;
   cursor: pointer;
-  user-select: none;
+  transition: all 0.2s ease;
+  line-height: 1.4;
+  word-break: break-word;
 }
 
 .opcion-card input[type="radio"] {
-  width: 16px;
-  height: 16px;
-  appearance: none;
-  border: 1px solid #20377A;
-  border-radius: 50%;
-  position: relative;
+  accent-color: #1a3a8a;
+  margin: 0;
 }
 
-.opcion-card input[type="radio"]:checked::before {
-  content: '';
-  position: absolute;
-  width: 10px;
-  height: 10px;
-  top: 2px;
-  left: 2px;
-  background-color: #14214B;
-  border-radius: 50%;
+.opcion-card strong {
+  font-weight: 600;
+  color: #111827;
 }
-/* Calendario React Day Picker */
+
+.opcion-card.activa {
+  border: 2px solid #20377A;
+  background-color: #F9FAFB;
+}
+
+.asterisk {
+  color: red;
+}
+
+/* === Paso 2 === */
+
+.form-step2 > * {
+  margin-bottom: 1.75rem;
+}
+
+.form-row {
+  display: flex;
+  gap: 2rem;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.form-column {
+  flex: 1;
+  min-width: 260px;
+}
+
+.calendar-section {
+  display: flex;
+  gap: 2rem;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  width: 100%;
+}
+
+.calendar-wrapper {
+  flex: 2;
+  padding: 0;
+  border: none;
+  background: transparent;
+}
+
+.info-fecha-hora {
+  flex: 1;
+  border: 1px solid #D1D5DB;
+  border-radius: 8px;
+  padding: 1.2rem;
+  background-color: #ffffff;
+  font-size: 1rem;
+  min-width: 240px;
+  max-width: 260px;
+  height: fit-content;
+}
+
+.info-fecha-hora p {
+  margin: 0.5rem 0;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #1F2937;
+  font-weight: 500;
+}
+
+/* === Calendario React Day Picker === */
 
 .rdp {
   --rdp-accent-color: #20377A;
-  font-family: 'Inter', sans-serif;
+  font-family: 'Segoe UI', sans-serif;
   width: 100%;
 }
 
@@ -248,67 +265,47 @@ select, input[type="text"], input[type="email"], input[type="number"], input[typ
 .rdp-caption_label {
   text-transform: capitalize;
   font-weight: 600;
-  font-size: 16px;
-  color: #20377A;
+  font-size: 1rem;
+  color: #0A2472;
 }
 
 .rdp-nav_button {
   color: #20377A;
 }
 
-/* Footer */
+/* === Responsive === */
 
-.boton-container {
-  display: flex;
-  justify-content: flex-end;
-}
-
-.boton-continuar {
-  padding: 12px 24px;
-  background: #20377A;
-  color: white;
-  border: none;
-  border-radius: 8px;
-  font-size: 16px;
-  cursor: pointer;
-}
-
-.boton-continuar:disabled {
-  background: #D1D5DB;
-  cursor: not-allowed;
-}
-
-/* Responsive */
-
-@media (max-width: 768px) {
+@media (max-width: 700px) {
   .form-body {
-    padding: 24px 16px;
-  }
-
-  .form-container {
-    gap: 24px;
-  }
-
-  .form-row {
-    flex-direction: column;
-    gap: 16px;
-  }
-
-  .calendar-section {
-    flex-direction: column;
+    padding: 0 1.25rem;
     align-items: center;
   }
 
-  .boton-container {
-    justify-content: center;
+  .form-row,
+  .calendar-section {
+    flex-direction: column;
+    gap: 1.5rem;
+    align-items: center;
   }
 
+  .form-column,
   .info-fecha-hora {
     width: 100%;
+    min-width: unset;
     max-width: 100%;
   }
 
-  .rdp {
-    font-size: 14px;
+  .boton-container {
+    text-align: center;
+  }
+
+  .boton-continuar {
+    width: 100%;
+  }
+
+  .selector-botones-radio {
+    flex-direction: column;
+    align-items: stretch;
+    width: 100%;
   }
 }
