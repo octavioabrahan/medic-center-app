@@ -28,7 +28,7 @@ const AgendamientoEmpresaForm = () => {
   const [servicioSeleccionado, setServicioSeleccionado] = useState('');
   const [profesionalSeleccionado, setProfesionalSeleccionado] = useState('');
   const [fechaSeleccionada, setFechaSeleccionada] = useState(null);
-  //const [fechasDisponibles, setFechasDisponibles] = useState([]);
+  const [fechasDisponibles, setFechasDisponibles] = useState([]);
 
   useEffect(() => {
     fetch('/api/empresas')
