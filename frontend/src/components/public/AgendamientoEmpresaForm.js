@@ -270,20 +270,33 @@ const AgendamientoEmpresaForm = () => {
           <div>
             <label>Profesional</label>
             <select
-              value={profesionalSeleccionado}
-              onChange={e => setProfesionalSeleccionado(e.target.value)}
-            >
-              <option value="">Selecciona al profesional</option>
-              {profesionalesFiltrados
-                .filter(p => modoSeleccion === 'consulta'
-                  ? (!especialidadSeleccionada || p.nombre_especialidad === especialidadSeleccionada)
-                  : true)
-                .map(p => (
-                  <option key={p.profesional_id} value={p.profesional_id}>
-                    {p.nombre} {p.apellido}
-                  </option>
-                ))}
-            </select>
+  value={profesionalSeleccionado}
+  onChange={e => {
+    const id = e.target.value;
+    setProfesionalSeleccionado(id);
+    setFechaSeleccionada(null);
+    
+    const profesional = profesionales.find(p => p.profesional_id === id);
+
+    if (modoSeleccion === 'consulta' && profesional?.nombre_especialidad) {
+      setEspecialidadSeleccionada(profesional.nombre_especialidad);
+    }
+  }}
+>
+  <option value="">Selecciona al profesional</option>
+  {profesionalesFiltrados
+    .filter(p =>
+      modoSeleccion === 'consulta'
+        ? (!especialidadSeleccionada || p.nombre_especialidad === especialidadSeleccionada)
+        : true
+    )
+    .map(p => (
+      <option key={p.profesional_id} value={p.profesional_id}>
+        {p.nombre} {p.apellido}
+      </option>
+    ))}
+</select>
+
           </div>
         </div>
 
