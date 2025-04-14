@@ -343,6 +343,88 @@ label,
   text-align: left;
   margin: 0.5rem 0;
 }
+
+/* Paso 3 - Estilo Figma */
+
+.form-step3-confirmacion {
+  width: 100%;
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 2rem;
+  background: #f8f9fc;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.form-step3-confirmacion .form-subtitle {
+  font-size: 1.2rem;
+  color: #666;
+  text-align: center;
+  margin-top: -1rem;
+}
+
+.alerta-info {
+  background: #fff;
+  border: 1px solid #757575;
+  border-radius: 8px;
+  padding: 1rem;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.bloque-info h3 {
+  color: #20377A;
+  font-size: 1.25rem;
+  font-weight: 500;
+  margin-bottom: 0.75rem;
+}
+
+.tarjeta-info {
+  background: white;
+  border: 1px solid #D9D9D9;
+  border-radius: 8px;
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.nota-horario {
+  font-style: italic;
+  font-size: 0.95rem;
+  color: #555;
+}
+
+.tarjeta-datos {
+  background: white;
+  border: 1px solid #D9D9D9;
+  border-radius: 8px;
+  padding: 1.5rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
+  justify-content: flex-start;
+}
+
+.columna-datos {
+  flex: 1;
+  min-width: 240px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.columna-datos h4 {
+  font-size: 1.1rem;
+  color: #1e1e1e;
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+}
+
 /* === Responsive === */
 
 @media (max-width: 1024px) and (min-width: 769px) {

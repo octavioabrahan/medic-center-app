@@ -353,20 +353,58 @@ const AgendamientoEmpresaForm = () => {
 
         {/* Paso 3 */}
         {step === 3 && (
-          <div className="confirmacion">
-            <button onClick={() => setStep(2)} className="volver-btn">← Volver al paso anterior</button>
-            <h2 className="form-title">Revisa y confirma tu solicitud</h2>
-            <div className="resumen">
-              <p><strong>🩺</strong> {modoSeleccion === 'consulta' ? especialidadSeleccionada : servicioSeleccionado}</p>
-              <p><strong>👤</strong> {profesionales.find(p => p.profesional_id === profesionalSeleccionado)?.nombre} {profesionales.find(p => p.profesional_id === profesionalSeleccionado)?.apellido}</p>
-              <p><strong>📅</strong> {fechaMostrada()}</p>
-              <p><strong>🕐</strong> {horaMostrada()}</p>
-            </div>
-            <div className="form-actions">
-              <button onClick={enviarAgendamiento} className="boton-principal">Enviar solicitud</button>
-            </div>
+  <div className="form-step3-confirmacion">
+    <button onClick={() => setStep(2)} className="volver-btn">
+      ← Volver al paso anterior
+    </button>
+
+    <h2 className="form-title">Revisa y confirma tu solicitud</h2>
+    <p className="form-subtitle">Antes de enviar tu solicitud, revisa que toda la información esté correcta. Si necesitas corregir algo, puedes volver al paso anterior.</p>
+
+    <div className="alerta-info">
+      <span>⚠️</span> Recuerda que el día de la consulta el paciente debe presentar su cédula de identidad vigente. Sin ella, no podrá ser atendido.
+    </div>
+
+    <div className="bloque-info">
+      <h3>Información de su cita</h3>
+      <div className="tarjeta-info">
+        <p><strong>🩺 {modoSeleccion === 'consulta' ? especialidadSeleccionada : servicioSeleccionado}</strong></p>
+        <p><strong>👤 {profesionales.find(p => p.profesional_id === profesionalSeleccionado)?.nombre} {profesionales.find(p => p.profesional_id === profesionalSeleccionado)?.apellido}</strong></p>
+        <p><strong>📅 {fechaMostrada()}</strong></p>
+        <p><strong>🕐 {horaMostrada()}</strong></p>
+        <p className="nota-horario">La atención será por orden de llegada según el horario del profesional.</p>
+      </div>
+    </div>
+
+    <div className="bloque-info">
+      <h3>Información personal</h3>
+      <div className="tarjeta-datos">
+        {sinCedula && (
+          <div className="columna-datos">
+            <h4>Datos del representante legal</h4>
+            <p>{datosRepresentante.cedula}-{datosRepresentante.numeroHijo}</p>
+            <p>{datosRepresentante.nombre} {datosRepresentante.apellido}</p>
+            <p>{datosRepresentante.sexo}</p>
+            <p>{datosRepresentante.telefono}</p>
+            <p>{datosRepresentante.email}</p>
           </div>
         )}
+
+        <div className="columna-datos">
+          <h4>Datos del paciente</h4>
+          <p>{datosPaciente.nombre} {datosPaciente.apellido}</p>
+          <p>{new Date(datosPaciente.fechaNacimiento).toLocaleDateString('es-CL')}</p>
+          <p>{datosPaciente.sexo}</p>
+        </div>
+      </div>
+    </div>
+
+    <div className="boton-container">
+      <button onClick={enviarAgendamiento} className="boton-continuar">Enviar solicitud</button>
+    </div>
+  </div>
+)}
+
 
         {/* Paso 4 */}
         {step === 4 && (
