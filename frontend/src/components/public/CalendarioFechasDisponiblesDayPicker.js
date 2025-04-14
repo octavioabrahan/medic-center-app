@@ -7,6 +7,11 @@ import { es } from 'date-fns/locale';
 const CalendarioFechasDisponiblesDayPicker = ({ profesionalId, fechaSeleccionada, setFechaSeleccionada }) => {
   const [fechasDisponibles, setFechasDisponibles] = useState([]);
 
+  const formatDate = (input) => {
+    const date = new Date(input);
+    return date.toISOString().split('T')[0]; // yyyy-mm-dd
+  };
+
   useEffect(() => {
     const fetchFechas = async () => {
       try {
@@ -15,28 +20,24 @@ const CalendarioFechasDisponiblesDayPicker = ({ profesionalId, fechaSeleccionada
           axios.get(`/api/excepciones/profesional/${profesionalId}`)
         ]);
 
-        const fechasBase = resHorarios.data; // [{ fecha: '2025-04-07' }, ...]
+        const fechasBase = resHorarios.data.map(f => formatDate(f.fecha));
         const excepciones = resExcepciones.data;
 
         const canceladas = new Set(
           excepciones
             .filter(e => e.estado === 'cancelado')
-            .map(e => e.fecha)
+            .map(e => formatDate(e.fecha))
         );
 
         const agregadas = excepciones
           .filter(e => e.estado === 'manual')
-          .map(e => new Date(e.fecha));
+          .map(e => formatDate(e.fecha));
 
-        const filtradas = fechasBase
-          .filter(f => !canceladas.has(f.fecha))
-          .map(f => new Date(f.fecha));
+        const validas = fechasBase.filter(fecha => !canceladas.has(fecha));
+        const unicas = Array.from(new Set([...validas, ...agregadas]));
 
-        const finalDates = [...filtradas, ...agregadas];
-        const unicas = Array.from(new Set(finalDates.map(d => d.toDateString())))
-          .map(fechaStr => new Date(fechaStr));
-
-        setFechasDisponibles(unicas);
+        const fechasComoDate = unicas.map(f => new Date(f));
+        setFechasDisponibles(fechasComoDate);
       } catch (error) {
         console.error("Error cargando fechas o excepciones:", error);
       }
@@ -45,11 +46,9 @@ const CalendarioFechasDisponiblesDayPicker = ({ profesionalId, fechaSeleccionada
     if (profesionalId) fetchFechas();
   }, [profesionalId]);
 
-  const formatFecha = date => date.toISOString().split('T')[0];
-
-  const disabledDays = date => {
-    const fecha = formatFecha(date);
-    return !fechasDisponibles.some(f => formatFecha(f) === fecha);
+  const disabledDays = (date) => {
+    const fecha = date.toISOString().split('T')[0];
+    return !fechasDisponibles.some(f => f.toISOString().split('T')[0] === fecha);
   };
 
   return (
