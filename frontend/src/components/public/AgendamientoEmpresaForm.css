@@ -141,11 +141,14 @@ select:focus {
   display: flex;
   gap: 2rem;
   width: 100%;
+  justify-content: center; /* MOD: centrado como los selects */
+  margin-bottom: 1rem;     /* MOD: separación inferior */
 }
 
 .opcion-card {
   display: flex;
   align-items: center;
+  justify-content: center; /* MOD: centra el texto */
   gap: 0.75rem;
   border: 1px solid #D1D5DB;
   border-radius: 8px;
@@ -153,7 +156,7 @@ select:focus {
   font-size: 1rem;
   background-color: white;
   width: 100%;
-  max-width: 480px; /* igual al select */
+  max-width: 420px; /* MOD: mismo que .form-column */
   height: 48px;
   cursor: pointer;
   transition: all 0.2s ease;
@@ -276,6 +279,7 @@ select:focus {
 .form-step2 > *:not(:last-child) {
   margin-bottom: 1.5rem;
 }
+
 /* === Responsive === */
 
 @media (max-width: 700px) {
@@ -318,5 +322,9 @@ select:focus {
     flex-direction: column;
     align-items: stretch;
     width: 100%;
+  }
+
+  .opcion-card {
+    max-width: 100%; /* MOD: asegúrate que se ajusten en mobile */
   }
 }
