@@ -47,8 +47,7 @@ const AgendamientoEmpresaForm = () => {
     if (profesionalSeleccionado) {
       axios.get(`/api/fechas-disponibles/${profesionalSeleccionado}`)
         .then(res => {
-          // Convertir strings en fechas Date reales
-          const fechasComoDate = res.data.map(f => new Date(f));
+          const fechasComoDate = res.data.map(f => new Date(f.fecha));
           setFechasDisponibles(fechasComoDate);
         })
         .catch(err => {
@@ -57,8 +56,7 @@ const AgendamientoEmpresaForm = () => {
         });
     }
   }, [profesionalSeleccionado]);
-  
-  
+    
   const profesionalesFiltrados = profesionales.filter(p =>
     modoSeleccion === 'consulta'
       ? p.categorias?.includes('Consulta')
