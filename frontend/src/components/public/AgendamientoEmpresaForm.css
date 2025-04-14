@@ -140,9 +140,6 @@ select:focus {
 .selector-botones-radio {
   display: flex;
   gap: 2rem;
-  flex-wrap: wrap;
-  margin-top: 0.5rem;
-  justify-content: center;
   width: 100%;
 }
 
