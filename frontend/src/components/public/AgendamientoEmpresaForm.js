@@ -45,7 +45,7 @@ const AgendamientoEmpresaForm = () => {
 
   useEffect(() => {
     if (profesionalSeleccionado) {
-      axios.get(/api/fechas-disponibles/${profesionalSeleccionado})
+      axios.get(`/api/fechas-disponibles/${profesionalSeleccionado}`)
         .then(res => {
           // Convertir strings en fechas Date reales
           const fechasComoDate = res.data.map(f => new Date(f));
