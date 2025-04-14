@@ -499,17 +499,18 @@ const AgendamientoEmpresaForm = () => {
 
         {/* Paso 4 */}
         {step === 4 && (
-          <div className="confirmacion-final">
-            <h2 className="form-title">Tu solicitud fue enviada correctamente.</h2>
-            <p>Te enviamos por correo la información de tu cita.</p>
-            <div className="form-actions" style={{ justifyContent: 'center', gap: '1rem', marginTop: '2rem' }}>
-              <a href="/" className="boton-principal">Volver al inicio</a>
-              <button className="boton-principal" onClick={() => window.location.reload()}>
-                Agendar otra cita
-              </button>
-            </div>
-          </div>
-        )}
+  <div className="confirmacion-final">
+    <h2 className="form-title">Tu solicitud fue enviada correctamente.</h2>
+    <p className="form-subtitle">Te enviamos por correo la información de tu cita. Gracias por agendar con nosotros.</p>
+
+    <div className="form-actions final">
+      <a href="/" className="boton-secundario">Volver a la página principal</a>
+      <button className="boton-continuar" onClick={() => window.location.reload()}>
+        Agendar otra cita
+      </button>
+    </div>
+  </div>
+)}
       </div>
     </div>
   );
