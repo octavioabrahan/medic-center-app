@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import CalendarioFechasDisponibles from './CalendarioFechasDisponibles';
+//import CalendarioFechasDisponibles from './CalendarioFechasDisponibles';
 import './AgendamientoEmpresaForm.css';
 import logo from '../../assets/logo_header.png';
 import { DayPicker } from 'react-day-picker';
@@ -284,9 +284,17 @@ const AgendamientoEmpresaForm = () => {
           <div className="calendario-y-info">
             <div>
               <label>Selecciona el día de atención</label>
-              <CalendarioFechasDisponibles
-  profesionalId={profesionalSeleccionado}
-  onFechaSeleccionada={setFechaSeleccionada}
+              <DayPicker
+  mode="single"
+  selected={fechaSeleccionada}
+  onSelect={setFechaSeleccionada}
+  fromDate={new Date()}
+  disabled={profesionalSeleccionado === ''}
+  modifiers={{
+    disponible: date => fechasDisponibles.some(d => new Date(d).toDateString() === date.toDateString())
+  }}
+  modifiersClassNames={{ disponible: 'rdp-day-available' }}
+  modifiersStyles={{ disponible: { backgroundColor: '#E0F2FE', color: '#0369A1' } }}
 />
             </div>
             <div className="info-fecha-hora">
@@ -309,7 +317,6 @@ const AgendamientoEmpresaForm = () => {
     </div>
   </div>
 )}
-
         {step === 3 && (
           <div className="confirmacion">
             <button onClick={() => setStep(2)} className="volver-btn">← Volver al paso anterior</button>
