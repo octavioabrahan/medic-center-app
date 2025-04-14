@@ -161,51 +161,6 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   flex-wrap: wrap;
 }
 
-.radio-opcion {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  border: 1px solid #D1D5DB;
-  background-color: #fff;
-  border-radius: 8px;
-  padding: 0.6rem 1.2rem;
-  font-size: 1rem;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  user-select: none;
-}
-
-.radio-opcion input[type="radio"] {
-  accent-color: #1a3a8a;
-  margin: 0;
-}
-
-.radio-opcion:hover {
-  border-color: #1a3a8a;
-}
-
-.radio-opcion.activo {
-  border: 1px solid #1a3a8a;
-  background-color: #F3F4F6;
-}
-
-.confirmacion .resumen {
-  background-color: #f6f8fb;
-  padding: 1.5rem;
-  border-radius: 8px;
-  margin: 1rem 0;
-}
-
-.confirmacion-final {
-  text-align: center;
-  padding: 2rem;
-}
-
-.confirmacion-final .form-actions {
-  justify-content: center;
-  gap: 1rem;
-}
-
 .opcion-card {
   display: flex;
   align-items: flex-start;
@@ -236,32 +191,57 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   background-color: #F9FAFB;
 }
 
-.form-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 2rem;
-  align-items: start;
-  margin-top: 2rem;
+.confirmacion .resumen {
+  background-color: #f6f8fb;
+  padding: 1.5rem;
+  border-radius: 8px;
+  margin: 1rem 0;
 }
 
-.form-grid-vertical {
+.confirmacion-final {
+  text-align: center;
+  padding: 2rem;
+}
+
+.confirmacion-final .form-actions {
+  justify-content: center;
+  gap: 1rem;
+}
+
+/* NUEVO: estructura paso 2 estilo Figma */
+
+.form-step2 {
   display: flex;
   flex-direction: column;
   gap: 2rem;
-  margin-top: 2rem;
 }
 
-.grid-2-cols {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1.5rem;
-}
-
-.calendario-y-info {
-  display: grid;
-  grid-template-columns: 2fr 1fr;
+.form-row {
+  display: flex;
   gap: 2rem;
-  align-items: start;
+  flex-wrap: wrap;
+  align-items: flex-start;
+}
+
+.form-column {
+  flex: 1;
+  min-width: 260px;
+}
+
+.calendar-section {
+  display: flex;
+  gap: 2rem;
+  align-items: flex-start;
+}
+
+.calendar-wrapper {
+  background: white;
+  padding: 1rem 1.5rem;
+  border-radius: 8px;
+  border: 1px solid #D1D5DB;
+  width: 100%;
+  max-width: 100%;
+  box-shadow: none;
 }
 
 .info-fecha-hora {
@@ -270,9 +250,9 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   padding: 1.25rem 1.5rem;
   background-color: #ffffff;
   font-size: 1rem;
-  height: fit-content;
   min-width: 180px;
-  max-width: 240px;
+  max-width: 260px;
+  height: fit-content;
 }
 
 .info-fecha-hora p {
@@ -283,23 +263,11 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   color: #1F2937;
 }
 
-/* === NUEVO: Calendario React Day Picker === */
-
-.step-2-container {
-  display: flex;
-  flex-direction: column;
-  gap: 2rem;
+.asterisk {
+  color: red;
 }
 
-.calendario-wrapper {
-  background: white;
-  padding: 1rem 1.5rem;
-  border-radius: 8px;
-  border: 1px solid #D1D5DB;
-  width: 100%;
-  max-width: 100%;
-  box-shadow: none;
-}
+/* Calendario React Day Picker */
 
 .rdp {
   --rdp-accent-color: #1a3a8a;
@@ -338,7 +306,8 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   color: #1a3a8a;
 }
 
-/* === Responsive === */
+/* Responsive */
+
 @media (max-width: 700px) {
   .radio-group {
     flex-direction: column;
@@ -351,18 +320,16 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 
   .boton-container {
     justify-content: center;
+    text-align: center;
   }
 
   .boton-continuar {
     width: 100%;
   }
 
-  .grid-2-cols {
-    grid-template-columns: 1fr !important;
-  }
-
-  .calendario-y-info {
-    grid-template-columns: 1fr !important;
+  .form-row,
+  .calendar-section {
+    flex-direction: column;
   }
 
   .info-fecha-hora {
