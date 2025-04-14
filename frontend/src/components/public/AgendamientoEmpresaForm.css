@@ -181,6 +181,42 @@ select, input[type="text"], input[type="email"], input[type="number"], input[typ
   font-weight: 600;
 }
 
+.opcion-radio-container {
+  width: 100%;
+  background-color: white;
+  border-radius: 8px;
+  border: 1px solid #D9D9D9;
+  padding: 12px;
+}
+
+.opcion-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 1rem;
+  cursor: pointer;
+  user-select: none;
+}
+
+.opcion-card input[type="radio"] {
+  width: 16px;
+  height: 16px;
+  appearance: none;
+  border: 1px solid #20377A;
+  border-radius: 50%;
+  position: relative;
+}
+
+.opcion-card input[type="radio"]:checked::before {
+  content: '';
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  top: 2px;
+  left: 2px;
+  background-color: #14214B;
+  border-radius: 50%;
+}
 /* Calendario React Day Picker */
 
 .rdp {

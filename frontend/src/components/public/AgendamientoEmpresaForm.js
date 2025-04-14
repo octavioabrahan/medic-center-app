@@ -199,43 +199,51 @@ const AgendamientoEmpresaForm = () => {
         )}
 {step === 2 && (
   <div className="form-step2">
-    <button onClick={() => setStep(1)} className="volver-btn">← Volver al paso anterior</button>
+    <button onClick={() => setStep(1)} className="volver-btn volver-btn-gris">← Volver al paso anterior</button>
     <h2 className="titulo-principal">Selecciona la especialidad, el médico y el día.</h2>
 
-    {/* Categoría */}
-    <label>Selecciona la categoría de atención</label>
-    <div className="selector-botones-radio">
-      <label className={`opcion-card ${modoSeleccion === 'consulta' ? 'activa' : ''}`}>
-        <input
-          type="radio"
-          name="categoria"
-          value="consulta"
-          checked={modoSeleccion === 'consulta'}
-          onChange={() => setModoSeleccion('consulta')}
-          required
-        />
-        <div><strong>Consulta médica</strong></div>
-      </label>
-      <label className={`opcion-card ${modoSeleccion === 'estudio' ? 'activa' : ''}`}>
-        <input
-          type="radio"
-          name="categoria"
-          value="estudio"
-          checked={modoSeleccion === 'estudio'}
-          onChange={() => setModoSeleccion('estudio')}
-          required
-        />
-        <div><strong>Estudio</strong></div>
-      </label>
+    <label style={{ marginBottom: '0.5rem', display: 'block' }}>Selecciona la categoría de atención</label>
+    <div className="form-row">
+      <div className="form-column">
+        <div className="opcion-radio-container">
+          <label className={modoSeleccion === 'consulta' ? 'opcion-card activa' : 'opcion-card'}>
+            <input
+              type="radio"
+              name="categoria"
+              value="consulta"
+              checked={modoSeleccion === 'consulta'}
+              onChange={() => setModoSeleccion('consulta')}
+              required
+            />
+            <div><strong>Consulta médica</strong></div>
+          </label>
+        </div>
+      </div>
+      <div className="form-column">
+        <div className="opcion-radio-container">
+          <label className={modoSeleccion === 'estudio' ? 'opcion-card activa' : 'opcion-card'}>
+            <input
+              type="radio"
+              name="categoria"
+              value="estudio"
+              checked={modoSeleccion === 'estudio'}
+              onChange={() => setModoSeleccion('estudio')}
+              required
+            />
+            <div><strong>Estudio</strong></div>
+          </label>
+        </div>
+      </div>
     </div>
 
-    {/* Especialidad / Servicio + Profesional */}
     {(modoSeleccion === 'consulta' || modoSeleccion === 'estudio') && (
       <div className="form-row">
         <div className="form-column">
           {modoSeleccion === 'consulta' ? (
             <>
-              <label>Especialidad <span className="asterisk">*</span></label>
+              <label>
+                Especialidad <span className="asterisk">*</span>
+              </label>
               <select
                 value={especialidadSeleccionada}
                 onChange={e => setEspecialidadSeleccionada(e.target.value)}
@@ -245,13 +253,17 @@ const AgendamientoEmpresaForm = () => {
                 {[...new Set(profesionalesFiltrados.map(p => p.nombre_especialidad))]
                   .filter(Boolean)
                   .map((esp, i) => (
-                    <option key={i} value={esp}>{esp}</option>
+                    <option key={i} value={esp}>
+                      {esp}
+                    </option>
                   ))}
               </select>
             </>
           ) : (
             <>
-              <label>Servicio <span className="asterisk">*</span></label>
+              <label>
+                Servicio <span className="asterisk">*</span>
+              </label>
               <select
                 value={servicioSeleccionado}
                 onChange={e => setServicioSeleccionado(e.target.value)}
@@ -259,7 +271,9 @@ const AgendamientoEmpresaForm = () => {
               >
                 <option value="">Selecciona un servicio</option>
                 {servicios.map(s => (
-                  <option key={s.id_servicio} value={s.nombre_servicio}>{s.nombre_servicio}</option>
+                  <option key={s.id_servicio} value={s.nombre_servicio}>
+                    {s.nombre_servicio}
+                  </option>
                 ))}
               </select>
             </>
@@ -267,7 +281,9 @@ const AgendamientoEmpresaForm = () => {
         </div>
 
         <div className="form-column">
-          <label>Profesional <span className="asterisk">*</span></label>
+          <label>
+            Profesional <span className="asterisk">*</span>
+          </label>
           <select
             value={profesionalSeleccionado}
             onChange={e => {
@@ -298,11 +314,12 @@ const AgendamientoEmpresaForm = () => {
       </div>
     )}
 
-    {/* Calendario y resumen */}
     {profesionalSeleccionado && (
       <div className="calendar-section">
         <div className="calendar-wrapper">
-          <label>Selecciona el día de atención <span className="asterisk">*</span></label>
+          <label>
+            Selecciona el día de atención <span className="asterisk">*</span>
+          </label>
           <CalendarioFechasDisponiblesDayPicker
             profesionalId={profesionalSeleccionado}
             fechaSeleccionada={fechaSeleccionada}
@@ -310,30 +327,27 @@ const AgendamientoEmpresaForm = () => {
           />
         </div>
         <div className="info-fecha-hora">
-          <p><strong>📅</strong> {fechaSeleccionada ? fechaMostrada() : '-'}</p>
-          <p><strong>🕒</strong> {fechaSeleccionada ? horaMostrada() : 'No disponible'}</p>
+          <p>
+            <strong>📅</strong> {fechaSeleccionada ? fechaMostrada() : '-'}
+          </p>
+          <p>
+            <strong>🕒</strong> {fechaSeleccionada ? horaMostrada() : 'No disponible'}
+          </p>
         </div>
       </div>
     )}
 
-    {/* Botón continuar */}
     <div className="boton-container">
       <button
         onClick={() => setStep(3)}
         className="boton-continuar"
-        disabled={
-          !fechaSeleccionada ||
-          !profesionalSeleccionado ||
-          (modoSeleccion === 'consulta' && !especialidadSeleccionada) ||
-          (modoSeleccion === 'estudio' && !servicioSeleccionado)
-        }
+        disabled={!fechaSeleccionada || !especialidadSeleccionada || !profesionalSeleccionado || (modoSeleccion === 'estudio' && !servicioSeleccionado)}
       >
         Continuar
       </button>
     </div>
   </div>
 )}
-
         {step === 3 && (
           <div className="confirmacion">
             <button onClick={() => setStep(2)} className="volver-btn">← Volver al paso anterior</button>
