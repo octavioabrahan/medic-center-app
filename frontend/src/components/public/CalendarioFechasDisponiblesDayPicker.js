@@ -45,7 +45,12 @@ const CalendarioFechasDisponiblesDayPicker = ({ profesionalId, fechaSeleccionada
     if (profesionalId) fetchFechas();
   }, [profesionalId]);
 
-  const disabledDays = date => !fechasDisponibles.some(f => f.toDateString() === date.toDateString());
+  const formatFecha = date => date.toISOString().split('T')[0];
+
+  const disabledDays = date => {
+    const fecha = formatFecha(date);
+    return !fechasDisponibles.some(f => formatFecha(f) === fecha);
+  };
 
   return (
     <div className="calendario-wrapper">
