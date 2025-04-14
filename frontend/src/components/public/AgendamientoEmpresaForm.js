@@ -42,7 +42,7 @@ const AgendamientoEmpresaForm = () => {
       axios.get('/api/profesionales').then(res => setProfesionales(res.data)).catch(console.error);
     }
   }, [step]);
-  
+
   useEffect(() => {
     if (profesionalSeleccionado) {
       axios.get(`/api/fechas-disponibles/${profesionalSeleccionado}`)
@@ -296,10 +296,10 @@ const AgendamientoEmpresaForm = () => {
             <div>
               <label>Selecciona el día de atención</label>
               <CalendarioFechasDisponiblesDayPicker
-  fechasDisponibles={fechasDisponibles}
-  fechaSeleccionada={fechaSeleccionada}
-  setFechaSeleccionada={setFechaSeleccionada}
-/>
+    profesionalId={profesionalSeleccionado}
+    fechaSeleccionada={fechaSeleccionada}
+    setFechaSeleccionada={setFechaSeleccionada}
+  />
             </div>
             <div className="info-fecha-hora">
               <p><strong>📅</strong> {fechaSeleccionada ? fechaMostrada() : '-'}</p>

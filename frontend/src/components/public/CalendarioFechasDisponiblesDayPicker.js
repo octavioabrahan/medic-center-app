@@ -1,25 +1,57 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
 import { DayPicker } from 'react-day-picker';
 import 'react-day-picker/dist/style.css';
 import { es } from 'date-fns/locale';
 
-const CalendarioFechasDisponiblesDayPicker = ({ fechasDisponibles = [], fechaSeleccionada, setFechaSeleccionada }) => {
-  // Convertimos las fechas en string a Date
-  const fechasHabilitadas = fechasDisponibles.map(fecha => new Date(fecha));
+const CalendarioFechasDisponiblesDayPicker = ({ profesionalId, fechaSeleccionada, setFechaSeleccionada }) => {
+  const [fechasDisponibles, setFechasDisponibles] = useState([]);
 
-  // Deshabilitamos todos los días que no estén en la lista de fechas disponibles
-  const disabledDays = [
-    {
-      before: new Date(), // opcional, por si no se quiere agendar en días pasados
-    },
-    date => !fechasHabilitadas.some(f => f.toDateString() === date.toDateString()),
-  ];
+  useEffect(() => {
+    const fetchFechas = async () => {
+      try {
+        const [resHorarios, resExcepciones] = await Promise.all([
+          axios.get(`/api/horarios/fechas/${profesionalId}`),
+          axios.get(`/api/excepciones/profesional/${profesionalId}`)
+        ]);
+
+        const fechasBase = resHorarios.data; // [{ fecha: '2025-04-07' }, ...]
+        const excepciones = resExcepciones.data;
+
+        const canceladas = new Set(
+          excepciones
+            .filter(e => e.estado === 'cancelado')
+            .map(e => e.fecha)
+        );
+
+        const agregadas = excepciones
+          .filter(e => e.estado === 'manual')
+          .map(e => new Date(e.fecha));
+
+        const filtradas = fechasBase
+          .filter(f => !canceladas.has(f.fecha))
+          .map(f => new Date(f.fecha));
+
+        const finalDates = [...filtradas, ...agregadas];
+        const unicas = Array.from(new Set(finalDates.map(d => d.toDateString())))
+          .map(fechaStr => new Date(fechaStr));
+
+        setFechasDisponibles(unicas);
+      } catch (error) {
+        console.error("Error cargando fechas o excepciones:", error);
+      }
+    };
+
+    if (profesionalId) fetchFechas();
+  }, [profesionalId]);
+
+  const disabledDays = date => !fechasDisponibles.some(f => f.toDateString() === date.toDateString());
 
   return (
     <div className="calendario-wrapper">
       <DayPicker
         mode="single"
-        selected={fechaSeleccionada ? new Date(fechaSeleccionada) : undefined}
+        selected={fechaSeleccionada}
         onSelect={setFechaSeleccionada}
         disabled={disabledDays}
         locale={es}
