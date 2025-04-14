@@ -234,6 +234,8 @@ const AgendamientoEmpresaForm = () => {
       </label>
     </div>
 
+    {!sinCedula && (
+  <>
     <label>Teléfono</label>
     <input
       type="text"
@@ -249,6 +251,8 @@ const AgendamientoEmpresaForm = () => {
       value={datosPaciente.email}
       onChange={e => setDatosPaciente({ ...datosPaciente, email: e.target.value })}
     />
+  </>
+)}
 
     {/* Seguro médico */}
     <h3>Seguro médico</h3>
