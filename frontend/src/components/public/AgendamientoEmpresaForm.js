@@ -54,13 +54,20 @@ const AgendamientoEmpresaForm = () => {
   const fechaMostrada = () => {
     const f = fechaSeleccionada?.fecha ?? fechaSeleccionada;
     if (!f || isNaN(new Date(f).getTime())) return '';
-    return new Date(f).toLocaleDateString();
+    return new Date(f).toLocaleDateString('es-CL', {
+      weekday: 'long',
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    });
   };
-
+  
   const horaMostrada = () => {
-    if (!fechaSeleccionada || !fechaSeleccionada.hora_inicio) return 'No disponible';
-    return `Desde las ${fechaSeleccionada.hora_inicio.slice(0, 5)} hrs`;
-  };
+    if (!fechaSeleccionada || !fechaSeleccionada.hora_inicio || !fechaSeleccionada.hora_termino) return 'No disponible';
+    const inicio = fechaSeleccionada.hora_inicio.slice(0, 5);
+    const termino = fechaSeleccionada.hora_termino.slice(0, 5);
+    return `Desde las ${inicio} hasta las ${termino} hrs`;
+  };  
 
   const handleCheckCedula = () => {
     const nuevaCondicion = !sinCedula;
