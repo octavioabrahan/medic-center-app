@@ -28,6 +28,9 @@ body {
   width: 100%;
   margin: 2rem auto;
   padding: 0 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem; /* separaciones consistentes */
 }
 
 h2.titulo-principal,
@@ -118,7 +121,6 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 
 .boton-container {
   text-align: right;
-  margin-top: 2rem;
 }
 
 .boton-continuar {
@@ -161,10 +163,9 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 
 .selector-botones-radio {
   display: flex;
-  flex-direction: row;
   gap: 1rem;
-  margin-bottom: 1.5rem;
   flex-wrap: wrap;
+  margin-top: 0.5rem;
 }
 
 .opcion-card {
@@ -216,10 +217,8 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 
 /* === Paso 2 (estilo Figma mejorado) === */
 
-.form-step2 {
-  display: flex;
-  flex-direction: column;
-  gap: 2rem;
+.form-step2 > * {
+  margin-bottom: 2rem;
 }
 
 .form-row {
@@ -231,7 +230,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 
 .form-column {
   flex: 1;
-  min-width: 260px;
+  min-width: 240px;
 }
 
 .calendar-section {
@@ -321,10 +320,11 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 
   .selector-botones-radio {
     flex-direction: column;
+    align-items: stretch;
+    width: 100%;
   }
 
   .boton-container {
-    justify-content: center;
     text-align: center;
   }
 
@@ -335,10 +335,20 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   .form-row,
   .calendar-section {
     flex-direction: column;
+    width: 100%;
+    gap: 1.5rem;
   }
 
+  .form-column,
   .info-fecha-hora {
-    margin-top: 1.5rem;
-    min-width: 100%;
+    width: 100%;
+    min-width: unset;
+    max-width: 100%;
+  }
+
+  .form-body {
+    padding: 0 1.5rem;
+    align-items: center;
   }
 }
+ 
