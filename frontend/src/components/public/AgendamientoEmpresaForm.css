@@ -160,7 +160,8 @@ select:focus {
 .opcion-card {
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
+  text-align: left;
   gap: 0.75rem;
   border: 2px solid #D1D5DB;
   border-radius: 8px;
@@ -193,11 +194,11 @@ select:focus {
 }
 
 .tarjeta-seleccion {
-  background-color: #fff;
-  padding: 1rem 1.25rem;
-  border: 1px solid #E5E7EB;
-  border-radius: 8px;
-  margin-bottom: 2rem;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  align-items: flex-start;
 }
 
 /* === Paso 2 optimizado === */
@@ -221,6 +222,7 @@ select:focus {
   flex: 1;
   min-width: 300px;
   max-width: 420px;
+  align-items: flex-start;
 }
 
 .form-column select {
@@ -287,6 +289,17 @@ select option {
   box-sizing: border-box;
 }
 
+.etiqueta-grupo,
+label,
+.form-step2 label,
+.form-step2 select,
+.form-step2 option,
+.opcion-card div,
+.info-fecha-hora {
+  text-align: left !important;
+  align-items: flex-start !important;
+  justify-content: flex-start !important;
+}
 /* === Calendario React Day Picker === */
 
 .rdp {
@@ -327,6 +340,7 @@ select option {
 }
 
 .info-fecha-hora p {
+  text-align: left;
   margin: 0.5rem 0;
 }
 /* === Responsive === */
