@@ -267,9 +267,10 @@ const AgendamientoPrivadoForm = () => {
 
           {profesionalSeleccionado && (
             <>
-              <CalendarioFechasDisponibles
+              <CalendarioFechasDisponiblesDayPicker
                 profesionalId={profesionalSeleccionado}
-                onFechaSeleccionada={setFechaSeleccionada}
+                fechaSeleccionada={fechaSeleccionada}
+                setFechaSeleccionada={setFechaSeleccionada}
               />
               {fechaSeleccionada && (
                 <div style={{ marginTop: '20px' }}>
