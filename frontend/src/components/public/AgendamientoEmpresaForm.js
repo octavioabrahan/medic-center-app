@@ -28,7 +28,7 @@ const AgendamientoEmpresaForm = () => {
   const [servicioSeleccionado, setServicioSeleccionado] = useState('');
   const [profesionalSeleccionado, setProfesionalSeleccionado] = useState('');
   const [fechaSeleccionada, setFechaSeleccionada] = useState(null);
-  const [fechasDisponibles, setFechasDisponibles] = useState([]);
+  //const [fechasDisponibles, setFechasDisponibles] = useState([]);
 
   useEffect(() => {
     fetch('/api/empresas')
@@ -285,10 +285,10 @@ const AgendamientoEmpresaForm = () => {
             <div>
               <label>Selecciona el día de atención</label>
               <CalendarioFechasDisponiblesDayPicker
-  fechasDisponibles={fechasDisponibles}
-  fechaSeleccionada={fechaSeleccionada}
-  setFechaSeleccionada={setFechaSeleccionada}
-/>
+                profesionalId={profesionalSeleccionado}
+                fechaSeleccionada={fechaSeleccionada}
+                setFechaSeleccionada={setFechaSeleccionada}
+              />
             </div>
             <div className="info-fecha-hora">
               <p><strong>📅</strong> {fechaSeleccionada ? fechaMostrada() : '-'}</p>
