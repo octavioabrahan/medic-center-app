@@ -4,8 +4,6 @@ import axios from 'axios';
 import CalendarioFechasDisponiblesDayPicker from './CalendarioFechasDisponiblesDayPicker';
 import './AgendamientoEmpresaForm.css';
 import logo from '../../assets/logo_header.png';
-import { DayPicker } from 'react-day-picker';
-import 'react-day-picker/dist/style.css';
 
 const AgendamientoEmpresaForm = () => {
   const [step, setStep] = useState(1);
@@ -30,7 +28,8 @@ const AgendamientoEmpresaForm = () => {
   const [servicioSeleccionado, setServicioSeleccionado] = useState('');
   const [profesionalSeleccionado, setProfesionalSeleccionado] = useState('');
   const [fechaSeleccionada, setFechaSeleccionada] = useState(null);
-  
+  const [fechasDisponibles, setFechasDisponibles] = useState([]);
+
   useEffect(() => {
     fetch('/api/empresas')
       .then(res => res.json())
