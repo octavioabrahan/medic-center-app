@@ -231,7 +231,8 @@ select:focus {
   border: 1px solid #D1D5DB;
   text-align: left; /* 👈 asegura alineación a la izquierda */
   background-color: #fff;
-  height: 48px; /* 👈 igual altura que los botones */
+  height: 48px !important;
+  border-radius: 8px;
 }
 
 select option {
@@ -268,6 +269,16 @@ select option {
 
 .asterisk {
   color: red;
+}
+
+.form-step2 select,
+.form-step2 select option {
+  text-align: left !important;
+  font-size: 1rem;
+  height: 48px;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  box-sizing: border-box;
 }
 
 /* === Calendario React Day Picker === */
