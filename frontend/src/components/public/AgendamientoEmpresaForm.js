@@ -311,7 +311,7 @@ const AgendamientoEmpresaForm = () => {
     )}
 
     {profesionalSeleccionado && (
-      <div className="calendar-section form-row">
+      <div className="calendar-section">
         <div className="calendar-wrapper">
           <label>
             Selecciona el día de atención <span className="asterisk">*</span>

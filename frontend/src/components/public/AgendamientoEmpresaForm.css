@@ -46,6 +46,12 @@ form label {
   font-size: 0.95rem;
 }
 
+/* Ajuste de alineación vertical en selects */
+.form-row select,
+.form-row .opcion-card {
+  margin-top: 0.5rem;
+}
+
 input[type="text"],
 input[type="email"],
 input[type="date"],
@@ -208,7 +214,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   gap: 1rem;
 }
 
-/* NUEVO: estructura paso 2 estilo Figma */
+/* === Paso 2 (estilo Figma mejorado) === */
 
 .form-step2 {
   display: flex;
@@ -232,27 +238,27 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   display: flex;
   gap: 2rem;
   align-items: flex-start;
+  flex-wrap: wrap;
 }
 
 .calendar-wrapper {
-  background: white;
-  padding: 1rem 1.5rem;
-  border-radius: 8px;
-  border: 1px solid #D1D5DB;
+  padding: 0;
+  border: none;
+  background: transparent;
   width: 100%;
   max-width: 100%;
-  box-shadow: none;
 }
 
 .info-fecha-hora {
   border: 1px solid #D1D5DB;
   border-radius: 8px;
-  padding: 1.25rem 1.5rem;
+  padding: 1rem 1.25rem;
   background-color: #ffffff;
   font-size: 1rem;
-  min-width: 180px;
+  min-width: 240px;
   max-width: 260px;
   height: fit-content;
+  margin-top: 0.5rem;
 }
 
 .info-fecha-hora p {
@@ -267,7 +273,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   color: red;
 }
 
-/* Calendario React Day Picker */
+/* === Calendario (react-day-picker) === */
 
 .rdp {
   --rdp-accent-color: #1a3a8a;
@@ -306,8 +312,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   color: #1a3a8a;
 }
 
-/* Responsive */
-
+/* === Responsive === */
 @media (max-width: 700px) {
   .radio-group {
     flex-direction: column;
@@ -334,5 +339,6 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 
   .info-fecha-hora {
     margin-top: 1.5rem;
+    min-width: 100%;
   }
 }
