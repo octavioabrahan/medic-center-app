@@ -239,18 +239,32 @@ const AgendamientoEmpresaForm = () => {
         <>
           <div className="grid-2-cols">
             <div>
-              <label>Especialidad</label>
-              <select
-                value={especialidadSeleccionada}
-                onChange={e => setEspecialidadSeleccionada(e.target.value)}
-              >
-                <option value="">Selecciona una opción</option>
-                {[...new Set(profesionalesFiltrados.map(p => p.nombre_especialidad))]
-                  .filter(Boolean)
-                  .map((esp, i) => (
-                    <option key={i} value={esp}>{esp}</option>
+              <label>{modoSeleccion === 'consulta' ? 'Especialidad' : 'Servicio'}</label>
+              {modoSeleccion === 'consulta' ? (
+                <select
+                  value={especialidadSeleccionada}
+                  onChange={e => setEspecialidadSeleccionada(e.target.value)}
+                >
+                  <option value="">Selecciona una opción</option>
+                  {[...new Set(profesionalesFiltrados.map(p => p.nombre_especialidad))]
+                    .filter(Boolean)
+                    .map((esp, i) => (
+                      <option key={i} value={esp}>{esp}</option>
+                    ))}
+                </select>
+              ) : (
+                <select
+                  value={servicioSeleccionado}
+                  onChange={e => setServicioSeleccionado(e.target.value)}
+                >
+                  <option value="">Selecciona un servicio</option>
+                  {servicios.map(s => (
+                    <option key={s.id_servicio} value={s.nombre_servicio}>
+                      {s.nombre_servicio}
+                    </option>
                   ))}
-              </select>
+                </select>
+              )}
             </div>
 
             <div>
