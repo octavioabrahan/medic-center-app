@@ -293,6 +293,7 @@ const AgendamientoEmpresaForm = () => {
                   profesionalId={profesionalSeleccionado}
                   fechaSeleccionada={fechaSeleccionada}
                   setFechaSeleccionada={setFechaSeleccionada}
+                  fechasDisponibles={fechasDisponibles}
                 />
               </div>
 
