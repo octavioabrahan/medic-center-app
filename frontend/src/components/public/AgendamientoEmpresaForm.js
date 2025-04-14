@@ -28,7 +28,6 @@ const AgendamientoEmpresaForm = () => {
   const [servicioSeleccionado, setServicioSeleccionado] = useState('');
   const [profesionalSeleccionado, setProfesionalSeleccionado] = useState('');
   const [fechaSeleccionada, setFechaSeleccionada] = useState(null);
-  const [fechasDisponibles, setFechasDisponibles] = useState([]);
 
   useEffect(() => {
     fetch('/api/empresas')
@@ -42,20 +41,6 @@ const AgendamientoEmpresaForm = () => {
       axios.get('/api/profesionales').then(res => setProfesionales(res.data)).catch(console.error);
     }
   }, [step]);
-
-  useEffect(() => {
-    if (profesionalSeleccionado) {
-      axios.get(`/api/fechas-disponibles/${profesionalSeleccionado}`)
-        .then(res => {
-          const fechasComoDate = res.data.map(f => new Date(f.fecha));
-          setFechasDisponibles(fechasComoDate);
-        })
-        .catch(err => {
-          console.error('Error al obtener fechas disponibles:', err);
-          setFechasDisponibles([]);
-        });
-    }
-  }, [profesionalSeleccionado]);
     
   const profesionalesFiltrados = profesionales.filter(p =>
     modoSeleccion === 'consulta'
@@ -293,10 +278,9 @@ const AgendamientoEmpresaForm = () => {
               <div>
                 <label>Selecciona el día de atención</label>
                 <CalendarioFechasDisponiblesDayPicker
-                  profesionalId={profesionalSeleccionado}
-                  fechaSeleccionada={fechaSeleccionada}
-                  setFechaSeleccionada={setFechaSeleccionada}
-                  fechasDisponibles={fechasDisponibles}
+                profesionalId={profesionalSeleccionado}
+                fechaSeleccionada={fechaSeleccionada}
+                setFechaSeleccionada={setFechaSeleccionada}
                 />
               </div>
 
