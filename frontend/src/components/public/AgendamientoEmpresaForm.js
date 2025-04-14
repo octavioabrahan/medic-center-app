@@ -49,10 +49,6 @@ const AgendamientoEmpresaForm = () => {
         : false
   );
 
-  useEffect(() => {
-    setProfesionalSeleccionado('');
-  }, [especialidadSeleccionada, servicioSeleccionado]);
-
   const fechaMostrada = () => {
     const fecha = fechaSeleccionada?.dateObj;
     if (!fecha || !(fecha instanceof Date)) return '';
@@ -285,8 +281,9 @@ const AgendamientoEmpresaForm = () => {
                 const id = e.target.value;
                 setProfesionalSeleccionado(id);
                 setFechaSeleccionada(null);
-
+              
                 const profesional = profesionales.find(p => p.profesional_id === id);
+              
                 if (modoSeleccion === 'consulta' && profesional?.nombre_especialidad) {
                   setEspecialidadSeleccionada(profesional.nombre_especialidad);
                 }
