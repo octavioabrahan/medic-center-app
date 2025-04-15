@@ -171,7 +171,8 @@ const AgendamientoPrivadoForm = () => {
       fecha_agendada: fechaSeleccionada?.fecha || fechaSeleccionada,
       tipo_atencion_id: tipoAtencionMap[modoSeleccion],
       observaciones: modoSeleccion === 'consulta' ? especialidadSeleccionada : servicioSeleccionado,
-      id_categoria: categoriaMap[modoSeleccion]
+      id_categoria: categoriaMap[modoSeleccion],
+      nro_consulta: fechaSeleccionada?.nro_consulta || null
     };
 
     try {
@@ -512,6 +513,8 @@ const AgendamientoPrivadoForm = () => {
         <div className="info-fecha-hora">
           <p><strong>🗓️</strong> {fechaSeleccionada ? fechaMostrada() : '-'}</p>
           <p><strong>🕒</strong> {fechaSeleccionada ? horaMostrada() : 'No disponible'}</p>
+          {fechaSeleccionada && fechaSeleccionada.nro_consulta && (
+          <p><strong>🔢</strong> Consulta #{fechaSeleccionada.nro_consulta}</p>)}
         </div>
       </div>
     )}
@@ -554,6 +557,8 @@ const AgendamientoPrivadoForm = () => {
         <p><strong>👤 {profesionales.find(p => p.profesional_id === profesionalSeleccionado)?.nombre} {profesionales.find(p => p.profesional_id === profesionalSeleccionado)?.apellido}</strong></p>
         <p><strong>📅 {fechaMostrada()}</strong></p>
         <p><strong>🕐 {horaMostrada()}</strong></p>
+        {fechaSeleccionada && fechaSeleccionada.nro_consulta && (
+    <p><strong>🔢 Consulta #{fechaSeleccionada.nro_consulta}</strong></p>)}
         <p className="nota-horario">La atención será por orden de llegada según el horario del profesional.</p>
       </div>
     </div>
