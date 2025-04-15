@@ -64,7 +64,6 @@ const AgendamientoController = {
         profesional_id,
         tipo_atencion_id,
         observaciones,
-        hora_inicio,
         id_categoria,
         id_empresa
       });
@@ -76,7 +75,6 @@ const AgendamientoController = {
           <h3>Tu cita fue registrada correctamente</h3>
           <p><strong>Paciente:</strong> ${nombre} ${apellido}</p>
           <p><strong>Fecha:</strong> ${fecha_agendada}</p>
-          <p><strong>Hora:</strong> ${hora_inicio || "No especificada"}</p>
         `
       );
 

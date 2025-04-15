@@ -103,7 +103,6 @@ const AgendamientoEmpresaForm = () => {
       fecha_agendada: fechaSeleccionada?.fecha || fechaSeleccionada,
       tipo_atencion_id: tipoAtencionMap[modoSeleccion],
       observaciones: modoSeleccion === 'consulta' ? especialidadSeleccionada : servicioSeleccionado,
-      hora_inicio: fechaSeleccionada?.hora_inicio || null,
       id_categoria: categoriaMap[modoSeleccion]
     };
 
