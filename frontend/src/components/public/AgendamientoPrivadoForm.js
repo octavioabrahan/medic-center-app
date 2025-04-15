@@ -80,23 +80,23 @@ const AgendamientoPrivadoForm = () => {
 
     const payload = {
       cedula: datosRepresentante.cedula,
-      paciente: {
-        nombre: datosPaciente.nombre,
-        apellido: datosPaciente.apellido,
-        fecha_nacimiento: datosPaciente.fechaNacimiento,
-        sexo: datosPaciente.sexo,
-        telefono: sinCedula ? datosRepresentante.telefono : datosPaciente.telefono,
-        email: sinCedula ? datosRepresentante.email : datosPaciente.email,
-        seguro_medico: tieneSeguro,
-        representante_cedula: representanteCedula,
-        representante_nombre: sinCedula ? datosRepresentante.nombre : null,
-        representante_apellido: sinCedula ? datosRepresentante.apellido : null
-      },
+      nombre: datosPaciente.nombre,
+      apellido: datosPaciente.apellido,
+      fecha_nacimiento: datosPaciente.fechaNacimiento,
+      sexo: datosPaciente.sexo,
+      telefono: sinCedula ? datosRepresentante.telefono : datosPaciente.telefono,
+      email: sinCedula ? datosRepresentante.email : datosPaciente.email,
+      seguro_medico: tieneSeguro === 'si',
+      representante_cedula: representanteCedula,
+      representante_nombre: sinCedula ? datosRepresentante.nombre : null,
+      representante_apellido: sinCedula ? datosRepresentante.apellido : null,
+      id_empresa: empresaSeleccionada,
       profesional_id: profesionalSeleccionado,
       fecha_agendada: fechaSeleccionada?.fecha || fechaSeleccionada,
-      tipo_atencion: modoSeleccion,
-      detalle: modoSeleccion === 'consulta' ? especialidadSeleccionada : servicioSeleccionado,
-      hora_inicio: fechaSeleccionada?.hora_inicio || null
+      tipo_atencion_id: modoSeleccion === 'consulta' ? 1 : 3, // ajusta según tus datos
+      observaciones: modoSeleccion === 'consulta' ? especialidadSeleccionada : servicioSeleccionado,
+      hora_inicio: fechaSeleccionada?.hora_inicio || null,
+      id_categoria: modoSeleccion === 'consulta' ? 1 : 3 // ajusta según tus datos
     };
 
     try {
