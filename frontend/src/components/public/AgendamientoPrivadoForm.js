@@ -33,25 +33,20 @@ const AgendamientoPrivadoForm = () => {
     }
   }, [step]);
 
-  const profesionalesFiltrados = profesionales.filter(p => {
-    if (modoSeleccion === 'consulta') {
-      return p.categorias?.includes('Consulta');
-    } else if (modoSeleccion === 'estudio') {
-      return (
-        p.categorias?.includes('Estudio') &&
+  const profesionalesFiltrados = profesionales.filter(p =>
+    modoSeleccion === 'consulta'
+      ? p.categorias?.includes('Consulta') &&
+        (!especialidadSeleccionada || p.nombre_especialidad === especialidadSeleccionada)
+      : p.categorias?.includes('Estudio') &&
         (!servicioSeleccionado || p.nombre_servicio === servicioSeleccionado)
-      );
-    }
-    return false;
-  });
+  );
 
   const serviciosFiltrados = servicios.filter(s =>
     profesionales.some(p =>
-      p.nombre_servicio === s.nombre_servicio &&
-      p.categorias?.includes('Estudio') &&
-      (!profesionalSeleccionado || p.profesional_id === profesionalSeleccionado)
+      p.nombre_servicio === s.nombre_servicio && p.categorias?.includes('Estudio')
     )
   );
+
   const fechaMostrada = () => {
     const fecha = fechaSeleccionada?.dateObj;
     if (!fecha || !(fecha instanceof Date)) return '';
@@ -344,17 +339,24 @@ const AgendamientoPrivadoForm = () => {
             </label>
             <select
               value={modoSeleccion === 'consulta' ? especialidadSeleccionada : servicioSeleccionado}
-              onChange={e =>
-                modoSeleccion === 'consulta'
-                  ? setEspecialidadSeleccionada(e.target.value)
-                  : setServicioSeleccionado(e.target.value)
+              onChange={e => {
+                if (modoSeleccion === 'consulta') {
+                setEspecialidadSeleccionada(e.target.value);
+                } else {
+                const nuevoServicio = e.target.value;
+                setServicioSeleccionado(nuevoServicio);
+                const profesional = profesionales.find(p => p.profesional_id === profesionalSeleccionado);
+                if (profesional && profesional.nombre_servicio !== nuevoServicio) {
+                setProfesionalSeleccionado('');
+                }
               }
-              required
+            }}
+            required
             >
               <option value="">Selecciona una opción</option>
               {(modoSeleccion === 'consulta'
                 ? [...new Set(profesionalesFiltrados.map(p => p.nombre_especialidad))]
-                : servicios.map(s => s.nombre_servicio))
+                : serviciosFiltrados.map(s => s.nombre_servicio))
                 .filter(Boolean)
                 .map((item, i) => (
                   <option key={i} value={item}>{item}</option>
