@@ -441,23 +441,7 @@ const AgendamientoEmpresaForm = () => {
             ) : (
               <select
                 value={servicioSeleccionado}
-                onChange={e => {
-                  const servicio = e.target.value;
-                  setServicioSeleccionado(servicio);
-                  
-                  // Si el profesional actual no puede realizar este servicio, reseteamos
-                  if (profesionalSeleccionado) {
-                    const servicioObj = servicios.find(s => s.nombre_servicio === servicio);
-                    if (servicioObj && profesionalServicioMap.profToServ) {
-                      const idServicio = servicioObj.id_servicio;
-                      const puedeRealizarlo = profesionalServicioMap.profToServ[profesionalSeleccionado]?.includes(idServicio);
-                      if (!puedeRealizarlo) {
-                        setProfesionalSeleccionado('');
-                        setFechaSeleccionada(null);
-                      }
-                    }
-                  }
-                }}
+                onChange={handleServicioChange}
                 required
               >
                 <option value="">Selecciona una opción</option>
@@ -477,31 +461,18 @@ const AgendamientoEmpresaForm = () => {
             <select
               value={profesionalSeleccionado}
               onChange={e => {
+                handleProfesionalChange(e);
+                
+                // Mantener la lógica adicional específica para esta UI
                 const id = e.target.value;
-                setProfesionalSeleccionado(id);
-                setFechaSeleccionada(null);
-              
                 const profesional = profesionales.find(p => p.profesional_id === id);
-              
+                
                 if (modoSeleccion === 'consulta' && profesional?.nombre_especialidad) {
                   setEspecialidadSeleccionada(profesional.nombre_especialidad);
                 }
                 
-                // En caso de estudio, verificar si el servicio actual es compatible
-                if (modoSeleccion === 'estudio') {
-                  if (servicioSeleccionado) {
-                    const servicioObj = servicios.find(s => s.nombre_servicio === servicioSeleccionado);
-                    if (servicioObj && id) {
-                      const idServicio = servicioObj.id_servicio;
-                      const puedeRealizarlo = profesionalServicioMap.profToServ[id]?.includes(idServicio);
-                      if (!puedeRealizarlo) {
-                        setServicioSeleccionado('');
-                      }
-                    }
-                  } else if (profesional?.servicios && profesional.servicios.length > 0) {
-                    // Si no hay servicio seleccionado, podemos seleccionar el primero disponible
-                    setServicioSeleccionado(profesional.servicios[0]);
-                  }
+                if (modoSeleccion === 'estudio' && !servicioSeleccionado && profesional?.servicios && profesional.servicios.length > 0) {
+                  setServicioSeleccionado(profesional.servicios[0]);
                 }
               }}
               required
