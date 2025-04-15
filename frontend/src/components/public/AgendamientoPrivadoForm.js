@@ -17,6 +17,7 @@ const AgendamientoPrivadoForm = () => {
   const [modoSeleccion, setModoSeleccion] = useState(null);
   const [servicios, setServicios] = useState([]);
   const [profesionales, setProfesionales] = useState([]);
+  const [empresaSeleccionada, setEmpresaSeleccionada] = useState('');
 
   const [especialidadSeleccionada, setEspecialidadSeleccionada] = useState('');
   const [servicioSeleccionado, setServicioSeleccionado] = useState('');
@@ -77,7 +78,15 @@ const AgendamientoPrivadoForm = () => {
 
   const enviarAgendamiento = async () => {
     const representanteCedula = sinCedula ? `${datosRepresentante.cedula}-${datosRepresentante.numeroHijo}` : null;
-
+    const categoriaMap = {
+      consulta: 1,
+      estudio: 3
+    };
+    
+    const tipoAtencionMap = {
+      consulta: 1,
+      estudio: 3
+    };    
     const payload = {
       cedula: datosRepresentante.cedula,
       nombre: datosPaciente.nombre,
@@ -93,10 +102,10 @@ const AgendamientoPrivadoForm = () => {
       id_empresa: empresaSeleccionada,
       profesional_id: profesionalSeleccionado,
       fecha_agendada: fechaSeleccionada?.fecha || fechaSeleccionada,
-      tipo_atencion_id: modoSeleccion === 'consulta' ? 1 : 3, // ajusta según tus datos
+      tipo_atencion_id: tipoAtencionMap[modoSeleccion],
       observaciones: modoSeleccion === 'consulta' ? especialidadSeleccionada : servicioSeleccionado,
       hora_inicio: fechaSeleccionada?.hora_inicio || null,
-      id_categoria: modoSeleccion === 'consulta' ? 1 : 3 // ajusta según tus datos
+      id_categoria: categoriaMap[modoSeleccion],
     };
 
     try {
