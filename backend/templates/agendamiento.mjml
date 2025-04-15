@@ -1,0 +1,37 @@
+<mjml>
+  <mj-body background-color="#ffffff" font-family="Inter, sans-serif">
+    <mj-section border-bottom="1px solid #D9D9D9" padding="24px 0">
+      <mj-column>
+        <mj-image width="169px" src="https://placehold.co/169x60" alt="Diagnocentro" />
+      </mj-column>
+    </mj-section>
+
+    <mj-section background-color="#f7f9fc" padding="32px">
+      <mj-column>
+        <mj-text font-size="20px" font-weight="600" color="#20377A" align="center">Notificación de Agendamiento</mj-text>
+        <mj-text font-size="16px" color="#14214B">
+          Hola <strong>{{nombre}}</strong>,<br/>
+          Recibimos correctamente tu solicitud para una <strong>{{tipo_atencion}}</strong> en nuestro centro médico.<br/>
+          A continuación, te compartimos el detalle:
+        </mj-text>
+
+        <mj-divider border-color="#D9D9D9" />
+
+        <mj-text font-size="16px">
+          <strong>Paciente:</strong> {{nombre}} {{apellido}}<br/>
+          <strong>Profesional:</strong> {{profesional}}<br/>
+          <strong>Especialidad:</strong> {{especialidad}}<br/>
+          <strong>Día de atención:</strong> {{fecha}} desde las {{hora}}<br/>
+          <strong>Lugar:</strong> Consultorio {{numero}}<br/><br/>
+          <em>La atención será por orden de llegada según el horario del profesional.</em>
+        </mj-text>
+
+        <mj-text font-size="16px" color="#1E1E1E" padding-top="24px" padding-bottom="12px">
+          ⚠️ <strong>Recuerda que el día de la consulta el paciente debe presentar su cédula de identidad vigente.</strong>
+        </mj-text>
+
+        <mj-text font-size="16px">Gracias por confiar en nosotros.<br/>Equipo Diagnocentro</mj-text>
+      </mj-column>
+    </mj-section>
+  </mj-body>
+</mjml>
