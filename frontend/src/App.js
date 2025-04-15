@@ -21,7 +21,7 @@ function App() {
   return (
     <Router>
       <nav>
-        <Link to="/">Inicio</Link> | <Link to="/cotizar">Cotizar Examen</Link> | <Link to="/agendar">Agendar Hora</Link>
+        <Link to="/">Inicio</Link> | <Link to="/cotizar">Cotizar Examen</Link> | <Link to="/agendamiento">Agendar Hora</Link>
       </nav>
       <Routes>
         <Route path="/" element={<Home />} />
