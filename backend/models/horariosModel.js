@@ -9,7 +9,8 @@ const HorariosModel = {
     hora_termino,
     valido_desde,
     valido_hasta,
-    tipo_atencion_id
+    tipo_atencion_id,
+    nro_consulta
   }) => {
     if (hora_inicio >= hora_termino) {
       throw new Error("La hora de inicio debe ser menor a la hora de término.");
@@ -18,8 +19,8 @@ const HorariosModel = {
     for (const dia of dia_semana) {
       await db.query(
         `INSERT INTO horario_medico
-        (profesional_id, dia_semana, hora_inicio, hora_termino, valido_desde, valido_hasta, tipo_atencion_id)
-        VALUES ($1, $2, $3, $4, $5, $6, $7)`,
+        (profesional_id, dia_semana, hora_inicio, hora_termino, valido_desde, valido_hasta, tipo_atencion_id, nro_consulta)
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8)`,
         [
           profesional_id,
           dia,
@@ -27,7 +28,8 @@ const HorariosModel = {
           hora_termino,
           valido_desde,
           valido_hasta,
-          tipo_atencion_id
+          tipo_atencion_id,
+          nro_consulta
         ]
       );
     }
@@ -44,7 +46,7 @@ const HorariosModel = {
   listarFechasPorProfesional: async (profesional_id) => {
     // 1. Obtener horarios base
     const horariosResult = await db.query(
-      `SELECT dia_semana, hora_inicio, hora_termino, valido_desde, valido_hasta, tipo_atencion_id
+      `SELECT dia_semana, hora_inicio, hora_termino, valido_desde, valido_hasta, tipo_atencion_id, nro_consulta
        FROM horario_medico
        WHERE profesional_id = $1`,
       [profesional_id]
@@ -54,7 +56,7 @@ const HorariosModel = {
 
     // 2. Obtener excepciones
     const excepcionesResult = await db.query(
-      `SELECT fecha, estado, hora_inicio, hora_termino
+      `SELECT fecha, estado, hora_inicio, hora_termino, nro_consulta
        FROM horario_excepciones
        WHERE profesional_id = $1`,
       [profesional_id]
@@ -74,7 +76,8 @@ const HorariosModel = {
         fecha: moment(e.fecha).format("YYYY-MM-DD"),
         hora_inicio: e.hora_inicio,
         hora_termino: e.hora_termino,
-        tipo_atencion_id: 1 // puedes ajustarlo si tienes más lógica
+        tipo_atencion_id: 1, // puedes ajustarlo si tienes más lógica
+        nro_consulta: e.nro_consulta
       }));
 
     // 3. Generar fechas desde horario base
@@ -91,7 +94,8 @@ const HorariosModel = {
               fecha: fechaStr,
               hora_inicio: row.hora_inicio,
               hora_termino: row.hora_termino,
-              tipo_atencion_id: row.tipo_atencion_id
+              tipo_atencion_id: row.tipo_atencion_id,
+              nro_consulta: row.nro_consulta
             });
           }
         }

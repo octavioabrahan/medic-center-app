@@ -9,7 +9,8 @@ function HorarioForm() {
     hora_termino: "",
     valido_desde: "",
     valido_hasta: "",
-    tipo_atencion_id: ""
+    tipo_atencion_id: "",
+    nro_consulta: ""
   });
 
   const [profesionales, setProfesionales] = useState([]);
@@ -94,6 +95,19 @@ function HorarioForm() {
           </option>
         ))}
       </select>
+
+      <div>
+        <label htmlFor="nro_consulta">Número de consulta:</label>
+        <input 
+          type="number" 
+          id="nro_consulta"
+          name="nro_consulta" 
+          min="1"
+          onChange={handleChange} 
+          value={form.nro_consulta}
+          placeholder="Número de consulta"
+        />
+      </div>
 
       <button type="submit">Guardar</button>
     </form>
