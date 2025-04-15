@@ -371,6 +371,7 @@ const AgendamientoEmpresaForm = () => {
   </form>
 )}
 
+
 {step === 2 && (
   <div className="form-step2 nuevo-estilo">
     <button onClick={() => setStep(1)} className="volver-btn volver-btn-gris">
@@ -379,6 +380,7 @@ const AgendamientoEmpresaForm = () => {
 
     <h2 className="titulo-principal">Selecciona la especialidad, el médico y el día.</h2>
 
+    {/* Tipo de atención: Consulta o Estudio */}
     <div className="tarjeta-seleccion">
       <label className="etiqueta-grupo">Selecciona el tipo de atención</label>
       <div className="selector-botones-radio personalizado">
@@ -391,7 +393,6 @@ const AgendamientoEmpresaForm = () => {
             onChange={() => {
               setModoSeleccion('consulta');
               setServicioSeleccionado('');
-              setEspecialidadSeleccionada('');
               setProfesionalSeleccionado('');
               setFechaSeleccionada(null);
             }}
@@ -406,7 +407,6 @@ const AgendamientoEmpresaForm = () => {
             checked={modoSeleccion === 'estudio'}
             onChange={() => {
               setModoSeleccion('estudio');
-              setServicioSeleccionado('');
               setEspecialidadSeleccionada('');
               setProfesionalSeleccionado('');
               setFechaSeleccionada(null);
@@ -417,6 +417,7 @@ const AgendamientoEmpresaForm = () => {
       </div>
     </div>
 
+    {/* Mostrar campos solo si se eligió un tipo de atención */}
     {modoSeleccion && (
       <div className="tarjeta-seleccion">
         <div className="form-row triple">
@@ -525,6 +526,8 @@ const AgendamientoEmpresaForm = () => {
     </div>
   </div>
 )}
+
+
 
         {/* Paso 3 */}
         {step === 3 && (
