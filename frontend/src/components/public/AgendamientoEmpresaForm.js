@@ -77,25 +77,34 @@ const AgendamientoEmpresaForm = () => {
 
   const enviarAgendamiento = async () => {
     const representanteCedula = sinCedula ? `${datosRepresentante.cedula}-${datosRepresentante.numeroHijo}` : null;
+    const categoriaMap = {
+      consulta: 1,
+      estudio: 3
+    };
+    
+    const tipoAtencionMap = {
+      consulta: 1,
+      estudio: 3
+    };
     const payload = {
       cedula: datosRepresentante.cedula,
-      paciente: {
-        nombre: datosPaciente.nombre,
-        apellido: datosPaciente.apellido,
-        fecha_nacimiento: datosPaciente.fechaNacimiento,
-        sexo: datosPaciente.sexo,
-        telefono: sinCedula ? datosRepresentante.telefono : datosPaciente.telefono,
-        email: sinCedula ? datosRepresentante.email : datosPaciente.email,
-        seguro_medico: tieneSeguro === 'si',
-        representante_cedula: representanteCedula,
-        representante_nombre: sinCedula ? datosRepresentante.nombre : null,
-        representante_apellido: sinCedula ? datosRepresentante.apellido : null,
-        id_empresa: empresaSeleccionada
-      },
+      nombre: datosPaciente.nombre,
+      apellido: datosPaciente.apellido,
+      fecha_nacimiento: datosPaciente.fechaNacimiento,
+      sexo: datosPaciente.sexo,
+      telefono: sinCedula ? datosRepresentante.telefono : datosPaciente.telefono,
+      email: sinCedula ? datosRepresentante.email : datosPaciente.email,
+      seguro_medico: tieneSeguro === 'si',
+      representante_cedula: sinCedula ? `${datosRepresentante.cedula}-${datosRepresentante.numeroHijo}` : null,
+      representante_nombre: sinCedula ? datosRepresentante.nombre : null,
+      representante_apellido: sinCedula ? datosRepresentante.apellido : null,
+      id_empresa: empresaSeleccionada,
       profesional_id: profesionalSeleccionado,
       fecha_agendada: fechaSeleccionada?.fecha || fechaSeleccionada,
-      tipo_atencion: modoSeleccion,
-      detalle: modoSeleccion === 'consulta' ? especialidadSeleccionada : servicioSeleccionado
+      tipo_atencion_id: tipoAtencionMap[modoSeleccion],
+      observaciones: modoSeleccion === 'consulta' ? especialidadSeleccionada : servicioSeleccionado,
+      hora_inicio: fechaSeleccionada?.hora_inicio || null,
+      id_categoria: categoriaMap[modoSeleccion]
     };
 
     try {
