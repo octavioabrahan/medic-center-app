@@ -95,7 +95,7 @@ const AgendamientoEmpresaForm = () => {
       telefono: sinCedula ? datosRepresentante.telefono : datosPaciente.telefono,
       email: sinCedula ? datosRepresentante.email : datosPaciente.email,
       seguro_medico: tieneSeguro === 'si',
-      representante_cedula: sinCedula ? `${datosRepresentante.cedula}-${datosRepresentante.numeroHijo}` : null,
+      representante_cedula: representanteCedula,
       representante_nombre: sinCedula ? datosRepresentante.nombre : null,
       representante_apellido: sinCedula ? datosRepresentante.apellido : null,
       id_empresa: empresaSeleccionada,
