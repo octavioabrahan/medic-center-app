@@ -9,35 +9,31 @@ const AgendamientoModel = {
       profesional_id,
       tipo_atencion_id,
       observaciones,
+      hora_inicio,
       id_categoria,
-      id_empresa
+      id_empresa,
     } = datos;
 
     const query = `
-      INSERT INTO agendamiento (
-        cedula,
-        fecha_agendada,
-        convenio,
-        profesional_id,
-        tipo_atencion_id,
-        observaciones,
-        id_categoria,
-        id_empresa
-      )
-      VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
-    `;
+  INSERT INTO agendamiento (
+    cedula, fecha_agendada, convenio,
+    profesional_id, tipo_atencion_id, observaciones,
+    hora_inicio, id_categoria, id_empresa
+  )
+  VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+`;
 
-    await db.query(query, [
-      cedula,
-      fecha_agendada,
-      convenio,
-      profesional_id,
-      tipo_atencion_id,
-      observaciones || null,
-      id_categoria || null,
-      id_empresa || null
-    ]);
-  },
+await db.query(query, [
+  cedula,
+  fecha_agendada,
+  convenio,
+  profesional_id,
+  tipo_atencion_id,
+  observaciones || null,
+  hora_inicio || null,
+  id_categoria || null,
+  id_empresa || null
+]);
 
   listar: async ({ status, desde, hasta }) => {
     const condiciones = [];

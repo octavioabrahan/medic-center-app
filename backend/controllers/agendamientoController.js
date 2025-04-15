@@ -8,12 +8,14 @@ const AgendamientoController = {
     try {
       const {
         cedula,
-        paciente,
-        profesional_id,
         fecha_agendada,
-        tipo_atencion,
-        detalle,
-        hora_inicio
+        convenio,
+        profesional_id,
+        tipo_atencion_id,
+        observaciones,
+        hora_inicio,
+        id_categoria,
+        id_empresa,
       } = req.body;
 
       if (
@@ -54,13 +56,15 @@ const AgendamientoController = {
       }
 
       await AgendamientoModel.crear({
-        cedula: cedulaPaciente,
+        cedula,
         fecha_agendada,
-        convenio: false,
+        convenio,
         profesional_id,
-        tipo_atencion_id: 1,
-        observaciones: detalle,
-        hora_inicio
+        tipo_atencion_id,
+        observaciones,
+        hora_inicio,
+        id_categoria,
+        id_empresa,
       });
 
       await enviarCorreo(
