@@ -15,29 +15,31 @@ const AgendamientoModel = {
     } = datos;
 
     const query = `
-  INSERT INTO agendamiento (
-    cedula, fecha_agendada, convenio,
-    profesional_id, tipo_atencion_id, observaciones,
-    hora_inicio, id_categoria, id_empresa
-  )
-  VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
-`;
+      INSERT INTO agendamiento (
+        cedula, fecha_agendada, convenio,
+        profesional_id, tipo_atencion_id, observaciones,
+        hora_inicio, id_categoria, id_empresa
+      )
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+    `;
 
-await db.query(query, [
-  cedula,
-  fecha_agendada,
-  convenio,
-  profesional_id,
-  tipo_atencion_id,
-  observaciones || null,
-  hora_inicio || null,
-  id_categoria || null,
-  id_empresa || null
-]);
+    await db.query(query, [
+      cedula,
+      fecha_agendada,
+      convenio,
+      profesional_id,
+      tipo_atencion_id,
+      observaciones || null,
+      hora_inicio || null,
+      id_categoria || null,
+      id_empresa || null
+    ]);
+  },
 
   listar: async ({ status, desde, hasta }) => {
     const condiciones = [];
     const valores = [];
+
     if (status) {
       if (status.includes(',')) {
         const estados = status.split(',');
@@ -48,16 +50,20 @@ await db.query(query, [
         valores.push(status);
         condiciones.push(`a.status = $${valores.length}`);
       }
-    }    
+    }
+
     if (desde) {
       valores.push(desde);
       condiciones.push(`a.fecha_agendada >= $${valores.length}`);
     }
+
     if (hasta) {
       valores.push(hasta);
       condiciones.push(`a.fecha_agendada <= $${valores.length}`);
     }
+
     const where = condiciones.length ? `WHERE ${condiciones.join(" AND ")}` : "";
+
     const query = `
       SELECT a.*, 
              p.nombre AS paciente_nombre, p.apellido AS paciente_apellido, 
@@ -71,6 +77,7 @@ await db.query(query, [
       ${where}
       ORDER BY a.fecha_agendada DESC
     `;
+
     const result = await db.query(query, valores);
     return result.rows;
   },
