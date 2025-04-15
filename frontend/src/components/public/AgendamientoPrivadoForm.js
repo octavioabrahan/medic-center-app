@@ -18,6 +18,7 @@ const AgendamientoPrivadoForm = () => {
   const [servicios, setServicios] = useState([]);
   const [profesionales, setProfesionales] = useState([]);
   const [empresaSeleccionada, setEmpresaSeleccionada] = useState('');
+  const [profesionalServicioMap, setProfesionalServicioMap] = useState({});
 
   const [especialidadSeleccionada, setEspecialidadSeleccionada] = useState('');
   const [servicioSeleccionado, setServicioSeleccionado] = useState('');
@@ -26,8 +27,34 @@ const AgendamientoPrivadoForm = () => {
 
   useEffect(() => {
     if (step === 2) {
+      // Cargar servicios y profesionales
       axios.get('/api/servicios').then(res => setServicios(res.data)).catch(console.error);
       axios.get('/api/profesionales').then(res => setProfesionales(res.data)).catch(console.error);
+      
+      // Cargar el mapeo de profesional-servicio
+      axios.get('/api/profesional-servicios')
+        .then(res => {
+          // Crear mapa de profesionales a servicios y viceversa
+          const profToServ = {};
+          const servToProf = {};
+          
+          res.data.forEach(relacion => {
+            // Mapeo de profesional a servicios
+            if (!profToServ[relacion.profesional_id]) {
+              profToServ[relacion.profesional_id] = [];
+            }
+            profToServ[relacion.profesional_id].push(relacion.id_servicio);
+            
+            // Mapeo de servicio a profesionales
+            if (!servToProf[relacion.id_servicio]) {
+              servToProf[relacion.id_servicio] = [];
+            }
+            servToProf[relacion.id_servicio].push(relacion.profesional_id);
+          });
+          
+          setProfesionalServicioMap({ profToServ, servToProf });
+        })
+        .catch(console.error);
     }
   }, [step]);
 
@@ -57,13 +84,66 @@ const AgendamientoPrivadoForm = () => {
     }
   };
 
-  const profesionalesFiltrados = profesionales.filter(p =>
+  // Filtrar profesionales por categoría (consulta o estudio)
+  const profesionalesPorCategoria = profesionales.filter(p =>
     modoSeleccion === 'consulta'
       ? p.categorias?.includes('Consulta')
       : modoSeleccion === 'estudio'
         ? p.categorias?.includes('Estudio')
         : false
   );
+
+  // Filtrar profesionales por servicio seleccionado (si hay uno)
+  const profesionalesFiltrados = servicioSeleccionado
+    ? profesionalesPorCategoria.filter(p => {
+        // Si tenemos un ID de servicio y un mapa de servicio a profesionales
+        const servicioObj = servicios.find(s => s.nombre_servicio === servicioSeleccionado);
+        if (servicioObj && profesionalServicioMap.servToProf) {
+          const idServicio = servicioObj.id_servicio;
+          return profesionalServicioMap.servToProf[idServicio]?.includes(p.profesional_id);
+        }
+        return true;
+      })
+    : profesionalesPorCategoria;
+
+  // Filtrar servicios por profesional seleccionado (si hay uno)
+  const serviciosFiltrados = profesionalSeleccionado
+    ? servicios.filter(s => {
+        // Si tenemos un ID de profesional y un mapa de profesional a servicios
+        if (profesionalServicioMap.profToServ) {
+          return profesionalServicioMap.profToServ[profesionalSeleccionado]?.includes(s.id_servicio);
+        }
+        return true;
+      })
+    : servicios;
+
+  // Manejar cambio de servicio
+  const handleServicioChange = (e) => {
+    setServicioSeleccionado(e.target.value);
+    // Si el profesional actual no puede realizar este servicio, reseteamos la selección
+    const servicioObj = servicios.find(s => s.nombre_servicio === e.target.value);
+    if (servicioObj && profesionalSeleccionado) {
+      const idServicio = servicioObj.id_servicio;
+      const puedeRealizarlo = profesionalServicioMap.profToServ[profesionalSeleccionado]?.includes(idServicio);
+      if (!puedeRealizarlo) {
+        setProfesionalSeleccionado('');
+      }
+    }
+  };
+
+  // Manejar cambio de profesional
+  const handleProfesionalChange = (e) => {
+    setProfesionalSeleccionado(e.target.value);
+    // Si el servicio actual no puede ser realizado por este profesional, reseteamos la selección
+    const servicioObj = servicios.find(s => s.nombre_servicio === servicioSeleccionado);
+    if (servicioObj && e.target.value) {
+      const idServicio = servicioObj.id_servicio;
+      const puedeRealizarlo = profesionalServicioMap.profToServ[e.target.value]?.includes(idServicio);
+      if (!puedeRealizarlo) {
+        setServicioSeleccionado('');
+      }
+    }
+  };
 
   const fechaMostrada = () => {
     const f = fechaSeleccionada?.fecha ?? fechaSeleccionada;
@@ -207,109 +287,103 @@ const AgendamientoPrivadoForm = () => {
         </form>
       )}
 
-{step === 2 && (
-  <div>
-    <button onClick={() => setStep(1)}>← Volver al paso anterior</button>
-    <h2>Selecciona la especialidad, el médico y el día.</h2>
-    <div style={{ marginBottom: '1rem' }}>
-      <button onClick={() => setModoSeleccion('consulta')} style={{ marginRight: 8 }}>
-        Consulta médica
-      </button>
-      <button onClick={() => setModoSeleccion('estudio')}>Estudio</button>
-    </div>
-
-    {modoSeleccion === 'consulta' && (
-      <>
-        <label>Especialidad:</label>
-        <select value={especialidadSeleccionada}
-          onChange={e => setEspecialidadSeleccionada(e.target.value)}
-        >
-          <option value="">Selecciona una opción</option>
-          {[...new Set(profesionales
-            .filter(p => p.categorias?.includes('Consulta'))
-            .map(p => p.nombre_especialidad)
-          )].filter(Boolean).map((esp, i) => (
-            <option key={i} value={esp}>{esp}</option>
-          ))}
-        </select>
-
-        <label>Profesional:</label>
-        <select value={profesionalSeleccionado}
-          onChange={e => setProfesionalSeleccionado(e.target.value)}
-        >
-          <option value="">Selecciona al profesional</option>
-          {profesionales
-            .filter(p =>
-              p.categorias?.includes('Consulta') &&
-              (!especialidadSeleccionada || p.nombre_especialidad === especialidadSeleccionada)
-            )
-            .map(p => (
-              <option key={p.profesional_id} value={p.profesional_id}>
-                {p.nombre} {p.apellido}
-              </option>
-            ))}
-        </select>
-      </>
-    )}
-
-    {modoSeleccion === 'estudio' && (
-      <>
-        <label>Servicio:</label>
-        <select value={servicioSeleccionado}
-          onChange={e => setServicioSeleccionado(e.target.value)}
-        >
-          <option value="">Selecciona un servicio</option>
-          {[...new Set(profesionales
-            .filter(p =>
-              p.categorias?.includes('Estudio') &&
-              (!profesionalSeleccionado || p.profesional_id === profesionalSeleccionado)
-            )
-            .map(p => p.nombre_servicio)
-          )].map((nombre, i) => (
-            <option key={i} value={nombre}>{nombre}</option>
-          ))}
-        </select>
-
-        <label>Profesional:</label>
-        <select value={profesionalSeleccionado}
-          onChange={e => setProfesionalSeleccionado(e.target.value)}
-        >
-          <option value="">Selecciona al profesional</option>
-          {profesionales
-            .filter(p =>
-              p.categorias?.includes('Estudio') &&
-              (!servicioSeleccionado || p.nombre_servicio === servicioSeleccionado)
-            )
-            .map(p => (
-              <option key={p.profesional_id} value={p.profesional_id}>
-                {p.nombre} {p.apellido}
-              </option>
-            ))}
-        </select>
-      </>
-    )}
-
-    {profesionalSeleccionado && (
-      <>
-        <CalendarioFechasDisponibles
-          profesionalId={profesionalSeleccionado}
-          onFechaSeleccionada={setFechaSeleccionada}
-        />
-        {fechaSeleccionada && (
-          <div style={{ marginTop: '20px' }}>
-            <strong>Fecha seleccionada:</strong> {fechaMostrada()}<br />
-            <strong>Hora de inicio:</strong> {horaMostrada()}
+      {step === 2 && (
+        <div>
+          <button onClick={() => setStep(1)}>← Volver al paso anterior</button>
+          <h2>Selecciona la especialidad, el médico y el día.</h2>
+          <div style={{ marginBottom: '1rem' }}>
+            <button onClick={() => {
+              setModoSeleccion('consulta');
+              setServicioSeleccionado('');
+              setProfesionalSeleccionado('');
+            }} style={{ marginRight: 8 }}>
+              Consulta médica
+            </button>
+            <button onClick={() => {
+              setModoSeleccion('estudio');
+              setEspecialidadSeleccionada('');
+              setProfesionalSeleccionado('');
+            }}>
+              Estudio
+            </button>
           </div>
-        )}
-      </>
-    )}
 
-    <button onClick={() => setStep(3)} disabled={!fechaSeleccionada}>
-      Continuar
-    </button>
-  </div>
-)}
+          {modoSeleccion === 'consulta' && (
+            <>
+              <label>Especialidad:</label>
+              <select value={especialidadSeleccionada}
+                onChange={e => setEspecialidadSeleccionada(e.target.value)}
+              >
+                <option value="">Selecciona una opción</option>
+                {[...new Set(profesionalesFiltrados.map(p => p.nombre_especialidad))].filter(Boolean).map((esp, i) => (
+                  <option key={i} value={esp}>{esp}</option>
+                ))}
+              </select>
 
+              <label>Profesional:</label>
+              <select value={profesionalSeleccionado}
+                onChange={e => setProfesionalSeleccionado(e.target.value)}
+              >
+                <option value="">Selecciona al profesional</option>
+                {profesionalesFiltrados
+                  .filter(p => !especialidadSeleccionada || p.nombre_especialidad === especialidadSeleccionada)
+                  .map(p => (
+                    <option key={p.profesional_id} value={p.profesional_id}>
+                      {p.nombre} {p.apellido}
+                    </option>
+                  ))}
+              </select>
+            </>
+          )}
+
+          {modoSeleccion === 'estudio' && (
+            <>
+              <label>Servicio:</label>
+              <select value={servicioSeleccionado}
+                onChange={handleServicioChange}
+              >
+                <option value="">Selecciona un servicio</option>
+                {serviciosFiltrados.map(s => (
+                  <option key={s.id_servicio} value={s.nombre_servicio}>
+                    {s.nombre_servicio}
+                  </option>
+                ))}
+              </select>
+
+              <label>Profesional:</label>
+              <select value={profesionalSeleccionado}
+                onChange={handleProfesionalChange}
+              >
+                <option value="">Selecciona al profesional</option>
+                {profesionalesFiltrados.map(p => (
+                  <option key={p.profesional_id} value={p.profesional_id}>
+                    {p.nombre} {p.apellido}
+                  </option>
+                ))}
+              </select>
+            </>
+          )}
+
+          {profesionalSeleccionado && (
+            <>
+              <CalendarioFechasDisponibles
+                profesionalId={profesionalSeleccionado}
+                onFechaSeleccionada={setFechaSeleccionada}
+              />
+              {fechaSeleccionada && (
+                <div style={{ marginTop: '20px' }}>
+                  <strong>Fecha seleccionada:</strong> {fechaMostrada()}<br />
+                  <strong>Hora de inicio:</strong> {horaMostrada()}
+                </div>
+              )}
+            </>
+          )}
+
+          <button onClick={() => setStep(3)} disabled={!fechaSeleccionada}>
+            Continuar
+          </button>
+        </div>
+      )}
 
       {step === 3 && (
         <div style={{ textAlign: 'center', padding: '2rem' }}>
