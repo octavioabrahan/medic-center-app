@@ -42,7 +42,8 @@ const CalendarioFechasDisponiblesDayPicker = ({ profesionalId, fechaSeleccionada
           .map(e => ({
             fecha: formatDate(e.fecha),
             hora_inicio: e.hora_inicio,
-            hora_termino: e.hora_termino
+            hora_termino: e.hora_termino,
+            nro_consulta: e.nro_consulta // Añadido nro_consulta
           }));
 
         const validas = horarios
@@ -50,7 +51,8 @@ const CalendarioFechasDisponiblesDayPicker = ({ profesionalId, fechaSeleccionada
           .map(h => ({
             fecha: formatDate(h.fecha),
             hora_inicio: h.hora_inicio,
-            hora_termino: h.hora_termino
+            hora_termino: h.hora_termino,
+            nro_consulta: h.nro_consulta // Añadido nro_consulta
           }));
 
         const combinadas = [...validas, ...agregadas];
