@@ -22,6 +22,7 @@ const AgendamientoEmpresaForm = () => {
   const [modoSeleccion, setModoSeleccion] = useState(null);
   const [servicios, setServicios] = useState([]);
   const [profesionales, setProfesionales] = useState([]);
+  const [profesionalServicioMap, setProfesionalServicioMap] = useState({});
 
   const [especialidadSeleccionada, setEspecialidadSeleccionada] = useState('');
   const [servicioSeleccionado, setServicioSeleccionado] = useState('');
@@ -38,16 +39,92 @@ const AgendamientoEmpresaForm = () => {
     if (step === 2) {
       axios.get('/api/servicios').then(res => setServicios(res.data)).catch(console.error);
       axios.get('/api/profesionales').then(res => setProfesionales(res.data)).catch(console.error);
+      axios.get('/api/profesional-servicios')
+        .then(res => {
+          // Crear mapa de profesionales a servicios y viceversa
+          const profToServ = {};
+          const servToProf = {};
+          
+          res.data.forEach(relacion => {
+            // Mapeo de profesional a servicios
+            if (!profToServ[relacion.profesional_id]) {
+              profToServ[relacion.profesional_id] = [];
+            }
+            profToServ[relacion.profesional_id].push(relacion.id_servicio);
+            
+            // Mapeo de servicio a profesionales
+            if (!servToProf[relacion.id_servicio]) {
+              servToProf[relacion.id_servicio] = [];
+            }
+            servToProf[relacion.id_servicio].push(relacion.profesional_id);
+          });
+          
+          setProfesionalServicioMap({ profToServ, servToProf });
+        })
+        .catch(console.error);
     }
   }, [step]);
 
-  const profesionalesFiltrados = profesionales.filter(p =>
+  // Filtrar profesionales por categoría (consulta o estudio)
+  const profesionalesPorCategoria = profesionales.filter(p =>
     modoSeleccion === 'consulta'
       ? p.categorias?.includes('Consulta')
       : modoSeleccion === 'estudio'
         ? p.categorias?.includes('Estudio')
         : false
   );
+
+  // Filtrar profesionales por servicio seleccionado (si hay uno)
+  const profesionalesFiltrados = servicioSeleccionado
+    ? profesionalesPorCategoria.filter(p => {
+        // Si tenemos un ID de servicio y un mapa de servicio a profesionales
+        const servicioObj = servicios.find(s => s.nombre_servicio === servicioSeleccionado);
+        if (servicioObj && profesionalServicioMap.servToProf) {
+          const idServicio = servicioObj.id_servicio;
+          return profesionalServicioMap.servToProf[idServicio]?.includes(p.profesional_id);
+        }
+        return true;
+      })
+    : profesionalesPorCategoria;
+
+  // Filtrar servicios por profesional seleccionado (si hay uno)
+  const serviciosFiltrados = profesionalSeleccionado
+    ? servicios.filter(s => {
+        // Si tenemos un ID de profesional y un mapa de profesional a servicios
+        if (profesionalServicioMap.profToServ) {
+          return profesionalServicioMap.profToServ[profesionalSeleccionado]?.includes(s.id_servicio);
+        }
+        return true;
+      })
+    : servicios;
+
+  // Manejar cambio de servicio
+  const handleServicioChange = (e) => {
+    setServicioSeleccionado(e.target.value);
+    // Si el profesional actual no puede realizar este servicio, reseteamos la selección
+    const servicioObj = servicios.find(s => s.nombre_servicio === e.target.value);
+    if (servicioObj && profesionalSeleccionado) {
+      const idServicio = servicioObj.id_servicio;
+      const puedeRealizarlo = profesionalServicioMap.profToServ[profesionalSeleccionado]?.includes(idServicio);
+      if (!puedeRealizarlo) {
+        setProfesionalSeleccionado('');
+      }
+    }
+  };
+
+  // Manejar cambio de profesional
+  const handleProfesionalChange = (e) => {
+    setProfesionalSeleccionado(e.target.value);
+    // Si el servicio actual no puede ser realizado por este profesional, reseteamos la selección
+    const servicioObj = servicios.find(s => s.nombre_servicio === servicioSeleccionado);
+    if (servicioObj && e.target.value) {
+      const idServicio = servicioObj.id_servicio;
+      const puedeRealizarlo = profesionalServicioMap.profToServ[e.target.value]?.includes(idServicio);
+      if (!puedeRealizarlo) {
+        setServicioSeleccionado('');
+      }
+    }
+  };
 
   const fechaMostrada = () => {
     const fecha = fechaSeleccionada?.dateObj;
@@ -294,7 +371,6 @@ const AgendamientoEmpresaForm = () => {
   </form>
 )}
 
-
 {step === 2 && (
   <div className="form-step2 nuevo-estilo">
     <button onClick={() => setStep(1)} className="volver-btn volver-btn-gris">
@@ -303,7 +379,6 @@ const AgendamientoEmpresaForm = () => {
 
     <h2 className="titulo-principal">Selecciona la especialidad, el médico y el día.</h2>
 
-    {/* Tipo de atención: Consulta o Estudio */}
     <div className="tarjeta-seleccion">
       <label className="etiqueta-grupo">Selecciona el tipo de atención</label>
       <div className="selector-botones-radio personalizado">
@@ -342,7 +417,6 @@ const AgendamientoEmpresaForm = () => {
       </div>
     </div>
 
-    {/* 👇 Mostrar campos solo si se eligió un tipo de atención */}
     {modoSeleccion && (
       <div className="tarjeta-seleccion">
         <div className="form-row triple">
@@ -352,11 +426,17 @@ const AgendamientoEmpresaForm = () => {
             </label>
             <select
               value={modoSeleccion === 'consulta' ? especialidadSeleccionada : servicioSeleccionado}
-              onChange={e =>
-                modoSeleccion === 'consulta'
-                  ? setEspecialidadSeleccionada(e.target.value)
-                  : setServicioSeleccionado(e.target.value)
-              }
+              onChange={e => {
+                const value = e.target.value;
+                if (modoSeleccion === 'consulta') {
+                  setEspecialidadSeleccionada(value);
+                  setProfesionalSeleccionado('');
+                } else {
+                  setServicioSeleccionado(value);
+                  setProfesionalSeleccionado('');
+                }
+                setFechaSeleccionada(null);
+              }}
               required
             >
               <option value="">Selecciona una opción</option>
@@ -378,11 +458,10 @@ const AgendamientoEmpresaForm = () => {
               value={profesionalSeleccionado}
               onChange={e => {
                 const id = e.target.value;
+                const profesional = profesionales.find(p => p.profesional_id === id);
                 setProfesionalSeleccionado(id);
                 setFechaSeleccionada(null);
-              
-                const profesional = profesionales.find(p => p.profesional_id === id);
-              
+
                 if (modoSeleccion === 'consulta' && profesional?.nombre_especialidad) {
                   setEspecialidadSeleccionada(profesional.nombre_especialidad);
                 }
@@ -410,7 +489,6 @@ const AgendamientoEmpresaForm = () => {
       </div>
     )}
 
-    {/* Mostrar calendario solo si hay profesional seleccionado */}
     {profesionalSeleccionado && (
       <div className="calendar-section">
         <div className="calendar-wrapper">
@@ -431,7 +509,6 @@ const AgendamientoEmpresaForm = () => {
       </div>
     )}
 
-    {/* Botón de continuar */}
     <div className="boton-container">
       <button
         onClick={() => setStep(3)}
@@ -448,7 +525,6 @@ const AgendamientoEmpresaForm = () => {
     </div>
   </div>
 )}
-
 
         {/* Paso 3 */}
         {step === 3 && (
