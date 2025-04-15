@@ -12,6 +12,7 @@ function ExcepcionesPage() {
     hora_termino: "",
     estado: "manual",
     motivo: "",
+    nro_consulta: ""
   });
 
   useEffect(() => {
@@ -51,7 +52,7 @@ function ExcepcionesPage() {
     }
   };
 
-  const cancelarFecha = async (fecha, hora_inicio, hora_termino) => {
+  const cancelarFecha = async (fecha, hora_inicio, hora_termino, nro_consulta) => {
     try {
       await api.post("/excepciones", {
         profesional_id: profesionalSeleccionado,
@@ -60,6 +61,7 @@ function ExcepcionesPage() {
         hora_inicio,
         hora_termino,
         motivo: "Cancelación desde UI",
+        nro_consulta
       });
       await cargarExcepciones(profesionalSeleccionado);
     } catch (err) {
@@ -81,6 +83,7 @@ function ExcepcionesPage() {
         hora_termino: "",
         estado: "manual",
         motivo: "",
+        nro_consulta: ""
       });
     } catch (err) {
       alert("Error al guardar excepción");
@@ -118,7 +121,8 @@ function ExcepcionesPage() {
       <ul>
         {excepciones.map((e, i) => (
           <li key={i}>
-            {e.fecha} | {e.hora_inicio} - {e.hora_termino} | {e.estado} | {e.motivo}
+            {e.fecha} | {e.hora_inicio} - {e.hora_termino} | {e.estado} | {e.motivo} 
+            {e.nro_consulta && ` | Consulta #${e.nro_consulta}`}
           </li>
         ))}
       </ul>
@@ -136,10 +140,11 @@ function ExcepcionesPage() {
                 }}
               >
                 {f.fecha} | {f.hora_inicio} - {f.hora_termino}
+                {f.nro_consulta && ` | Consulta #${f.nro_consulta}`}
               </span>
               <button
                 onClick={() =>
-                  cancelarFecha(f.fecha, f.hora_inicio, f.hora_termino)
+                  cancelarFecha(f.fecha, f.hora_inicio, f.hora_termino, f.nro_consulta)
                 }
                 disabled={cancelada}
                 style={{
@@ -182,6 +187,15 @@ function ExcepcionesPage() {
         value={nuevaExcepcion.motivo}
         onChange={(e) =>
           setNuevaExcepcion({ ...nuevaExcepcion, motivo: e.target.value })
+        }
+      />
+      <input
+        type="number"
+        min="1"
+        placeholder="Nro. Consulta"
+        value={nuevaExcepcion.nro_consulta}
+        onChange={(e) =>
+          setNuevaExcepcion({ ...nuevaExcepcion, nro_consulta: e.target.value })
         }
       />
       <button onClick={guardarExcepcionManual}>Guardar excepción</button>
