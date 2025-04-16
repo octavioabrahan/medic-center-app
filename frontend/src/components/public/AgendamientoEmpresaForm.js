@@ -31,6 +31,33 @@ const AgendamientoEmpresaForm = () => {
   const [servicioSeleccionado, setServicioSeleccionado] = useState('');
   const [profesionalSeleccionado, setProfesionalSeleccionado] = useState('');
   const [fechaSeleccionada, setFechaSeleccionada] = useState(null);
+  const [categorias, setCategorias] = useState([]);
+  const [tiposAtencion, setTiposAtencion] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setIsLoading(true);
+        
+        // Obtener categorías
+        const categoriasRes = await axios.get('/api/categorias');
+        setCategorias(categoriasRes.data);
+        
+        // Obtener tipos de atención
+        const tiposAtencionRes = await axios.get('/api/tipo-atencion');
+        setTiposAtencion(tiposAtencionRes.data);
+        
+        setIsLoading(false);
+      } catch (error) {
+        console.error('Error al cargar datos iniciales:', error);
+        alert('Error al cargar datos necesarios. Por favor, recarga la página.');
+        setIsLoading(false);
+      }
+    };
+    
+    fetchData();
+  }, []);
 
   useEffect(() => {
     fetch('/api/empresas')
@@ -67,6 +94,22 @@ const AgendamientoEmpresaForm = () => {
         .catch(console.error);
     }
   }, [step]);
+
+  // Función para obtener el ID de categoría por su nombre (slug)
+  const getCategoriaId = (slug) => {
+    const categoria = categorias.find(cat => 
+      cat.nombre_categoria.toLowerCase() === slug.toLowerCase()
+    );
+    return categoria ? categoria.id_categoria : null;
+  };
+  
+  // Función para obtener el ID de tipo de atención por su nombre (slug)
+  const getTipoAtencionId = (slug) => {
+    const tipoAtencion = tiposAtencion.find(tipo => 
+      tipo.nombre.toLowerCase() === slug.toLowerCase()
+    );
+    return tipoAtencion ? tipo.tipo_atencion_id : null;
+  };
 
   // Filtrar profesionales por categoría (consulta o estudio)
   const profesionalesPorCategoria = profesionales.filter(p =>
@@ -156,20 +199,27 @@ const AgendamientoEmpresaForm = () => {
   };
 
   const enviarAgendamiento = async () => {
+    if (isLoading) {
+      alert("Aún se están cargando datos necesarios. Por favor espere.");
+      return;
+    }
     const representanteCedula = sinCedula ? `${datosRepresentante.cedula}-${datosRepresentante.numeroHijo}` : null;
     if (!archivoAdjuntoId) {
       alert("Por favor adjunta la orden médica firmada y sellada antes de continuar.");
       return;
     }
-    const categoriaMap = {
-      consulta: 1,
-      estudio: 3
-    };
+    const categoriaId = getCategoriaId(modoSeleccion === 'consulta' ? 'Consulta' : 'Estudio');
+    const tipoAtencionId = getTipoAtencionId(modoSeleccion === 'presencial' ? 'Presencial' : 'Previa Cita');
+    if (!categoriaId) {
+      alert(`No se encontró la categoría correspondiente a ${modoSeleccion}.`);
+      return;
+    }
     
-    const tipoAtencionMap = {
-      consulta: 1,
-      estudio: 3
-    };
+    if (!tipoAtencionId) {
+      alert(`No se encontró el tipo de atención correspondiente a ${modoSeleccion}.`);
+      return;
+    }
+
     const payload = {
       cedula: datosRepresentante.cedula,
       nombre: datosPaciente.nombre,
@@ -185,19 +235,20 @@ const AgendamientoEmpresaForm = () => {
       id_empresa: empresaSeleccionada,
       profesional_id: profesionalSeleccionado,
       fecha_agendada: fechaSeleccionada?.fecha || fechaSeleccionada,
-      tipo_atencion_id: tipoAtencionMap[modoSeleccion],
+      tipo_atencion_id: tipoAtencionId,
       observaciones: modoSeleccion === 'consulta' ? especialidadSeleccionada : servicioSeleccionado,
-      id_categoria: categoriaMap[modoSeleccion],
+      id_categoria: categoriaId,
       archivo_adjunto_id: archivoAdjuntoId,
       nro_consulta: fechaSeleccionada?.nro_consulta || null
     };
 
     try {
-      await axios.post('/api/agendamiento', payload);
-      setStep(4);
-    } catch (err) {
-      console.error('Error al crear agendamiento:', err);
-      alert('Hubo un error al agendar. Intenta nuevamente.');
+      const response = await axios.post('/api/agendamiento', payload);
+      alert('Agendamiento creado con éxito');
+      // Redireccionar o limpiar formulario
+    } catch (error) {
+      console.error('Error al crear agendamiento:', error.response?.data || error.message);
+      alert(`Error al crear agendamiento: ${error.response?.data?.error || error.message}`);
     }
   };
 

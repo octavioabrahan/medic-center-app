@@ -9,6 +9,11 @@ const TipoAtencionModel = {
   listar: async () => {
     const result = await db.query("SELECT * FROM tipo_atencion ORDER BY nombre ASC");
     return result.rows;
+  },
+  
+  obtenerPorId: async (id) => {
+    const result = await db.query("SELECT * FROM tipo_atencion WHERE tipo_atencion_id = $1", [id]);
+    return result.rows[0];
   }
 };
 
