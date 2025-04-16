@@ -21,6 +21,10 @@ const categoriasRoutes = require("./routes/categorias");
 const serviciosRoutes = require("./routes/servicios");
 const empresasRoutes = require("./routes/empresas");
 const profesionalServicioRoutes = require("./routes/profesionalServicio");
+const archivoRoutes = require('./routes/archivoRoutes');
+
+const schedule = require('node-schedule');
+const ArchivoAdjunto = require('./models/archivoAdjunto');
 
 app.use(cors());
 app.use(express.json());
@@ -43,6 +47,18 @@ app.use("/api/categorias", categoriasRoutes);
 app.use("/api/servicios", serviciosRoutes);
 app.use("/api/empresas", empresasRoutes);
 app.use("/api/profesional-servicios", profesionalServicioRoutes);
+app.use('/api/archivos', archivoRoutes);
+
+// Ejecutar limpieza de archivos expirados a las 3 AM todos los días
+schedule.scheduleJob('0 3 * * *', async () => {
+  try {
+    console.log('Iniciando limpieza programada de archivos expirados...');
+    const archivosEliminados = await ArchivoAdjunto.limpiarArchivosExpirados();
+    console.log(`Limpieza completada: ${archivosEliminados} archivos eliminados`);
+  } catch (error) {
+    console.error('Error durante la limpieza programada:', error);
+  }
+});
 
 app.listen(port, '0.0.0.0', () => {
   console.log(`Backend corriendo en http://10.20.20.111:${port}`);

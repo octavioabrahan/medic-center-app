@@ -3,6 +3,7 @@ import axios from 'axios';
 import CalendarioFechasDisponiblesDayPicker from './CalendarioFechasDisponiblesDayPicker';
 import './AgendamientoEmpresaForm.css';
 import logo from '../../assets/logo_header.png';
+import ArchivoAdjuntoForm from '../ArchivoAdjuntoForm';
 
 const AgendamientoEmpresaForm = () => {
   const [step, setStep] = useState(1);
@@ -23,6 +24,7 @@ const AgendamientoEmpresaForm = () => {
   const [servicios, setServicios] = useState([]);
   const [profesionales, setProfesionales] = useState([]);
   const [profesionalServicioMap, setProfesionalServicioMap] = useState({});
+  const [archivoAdjuntoId, setArchivoAdjuntoId] = useState(null);
 
   const [especialidadSeleccionada, setEspecialidadSeleccionada] = useState('');
   const [servicioSeleccionado, setServicioSeleccionado] = useState('');
@@ -154,6 +156,10 @@ const AgendamientoEmpresaForm = () => {
 
   const enviarAgendamiento = async () => {
     const representanteCedula = sinCedula ? `${datosRepresentante.cedula}-${datosRepresentante.numeroHijo}` : null;
+    if (!archivoAdjuntoId) {
+      alert("Por favor adjunta la orden médica firmada y sellada antes de continuar.");
+      return;
+    }
     const categoriaMap = {
       consulta: 1,
       estudio: 3
@@ -181,6 +187,7 @@ const AgendamientoEmpresaForm = () => {
       tipo_atencion_id: tipoAtencionMap[modoSeleccion],
       observaciones: modoSeleccion === 'consulta' ? especialidadSeleccionada : servicioSeleccionado,
       id_categoria: categoriaMap[modoSeleccion],
+      archivo_adjunto_id: archivoAdjuntoId,
       nro_consulta: fechaSeleccionada?.nro_consulta || null
     };
 
@@ -340,31 +347,13 @@ const AgendamientoEmpresaForm = () => {
   </>
 )}
 
-    {/* Seguro médico */}
-    <h3>Seguro médico</h3>
-    <p>¿La persona que se va a atender tiene seguro médico?</p>
-    <div className="radio-group">
-      <label>
-        <input
-          type="radio"
-          name="seguro"
-          value="si"
-          checked={tieneSeguro === 'si'}
-          onChange={() => setTieneSeguro('si')}
-          required
-        /> Sí, tiene seguro
-      </label>
-      <label>
-        <input
-          type="radio"
-          name="seguro"
-          value="no"
-          checked={tieneSeguro === 'no'}
-          onChange={() => setTieneSeguro('no')}
-          required
-        /> No, no tiene seguro
-      </label>
-    </div>
+    {/* Orden médica */}
+    <h3>Orden médica</h3>
+    <p>Adjunta la orden de atención médica firmada y sellada por la empresa</p>
+    <ArchivoAdjuntoForm
+      onFileUploaded={(fileId) => setArchivoAdjuntoId(fileId)}
+      requiereArchivo={true}
+    />
 
     <div className="boton-container">
       <button type="submit" className="boton-continuar">Continuar</button>
