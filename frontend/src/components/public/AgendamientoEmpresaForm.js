@@ -95,21 +95,21 @@ const AgendamientoEmpresaForm = () => {
     }
   }, [step]);
 
-  // Función para obtener el ID de categoría por su nombre (slug)
-  const getCategoriaId = (slug) => {
-    const categoria = categorias.find(cat => 
-      cat.nombre_categoria.toLowerCase() === slug.toLowerCase()
-    );
-    return categoria ? categoria.id_categoria : null;
-  };
-  
-  // Función para obtener el ID de tipo de atención por su nombre (slug)
-  const getTipoAtencionId = (slug) => {
-    const tipoAtencion = tiposAtencion.find(tipo => 
-      tipo.nombre.toLowerCase() === slug.toLowerCase()
-    );
-    return tipoAtencion ? tipo.tipo_atencion_id : null;
-  };
+// Función para obtener el ID de categoría por su nombre (slug)
+const getCategoriaId = (slug) => {
+  const categoria = categorias.find(cat => 
+    cat.nombre_categoria.toLowerCase() === slug.toLowerCase()
+  );
+  return categoria ? categoria.id_categoria : null;
+};
+
+// Función para obtener el ID de tipo de atención por su nombre (slug)
+const getTipoAtencionId = (slug) => {
+  const tipoAtencion = tiposAtencion.find(tipoAtencion => 
+    tipoAtencion.nombre.toLowerCase() === slug.toLowerCase()
+  );
+  return tipoAtencion ? tipoAtencion.tipo_atencion_id : null;
+};
 
   // Filtrar profesionales por categoría (consulta o estudio)
   const profesionalesPorCategoria = profesionales.filter(p =>
@@ -243,8 +243,9 @@ const AgendamientoEmpresaForm = () => {
     };
 
     try {
-      const response = await axios.post('/api/agendamiento', payload);
+      await axios.post('/api/agendamiento', payload);
       alert('Agendamiento creado con éxito');
+      setStep(4);
       // Redireccionar o limpiar formulario
     } catch (error) {
       console.error('Error al crear agendamiento:', error.response?.data || error.message);
