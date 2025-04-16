@@ -3,7 +3,7 @@ const router = express.Router();
 const archivoController = require('../controllers/archivoController');
 
 // Ruta para subir archivo
-router.post('/upload', archivoController.upload.single('archivo'), archivoController.subirArchivo);
+router.post('../uploads', archivoController.upload.single('archivo'), archivoController.subirArchivo);
 
 // Ruta para obtener/visualizar archivo por ID
 router.get('/:id', archivoController.obtenerArchivo);

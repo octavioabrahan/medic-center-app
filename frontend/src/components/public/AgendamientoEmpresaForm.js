@@ -25,7 +25,8 @@ const AgendamientoEmpresaForm = () => {
   const [profesionales, setProfesionales] = useState([]);
   const [profesionalServicioMap, setProfesionalServicioMap] = useState({});
   const [archivoAdjuntoId, setArchivoAdjuntoId] = useState(null);
-
+  console.log("Estado inicial archivoAdjuntoId:", archivoAdjuntoId);
+  
   const [especialidadSeleccionada, setEspecialidadSeleccionada] = useState('');
   const [servicioSeleccionado, setServicioSeleccionado] = useState('');
   const [profesionalSeleccionado, setProfesionalSeleccionado] = useState('');
@@ -207,9 +208,12 @@ const AgendamientoEmpresaForm = () => {
       </div>
       <div className="form-body">
       {step === 1 && (
-  <form className="form-contenido" onSubmit={e => { e.preventDefault(); setStep(2); }}>
+  <form className="form-contenido" onSubmit={e => { e.preventDefault() 
+    if (!archivoAdjuntoId) {
+      alert("Por favor adjunta la orden médica firmada y sellada antes de continuar.");
+      return;}
+      setStep(2); }}>
     <h2 className="titulo-principal">Completa los datos del paciente que asistirá a la cita</h2>
-
     <label>Empresa con la que tiene convenio</label>
     <select required value={empresaSeleccionada} onChange={e => setEmpresaSeleccionada(e.target.value)}>
       <option value="">Selecciona una empresa</option>
@@ -351,8 +355,10 @@ const AgendamientoEmpresaForm = () => {
     <h3>Orden médica</h3>
     <p>Adjunta la orden de atención médica firmada y sellada por la empresa</p>
     <ArchivoAdjuntoForm
-      onFileUploaded={(fileId) => setArchivoAdjuntoId(fileId)}
-      requiereArchivo={true}
+        onFileUploaded={(fileId) => {
+        console.log("Archivo subido, ID recibido:", fileId);
+        setArchivoAdjuntoId(fileId);}}
+    requiereArchivo={true}
     />
 
     <div className="boton-container">

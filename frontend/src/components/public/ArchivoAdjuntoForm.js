@@ -59,6 +59,7 @@ const ArchivoAdjuntoForm = ({ onFileUploaded, requiereArchivo }) => {
     formData.append('archivo', selectedFile);
 
     try {
+      console.log("Enviando archivo al servidor...");
       const response = await axios.post('/api/archivos/upload', formData, {
         headers: {
           'Content-Type': 'multipart/form-data'
@@ -71,7 +72,9 @@ const ArchivoAdjuntoForm = ({ onFileUploaded, requiereArchivo }) => {
         }
       });
 
+      console.log("Respuesta del servidor:", response.data);
       const { archivo } = response.data;
+      console.log("ID del archivo recibido:", archivo?.id);
       setArchivoId(archivo.id);
       
       // Notificar al componente padre
