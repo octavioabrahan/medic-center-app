@@ -3,7 +3,7 @@ import axios from 'axios';
 import CalendarioFechasDisponiblesDayPicker from './CalendarioFechasDisponiblesDayPicker';
 import './AgendamientoEmpresaForm.css';
 import logo from '../../assets/logo_header.png';
-import ArchivoAdjuntoForm from '../ArchivoAdjuntoForm';
+import ArchivoAdjuntoForm from './ArchivoAdjuntoForm';
 
 const AgendamientoEmpresaForm = () => {
   const [step, setStep] = useState(1);
