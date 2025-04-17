@@ -477,22 +477,29 @@ export default function CotizadorExamenes() {
                 />
               </div>
 
-              <div className="form-group">
-                <label htmlFor="sexo">Sexo</label>
-                <select
-                  id="sexo"
-                  className="form-input"
-                  value={form.sexo}
-                  onChange={e => {
-                    console.log('🔍 DEBUG: Sexo modificado:', e.target.value);
-                    setForm({ ...form, sexo: e.target.value });
-                  }}
-                >
-                  <option value="masculino">Masculino</option>
-                  <option value="femenino">Femenino</option>
-                  <option value="otro">Otro</option>
-                </select>
-              </div>
+              <label>Sexo</label>
+    <div className="radio-group">
+      <label>
+        <input
+          type="radio"
+          name="sexo-paciente"
+          required
+          value="femenino"
+          checked={datosPaciente.sexo === 'femenino'}
+          onChange={e => setDatosPaciente({ ...datosPaciente, sexo: e.target.value })}
+        /> Femenino
+      </label>
+      <label>
+        <input
+          type="radio"
+          name="sexo-paciente"
+          required
+          value="masculino"
+          checked={datosPaciente.sexo === 'masculino'}
+          onChange={e => setDatosPaciente({ ...datosPaciente, sexo: e.target.value })}
+        /> Masculino
+      </label>
+    </div>
 
               <div className="form-group">
                 <label htmlFor="email">Correo electrónico</label>
@@ -534,7 +541,7 @@ export default function CotizadorExamenes() {
                 {captchaValido ? "CAPTCHA ✓" : "Simular CAPTCHA"}
               </button>
 
-              {/* Botón para mostrar el panel de depuración */}
+              {/* Botón para mostrar el panel de depuración 
               <button 
                 onClick={() => {
                   console.log('🔍 DEBUG: Mostrando información completa');
@@ -552,7 +559,7 @@ export default function CotizadorExamenes() {
                 style={{ marginTop: '10px', background: '#f0f0f0', border: '1px solid #ccc', padding: '5px 10px' }}
               >
                 Mostrar depuración
-              </button>
+              </button>*/}
 
               <div className="form-buttons">
                 <button className="btn-volver" onClick={() => setModoFormulario(false)}>
