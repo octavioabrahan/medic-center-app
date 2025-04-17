@@ -106,8 +106,8 @@ function generarPDF(nombrePaciente, resumen) {
 
       // Tabla de exámenes
       const tableTop = doc.y + 10;
-      const tableHeaders = ['Examen', 'Tiempo de Entrega', 'Precio USD', 'Precio VES'];
-      const tableWidths = [250, 100, 75, 75];
+      const tableHeaders = ['Examen', 'Tiempo de Entrega', 'Precio USD'];
+      const tableWidths = [300, 150, 50];
       let yPosition = tableTop;
 
       // Dibujar encabezado de tabla
@@ -119,12 +119,16 @@ function generarPDF(nombrePaciente, resumen) {
       
       let xPosition = 50;
       tableHeaders.forEach((header, i) => {
-        doc.text(header, xPosition + 5, yPosition + 8, { width: tableWidths[i], align: i > 1 ? 'right' : 'left' });
+        const align = i === 2 ? 'right' : 'left';
+        doc.text(header, xPosition + 5, yPosition + 8, { width: tableWidths[i], align: align });
         xPosition += tableWidths[i];
       });
       
       yPosition += 25;
       doc.font('Helvetica');
+
+      // Guardar las indicaciones para páginas adicionales
+      const indicaciones = [];
 
       // Filas de la tabla
       if (resumen.cotizacion && Array.isArray(resumen.cotizacion)) {
@@ -161,21 +165,23 @@ function generarPDF(nombrePaciente, resumen) {
           });
           xPosition += tableWidths[1];
           
-          // Precio USD
+          // Precio USD - Corregir el problema de los $0.00
           const precioUSD = typeof examen.precioUSD === 'number' ? examen.precioUSD : 
-                            typeof examen.preciousd === 'number' ? examen.preciousd : 0;
+                            typeof examen.preciousd === 'number' ? examen.preciousd : 
+                            typeof examen.precio_unitario === 'number' ? examen.precio_unitario : 0;
+          
           doc.text(`$${formatNumber(precioUSD)}`, xPosition + 5, yPosition + 8, { 
             width: tableWidths[2], 
             align: 'right' 
           });
-          xPosition += tableWidths[2];
           
-          // Precio VES
-          const precioVES = typeof examen.precioVES === 'number' ? examen.precioVES : 0;
-          doc.text(`Bs. ${formatNumber(precioVES)}`, xPosition + 5, yPosition + 8, { 
-            width: tableWidths[3], 
-            align: 'right' 
-          });
+          // Guardar información para la sección de indicaciones
+          if (examen.informacion) {
+            indicaciones.push({
+              nombre: nombreExamen,
+              informacion: examen.informacion
+            });
+          }
           
           yPosition += 25;
         });
@@ -189,10 +195,9 @@ function generarPDF(nombrePaciente, resumen) {
 
       // Total con un fondo destacado
       const totalUSD = typeof resumen.totalUSD === 'number' ? resumen.totalUSD : 0;
-      const totalVES = typeof resumen.totalVES === 'number' ? resumen.totalVES : 0;
-
+      
       // Caja para totales
-      doc.rect(350, yPosition, 200, 50)
+      doc.rect(350, yPosition, 200, 30)
          .fillColor(colors.primary)
          .fillOpacity(0.1)
          .fill();
@@ -200,9 +205,12 @@ function generarPDF(nombrePaciente, resumen) {
       doc.fillOpacity(1);
       doc.fontSize(12).font('Helvetica-Bold').fillColor(colors.primary);
       doc.text(`Total USD: $${formatNumber(totalUSD)}`, 360, yPosition + 10, { align: 'right', width: 180 });
-      doc.text(`Total VES: Bs. ${formatNumber(totalVES)}`, 360, yPosition + 30, { align: 'right', width: 180 });
       
-      yPosition += 70;
+      // El total en VES se mantiene en el código pero no se muestra
+      // const totalVES = typeof resumen.totalVES === 'number' ? resumen.totalVES : 0;
+      // doc.text(`Total VES: Bs. ${formatNumber(totalVES)}`, 360, yPosition + 30, { align: 'right', width: 180 });
+      
+      yPosition += 50;
       
       // Notas finales
       doc.fontSize(10).font('Helvetica').fillColor(colors.text);
@@ -214,7 +222,8 @@ function generarPDF(nombrePaciente, resumen) {
         'Esta cotización tiene una validez de 15 días a partir de la fecha de emisión.',
         'Los precios en bolívares pueden variar según la tasa de cambio del día del pago.',
         'Para cualquier consulta adicional, por favor contáctenos indicando el número de folio.',
-        'Los tiempos de entrega pueden variar dependiendo de la demanda.'
+        'Los tiempos de entrega pueden variar dependiendo de la demanda.',
+        'Las indicaciones de cada examen se encuentran en las páginas siguientes.'
       ], { bulletRadius: 2, textIndent: 20 });
 
       // Pie de página
@@ -227,6 +236,59 @@ function generarPDF(nombrePaciente, resumen) {
       
       doc.fontSize(8).fillColor(colors.lightText);
       doc.text('Centro Médico - Cuidando tu salud', 50, pageBottom - 10, { align: 'center', width: 500 });
+
+      // Agregar páginas adicionales con las indicaciones de los exámenes
+      if (indicaciones.length > 0) {
+        // Nueva página para indicaciones
+        doc.addPage();
+        
+        // Título para las indicaciones
+        doc.fontSize(18).fillColor(colors.primary).text('Indicaciones para exámenes', 50, 50, { align: 'center' });
+        doc.moveDown(1);
+        
+        let currentY = doc.y;
+        
+        doc.fontSize(10).fillColor(colors.lightText).text(
+          'Este documento contiene información importante sobre la preparación y detalles de los exámenes seleccionados.',
+          50, currentY, { align: 'center', width: 500 }
+        );
+        
+        currentY += 40;
+        
+        // Mostrar indicaciones para cada examen
+        indicaciones.forEach((item, index) => {
+          // Verificar si hay suficiente espacio para la siguiente sección
+          if (currentY > doc.page.height - 150) {
+            doc.addPage();
+            currentY = 50;
+          }
+          
+          // Título del examen
+          doc.fontSize(14).fillColor(colors.primary).text(item.nombre, 50, currentY);
+          currentY += 25;
+          
+          // Recuadro para la información
+          doc.rect(50, currentY, 500, 100)
+             .fillColor(colors.lightBg)
+             .fillOpacity(0.3)
+             .fill();
+          
+          // Información del examen
+          doc.fillOpacity(1).fontSize(10).fillColor(colors.text);
+          doc.text(item.informacion, 60, currentY + 10, { 
+            width: 480,
+            height: 80,
+            align: 'left'
+          });
+          
+          currentY += 120;
+        });
+        
+        // Pie de página para cada página de indicaciones
+        doc.fontSize(8).fillColor(colors.lightText);
+        doc.text('Esta información es de carácter orientativo. Consulte con su médico para indicaciones específicas.', 
+          50, doc.page.height - 70, { align: 'center', width: 500 });
+      }
 
       // Finalizar PDF
       doc.end();
