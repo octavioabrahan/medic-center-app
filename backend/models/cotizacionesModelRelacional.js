@@ -13,7 +13,9 @@ const CotizacionesModel = {
       apellido, 
       cedula, 
       email, 
-      telefono, 
+      telefono,
+      fecha_nacimiento,
+      sexo,
       examenes,
       tasaCambio
     } = datos;
@@ -21,6 +23,14 @@ const CotizacionesModel = {
     // Validar datos antes de interactuar con la BD
     if (!nombre || !apellido || !cedula || !examenes || !Array.isArray(examenes) || !tasaCambio) {
       throw new Error('Datos insuficientes para crear la cotización');
+    }
+    
+    if (!fecha_nacimiento) {
+      throw new Error('La fecha de nacimiento es requerida');
+    }
+    
+    if (!sexo) {
+      throw new Error('El campo sexo es requerido');
     }
     
     const client = await db.connect();
@@ -75,16 +85,16 @@ const CotizacionesModel = {
       if (pacienteQuery.rows.length === 0) {
         console.log("Paciente no encontrado, creando nuevo");
         await client.query(
-          'INSERT INTO pacientes (cedula, nombre, apellido, telefono, email) VALUES ($1, $2, $3, $4, $5)',
-          [cedula, nombre, apellido, telefono, email]
+          'INSERT INTO pacientes (cedula, nombre, apellido, fecha_nacimiento, sexo, telefono, email) VALUES ($1, $2, $3, $4, $5, $6, $7)',
+          [cedula, nombre, apellido, fecha_nacimiento, sexo, telefono, email]
         );
         logGeneral(`🆕 Paciente creado: ${nombre} ${apellido} (${cedula})`);
       } else {
         // Si existe, actualizar datos de contacto
         console.log("Paciente encontrado, actualizando datos");
         await client.query(
-          'UPDATE pacientes SET email = $1, telefono = $2 WHERE cedula = $3',
-          [email, telefono, cedula]
+          'UPDATE pacientes SET email = $1, telefono = $2, fecha_nacimiento = $3, sexo = $4 WHERE cedula = $5',
+          [email, telefono, fecha_nacimiento, sexo, cedula]
         );
         logGeneral(`🔁 Paciente actualizado: ${nombre} ${apellido}`);
       }

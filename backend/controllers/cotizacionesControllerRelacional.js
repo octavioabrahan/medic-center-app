@@ -7,7 +7,7 @@ const CotizacionesController = {
    */
   crear: async (req, res) => {
     try {
-      const { nombre, apellido, cedula, email, telefono, examenes, tasaCambio } = req.body;
+      const { nombre, apellido, cedula, email, telefono, fecha_nacimiento, sexo, examenes, tasaCambio } = req.body;
 
       // Log de información recibida para depuración
       console.log('Datos recibidos:', { 
@@ -16,6 +16,8 @@ const CotizacionesController = {
         cedula, 
         email, 
         telefono,
+        fecha_nacimiento,
+        sexo,
         examenesCantidad: examenes?.length,
         tasaCambio
       });
@@ -40,6 +42,12 @@ const CotizacionesController = {
       if (!telefono || typeof telefono !== 'string' || telefono.trim() === '') 
         errores.push('El teléfono es requerido');
       
+      if (!fecha_nacimiento) 
+        errores.push('La fecha de nacimiento es requerida');
+      
+      if (!sexo || typeof sexo !== 'string' || !['masculino', 'femenino', 'otro'].includes(sexo.toLowerCase())) 
+        errores.push('El sexo debe ser masculino, femenino u otro');
+        
       if (!examenes || !Array.isArray(examenes) || examenes.length === 0) 
         errores.push('Debe seleccionar al menos un examen');
       
@@ -61,7 +69,9 @@ const CotizacionesController = {
         apellido,
         cedula, 
         email, 
-        telefono, 
+        telefono,
+        fecha_nacimiento,
+        sexo,
         examenes,
         tasaCambio
       });
