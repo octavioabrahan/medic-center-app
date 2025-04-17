@@ -26,15 +26,25 @@ export default function CotizadorExamenes() {
   const [cotizacionId, setCotizacionId] = useState(null);
   const [cargando, setCargando] = useState(false);
   const [error, setError] = useState(null);
+  const [debugInfo, setDebugInfo] = useState(null); // Estado para mostrar información de depuración
 
   const isMobile = useMediaQuery({ maxWidth: 768 });
 
   useEffect(() => {
     // Cargar catálogo de exámenes disponibles
-    fetch(`${process.env.REACT_APP_API_URL}/api/exams`)
-      .then(res => res.json())
+    console.log('🔍 DEBUG: Iniciando carga de exámenes...');
+    const apiUrl = process.env.REACT_APP_API_URL;
+    console.log('🔍 DEBUG: URL de la API:', apiUrl);
+
+    fetch(`${apiUrl}/api/exams`)
+      .then(res => {
+        console.log('🔍 DEBUG: Respuesta de exámenes recibida, status:', res.status);
+        return res.json();
+      })
       .then(data => {
+        console.log('🔍 DEBUG: Datos de exámenes recibidos:', data);
         if (Array.isArray(data)) {
+          console.log(`🔍 DEBUG: Se cargaron ${data.length} exámenes correctamente`);
           setExamenes(data);
         } else {
           console.error('Error: Los datos de exámenes no son un array', data);
@@ -47,10 +57,16 @@ export default function CotizadorExamenes() {
       });
 
     // Obtener tasa de cambio actual
-    fetch(`${process.env.REACT_APP_API_URL}/api/tasa-cambio`)
-      .then(res => res.json())
+    console.log('🔍 DEBUG: Iniciando carga de tasa de cambio...');
+    fetch(`${apiUrl}/api/tasa-cambio`)
+      .then(res => {
+        console.log('🔍 DEBUG: Respuesta de tasa de cambio recibida, status:', res.status);
+        return res.json();
+      })
       .then(data => {
+        console.log('🔍 DEBUG: Datos de tasa de cambio recibidos:', data);
         if (data && data.tasa) {
+          console.log('🔍 DEBUG: Tasa de cambio establecida:', data.tasa);
           setTasaCambio(data.tasa);
         } else {
           console.error('Error: No se recibió la tasa de cambio', data);
@@ -64,78 +80,207 @@ export default function CotizadorExamenes() {
   }, []);
 
   const handleSelect = (examen) => {
+    console.log('🔍 DEBUG: Seleccionando examen:', examen);
     setSeleccionados([...seleccionados, examen]);
     setExamenes(examenes.filter(e => e.codigo !== examen.codigo));
   };
 
   const handleRemove = (codigo) => {
+    console.log('🔍 DEBUG: Removiendo examen con código:', codigo);
     const examen = seleccionados.find(e => e.codigo === codigo);
     setExamenes([...examenes, examen]);
     setSeleccionados(seleccionados.filter(e => e.codigo !== codigo));
   };
 
   const validarFormulario = () => {
-    if (!form.nombre.trim()) return 'Debes ingresar tu nombre';
-    if (!form.apellido.trim()) return 'Debes ingresar tu apellido';
-    if (!form.cedula.trim()) return 'Debes ingresar tu cédula';
-    if (!form.telefono.trim()) return 'Debes ingresar tu teléfono';
-    if (!form.fecha_nacimiento) return 'Debes ingresar tu fecha de nacimiento';
-    if (!form.sexo) return 'Debes seleccionar tu sexo';
-    if (!form.email.trim()) return 'Debes ingresar tu correo electrónico';
-    if (!acepta) return 'Debes aceptar los términos';
-    if (!captchaValido) return 'Debes completar el captcha';
-    if (seleccionados.length === 0) return 'Debes seleccionar al menos un examen';
-    if (!tasaCambio) return 'Estamos esperando que se cargue la tasa de cambio';
+    console.log('🔍 DEBUG: Validando formulario con datos:', form);
+    
+    // Validar cada campo y registrar el resultado
+    let validacionNombre = Boolean(form.nombre.trim());
+    console.log('🔍 DEBUG: Nombre válido:', validacionNombre);
+    if (!validacionNombre) return 'Debes ingresar tu nombre';
+    
+    let validacionApellido = Boolean(form.apellido.trim());
+    console.log('🔍 DEBUG: Apellido válido:', validacionApellido);
+    if (!validacionApellido) return 'Debes ingresar tu apellido';
+    
+    let validacionCedula = Boolean(form.cedula.trim());
+    console.log('🔍 DEBUG: Cédula válida:', validacionCedula);
+    if (!validacionCedula) return 'Debes ingresar tu cédula';
+    
+    let validacionTelefono = Boolean(form.telefono.trim());
+    console.log('🔍 DEBUG: Teléfono válido:', validacionTelefono);
+    if (!validacionTelefono) return 'Debes ingresar tu teléfono';
+    
+    let validacionFechaNacimiento = Boolean(form.fecha_nacimiento);
+    console.log('🔍 DEBUG: Fecha de nacimiento válida:', validacionFechaNacimiento, 'Fecha actual:', form.fecha_nacimiento);
+    if (!validacionFechaNacimiento) return 'Debes ingresar tu fecha de nacimiento';
+    
+    let validacionSexo = Boolean(form.sexo);
+    console.log('🔍 DEBUG: Sexo válido:', validacionSexo);
+    if (!validacionSexo) return 'Debes seleccionar tu sexo';
+    
+    let validacionEmail = Boolean(form.email.trim());
+    console.log('🔍 DEBUG: Email válido:', validacionEmail);
+    if (!validacionEmail) return 'Debes ingresar tu correo electrónico';
+    
+    let validacionTerminos = acepta;
+    console.log('🔍 DEBUG: Términos aceptados:', validacionTerminos);
+    if (!validacionTerminos) return 'Debes aceptar los términos';
+    
+    let validacionCaptcha = captchaValido;
+    console.log('🔍 DEBUG: Captcha válido:', validacionCaptcha);
+    if (!validacionCaptcha) return 'Debes completar el captcha';
+    
+    let validacionExamenes = seleccionados.length > 0;
+    console.log('🔍 DEBUG: Hay exámenes seleccionados:', validacionExamenes, 'Cantidad:', seleccionados.length);
+    if (!validacionExamenes) return 'Debes seleccionar al menos un examen';
+    
+    let validacionTasaCambio = Boolean(tasaCambio);
+    console.log('🔍 DEBUG: Tasa de cambio disponible:', validacionTasaCambio, 'Valor:', tasaCambio);
+    if (!validacionTasaCambio) return 'Estamos esperando que se cargue la tasa de cambio';
+    
+    console.log('🔍 DEBUG: Validación de formulario exitosa');
     return null;
   };
 
   const handleSubmit = async () => {
+    console.log('🔍 DEBUG: Iniciando proceso de envío de formulario');
     const mensajeError = validarFormulario();
     if (mensajeError) {
+      console.error('🔍 DEBUG: Error de validación:', mensajeError);
       alert(mensajeError);
       return;
     }
+
+    // Mostrar datos completos que se van a enviar
+    setDebugInfo({
+      message: 'Estos son los datos que se van a enviar al servidor:',
+      data: {
+        nombre: form.nombre,
+        apellido: form.apellido,
+        cedula: form.cedula,
+        telefono: form.telefono,
+        fecha_nacimiento: form.fecha_nacimiento,
+        sexo: form.sexo,
+        email: form.email,
+        examenes: seleccionados,
+        tasaCambio
+      }
+    });
 
     setCargando(true);
     setError(null);
 
     try {
-      // Preparar los datos de los exámenes con la estructura correcta
-      const examenesFormateados = seleccionados.map(examen => ({
-        codigo: examen.codigo,
-        nombre: examen.nombre,
-        precio: Number(examen.precio),
-        tiempo_entrega: examen.tiempo_entrega || null
-      }));
+      console.log('🔍 DEBUG: Preparando datos para enviar');
+      
+      // Asegurarse de que la fecha de nacimiento tenga el formato correcto
+      let fechaNacimientoFormateada = form.fecha_nacimiento;
+      if (fechaNacimientoFormateada) {
+        // Tratar de formatear la fecha al formato YYYY-MM-DD
+        const fechaObj = new Date(fechaNacimientoFormateada);
+        if (!isNaN(fechaObj.getTime())) {
+          fechaNacimientoFormateada = fechaObj.toISOString().split('T')[0];
+          console.log('🔍 DEBUG: Fecha de nacimiento formateada:', fechaNacimientoFormateada);
+        } else {
+          console.error('🔍 DEBUG: No se pudo formatear la fecha de nacimiento, se enviará como está:', fechaNacimientoFormateada);
+        }
+      }
 
-      // Enviar cotización a la API
-      const res = await fetch(`${process.env.REACT_APP_API_URL}/api/cotizaciones`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ 
-          nombre: form.nombre,
-          apellido: form.apellido,
-          cedula: form.cedula,
-          telefono: form.telefono,
-          fecha_nacimiento: form.fecha_nacimiento,
-          sexo: form.sexo,
-          email: form.email,
-          examenes: examenesFormateados,
-          tasaCambio
-        })
+      // Validar que la tasa de cambio sea un número
+      const tasaCambioNumerico = Number(tasaCambio);
+      if (isNaN(tasaCambioNumerico)) {
+        throw new Error('La tasa de cambio no es un número válido');
+      }
+      console.log('🔍 DEBUG: Tasa de cambio convertida a número:', tasaCambioNumerico);
+
+      // Preparar los datos de los exámenes con la estructura correcta
+      const examenesFormateados = seleccionados.map(examen => {
+        // Validar que el precio del examen sea un número
+        const precioNumerico = Number(examen.precio);
+        if (isNaN(precioNumerico)) {
+          console.error('🔍 DEBUG: Precio no válido para examen:', examen);
+        }
+        
+        return {
+          codigo: examen.codigo,
+          nombre: examen.nombre,
+          precio: precioNumerico,
+          tiempo_entrega: examen.tiempo_entrega || null
+        };
+      });
+      
+      console.log('🔍 DEBUG: Exámenes formateados:', examenesFormateados);
+
+      // Construir objeto final para enviar
+      const dataToSend = { 
+        nombre: form.nombre.trim(),
+        apellido: form.apellido.trim(),
+        cedula: form.cedula.trim(),
+        telefono: form.telefono.trim(),
+        fecha_nacimiento: fechaNacimientoFormateada,
+        sexo: form.sexo,
+        email: form.email.trim(),
+        examenes: examenesFormateados,
+        tasaCambio: tasaCambioNumerico
+      };
+      
+      console.log('🔍 DEBUG: Datos finales a enviar:', JSON.stringify(dataToSend, null, 2));
+      
+      // Actualizamos el estado de depuración con los datos finales
+      setDebugInfo({
+        message: 'Datos finales enviados al servidor:',
+        data: dataToSend
       });
 
+      // URL de la API
+      const apiUrl = process.env.REACT_APP_API_URL;
+      const endpointUrl = `${apiUrl}/api/cotizaciones`;
+      console.log('🔍 DEBUG: Enviando datos a:', endpointUrl);
+
+      // Enviar cotización a la API
+      const res = await fetch(endpointUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(dataToSend)
+      });
+
+      console.log('🔍 DEBUG: Respuesta recibida, status:', res.status);
+      
+      const responseText = await res.text();
+      console.log('🔍 DEBUG: Respuesta texto completo:', responseText);
+      
+      let responseData;
+      try {
+        // Intentamos parsear la respuesta como JSON
+        responseData = JSON.parse(responseText);
+        console.log('🔍 DEBUG: Respuesta parseada como JSON:', responseData);
+      } catch (e) {
+        console.error('🔍 DEBUG: No se pudo parsear la respuesta como JSON:', e);
+        responseData = { error: 'Error al procesar la respuesta del servidor' };
+      }
+
       if (!res.ok) {
-        const errorData = await res.json();
-        throw new Error(errorData.error || 'Error al enviar la cotización');
+        console.error('🔍 DEBUG: Error en la respuesta:', responseData);
+        throw new Error(responseData.error || 'Error al enviar la cotización');
       }
       
-      const result = await res.json();
-      setCotizacionId(result.id);
+      console.log('🔍 DEBUG: Cotización enviada exitosamente:', responseData);
+      setCotizacionId(responseData.id);
       setCotizacionEnviada(true);
     } catch (err) {
-      console.error('Error:', err);
+      console.error('🔍 DEBUG: Error en el proceso:', err);
       setError(err.message || 'Ocurrió un error al enviar la cotización');
+      
+      // Actualizamos el estado de depuración con el error
+      setDebugInfo({
+        message: 'Error durante el envío:',
+        data: {
+          error: err.message,
+          stack: err.stack
+        }
+      });
     } finally {
       setCargando(false);
     }
@@ -181,6 +326,24 @@ export default function CotizadorExamenes() {
   return (
     <div className={`cotizador-wrapper ${isMobile ? 'mobile' : 'desktop'}`}>
       <div className="logo-header">LOGO AQUÍ</div>
+
+      {/* Panel de depuración - Solo visible en desarrollo */}
+      {debugInfo && (
+        <div style={{
+          background: '#f0f8ff',
+          border: '1px solid #4682b4',
+          padding: '10px',
+          margin: '10px',
+          borderRadius: '5px',
+          maxHeight: '200px',
+          overflowY: 'auto'
+        }}>
+          <h4>Información de depuración</h4>
+          <p>{debugInfo.message}</p>
+          <pre style={{ fontSize: '11px' }}>{JSON.stringify(debugInfo.data, null, 2)}</pre>
+          <button onClick={() => setDebugInfo(null)}>Cerrar</button>
+        </div>
+      )}
 
       {error && (
         <div className="error-banner">
@@ -251,7 +414,10 @@ export default function CotizadorExamenes() {
                   className="form-input" 
                   placeholder="¿Cuál es tu nombre?" 
                   value={form.nombre} 
-                  onChange={e => setForm({ ...form, nombre: e.target.value })} 
+                  onChange={e => {
+                    console.log('🔍 DEBUG: Nombre modificado:', e.target.value);
+                    setForm({ ...form, nombre: e.target.value });
+                  }} 
                 />
               </div>
 
@@ -262,7 +428,10 @@ export default function CotizadorExamenes() {
                   className="form-input" 
                   placeholder="¿Cuál es tu apellido?" 
                   value={form.apellido} 
-                  onChange={e => setForm({ ...form, apellido: e.target.value })} 
+                  onChange={e => {
+                    console.log('🔍 DEBUG: Apellido modificado:', e.target.value);
+                    setForm({ ...form, apellido: e.target.value });
+                  }} 
                 />
               </div>
 
@@ -273,7 +442,10 @@ export default function CotizadorExamenes() {
                   className="form-input" 
                   placeholder="Tu número de cédula" 
                   value={form.cedula} 
-                  onChange={e => setForm({ ...form, cedula: e.target.value })} 
+                  onChange={e => {
+                    console.log('🔍 DEBUG: Cédula modificada:', e.target.value);
+                    setForm({ ...form, cedula: e.target.value });
+                  }} 
                 />
               </div>
 
@@ -284,7 +456,10 @@ export default function CotizadorExamenes() {
                   className="form-input" 
                   placeholder="Número donde podamos contactarte" 
                   value={form.telefono} 
-                  onChange={e => setForm({ ...form, telefono: e.target.value })} 
+                  onChange={e => {
+                    console.log('🔍 DEBUG: Teléfono modificado:', e.target.value);
+                    setForm({ ...form, telefono: e.target.value });
+                  }} 
                 />
               </div>
 
@@ -295,7 +470,10 @@ export default function CotizadorExamenes() {
                   className="form-input" 
                   type="date"
                   value={form.fecha_nacimiento} 
-                  onChange={e => setForm({ ...form, fecha_nacimiento: e.target.value })} 
+                  onChange={e => {
+                    console.log('🔍 DEBUG: Fecha de nacimiento modificada:', e.target.value);
+                    setForm({ ...form, fecha_nacimiento: e.target.value });
+                  }} 
                 />
               </div>
 
@@ -305,7 +483,10 @@ export default function CotizadorExamenes() {
                   id="sexo"
                   className="form-input"
                   value={form.sexo}
-                  onChange={e => setForm({ ...form, sexo: e.target.value })}
+                  onChange={e => {
+                    console.log('🔍 DEBUG: Sexo modificado:', e.target.value);
+                    setForm({ ...form, sexo: e.target.value });
+                  }}
                 >
                   <option value="masculino">Masculino</option>
                   <option value="femenino">Femenino</option>
@@ -320,7 +501,10 @@ export default function CotizadorExamenes() {
                   className="form-input" 
                   placeholder="Correo para enviarte la cotización" 
                   value={form.email} 
-                  onChange={e => setForm({ ...form, email: e.target.value })} 
+                  onChange={e => {
+                    console.log('🔍 DEBUG: Email modificado:', e.target.value);
+                    setForm({ ...form, email: e.target.value });
+                  }} 
                 />
               </div>
 
@@ -328,7 +512,10 @@ export default function CotizadorExamenes() {
                 <input 
                   type="checkbox" 
                   checked={acepta} 
-                  onChange={e => setAcepta(e.target.checked)} 
+                  onChange={e => {
+                    console.log('🔍 DEBUG: Términos aceptados:', e.target.checked);
+                    setAcepta(e.target.checked);
+                  }} 
                   id="terminos"
                 />
                 <label htmlFor="terminos">
@@ -338,10 +525,33 @@ export default function CotizadorExamenes() {
 
               <button 
                 className="btn-captcha" 
-                onClick={() => setCaptchaValido(true)}
+                onClick={() => {
+                  console.log('🔍 DEBUG: CAPTCHA validado manualmente');
+                  setCaptchaValido(true);
+                }}
                 disabled={captchaValido}
               >
                 {captchaValido ? "CAPTCHA ✓" : "Simular CAPTCHA"}
+              </button>
+
+              {/* Botón para mostrar el panel de depuración */}
+              <button 
+                onClick={() => {
+                  console.log('🔍 DEBUG: Mostrando información completa');
+                  setDebugInfo({
+                    message: 'Estado actual del formulario:',
+                    data: {
+                      form,
+                      seleccionados,
+                      tasaCambio,
+                      acepta,
+                      captchaValido
+                    }
+                  });
+                }}
+                style={{ marginTop: '10px', background: '#f0f0f0', border: '1px solid #ccc', padding: '5px 10px' }}
+              >
+                Mostrar depuración
               </button>
 
               <div className="form-buttons">
