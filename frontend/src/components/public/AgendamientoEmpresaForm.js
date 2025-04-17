@@ -221,7 +221,7 @@ const getTipoAtencionId = (slug) => {
     }
 
     const payload = {
-      cedula: datosRepresentante.cedula,
+      cedula: sinCedula ? `${datosRepresentante.cedula}-${datosRepresentante.numeroHijo}` : datosRepresentante.cedula,
       nombre: datosPaciente.nombre,
       apellido: datosPaciente.apellido,
       fecha_nacimiento: datosPaciente.fechaNacimiento,
