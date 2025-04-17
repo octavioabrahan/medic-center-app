@@ -137,7 +137,7 @@ function generarPDF(nombrePaciente, resumen) {
 
           console.log(`Examen: ${nombreExamen}`, { preciousd: examen.preciousd, precioUSD: examen.precioUSD, precio_unitario: examen.precio_unitario }, `Precio final: ${precioUSD}`);
 
-          doc.text(`$${formatNumber(precioUSD)}`, xPosition + 5, yPosition + 8, { width: tableWidths[2], align: 'right' });
+          doc.text(`$${formatNumber(precioUSD)}`, xPosition + 5, yPosition + 8, { width: tableWidths[2], align: 'left' });
 
           if (examen.informacion) {
             indicaciones.push({ nombre: nombreExamen, informacion: examen.informacion });
