@@ -225,7 +225,7 @@ function CotizacionesAdmin() {
                 <td>{cot.cedula_cliente}</td>
                 <td>{formatDate(cot.fecha_creacion)}</td>
                 <td>{cot.cantidad_examenes}</td>
-                <td>${cot.total_usd?.toFixed(2)}</td>
+                <td>${typeof cot.total_usd === 'number' ? cot.total_usd.toFixed(2) : '0.00'}</td>
                 <td>
                   <span className={`status-badge ${statusClasses[cot.estado] || ''}`}>
                     {cot.estado}
