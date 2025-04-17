@@ -2,7 +2,7 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import Home from './pages/Home';
 import AgendarHora from './pages/AgendarHora';
-import CotizadorExamenes from './pages/CotizadorExamenes'; // 👈 este es nuevo
+//import CotizadorExamenes from './pages/CotizadorExamenes'; // 👈 este es nuevo
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import ProfesionalesPage from "./pages/admin/ProfesionalesPage";
 import HorariosPage from "./pages/admin/HorariosPage";
@@ -16,7 +16,7 @@ import AdminAgendamientos from "./pages/admin/AdminAgendamientos";
 import AdminEmpresas from "./pages/admin/AdminEmpresas";
 import AgendamientoEmpresaForm from "./components/public/AgendamientoEmpresaForm";
 import AgendamientoIndex from './components/public/AgendamientoIndex';
-//import CotizadorExamenes from './components/CotizadorExamenes'
+import CotizadorExamenes from './components/public/CotizadorExamenes'
 
 function App() {
   return (

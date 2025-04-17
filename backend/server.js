@@ -3,10 +3,10 @@ const cors = require('cors');
 const app = express();
 const port = 3001;
 
-const examRoutes = require('./routes/exams');
-const appointmentRoutes = require('./routes/appointments');
-const exchangeRateRoutes = require('./routes/exchangeRate');
-const quotesRoutes = require('./routes/quotes');
+//const examRoutes = require('./routes/exams');
+//const appointmentRoutes = require('./routes/appointments');
+//const exchangeRateRoutes = require('./routes/exchangeRate');
+//const quotesRoutes = require('./routes/quotes');
 const agendamientoRoutes = require('./routes/agendamiento');
 const profesionalesRoutes = require("./routes/profesionales");
 const especialidadesRoutes = require("./routes/especialidades");
@@ -22,17 +22,23 @@ const serviciosRoutes = require("./routes/servicios");
 const empresasRoutes = require("./routes/empresas");
 const profesionalServicioRoutes = require("./routes/profesionalServicio");
 const archivoRoutes = require('./routes/archivoRoutes');
-
+//Cotizador_V2
+const examRoutes = require('./routes/exams');
+const appointmentRoutes = require('./routes/appointments');
+const exchangeRateRoutes = require('./routes/exchangeRate');
+const quotesRoutes = require('./routes/quotes');
+const seguimientoRoutes = require('./routes/seguimiento');
 const schedule = require('node-schedule');
 const ArchivoAdjunto = require('./models/archivoAdjunto');
 
+// Middleware
 app.use(cors());
 app.use(express.json());
 
-app.use('/api/exams', examRoutes);
-app.use('/api/appointments', appointmentRoutes);
-app.use('/api/tasa-cambio', exchangeRateRoutes);
-app.use('/api/cotizaciones', quotesRoutes);
+//app.use('/api/exams', examRoutes);
+//app.use('/api/appointments', appointmentRoutes);
+//app.use('/api/tasa-cambio', exchangeRateRoutes);
+//app.use('/api/cotizaciones', quotesRoutes);
 app.use('/api/agendamiento', agendamientoRoutes);
 app.use("/api/profesionales", profesionalesRoutes);
 app.use("/api/especialidades", especialidadesRoutes);
@@ -48,6 +54,23 @@ app.use("/api/servicios", serviciosRoutes);
 app.use("/api/empresas", empresasRoutes);
 app.use("/api/profesional-servicios", profesionalServicioRoutes);
 app.use('/api/archivos', archivoRoutes);
+//Cotizador_V2
+app.use('/api/exams', examRoutes);
+app.use('/api/appointments', appointmentRoutes);
+app.use('/api/tasa-cambio', exchangeRateRoutes);
+app.use('/api/cotizaciones', quotesRoutes);
+app.use('/api/seguimiento', seguimientoRoutes);
+
+// Ruta base
+app.get('/', (req, res) => {
+  res.json({ message: 'API del Centro Médico funcionando correctamente' });
+});
+
+// Manejo de errores
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).json({ error: 'Error interno del servidor' });
+});
 
 // Ejecutar limpieza de archivos expirados a las 3 AM todos los días
 schedule.scheduleJob('0 3 * * *', async () => {
