@@ -12,6 +12,7 @@ function CotizacionesAdmin() {
   const [showDetailModal, setShowDetailModal] = useState(false);
   const [showSeguimientoModal, setShowSeguimientoModal] = useState(false);
   const [seguimientos, setSeguimientos] = useState([]);
+  const [tasaCambio, setTasaCambio] = useState(73.36); // Valor por defecto
   const [nuevoSeguimiento, setNuevoSeguimiento] = useState({
     tipo_contacto: 'llamada',
     resultado: 'exitoso',
@@ -24,6 +25,7 @@ function CotizacionesAdmin() {
   // Obtener cotizaciones al cargar el componente
   useEffect(() => {
     fetchCotizaciones();
+    fetchTasaCambio();
   }, []);
 
   // Filtrar cotizaciones cuando cambian los criterios
@@ -35,7 +37,7 @@ function CotizacionesAdmin() {
       if (searchTerm) {
         const term = searchTerm.toLowerCase();
         results = results.filter(cot => 
-          cot.folio.toLowerCase().includes(term) ||
+          cot.folio?.toLowerCase().includes(term) ||
           cot.nombre?.toLowerCase().includes(term) ||
           cot.apellido?.toLowerCase().includes(term) ||
           cot.cedula_cliente?.toLowerCase().includes(term)
@@ -50,6 +52,21 @@ function CotizacionesAdmin() {
       setFilteredCotizaciones(results);
     }
   }, [searchTerm, filterStatus, cotizaciones]);
+
+  // Obtener tasa de cambio
+  const fetchTasaCambio = async () => {
+    try {
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/api/tasa-cambio`);
+      if (!response.ok) throw new Error('Error al obtener tasa de cambio');
+      
+      const data = await response.json();
+      if (data && data.tasa) {
+        setTasaCambio(data.tasa);
+      }
+    } catch (err) {
+      console.error('Error al obtener tasa de cambio:', err);
+    }
+  };
 
   // Obtener cotizaciones desde la API
   const fetchCotizaciones = async () => {
@@ -184,8 +201,22 @@ function CotizacionesAdmin() {
   // Formatear fecha
   const formatDate = (dateString) => {
     if (!dateString) return 'N/A';
-    const date = new Date(dateString);
-    return date.toLocaleDateString() + ' ' + date.toLocaleTimeString().substring(0, 5);
+    try {
+      const date = new Date(dateString);
+      if (isNaN(date.getTime())) return 'Fecha inválida';
+      return date.toLocaleDateString() + ' ' + date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+    } catch (error) {
+      console.error("Error al formatear fecha:", error);
+      return 'Error de formato';
+    }
+  };
+
+  // Formatear número de manera segura
+  const formatNumber = (num) => {
+    if (num === null || num === undefined) return '0.00';
+    if (typeof num === 'string') num = parseFloat(num);
+    if (isNaN(num)) return '0.00';
+    return num.toFixed(2);
   };
 
   // Estados para los diferentes status de cotización
@@ -213,51 +244,60 @@ function CotizacionesAdmin() {
               <th>Fecha</th>
               <th>Exámenes</th>
               <th>Total USD</th>
+              <th>Total VES</th>
               <th>Estado</th>
               <th>Acciones</th>
             </tr>
           </thead>
           <tbody>
-            {filteredCotizaciones.map(cot => (
-              <tr key={cot.id_unico}>
-                <td>{cot.folio}</td>
-                <td>{cot.nombre} {cot.apellido}</td>
-                <td>{cot.cedula_cliente}</td>
-                <td>{formatDate(cot.fecha_creacion)}</td>
-                <td>{cot.cantidad_examenes}</td>
-                <td>${typeof cot.total_usd === 'number' ? cot.total_usd.toFixed(2) : '0.00'}</td>
-                <td>
-                  <span className={`status-badge ${statusClasses[cot.estado] || ''}`}>
-                    {cot.estado}
-                  </span>
-                </td>
-                <td className="actions-cell">
-                  <button 
-                    className="btn-action btn-view" 
-                    onClick={() => fetchCotizacionDetails(cot.id_unico)}
-                    title="Ver detalles"
-                  >
-                    👁️
-                  </button>
-                  <button 
-                    className="btn-action btn-follow" 
-                    onClick={() => openSeguimientoModal(cot)}
-                    title="Seguimiento"
-                  >
-                    📞
-                  </button>
-                  <div className="status-dropdown">
-                    <button className="btn-action btn-status">📋</button>
-                    <div className="dropdown-content">
-                      <button onClick={() => updateCotizacionStatus(cot.id_unico, 'pendiente')}>Pendiente</button>
-                      <button onClick={() => updateCotizacionStatus(cot.id_unico, 'confirmado')}>Confirmado</button>
-                      <button onClick={() => updateCotizacionStatus(cot.id_unico, 'cancelado')}>Cancelado</button>
-                      <button onClick={() => updateCotizacionStatus(cot.id_unico, 'completado')}>Completado</button>
+            {filteredCotizaciones.map(cot => {
+              // Calcular el total en VES a partir del total en USD
+              const totalUsd = typeof cot.total_usd === 'number' ? cot.total_usd : 
+                             parseFloat(cot.total_usd) || 0;
+              const totalVes = totalUsd * tasaCambio;
+              
+              return (
+                <tr key={cot.id_unico}>
+                  <td>{cot.folio}</td>
+                  <td>{cot.nombre} {cot.apellido}</td>
+                  <td>{cot.cedula_cliente}</td>
+                  <td>{formatDate(cot.fecha_creacion)}</td>
+                  <td>{cot.cantidad_examenes}</td>
+                  <td>${formatNumber(totalUsd)}</td>
+                  <td>Bs. {formatNumber(totalVes)}</td>
+                  <td>
+                    <span className={`status-badge ${statusClasses[cot.estado] || ''}`}>
+                      {cot.estado}
+                    </span>
+                  </td>
+                  <td className="actions-cell">
+                    <button 
+                      className="btn-action btn-view" 
+                      onClick={() => fetchCotizacionDetails(cot.id_unico)}
+                      title="Ver detalles"
+                    >
+                      👁️
+                    </button>
+                    <button 
+                      className="btn-action btn-follow" 
+                      onClick={() => openSeguimientoModal(cot)}
+                      title="Seguimiento"
+                    >
+                      📞
+                    </button>
+                    <div className="status-dropdown">
+                      <button className="btn-action btn-status">📋</button>
+                      <div className="dropdown-content">
+                        <button onClick={() => updateCotizacionStatus(cot.id_unico, 'pendiente')}>Pendiente</button>
+                        <button onClick={() => updateCotizacionStatus(cot.id_unico, 'confirmado')}>Confirmado</button>
+                        <button onClick={() => updateCotizacionStatus(cot.id_unico, 'cancelado')}>Cancelado</button>
+                        <button onClick={() => updateCotizacionStatus(cot.id_unico, 'completado')}>Completado</button>
+                      </div>
                     </div>
-                  </div>
-                </td>
-              </tr>
-            ))}
+                  </td>
+                </tr>
+              );
+            })}
           </tbody>
         </table>
       </div>
@@ -267,6 +307,11 @@ function CotizacionesAdmin() {
   // Modal de detalles de cotización
   const renderDetailModal = () => {
     if (!showDetailModal || !currentCotizacion) return null;
+
+    // Calcular el total de manera segura
+    const totalUsd = typeof currentCotizacion.total_usd === 'number' ? currentCotizacion.total_usd : 
+                   parseFloat(currentCotizacion.total_usd) || 0;
+    const totalVes = totalUsd * tasaCambio;
 
     return (
       <div className="modal-overlay">
@@ -292,7 +337,10 @@ function CotizacionesAdmin() {
                   </span>
                 </div>
                 <div>
-                  <strong>Total USD:</strong> ${currentCotizacion.total_usd?.toFixed(2)}
+                  <strong>Total USD:</strong> ${formatNumber(totalUsd)}
+                </div>
+                <div>
+                  <strong>Total VES:</strong> Bs. {formatNumber(totalVes)}
                 </div>
               </div>
             </div>
@@ -317,26 +365,38 @@ function CotizacionesAdmin() {
 
             <div className="detail-section">
               <h3>Exámenes</h3>
-              <table className="detail-table">
-                <thead>
-                  <tr>
-                    <th>Código</th>
-                    <th>Nombre</th>
-                    <th>Tiempo de Entrega</th>
-                    <th>Precio USD</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {currentCotizacion.examenes?.map((exam, index) => (
-                    <tr key={index}>
-                      <td>{exam.examen_codigo}</td>
-                      <td>{exam.nombre_examen}</td>
-                      <td>{exam.tiempo_entrega || 'Estándar'}</td>
-                      <td>${exam.precio_unitario?.toFixed(2)}</td>
+              {Array.isArray(currentCotizacion.examenes) && currentCotizacion.examenes.length > 0 ? (
+                <table className="detail-table">
+                  <thead>
+                    <tr>
+                      <th>Código</th>
+                      <th>Nombre</th>
+                      <th>Tiempo de Entrega</th>
+                      <th>Precio USD</th>
+                      <th>Precio VES</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody>
+                    {currentCotizacion.examenes.map((exam, index) => {
+                      const precioUsd = typeof exam.precio_unitario === 'number' ? exam.precio_unitario : 
+                                      parseFloat(exam.precio_unitario) || 0;
+                      const precioVes = precioUsd * tasaCambio;
+                      
+                      return (
+                        <tr key={index}>
+                          <td>{exam.examen_codigo}</td>
+                          <td>{exam.nombre_examen}</td>
+                          <td>{exam.tiempo_entrega || 'Estándar'}</td>
+                          <td>${formatNumber(precioUsd)}</td>
+                          <td>Bs. {formatNumber(precioVes)}</td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              ) : (
+                <p>No hay exámenes disponibles</p>
+              )}
             </div>
 
             <div className="action-buttons">
@@ -438,7 +498,7 @@ function CotizacionesAdmin() {
 
             <div className="historial-seguimiento">
               <h3>Historial de Seguimiento</h3>
-              {seguimientos.length === 0 ? (
+              {!Array.isArray(seguimientos) || seguimientos.length === 0 ? (
                 <p className="no-results">No hay registros de seguimiento previos</p>
               ) : (
                 <div className="timeline">
