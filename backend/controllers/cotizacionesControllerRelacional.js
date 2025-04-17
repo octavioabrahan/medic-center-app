@@ -9,6 +9,26 @@ const CotizacionesController = {
     try {
       const { nombre, apellido, cedula, email, telefono, fecha_nacimiento, sexo, examenes, tasaCambio } = req.body;
 
+      // ======= DIAGNÓSTICO MEJORADO - Inicio =======
+      console.log('🔍 DIAGNÓSTICO: Datos recibidos completos:', JSON.stringify(req.body, null, 2));
+      
+      // Verificar tipo de datos para cada campo
+      console.log('🔍 DIAGNÓSTICO: Tipos de datos:');
+      console.log('- nombre:', typeof nombre, nombre);
+      console.log('- apellido:', typeof apellido, apellido);
+      console.log('- cedula:', typeof cedula, cedula);
+      console.log('- email:', typeof email, email);
+      console.log('- telefono:', typeof telefono, telefono);
+      console.log('- fecha_nacimiento:', typeof fecha_nacimiento, fecha_nacimiento);
+      console.log('- sexo:', typeof sexo, sexo);
+      console.log('- examenes:', Array.isArray(examenes) ? 'Array' : typeof examenes, examenes?.length);
+      console.log('- tasaCambio:', typeof tasaCambio, tasaCambio);
+      
+      if (examenes && Array.isArray(examenes)) {
+        console.log('🔍 DIAGNÓSTICO: Primer examen:', JSON.stringify(examenes[0], null, 2));
+      }
+      // ======= DIAGNÓSTICO MEJORADO - Fin =======
+
       // Log de información recibida para depuración
       console.log('Datos recibidos:', { 
         nombre, 
@@ -56,6 +76,7 @@ const CotizacionesController = {
       
       // Si hay errores, devolver respuesta de error
       if (errores.length > 0) {
+        console.log('🔍 DIAGNÓSTICO: Errores de validación encontrados:', errores);
         logGeneral(`❌ Validación fallida: ${errores.join(', ')}`);
         return res.status(400).json({ 
           error: 'Datos incompletos o inválidos', 
@@ -63,38 +84,82 @@ const CotizacionesController = {
         });
       }
 
+      console.log('🔍 DIAGNÓSTICO: Validación inicial pasada, procesando datos...');
+
+      // Conversión explícita de tipos para evitar problemas
+      const datosFormateados = {
+        nombre: String(nombre).trim(),
+        apellido: String(apellido).trim(),
+        cedula: String(cedula).trim(),
+        email: String(email).trim(),
+        telefono: String(telefono).trim(),
+        fecha_nacimiento: fecha_nacimiento,
+        sexo: String(sexo).toLowerCase(),
+        examenes: examenes.map(examen => ({
+          codigo: String(examen.codigo),
+          nombre: String(examen.nombre),
+          precio: Number(examen.precio),
+          tiempo_entrega: examen.tiempo_entrega ? String(examen.tiempo_entrega) : null
+        })),
+        tasaCambio: Number(tasaCambio)
+      };
+
+      console.log('🔍 DIAGNÓSTICO: Datos formateados:', JSON.stringify(datosFormateados, null, 2));
+
       // Todos los datos están correctos, crear la cotización
-      const resultado = await CotizacionesModel.crear({
-        nombre,
-        apellido,
-        cedula, 
-        email, 
-        telefono,
-        fecha_nacimiento,
-        sexo,
-        examenes,
-        tasaCambio
-      });
-      
-      // Generar PDF y enviar correo
-      const nombreCompleto = `${nombre} ${apellido}`;
-      const docResults = await CotizacionesModel.procesarDocumentos(
-        resultado.id,
-        nombreCompleto, 
-        email
-      );
-      
-      res.json({ 
-        id: resultado.id,
-        cedula: resultado.cedula,
-        emailEnviado: docResults.enviado,
-        totalUSD: resultado.totalUSD,
-        totalVES: resultado.totalVES
-      });
+      try {
+        console.log('🔍 DIAGNÓSTICO: Llamando a CotizacionesModel.crear()');
+        const resultado = await CotizacionesModel.crear(datosFormateados);
+        console.log('🔍 DIAGNÓSTICO: Cotización creada exitosamente:', resultado);
+        
+        // Generar PDF y enviar correo
+        const nombreCompleto = `${datosFormateados.nombre} ${datosFormateados.apellido}`;
+        
+        try {
+          console.log('🔍 DIAGNÓSTICO: Intentando procesar documentos...');
+          const docResults = await CotizacionesModel.procesarDocumentos(
+            resultado.id,
+            nombreCompleto, 
+            datosFormateados.email
+          );
+          console.log('🔍 DIAGNÓSTICO: Documentos procesados exitosamente:', docResults);
+          
+          res.json({ 
+            id: resultado.id,
+            cedula: resultado.cedula,
+            emailEnviado: docResults.enviado,
+            totalUSD: resultado.totalUSD,
+            totalVES: resultado.totalVES
+          });
+        } catch (docError) {
+          console.error('🔍 DIAGNÓSTICO: Error al procesar documentos:', docError);
+          // Aún si falla la generación de PDF, consideramos exitosa la cotización
+          res.json({ 
+            id: resultado.id,
+            cedula: resultado.cedula,
+            emailEnviado: false,
+            error_documentos: docError.message,
+            totalUSD: resultado.totalUSD,
+            totalVES: resultado.totalVES
+          });
+        }
+      } catch (modelError) {
+        console.error('🔍 DIAGNÓSTICO: Error en el modelo al crear cotización:', modelError);
+        throw modelError; // Relanzar para que lo maneje el catch principal
+      }
     } catch (err) {
       console.error('❌ Error al crear cotización:', err);
+      console.error('🔍 DIAGNÓSTICO: Error detallado:', err.message);
+      console.error('🔍 DIAGNÓSTICO: Stack de error:', err.stack);
+      
+      // Mostrar información más detallada sobre el error
       logGeneral(`❌ Error al crear cotización: ${err.message}`);
-      res.status(500).json({ error: 'Error al crear cotización', detalle: err.message });
+      res.status(500).json({ 
+        error: 'Error al crear cotización', 
+        detalle: err.message,
+        stack: err.stack,
+        origen: err.name || 'Desconocido'
+      });
     }
   },
   

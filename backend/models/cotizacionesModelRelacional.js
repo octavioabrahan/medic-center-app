@@ -20,23 +20,42 @@ const CotizacionesModel = {
       tasaCambio
     } = datos;
     
+    // Diagnóstico mejorado
+    console.log('🔍 MODEL DIAGNÓSTICO: Inicio de método crear con datos:', {
+      nombre, apellido, cedula, email, telefono, fecha_nacimiento, sexo,
+      examenesCount: examenes?.length,
+      tasaCambio
+    });
+    
     // Validar datos antes de interactuar con la BD
     if (!nombre || !apellido || !cedula || !examenes || !Array.isArray(examenes) || !tasaCambio) {
+      console.error('🔍 MODEL DIAGNÓSTICO: Validación fallida - datos insuficientes', {
+        nombre: !!nombre, 
+        apellido: !!apellido, 
+        cedula: !!cedula, 
+        examenes: !!examenes, 
+        esArray: Array.isArray(examenes), 
+        tasaCambio: !!tasaCambio
+      });
       throw new Error('Datos insuficientes para crear la cotización');
     }
     
     if (!fecha_nacimiento) {
+      console.error('🔍 MODEL DIAGNÓSTICO: Validación fallida - fecha nacimiento faltante');
       throw new Error('La fecha de nacimiento es requerida');
     }
     
     if (!sexo) {
+      console.error('🔍 MODEL DIAGNÓSTICO: Validación fallida - sexo faltante');
       throw new Error('El campo sexo es requerido');
     }
     
     const client = await db.connect();
+    console.log('🔍 MODEL DIAGNÓSTICO: Conexión a BD establecida');
     
     try {
       await client.query('BEGIN');
+      console.log('🔍 MODEL DIAGNÓSTICO: Transacción iniciada');
       
       // Verificar primero si necesitamos crear la tabla cotizaciones o ajustarla
       await client.query(`
@@ -58,6 +77,7 @@ const CotizacionesModel = {
         END
         $$;
       `);
+      console.log('🔍 MODEL DIAGNÓSTICO: Estructura de tabla verificada');
       
       // Crear tabla cotizacion_examenes si no existe
       await client.query(`
@@ -73,6 +93,7 @@ const CotizacionesModel = {
             REFERENCES cotizaciones(id) ON DELETE CASCADE
         );
       `);
+      console.log('🔍 MODEL DIAGNÓSTICO: Tabla cotizacion_examenes verificada');
       
       // Buscar si el paciente ya existe por cédula
       console.log("Buscando paciente con cédula:", cedula);
@@ -81,71 +102,116 @@ const CotizacionesModel = {
         [cedula]
       );
       
+      console.log('🔍 MODEL DIAGNÓSTICO: Búsqueda de paciente completada, resultados:', pacienteQuery.rows.length);
+      
       // Si no existe, crear un nuevo paciente
       if (pacienteQuery.rows.length === 0) {
         console.log("Paciente no encontrado, creando nuevo");
-        await client.query(
-          'INSERT INTO pacientes (cedula, nombre, apellido, fecha_nacimiento, sexo, telefono, email) VALUES ($1, $2, $3, $4, $5, $6, $7)',
-          [cedula, nombre, apellido, fecha_nacimiento, sexo, telefono, email]
-        );
-        logGeneral(`🆕 Paciente creado: ${nombre} ${apellido} (${cedula})`);
+        try {
+          await client.query(
+            'INSERT INTO pacientes (cedula, nombre, apellido, fecha_nacimiento, sexo, telefono, email) VALUES ($1, $2, $3, $4, $5, $6, $7)',
+            [cedula, nombre, apellido, fecha_nacimiento, sexo, telefono, email]
+          );
+          console.log('🔍 MODEL DIAGNÓSTICO: Paciente creado exitosamente');
+          logGeneral(`🆕 Paciente creado: ${nombre} ${apellido} (${cedula})`);
+        } catch (insertError) {
+          console.error('🔍 MODEL DIAGNÓSTICO: Error al crear paciente:', insertError);
+          throw new Error(`Error al crear paciente: ${insertError.message}`);
+        }
       } else {
         // Si existe, actualizar datos de contacto
         console.log("Paciente encontrado, actualizando datos");
-        await client.query(
-          'UPDATE pacientes SET email = $1, telefono = $2, fecha_nacimiento = $3, sexo = $4 WHERE cedula = $5',
-          [email, telefono, fecha_nacimiento, sexo, cedula]
-        );
-        logGeneral(`🔁 Paciente actualizado: ${nombre} ${apellido}`);
+        try {
+          await client.query(
+            'UPDATE pacientes SET email = $1, telefono = $2, fecha_nacimiento = $3, sexo = $4 WHERE cedula = $5',
+            [email, telefono, fecha_nacimiento, sexo, cedula]
+          );
+          console.log('🔍 MODEL DIAGNÓSTICO: Paciente actualizado exitosamente');
+          logGeneral(`🔁 Paciente actualizado: ${nombre} ${apellido}`);
+        } catch (updateError) {
+          console.error('🔍 MODEL DIAGNÓSTICO: Error al actualizar paciente:', updateError);
+          throw new Error(`Error al actualizar paciente: ${updateError.message}`);
+        }
       }
       
       // Calcular totales
-      const totalUSD = examenes.reduce((sum, examen) => {
-        const precio = Number(examen.precio);
-        return sum + (isNaN(precio) ? 0 : precio);
-      }, 0);
-      const totalVES = totalUSD * Number(tasaCambio);
-      
-      console.log("Totales calculados:", { totalUSD, totalVES });
-      
-      // Guardar cotización con referencia a la cédula del paciente
-      const resultCotizacion = await client.query(
-        'INSERT INTO cotizaciones (paciente_id, total_usd, total_ves, estado) VALUES ($1, $2, $3, $4) RETURNING id',
-        [cedula, totalUSD, totalVES, 'pendiente']
-      );
-      
-      if (!resultCotizacion.rows || resultCotizacion.rows.length === 0) {
-        throw new Error('Error al crear la cotización: no se generó ID');
+      let totalUSD = 0;
+      try {
+        totalUSD = examenes.reduce((sum, examen) => {
+          const precio = Number(examen.precio);
+          if (isNaN(precio)) {
+            console.warn(`🔍 MODEL DIAGNÓSTICO: Precio no numérico para examen:`, examen);
+            return sum;
+          }
+          return sum + precio;
+        }, 0);
+      } catch (reduceError) {
+        console.error('🔍 MODEL DIAGNÓSTICO: Error al calcular totalUSD:', reduceError);
+        throw new Error(`Error al calcular total USD: ${reduceError.message}`);
       }
       
-      const cotizacionId = resultCotizacion.rows[0].id;
-      console.log("Cotización creada con ID:", cotizacionId);
+      const totalVES = totalUSD * Number(tasaCambio);
+      
+      console.log("Totales calculados:", { totalUSD, totalVES, tasaCambio });
+      
+      // Guardar cotización con referencia a la cédula del paciente
+      let cotizacionId;
+      try {
+        const resultCotizacion = await client.query(
+          'INSERT INTO cotizaciones (paciente_id, total_usd, total_ves, estado) VALUES ($1, $2, $3, $4) RETURNING id',
+          [cedula, totalUSD, totalVES, 'pendiente']
+        );
+        
+        if (!resultCotizacion.rows || resultCotizacion.rows.length === 0) {
+          throw new Error('Error al crear la cotización: no se generó ID');
+        }
+        
+        cotizacionId = resultCotizacion.rows[0].id;
+        console.log("Cotización creada con ID:", cotizacionId);
+      } catch (cotizacionError) {
+        console.error('🔍 MODEL DIAGNÓSTICO: Error al crear cotización:', cotizacionError);
+        console.error('SQL Error details:', cotizacionError.code, cotizacionError.detail);
+        throw new Error(`Error al crear cotización: ${cotizacionError.message}`);
+      }
       
       // Registrar exámenes cotizados
       for (const examen of examenes) {
         // Validar que el examen tenga los datos necesarios
-        if (!examen.codigo || !examen.nombre || !examen.precio) {
-          console.warn(`Examen incompleto: ${JSON.stringify(examen)}`);
+        if (!examen.codigo || !examen.nombre || examen.precio === undefined) {
+          console.warn(`🔍 MODEL DIAGNÓSTICO: Examen incompleto: ${JSON.stringify(examen)}`);
           continue; // Saltar este examen
         }
         
         const precioUSD = Number(examen.precio);
+        if (isNaN(precioUSD)) {
+          console.warn(`🔍 MODEL DIAGNÓSTICO: Precio no numérico para examen:`, examen);
+          continue; // Saltar este examen
+        }
+        
         const precioVES = precioUSD * Number(tasaCambio);
         
-        await client.query(
-          'INSERT INTO cotizacion_examenes (cotizacion_id, examen_codigo, nombre_examen, precio_usd, precio_ves, tiempo_entrega) VALUES ($1, $2, $3, $4, $5, $6)',
-          [
-            cotizacionId, 
-            examen.codigo, 
-            examen.nombre, 
-            precioUSD, 
-            precioVES,
-            examen.tiempo_entrega || null
-          ]
-        );
+        try {
+          await client.query(
+            'INSERT INTO cotizacion_examenes (cotizacion_id, examen_codigo, nombre_examen, precio_usd, precio_ves, tiempo_entrega) VALUES ($1, $2, $3, $4, $5, $6)',
+            [
+              cotizacionId, 
+              examen.codigo, 
+              examen.nombre, 
+              precioUSD, 
+              precioVES,
+              examen.tiempo_entrega || null
+            ]
+          );
+          console.log(`🔍 MODEL DIAGNÓSTICO: Examen registrado: ${examen.nombre}`);
+        } catch (examenError) {
+          console.error('🔍 MODEL DIAGNÓSTICO: Error al registrar examen:', examenError);
+          console.error('Detalles del examen con error:', examen);
+          throw new Error(`Error al registrar examen ${examen.nombre}: ${examenError.message}`);
+        }
       }
       
       await client.query('COMMIT');
+      console.log('🔍 MODEL DIAGNÓSTICO: Transacción completada exitosamente');
       
       return { 
         id: cotizacionId, 
@@ -156,9 +222,11 @@ const CotizacionesModel = {
     } catch (error) {
       await client.query('ROLLBACK');
       console.error("Error en proceso de cotización:", error);
+      console.error("🔍 MODEL DIAGNÓSTICO: Stack de error:", error.stack);
       throw error;
     } finally {
       client.release();
+      console.log('🔍 MODEL DIAGNÓSTICO: Conexión a BD liberada');
     }
   },
   
@@ -166,49 +234,71 @@ const CotizacionesModel = {
    * Genera PDF y envía email con la cotización
    */
   procesarDocumentos: async (cotizacionId, nombreCompleto, email) => {
+    console.log('🔍 MODEL DIAGNÓSTICO: Inicio procesarDocumentos:', {
+      cotizacionId, nombreCompleto, email
+    });
+    
     try {
       // Obtener datos completos de la cotización
       const cotizacion = await CotizacionesModel.obtenerPorId(cotizacionId);
       
       if (!cotizacion) {
+        console.error(`🔍 MODEL DIAGNÓSTICO: Cotización ${cotizacionId} no encontrada`);
         throw new Error(`Cotización ${cotizacionId} no encontrada`);
       }
       
+      console.log('🔍 MODEL DIAGNÓSTICO: Cotización recuperada para generar PDF');
+      
       // Generar PDF
-      const rutaPDF = await generarPDF(nombreCompleto, {
-        paciente: {
-          nombre: cotizacion.nombre,
-          apellido: cotizacion.apellido,
-          cedula: cotizacion.cedula,
-          email: cotizacion.email,
-          telefono: cotizacion.telefono
-        },
-        cotizacion: cotizacion.examenes.map(e => ({
-          codigo: e.examen_codigo,
-          nombre: e.nombre_examen,
-          precioUSD: e.precio_usd,
-          precioVES: e.precio_ves,
-          tiempo_entrega: e.tiempo_entrega
-        })),
-        totalUSD: cotizacion.total_usd,
-        totalVES: cotizacion.total_ves,
-        fecha: cotizacion.fecha
-      });
+      let rutaPDF;
+      try {
+        rutaPDF = await generarPDF(nombreCompleto, {
+          paciente: {
+            nombre: cotizacion.nombre,
+            apellido: cotizacion.apellido,
+            cedula: cotizacion.cedula,
+            email: cotizacion.email,
+            telefono: cotizacion.telefono
+          },
+          cotizacion: cotizacion.examenes.map(e => ({
+            codigo: e.examen_codigo,
+            nombre: e.nombre_examen,
+            precioUSD: e.precio_usd,
+            precioVES: e.precio_ves,
+            tiempo_entrega: e.tiempo_entrega
+          })),
+          totalUSD: cotizacion.total_usd,
+          totalVES: cotizacion.total_ves,
+          fecha: cotizacion.fecha
+        });
+        console.log('🔍 MODEL DIAGNÓSTICO: PDF generado:', rutaPDF);
+      } catch (pdfError) {
+        console.error('🔍 MODEL DIAGNÓSTICO: Error al generar PDF:', pdfError);
+        // Continuar incluso si falla la generación del PDF
+        return { enviado: false, error: pdfError.message };
+      }
       
       // Enviar correo si hay email
       if (email) {
-        await enviarCorreo(email, 'Tu Cotización Médica', `
-          <p>Hola ${nombreCompleto},</p>
-          <p>Adjunto encontrarás tu cotización médica en formato PDF.</p>
-        `, rutaPDF);
-        
-        logEmail(`📤 Enviado a ${email} -> archivo: ${rutaPDF}`);
-        
-        return { enviado: true, rutaPDF };
+        try {
+          await enviarCorreo(email, 'Tu Cotización Médica', `
+            <p>Hola ${nombreCompleto},</p>
+            <p>Adjunto encontrarás tu cotización médica en formato PDF.</p>
+          `, rutaPDF);
+          
+          console.log('🔍 MODEL DIAGNÓSTICO: Email enviado exitosamente');
+          logEmail(`📤 Enviado a ${email} -> archivo: ${rutaPDF}`);
+          
+          return { enviado: true, rutaPDF };
+        } catch (emailError) {
+          console.error('🔍 MODEL DIAGNÓSTICO: Error al enviar email:', emailError);
+          return { enviado: false, rutaPDF, error: emailError.message };
+        }
       }
       
       return { enviado: false, rutaPDF };
     } catch (error) {
+      console.error('🔍 MODEL DIAGNÓSTICO: Error en procesarDocumentos:', error);
       logEmail(`❌ Error procesando documentos: ${error.message}`);
       throw error;
     }
@@ -218,6 +308,7 @@ const CotizacionesModel = {
    * Obtiene una cotización por su ID, incluyendo todos los datos relacionados
    */
   obtenerPorId: async (id) => {
+    console.log('🔍 MODEL DIAGNÓSTICO: Obteniendo cotización por ID:', id);
     const client = await db.connect();
     
     try {
@@ -242,10 +333,12 @@ const CotizacionesModel = {
       `, [id]);
       
       if (cotizacionResult.rows.length === 0) {
+        console.log('🔍 MODEL DIAGNÓSTICO: No se encontró cotización con ID:', id);
         return null;
       }
       
       const cotizacion = cotizacionResult.rows[0];
+      console.log('🔍 MODEL DIAGNÓSTICO: Cotización encontrada:', cotizacion.id);
       
       // Obtener exámenes de la cotización
       const examenesResult = await client.query(`
@@ -255,10 +348,15 @@ const CotizacionesModel = {
       `, [id]);
       
       cotizacion.examenes = examenesResult.rows;
+      console.log('🔍 MODEL DIAGNÓSTICO: Exámenes recuperados:', cotizacion.examenes.length);
       
       return cotizacion;
+    } catch (error) {
+      console.error('🔍 MODEL DIAGNÓSTICO: Error al obtener cotización:', error);
+      throw error;
     } finally {
       client.release();
+      console.log('🔍 MODEL DIAGNÓSTICO: Conexión a BD liberada');
     }
   }
 };
