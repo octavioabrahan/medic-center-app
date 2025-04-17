@@ -16,6 +16,7 @@ import AdminAgendamientos from "./pages/admin/AdminAgendamientos";
 import AdminEmpresas from "./pages/admin/AdminEmpresas";
 import AgendamientoEmpresaForm from "./components/public/AgendamientoEmpresaForm";
 import AgendamientoIndex from './components/public/AgendamientoIndex';
+import CotizadorExamenes from './components/CotizadorExamenes'
 
 function App() {
   return (
@@ -40,6 +41,7 @@ function App() {
         <Route path="/admin/empresas" element={<AdminEmpresas />} />
         <Route path="/agendamiento/convenio" element={<AgendamientoEmpresaForm />} />
         <Route path="/agendamiento" element={<AgendamientoIndex />} />
+        <Route path="/cotizador" element={<CotizadorExamenes />} />
       </Routes>
     </Router>
   );
