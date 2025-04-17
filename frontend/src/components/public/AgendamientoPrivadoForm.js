@@ -26,6 +26,36 @@ const AgendamientoPrivadoForm = () => {
   const [servicioSeleccionado, setServicioSeleccionado] = useState('');
   const [profesionalSeleccionado, setProfesionalSeleccionado] = useState('');
   const [fechaSeleccionada, setFechaSeleccionada] = useState(null);
+  
+  // Nuevos estados implementados
+  const [categorias, setCategorias] = useState([]);
+  const [tiposAtencion, setTiposAtencion] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  // Cargar categorías y tipos de atención al inicio
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setIsLoading(true);
+        
+        // Obtener categorías
+        const categoriasRes = await axios.get('/api/categorias');
+        setCategorias(categoriasRes.data);
+        
+        // Obtener tipos de atención
+        const tiposAtencionRes = await axios.get('/api/tipo-atencion');
+        setTiposAtencion(tiposAtencionRes.data);
+        
+        setIsLoading(false);
+      } catch (error) {
+        console.error('Error al cargar datos iniciales:', error);
+        alert('Error al cargar datos necesarios. Por favor, recarga la página.');
+        setIsLoading(false);
+      }
+    };
+    
+    fetchData();
+  }, []);
 
   useEffect(() => {
     if (step === 2) {
@@ -56,6 +86,22 @@ const AgendamientoPrivadoForm = () => {
         .catch(console.error);
     }
   }, [step]);
+
+  // Funciones para obtener IDs por nombre
+  const getCategoriaId = (slug) => {
+    const categoria = categorias.find(cat => 
+      cat.nombre_categoria.toLowerCase() === slug.toLowerCase()
+    );
+    return categoria ? categoria.id_categoria : null;
+  };
+
+  // Función para obtener el ID de tipo de atención por su nombre
+  const getTipoAtencionId = (slug) => {
+    const tipoAtencion = tiposAtencion.find(tipo => 
+      tipo.nombre.toLowerCase() === slug.toLowerCase()
+    );
+    return tipoAtencion ? tipoAtencion.tipo_atencion_id : null;
+  };
 
   // Filtrar profesionales por categoría (consulta o estudio)
   const profesionalesPorCategoria = profesionales.filter(p =>
@@ -145,16 +191,29 @@ const AgendamientoPrivadoForm = () => {
   };
 
   const enviarAgendamiento = async () => {
-    const representanteCedula = sinCedula ? `${datosRepresentante.cedula}-${datosRepresentante.numeroHijo}` : null;
-    const categoriaMap = {
-      consulta: 1,
-      estudio: 3
-    };
+    // Verificar si isLoading es true
+    if (isLoading) {
+      alert("Aún se están cargando datos necesarios. Por favor espere.");
+      return;
+    }
     
-    const tipoAtencionMap = {
-      consulta: 1,
-      estudio: 3
-    };
+    const representanteCedula = sinCedula ? `${datosRepresentante.cedula}-${datosRepresentante.numeroHijo}` : null;
+    
+    // Obtener IDs de categoría y tipo de atención dinámicamente
+    const categoriaId = getCategoriaId(modoSeleccion === 'consulta' ? 'Consulta' : 'Estudio');
+    const tipoAtencionId = getTipoAtencionId(modoSeleccion === 'consulta' ? 'Presencial' : 'Previa Cita');
+    
+    // Validar que existan las categorías y tipos de atención
+    if (!categoriaId) {
+      alert(`No se encontró la categoría correspondiente a ${modoSeleccion}.`);
+      return;
+    }
+    
+    if (!tipoAtencionId) {
+      alert(`No se encontró el tipo de atención correspondiente a ${modoSeleccion}.`);
+      return;
+    }
+    
     const payload = {
       cedula: sinCedula ? `${datosRepresentante.cedula}-${datosRepresentante.numeroHijo}` : datosRepresentante.cedula,
       nombre: datosPaciente.nombre,
@@ -169,18 +228,19 @@ const AgendamientoPrivadoForm = () => {
       representante_apellido: sinCedula ? datosRepresentante.apellido : null,
       profesional_id: profesionalSeleccionado,
       fecha_agendada: fechaSeleccionada?.fecha || fechaSeleccionada,
-      tipo_atencion_id: tipoAtencionMap[modoSeleccion],
+      tipo_atencion_id: tipoAtencionId,
       observaciones: modoSeleccion === 'consulta' ? especialidadSeleccionada : servicioSeleccionado,
-      id_categoria: categoriaMap[modoSeleccion],
+      id_categoria: categoriaId,
       nro_consulta: fechaSeleccionada?.nro_consulta || null
     };
 
     try {
       await axios.post('/api/agendamiento', payload);
+      alert('Agendamiento creado con éxito');
       setStep(4);
-    } catch (err) {
-      console.error('Error al crear agendamiento:', err);
-      alert('Hubo un error al agendar. Intenta nuevamente.');
+    } catch (error) {
+      console.error('Error al crear agendamiento:', error.response?.data || error.message);
+      alert(`Error al crear agendamiento: ${error.response?.data?.error || error.message}`);
     }
   };
 
@@ -350,7 +410,13 @@ const AgendamientoPrivadoForm = () => {
     </div>
 
     <div className="boton-container">
-      <button type="submit" className="boton-continuar">Continuar</button>
+      <button 
+        type="submit" 
+        className="boton-continuar"
+        disabled={isLoading}
+      >
+        {isLoading ? 'Cargando datos...' : 'Continuar'}
+      </button>
     </div>
   </form>
 )}
@@ -362,161 +428,169 @@ const AgendamientoPrivadoForm = () => {
 
     <h2 className="titulo-principal">Selecciona la especialidad, el médico y el día.</h2>
 
-    {/* Tipo de atención: Consulta o Estudio */}
-    <div className="tarjeta-seleccion">
-      <label className="etiqueta-grupo">Selecciona el tipo de atención</label>
-      <div className="selector-botones-radio personalizado">
-        <label className={`opcion-card ${modoSeleccion === 'consulta' ? 'activa' : ''}`}>
-          <input
-            type="radio"
-            name="categoria"
-            value="consulta"
-            checked={modoSeleccion === 'consulta'}
-            onChange={() => {
-              setModoSeleccion('consulta');
-              setServicioSeleccionado('');
-              setEspecialidadSeleccionada('');
-              setProfesionalSeleccionado('');
-              setFechaSeleccionada(null);
-            }}
-          />
-          <div><strong>Consulta médica</strong></div>
-        </label>
-        <label className={`opcion-card ${modoSeleccion === 'estudio' ? 'activa' : ''}`}>
-          <input
-            type="radio"
-            name="categoria"
-            value="estudio"
-            checked={modoSeleccion === 'estudio'}
-            onChange={() => {
-              setModoSeleccion('estudio');
-              setServicioSeleccionado('');
-              setEspecialidadSeleccionada('');
-              setProfesionalSeleccionado('');
-              setFechaSeleccionada(null);
-            }}
-          />
-          <div><strong>Estudio</strong></div>
-        </label>
+    {isLoading ? (
+      <div className="loading-message">
+        <p>Cargando datos, por favor espere...</p>
       </div>
-    </div>
-
-    {/* 👇 Mostrar campos solo si se eligió un tipo de atención */}
-    {modoSeleccion && (
-      <div className="tarjeta-seleccion">
-        <div className="form-row triple">
-          <div className="form-column">
-            <label className="etiqueta-grupo">
-              {modoSeleccion === 'consulta' ? 'Especialidad' : 'Servicio'} <span className="asterisk">*</span>
+    ) : (
+      <>
+        {/* Tipo de atención: Consulta o Estudio */}
+        <div className="tarjeta-seleccion">
+          <label className="etiqueta-grupo">Selecciona el tipo de atención</label>
+          <div className="selector-botones-radio personalizado">
+            <label className={`opcion-card ${modoSeleccion === 'consulta' ? 'activa' : ''}`}>
+              <input
+                type="radio"
+                name="categoria"
+                value="consulta"
+                checked={modoSeleccion === 'consulta'}
+                onChange={() => {
+                  setModoSeleccion('consulta');
+                  setServicioSeleccionado('');
+                  setEspecialidadSeleccionada('');
+                  setProfesionalSeleccionado('');
+                  setFechaSeleccionada(null);
+                }}
+              />
+              <div><strong>Consulta médica</strong></div>
             </label>
-            {modoSeleccion === 'consulta' ? (
-              <select
-                value={especialidadSeleccionada}
-                onChange={e => setEspecialidadSeleccionada(e.target.value)}
-                required
-              >
-                <option value="">Selecciona una opción</option>
-                {[...new Set(profesionalesFiltrados.map(p => p.nombre_especialidad))]
-                  .filter(Boolean)
-                  .map((item, i) => (
-                    <option key={i} value={item}>{item}</option>
-                  ))}
-              </select>
-            ) : (
-              <select
-                value={servicioSeleccionado}
-                onChange={handleServicioChange}
-                required
-              >
-                <option value="">Selecciona una opción</option>
-                {serviciosFiltrados
-                  .filter(Boolean)
-                  .map((s, i) => (
-                    <option key={i} value={s.nombre_servicio}>{s.nombre_servicio}</option>
-                  ))}
-              </select>
-            )}
-          </div>
-
-          <div className="form-column">
-            <label className="etiqueta-grupo">
-              Profesional <span className="asterisk">*</span>
+            <label className={`opcion-card ${modoSeleccion === 'estudio' ? 'activa' : ''}`}>
+              <input
+                type="radio"
+                name="categoria"
+                value="estudio"
+                checked={modoSeleccion === 'estudio'}
+                onChange={() => {
+                  setModoSeleccion('estudio');
+                  setServicioSeleccionado('');
+                  setEspecialidadSeleccionada('');
+                  setProfesionalSeleccionado('');
+                  setFechaSeleccionada(null);
+                }}
+              />
+              <div><strong>Estudio</strong></div>
             </label>
-            <select
-              value={profesionalSeleccionado}
-              onChange={e => {
-                handleProfesionalChange(e);
-                
-                // Mantener la lógica adicional específica para esta UI
-                const id = e.target.value;
-                const profesional = profesionales.find(p => p.profesional_id === id);
-                
-                if (modoSeleccion === 'consulta' && profesional?.nombre_especialidad) {
-                  setEspecialidadSeleccionada(profesional.nombre_especialidad);
-                }
-                
-                if (modoSeleccion === 'estudio' && !servicioSeleccionado && profesional?.servicios && profesional.servicios.length > 0) {
-                  setServicioSeleccionado(profesional.servicios[0]);
-                }
-              }}
-              required
-            >
-              <option value="">Selecciona al profesional</option>
-              {modoSeleccion === 'consulta' 
-                ? (
-                  profesionalesFiltrados
-                    .filter(p => !especialidadSeleccionada || p.nombre_especialidad === especialidadSeleccionada)
-                    .map(p => (
-                      <option key={p.profesional_id} value={p.profesional_id}>
-                        {p.nombre} {p.apellido}
-                      </option>
-                    ))
-                )
-                : (
-                  profesionalesFiltrados
-                    .filter(p => {
-                      if (!servicioSeleccionado) return true;
-                      const servicioObj = servicios.find(s => s.nombre_servicio === servicioSeleccionado);
-                      if (servicioObj && profesionalServicioMap.servToProf) {
-                        const idServicio = servicioObj.id_servicio;
-                        return profesionalServicioMap.servToProf[idServicio]?.includes(p.profesional_id);
-                      }
-                      return true;
-                    })
-                    .map(p => (
-                      <option key={p.profesional_id} value={p.profesional_id}>
-                        {p.nombre} {p.apellido}
-                      </option>
-                    ))
-                )
-              }
-            </select>
           </div>
         </div>
-      </div>
-    )}
 
-    {/* Mostrar calendario solo si hay profesional seleccionado */}
-    {profesionalSeleccionado && (
-      <div className="calendar-section">
-        <div className="calendar-wrapper">
-          <label className="etiqueta-grupo">
-            Selecciona el día de atención <span className="asterisk">*</span>
-          </label>
-          <CalendarioFechasDisponiblesDayPicker
-            profesionalId={profesionalSeleccionado}
-            fechaSeleccionada={fechaSeleccionada}
-            setFechaSeleccionada={setFechaSeleccionada}
-          />
-        </div>
+        {/* 👇 Mostrar campos solo si se eligió un tipo de atención */}
+        {modoSeleccion && (
+          <div className="tarjeta-seleccion">
+            <div className="form-row triple">
+              <div className="form-column">
+                <label className="etiqueta-grupo">
+                  {modoSeleccion === 'consulta' ? 'Especialidad' : 'Servicio'} <span className="asterisk">*</span>
+                </label>
+                {modoSeleccion === 'consulta' ? (
+                  <select
+                    value={especialidadSeleccionada}
+                    onChange={e => setEspecialidadSeleccionada(e.target.value)}
+                    required
+                  >
+                    <option value="">Selecciona una opción</option>
+                    {[...new Set(profesionalesFiltrados.map(p => p.nombre_especialidad))]
+                      .filter(Boolean)
+                      .map((item, i) => (
+                        <option key={i} value={item}>{item}</option>
+                      ))}
+                  </select>
+                ) : (
+                  <select
+                    value={servicioSeleccionado}
+                    onChange={handleServicioChange}
+                    required
+                  >
+                    <option value="">Selecciona una opción</option>
+                    {serviciosFiltrados
+                      .filter(Boolean)
+                      .map((s, i) => (
+                        <option key={i} value={s.nombre_servicio}>{s.nombre_servicio}</option>
+                      ))}
+                  </select>
+                )}
+              </div>
 
-        <div className="info-fecha-hora">
-          <p><strong>🗓️</strong> {fechaSeleccionada ? fechaMostrada() : '-'}</p>
-          <p><strong>🕒</strong> {fechaSeleccionada ? horaMostrada() : 'No disponible'}</p>
-          {fechaSeleccionada && fechaSeleccionada.nro_consulta && (
-          <p><strong>🔢</strong> Consulta #{fechaSeleccionada.nro_consulta}</p>)}
-        </div>
-      </div>
+              <div className="form-column">
+                <label className="etiqueta-grupo">
+                  Profesional <span className="asterisk">*</span>
+                </label>
+                <select
+                  value={profesionalSeleccionado}
+                  onChange={e => {
+                    handleProfesionalChange(e);
+                    
+                    // Mantener la lógica adicional específica para esta UI
+                    const id = e.target.value;
+                    const profesional = profesionales.find(p => p.profesional_id === id);
+                    
+                    if (modoSeleccion === 'consulta' && profesional?.nombre_especialidad) {
+                      setEspecialidadSeleccionada(profesional.nombre_especialidad);
+                    }
+                    
+                    if (modoSeleccion === 'estudio' && !servicioSeleccionado && profesional?.servicios && profesional.servicios.length > 0) {
+                      setServicioSeleccionado(profesional.servicios[0]);
+                    }
+                  }}
+                  required
+                >
+                  <option value="">Selecciona al profesional</option>
+                  {modoSeleccion === 'consulta' 
+                    ? (
+                      profesionalesFiltrados
+                        .filter(p => !especialidadSeleccionada || p.nombre_especialidad === especialidadSeleccionada)
+                        .map(p => (
+                          <option key={p.profesional_id} value={p.profesional_id}>
+                            {p.nombre} {p.apellido}
+                          </option>
+                        ))
+                    )
+                    : (
+                      profesionalesFiltrados
+                        .filter(p => {
+                          if (!servicioSeleccionado) return true;
+                          const servicioObj = servicios.find(s => s.nombre_servicio === servicioSeleccionado);
+                          if (servicioObj && profesionalServicioMap.servToProf) {
+                            const idServicio = servicioObj.id_servicio;
+                            return profesionalServicioMap.servToProf[idServicio]?.includes(p.profesional_id);
+                          }
+                          return true;
+                        })
+                        .map(p => (
+                          <option key={p.profesional_id} value={p.profesional_id}>
+                            {p.nombre} {p.apellido}
+                          </option>
+                        ))
+                    )
+                  }
+                </select>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Mostrar calendario solo si hay profesional seleccionado */}
+        {profesionalSeleccionado && (
+          <div className="calendar-section">
+            <div className="calendar-wrapper">
+              <label className="etiqueta-grupo">
+                Selecciona el día de atención <span className="asterisk">*</span>
+              </label>
+              <CalendarioFechasDisponiblesDayPicker
+                profesionalId={profesionalSeleccionado}
+                fechaSeleccionada={fechaSeleccionada}
+                setFechaSeleccionada={setFechaSeleccionada}
+              />
+            </div>
+
+            <div className="info-fecha-hora">
+              <p><strong>🗓️</strong> {fechaSeleccionada ? fechaMostrada() : '-'}</p>
+              <p><strong>🕒</strong> {fechaSeleccionada ? horaMostrada() : 'No disponible'}</p>
+              {fechaSeleccionada && fechaSeleccionada.nro_consulta && (
+              <p><strong>🔢</strong> Consulta #{fechaSeleccionada.nro_consulta}</p>)}
+            </div>
+          </div>
+        )}
+      </>
     )}
 
     {/* Botón de continuar */}
@@ -525,13 +599,14 @@ const AgendamientoPrivadoForm = () => {
         onClick={() => setStep(3)}
         className="boton-continuar"
         disabled={
+          isLoading || 
           !fechaSeleccionada ||
           !profesionalSeleccionado ||
           (modoSeleccion === 'consulta' && !especialidadSeleccionada) ||
           (modoSeleccion === 'estudio' && !servicioSeleccionado)
         }
       >
-        Continuar
+        {isLoading ? 'Cargando datos...' : 'Continuar'}
       </button>
     </div>
   </div>
@@ -580,14 +655,24 @@ const AgendamientoPrivadoForm = () => {
         <div className="columna-datos">
           <h4>Datos del paciente</h4>
           <p>{datosPaciente.nombre} {datosPaciente.apellido}</p>
-          <p>{new Date(datosPaciente.fechaNacimiento).toLocaleDateString('es-CL')}</p>
-          <p>{datosPaciente.sexo}</p>
+          <p>{new Date(datosPaciente.fechaNacimiento).toLocaleDateString('es-CL', {
+            day: 'numeric',
+            month: 'long',
+            year: 'numeric'
+          })}</p>
+          <p>{datosPaciente.sexo === 'femenino' ? 'Femenino' : 'Masculino'}</p>
         </div>
       </div>
     </div>
 
     <div className="boton-container">
-      <button onClick={enviarAgendamiento} className="boton-continuar">Enviar solicitud</button>
+      <button 
+        onClick={enviarAgendamiento} 
+        className="boton-continuar"
+        disabled={isLoading}
+      >
+        {isLoading ? 'Procesando...' : 'Enviar solicitud'}
+      </button>
     </div>
   </div>
 )}
