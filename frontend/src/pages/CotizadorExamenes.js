@@ -606,7 +606,7 @@ export default function CotizadorExamenes() {
                 ))}
               </div>
               
-              {tasaCambio && (
+            {/*  {tasaCambio && (
                 <div className="resumen-costos">
                   <div className="costo-item">
                     <span>Total USD:</span>
@@ -627,7 +627,7 @@ export default function CotizadorExamenes() {
               )}
             </>
           )}
-        </div>
+        </div>*/}
 
         {modalInfo && (
           <div className={`modal-overlay ${isMobile ? 'modal-mobile' : ''}`}>
