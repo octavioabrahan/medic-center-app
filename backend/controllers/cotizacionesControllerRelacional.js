@@ -6,17 +6,56 @@ const CotizacionesController = {
    * Crea una nueva cotización y la relaciona con el paciente
    */
   crear: async (req, res) => {
-    const { nombre, apellido, cedula, email, telefono, examenes, tasaCambio } = req.body;
-
-    logGeneral(`🧾 Nueva cotización recibida para: ${nombre} ${apellido} (${cedula})`);
-
-    if (!cedula || !nombre || !apellido || !examenes || !Array.isArray(examenes) || examenes.length === 0 || !tasaCambio) {
-      logGeneral(`❌ Validación fallida al recibir cotización`);
-      return res.status(400).json({ error: 'Datos incompletos' });
-    }
-
     try {
-      // Crear cotización y relacionarla con paciente
+      const { nombre, apellido, cedula, email, telefono, examenes, tasaCambio } = req.body;
+
+      // Log de información recibida para depuración
+      console.log('Datos recibidos:', { 
+        nombre, 
+        apellido, 
+        cedula, 
+        email, 
+        telefono,
+        examenesCantidad: examenes?.length,
+        tasaCambio
+      });
+      
+      logGeneral(`🧾 Nueva cotización recibida para: ${nombre} ${apellido} (${cedula})`);
+
+      // Validación exhaustiva de datos
+      const errores = [];
+      
+      if (!nombre || typeof nombre !== 'string' || nombre.trim() === '') 
+        errores.push('El nombre es requerido');
+      
+      if (!apellido || typeof apellido !== 'string' || apellido.trim() === '') 
+        errores.push('El apellido es requerido');
+      
+      if (!cedula || typeof cedula !== 'string' || cedula.trim() === '') 
+        errores.push('La cédula es requerida');
+      
+      if (!email || typeof email !== 'string' || email.trim() === '') 
+        errores.push('El email es requerido');
+      
+      if (!telefono || typeof telefono !== 'string' || telefono.trim() === '') 
+        errores.push('El teléfono es requerido');
+      
+      if (!examenes || !Array.isArray(examenes) || examenes.length === 0) 
+        errores.push('Debe seleccionar al menos un examen');
+      
+      if (!tasaCambio || isNaN(Number(tasaCambio)) || Number(tasaCambio) <= 0) 
+        errores.push('La tasa de cambio es inválida');
+      
+      // Si hay errores, devolver respuesta de error
+      if (errores.length > 0) {
+        logGeneral(`❌ Validación fallida: ${errores.join(', ')}`);
+        return res.status(400).json({ 
+          error: 'Datos incompletos o inválidos', 
+          detalles: errores 
+        });
+      }
+
+      // Todos los datos están correctos, crear la cotización
       const resultado = await CotizacionesModel.crear({
         nombre,
         apellido,
@@ -43,7 +82,7 @@ const CotizacionesController = {
         totalVES: resultado.totalVES
       });
     } catch (err) {
-      console.error('❌ Error al crear cotización:', err.message);
+      console.error('❌ Error al crear cotización:', err);
       logGeneral(`❌ Error al crear cotización: ${err.message}`);
       res.status(500).json({ error: 'Error al crear cotización', detalle: err.message });
     }
@@ -88,75 +127,6 @@ const CotizacionesController = {
     } catch (err) {
       console.error('❌ Error al obtener cotización:', err.message);
       res.status(500).json({ error: 'Error al obtener cotización', detalle: err.message });
-    }
-  },
-  
-  /**
-   * Actualiza el estado de una cotización
-   */
-  actualizarEstado: async (req, res) => {
-    try {
-      const cotizacionId = req.params.id;
-      const { estado, responsable, observaciones } = req.body;
-      
-      if (!estado) {
-        return res.status(400).json({ error: 'El estado es requerido' });
-      }
-      
-      const resultado = await CotizacionesModel.actualizarEstado(
-        cotizacionId,
-        estado,
-        responsable,
-        observaciones
-      );
-      
-      res.json(resultado);
-    } catch (err) {
-      console.error('❌ Error al actualizar estado:', err.message);
-      res.status(500).json({ error: 'Error al actualizar estado', detalle: err.message });
-    }
-  },
-  
-  /**
-   * Agrega una entrada de seguimiento
-   */
-  agregarSeguimiento: async (req, res) => {
-    try {
-      const cotizacionId = req.params.id;
-      const { tipo, usuario, comentario, resultado } = req.body;
-      
-      if (!tipo || !usuario || !comentario) {
-        return res.status(400).json({ error: 'Faltan datos requeridos' });
-      }
-      
-      const registroSeguimiento = await CotizacionesModel.agregarSeguimiento({
-        cotizacionId,
-        tipo,
-        usuario,
-        comentario,
-        resultado
-      });
-      
-      res.json(registroSeguimiento);
-    } catch (err) {
-      console.error('❌ Error al agregar seguimiento:', err.message);
-      res.status(500).json({ error: 'Error al agregar seguimiento', detalle: err.message });
-    }
-  },
-  
-  /**
-   * Obtiene estadísticas para el dashboard
-   */
-  obtenerEstadisticas: async (req, res) => {
-    try {
-      const fechaDesde = req.query.fechaDesde || new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
-      const fechaHasta = req.query.fechaHasta || new Date();
-      
-      const estadisticas = await CotizacionesModel.obtenerEstadisticas(fechaDesde, fechaHasta);
-      res.json(estadisticas);
-    } catch (err) {
-      console.error('❌ Error al obtener estadísticas:', err.message);
-      res.status(500).json({ error: 'Error al obtener estadísticas', detalle: err.message });
     }
   }
 };

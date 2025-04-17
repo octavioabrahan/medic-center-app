@@ -18,12 +18,54 @@ const CotizacionesModel = {
       tasaCambio
     } = datos;
     
+    // Validar datos antes de interactuar con la BD
+    if (!nombre || !apellido || !cedula || !examenes || !Array.isArray(examenes) || !tasaCambio) {
+      throw new Error('Datos insuficientes para crear la cotización');
+    }
+    
     const client = await db.connect();
     
     try {
       await client.query('BEGIN');
       
+      // Verificar primero si necesitamos crear la tabla cotizaciones o ajustarla
+      await client.query(`
+        DO $$
+        BEGIN
+          -- Revisar si existe la columna total_usd
+          IF NOT EXISTS (
+            SELECT FROM information_schema.columns 
+            WHERE table_name='cotizaciones' AND column_name='total_usd'
+          ) THEN
+            -- Agregar columnas necesarias para el modelo relacional
+            ALTER TABLE cotizaciones 
+              ADD COLUMN total_usd NUMERIC(10,2) NOT NULL DEFAULT 0,
+              ADD COLUMN total_ves NUMERIC(10,2) NOT NULL DEFAULT 0,
+              ADD COLUMN estado VARCHAR(20) NOT NULL DEFAULT 'pendiente',
+              ADD COLUMN observaciones TEXT,
+              ADD COLUMN responsable VARCHAR(100);
+          END IF;
+        END
+        $$;
+      `);
+      
+      // Crear tabla cotizacion_examenes si no existe
+      await client.query(`
+        CREATE TABLE IF NOT EXISTS cotizacion_examenes (
+          id SERIAL PRIMARY KEY,
+          cotizacion_id INT NOT NULL,
+          examen_codigo VARCHAR(50) NOT NULL,
+          nombre_examen VARCHAR(255) NOT NULL,
+          precio_usd NUMERIC(10,2) NOT NULL,
+          precio_ves NUMERIC(10,2) NOT NULL,
+          tiempo_entrega VARCHAR(100),
+          CONSTRAINT fk_cotizacion FOREIGN KEY (cotizacion_id) 
+            REFERENCES cotizaciones(id) ON DELETE CASCADE
+        );
+      `);
+      
       // Buscar si el paciente ya existe por cédula
+      console.log("Buscando paciente con cédula:", cedula);
       const pacienteQuery = await client.query(
         'SELECT * FROM pacientes WHERE cedula = $1',
         [cedula]
@@ -31,6 +73,7 @@ const CotizacionesModel = {
       
       // Si no existe, crear un nuevo paciente
       if (pacienteQuery.rows.length === 0) {
+        console.log("Paciente no encontrado, creando nuevo");
         await client.query(
           'INSERT INTO pacientes (cedula, nombre, apellido, telefono, email) VALUES ($1, $2, $3, $4, $5)',
           [cedula, nombre, apellido, telefono, email]
@@ -38,6 +81,7 @@ const CotizacionesModel = {
         logGeneral(`🆕 Paciente creado: ${nombre} ${apellido} (${cedula})`);
       } else {
         // Si existe, actualizar datos de contacto
+        console.log("Paciente encontrado, actualizando datos");
         await client.query(
           'UPDATE pacientes SET email = $1, telefono = $2 WHERE cedula = $3',
           [email, telefono, cedula]
@@ -46,8 +90,13 @@ const CotizacionesModel = {
       }
       
       // Calcular totales
-      const totalUSD = examenes.reduce((sum, examen) => sum + Number(examen.precio), 0);
-      const totalVES = totalUSD * tasaCambio;
+      const totalUSD = examenes.reduce((sum, examen) => {
+        const precio = Number(examen.precio);
+        return sum + (isNaN(precio) ? 0 : precio);
+      }, 0);
+      const totalVES = totalUSD * Number(tasaCambio);
+      
+      console.log("Totales calculados:", { totalUSD, totalVES });
       
       // Guardar cotización con referencia a la cédula del paciente
       const resultCotizacion = await client.query(
@@ -55,18 +104,32 @@ const CotizacionesModel = {
         [cedula, totalUSD, totalVES, 'pendiente']
       );
       
+      if (!resultCotizacion.rows || resultCotizacion.rows.length === 0) {
+        throw new Error('Error al crear la cotización: no se generó ID');
+      }
+      
       const cotizacionId = resultCotizacion.rows[0].id;
+      console.log("Cotización creada con ID:", cotizacionId);
       
       // Registrar exámenes cotizados
       for (const examen of examenes) {
+        // Validar que el examen tenga los datos necesarios
+        if (!examen.codigo || !examen.nombre || !examen.precio) {
+          console.warn(`Examen incompleto: ${JSON.stringify(examen)}`);
+          continue; // Saltar este examen
+        }
+        
+        const precioUSD = Number(examen.precio);
+        const precioVES = precioUSD * Number(tasaCambio);
+        
         await client.query(
           'INSERT INTO cotizacion_examenes (cotizacion_id, examen_codigo, nombre_examen, precio_usd, precio_ves, tiempo_entrega) VALUES ($1, $2, $3, $4, $5, $6)',
           [
             cotizacionId, 
             examen.codigo, 
             examen.nombre, 
-            Number(examen.precio), 
-            Number(examen.precio) * tasaCambio,
+            precioUSD, 
+            precioVES,
             examen.tiempo_entrega || null
           ]
         );
@@ -82,6 +145,7 @@ const CotizacionesModel = {
       };
     } catch (error) {
       await client.query('ROLLBACK');
+      console.error("Error en proceso de cotización:", error);
       throw error;
     } finally {
       client.release();
@@ -109,7 +173,13 @@ const CotizacionesModel = {
           email: cotizacion.email,
           telefono: cotizacion.telefono
         },
-        cotizacion: cotizacion.examenes,
+        cotizacion: cotizacion.examenes.map(e => ({
+          codigo: e.examen_codigo,
+          nombre: e.nombre_examen,
+          precioUSD: e.precio_usd,
+          precioVES: e.precio_ves,
+          tiempo_entrega: e.tiempo_entrega
+        })),
         totalUSD: cotizacion.total_usd,
         totalVES: cotizacion.total_ves,
         fecha: cotizacion.fecha
@@ -123,12 +193,6 @@ const CotizacionesModel = {
         `, rutaPDF);
         
         logEmail(`📤 Enviado a ${email} -> archivo: ${rutaPDF}`);
-        
-        // Registrar el envío de email
-        await db.query(
-          'INSERT INTO cotizacion_seguimiento (cotizacion_id, tipo, usuario, comentario, resultado) VALUES ($1, $2, $3, $4, $5)',
-          [cotizacionId, 'email', 'sistema', 'Envío automático de cotización', 'enviado']
-        );
         
         return { enviado: true, rutaPDF };
       }
@@ -182,199 +246,7 @@ const CotizacionesModel = {
       
       cotizacion.examenes = examenesResult.rows;
       
-      // Obtener seguimiento de la cotización
-      const seguimientoResult = await client.query(`
-        SELECT * FROM cotizacion_seguimiento
-        WHERE cotizacion_id = $1
-        ORDER BY fecha DESC
-      `, [id]);
-      
-      cotizacion.seguimiento = seguimientoResult.rows;
-      
       return cotizacion;
-    } finally {
-      client.release();
-    }
-  },
-  
-  /**
-   * Obtiene cotizaciones para el panel administrativo con filtros
-   */
-  obtenerParaAdmin: async (filtros = {}) => {
-    const { 
-      cedula, 
-      nombre,
-      estado, 
-      fechaDesde, 
-      fechaHasta,
-      page = 1, 
-      limit = 20 
-    } = filtros;
-    
-    let query = `
-      SELECT 
-        c.id, 
-        c.fecha, 
-        c.total_usd, 
-        c.total_ves, 
-        c.estado, 
-        c.responsable,
-        p.cedula,
-        p.nombre,
-        p.apellido,
-        p.telefono,
-        p.email
-      FROM cotizaciones c
-      JOIN pacientes p ON c.paciente_id = p.cedula
-      WHERE 1=1
-    `;
-    
-    const params = [];
-    let paramIndex = 1;
-    
-    // Aplicar filtros
-    if (cedula) {
-      query += ` AND p.cedula = $${paramIndex++}`;
-      params.push(cedula);
-    }
-    
-    if (nombre) {
-      query += ` AND (LOWER(p.nombre) LIKE $${paramIndex++} OR LOWER(p.apellido) LIKE $${paramIndex++})`;
-      const termBusqueda = `%${nombre.toLowerCase()}%`;
-      params.push(termBusqueda, termBusqueda);
-    }
-    
-    if (estado) {
-      query += ` AND c.estado = $${paramIndex++}`;
-      params.push(estado);
-    }
-    
-    if (fechaDesde) {
-      query += ` AND c.fecha >= $${paramIndex++}`;
-      params.push(fechaDesde);
-    }
-    
-    if (fechaHasta) {
-      query += ` AND c.fecha <= $${paramIndex++}`;
-      params.push(fechaHasta);
-    }
-    
-    // Ordenar y paginar
-    query += ` ORDER BY c.fecha DESC LIMIT $${paramIndex++} OFFSET $${paramIndex++}`;
-    params.push(limit, (page - 1) * limit);
-    
-    // Consulta de conteo para la paginación
-    let countQuery = query.replace(/SELECT .* FROM/, 'SELECT COUNT(*) FROM').replace(/ORDER BY .* LIMIT.*/, '');
-    
-    const client = await db.connect();
-    
-    try {
-      const result = await client.query(query, params);
-      const countResult = await client.query(countQuery, params.slice(0, -2));
-      
-      return {
-        cotizaciones: result.rows,
-        total: parseInt(countResult.rows[0].count),
-        page,
-        limit
-      };
-    } finally {
-      client.release();
-    }
-  },
-  
-  /**
-   * Actualiza el estado de una cotización
-   */
-  actualizarEstado: async (id, estado, responsable = null, observaciones = null) => {
-    const query = `
-      UPDATE cotizaciones
-      SET 
-        estado = $1,
-        responsable = COALESCE($2, responsable),
-        observaciones = COALESCE($3, observaciones)
-      WHERE id = $4
-      RETURNING *
-    `;
-    
-    const result = await db.query(query, [estado, responsable, observaciones, id]);
-    return result.rows[0];
-  },
-  
-  /**
-   * Registra una nueva entrada de seguimiento
-   */
-  agregarSeguimiento: async (datos) => {
-    const { cotizacionId, tipo, usuario, comentario, resultado } = datos;
-    
-    const query = `
-      INSERT INTO cotizacion_seguimiento 
-        (cotizacion_id, tipo, usuario, comentario, resultado)
-      VALUES ($1, $2, $3, $4, $5)
-      RETURNING *
-    `;
-    
-    const result = await db.query(query, [
-      cotizacionId, 
-      tipo, 
-      usuario, 
-      comentario, 
-      resultado
-    ]);
-    
-    return result.rows[0];
-  },
-  
-  /**
-   * Obtiene estadísticas para el dashboard administrativo
-   */
-  obtenerEstadisticas: async (fechaDesde, fechaHasta) => {
-    const client = await db.connect();
-    
-    try {
-      await client.query('BEGIN');
-      
-      // Total de cotizaciones por estado
-      const estadosResult = await client.query(`
-        SELECT estado, COUNT(*) as cantidad, SUM(total_usd) as suma_usd
-        FROM cotizaciones
-        WHERE fecha BETWEEN $1 AND $2
-        GROUP BY estado
-      `, [fechaDesde, fechaHasta]);
-      
-      // Exámenes más solicitados
-      const examenesResult = await client.query(`
-        SELECT examen_codigo, nombre_examen, COUNT(*) as cantidad
-        FROM cotizacion_examenes ce
-        JOIN cotizaciones c ON ce.cotizacion_id = c.id
-        WHERE c.fecha BETWEEN $1 AND $2
-        GROUP BY examen_codigo, nombre_examen
-        ORDER BY cantidad DESC
-        LIMIT 10
-      `, [fechaDesde, fechaHasta]);
-      
-      // Cotizaciones por día (para gráfico)
-      const cotizacionesPorDiaResult = await client.query(`
-        SELECT 
-          DATE(fecha) as dia, 
-          COUNT(*) as cantidad, 
-          SUM(total_usd) as suma_usd
-        FROM cotizaciones
-        WHERE fecha BETWEEN $1 AND $2
-        GROUP BY dia
-        ORDER BY dia
-      `, [fechaDesde, fechaHasta]);
-      
-      await client.query('COMMIT');
-      
-      return {
-        porEstado: estadosResult.rows,
-        examenesMasSolicitados: examenesResult.rows,
-        cotizacionesPorDia: cotizacionesPorDiaResult.rows
-      };
-    } catch (error) {
-      await client.query('ROLLBACK');
-      throw error;
     } finally {
       client.release();
     }

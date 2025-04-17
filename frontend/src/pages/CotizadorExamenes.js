@@ -96,6 +96,14 @@ export default function CotizadorExamenes() {
     setError(null);
 
     try {
+      // Preparar los datos de los exámenes con la estructura correcta
+      const examenesFormateados = seleccionados.map(examen => ({
+        codigo: examen.codigo,
+        nombre: examen.nombre,
+        precio: Number(examen.precio),
+        tiempo_entrega: examen.tiempo_entrega || null
+      }));
+
       // Enviar cotización a la API
       const res = await fetch(`${process.env.REACT_APP_API_URL}/api/cotizaciones`, {
         method: 'POST',
@@ -106,7 +114,7 @@ export default function CotizadorExamenes() {
           cedula: form.cedula,
           email: form.email,
           telefono: form.telefono,
-          examenes: seleccionados,
+          examenes: examenesFormateados,
           tasaCambio
         })
       });
