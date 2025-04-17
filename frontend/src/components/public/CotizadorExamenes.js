@@ -28,6 +28,14 @@ export default function CotizadorExamenes() {
   const [error, setError] = useState(null);
 
   const isMobile = useMediaQuery({ maxWidth: 768 });
+  
+  const [formErrors, setFormErrors] = useState({
+  cedula: false,
+  nombre: false,
+  apellido: false,
+  fecha_nacimiento: false,
+  email: false
+  });
 
   useEffect(() => {
     // Cargar exámenes
@@ -67,18 +75,32 @@ export default function CotizadorExamenes() {
   };
 
   const handleSubmit = async () => {
-    // Validaciones básicas
-    if (!form.cedula || !form.nombre || !form.apellido || !form.email || 
-        !acepta || !captchaValido || seleccionados.length === 0) {
-      setError('Por favor, completa todos los campos obligatorios, acepta los términos y selecciona al menos un examen.');
+    // Validar campos obligatorios
+    const errors = {
+      cedula: !form.cedula,
+      nombre: !form.nombre,
+      apellido: !form.apellido,
+      fecha_nacimiento: !form.fecha_nacimiento,
+      email: !form.email
+    };
+    
+    const hasErrors = Object.values(errors).some(error => error);
+    
+    if (hasErrors || !acepta || !captchaValido || seleccionados.length === 0) {
+      setFormErrors(errors);
+      
+      if (seleccionados.length === 0) {
+        setError('Por favor, selecciona al menos un examen.');
+      } else if (!acepta) {
+        setError('Debes aceptar los términos para continuar.');
+      } else if (!captchaValido) {
+        setError('Por favor, completa el captcha.');
+      } else {
+        setError('Por favor, completa todos los campos obligatorios.');
+      }
       return;
     }
-
-    if (!form.fecha_nacimiento) {
-      setError('La fecha de nacimiento es obligatoria.');
-      return;
-    }
-
+  
     setCargando(true);
     setError(null);
 
@@ -200,86 +222,118 @@ export default function CotizadorExamenes() {
                 Usaremos esta información para contactarte y enviarte el detalle de tu cotización.
               </p>
 
-              <div className="form-group">
-                <label htmlFor="cedula">Cédula <span className="required">*</span></label>
-                <input 
-                  id="cedula" 
-                  className="form-input" 
-                  placeholder="Tu número de cédula" 
-                  value={form.cedula} 
-                  onChange={e => setForm({ ...form, cedula: e.target.value })} 
-                />
-              </div>
+<div className="form-group">
+  <label htmlFor="cedula">Cédula <span className="required">*</span></label>
+  <input 
+    id="cedula" 
+    className={`form-input ${formErrors.cedula ? 'input-error' : ''}`}
+    placeholder="Tu número de cédula" 
+    value={form.cedula} 
+    onChange={e => {
+      setForm({ ...form, cedula: e.target.value });
+      if (e.target.value) setFormErrors({...formErrors, cedula: false});
+    }} 
+  />
+  {formErrors.cedula && <div className="error-message-field">Este campo es obligatorio</div>}
+</div>
 
-              <div className="form-group">
-                <label htmlFor="nombre">Nombre <span className="required">*</span></label>
-                <input 
-                  id="nombre" 
-                  className="form-input" 
-                  placeholder="Tu nombre" 
-                  value={form.nombre} 
-                  onChange={e => setForm({ ...form, nombre: e.target.value })} 
-                />
-              </div>
+<div className="form-group">
+  <label htmlFor="nombre">Nombre <span className="required">*</span></label>
+  <input 
+    id="nombre" 
+    className={`form-input ${formErrors.nombre ? 'input-error' : ''}`}
+    placeholder="Tu nombre" 
+    value={form.nombre} 
+    onChange={e => {
+      setForm({ ...form, nombre: e.target.value });
+      if (e.target.value) setFormErrors({...formErrors, nombre: false});
+    }} 
+  />
+  {formErrors.nombre && <div className="error-message-field">Este campo es obligatorio</div>}
+</div>
 
-              <div className="form-group">
-                <label htmlFor="apellido">Apellido <span className="required">*</span></label>
-                <input 
-                  id="apellido" 
-                  className="form-input" 
-                  placeholder="Tu apellido" 
-                  value={form.apellido} 
-                  onChange={e => setForm({ ...form, apellido: e.target.value })} 
-                />
-              </div>
+<div className="form-group">
+  <label htmlFor="apellido">Apellido <span className="required">*</span></label>
+  <input 
+    id="apellido" 
+    className={`form-input ${formErrors.apellido ? 'input-error' : ''}`}
+    placeholder="Tu apellido" 
+    value={form.apellido} 
+    onChange={e => {
+      setForm({ ...form, apellido: e.target.value });
+      if (e.target.value) setFormErrors({...formErrors, apellido: false});
+    }}
+  />
+  {formErrors.apellido && <div className="error-message-field">Este campo es obligatorio</div>}
+</div>
 
-              <div className="form-group">
-                <label htmlFor="fecha_nacimiento">Fecha de nacimiento <span className="required">*</span></label>
-                <input 
-                  id="fecha_nacimiento" 
-                  type="date" 
-                  className="form-input" 
-                  value={form.fecha_nacimiento} 
-                  onChange={e => setForm({ ...form, fecha_nacimiento: e.target.value })} 
-                />
-              </div>
+<div className="form-group">
+  <label htmlFor="fecha_nacimiento">Fecha de nacimiento <span className="required">*</span></label>
+  <input 
+    id="fecha_nacimiento" 
+    type="date" 
+    className={`form-input ${formErrors.fecha_nacimiento ? 'input-error' : ''}`}
+    value={form.fecha_nacimiento} 
+    onChange={e => {
+      setForm({ ...form, fecha_nacimiento: e.target.value });
+      if (e.target.value) setFormErrors({...formErrors, fecha_nacimiento: false});
+    }}
+  />
+  {formErrors.fecha_nacimiento && <div className="error-message-field">Este campo es obligatorio</div>}
+</div>
 
-              <div className="form-group">
-                <label htmlFor="sexo">Sexo</label>
-                <select 
-                  id="sexo" 
-                  className="form-input" 
-                  value={form.sexo} 
-                  onChange={e => setForm({ ...form, sexo: e.target.value })}
-                >
-                  <option value="M">Masculino</option>
-                  <option value="F">Femenino</option>
-                  <option value="O">Otro</option>
-                </select>
-              </div>
+<div className="form-group">
+  <label>Sexo <span className="required">*</span></label>
+  <div className="radio-group">
+    <label className="radio-label">
+      <input 
+        type="radio" 
+        name="sexo" 
+        value="F" 
+        checked={form.sexo === 'F'} 
+        onChange={() => setForm({ ...form, sexo: 'F' })}
+      />
+      Femenino
+    </label>
+    <label className="radio-label">
+      <input 
+        type="radio" 
+        name="sexo" 
+        value="M" 
+        checked={form.sexo === 'M'} 
+        onChange={() => setForm({ ...form, sexo: 'M' })}
+      />
+      Masculino
+    </label>
+  </div>
+</div>
 
-              <div className="form-group">
-                <label htmlFor="telefono">Teléfono</label>
-                <input 
-                  id="telefono" 
-                  className="form-input" 
-                  placeholder="Número donde podamos contactarte" 
-                  value={form.telefono} 
-                  onChange={e => setForm({ ...form, telefono: e.target.value })} 
-                />
-              </div>
+<div className="form-group">
+  <label htmlFor="telefono">Teléfono</label>
+  <input 
+    id="telefono" 
+    className="form-input"
+    placeholder="Número donde podamos contactarte" 
+    value={form.telefono} 
+    onChange={e => setForm({ ...form, telefono: e.target.value })}
+  />
+</div>
 
-              <div className="form-group">
-                <label htmlFor="email">Correo electrónico <span className="required">*</span></label>
-                <input 
-                  id="email" 
-                  className="form-input" 
-                  type="email"
-                  placeholder="Correo para enviarte la cotización" 
-                  value={form.email} 
-                  onChange={e => setForm({ ...form, email: e.target.value })} 
-                />
-              </div>
+<div className="form-group">
+  <label htmlFor="email">Correo electrónico <span className="required">*</span></label>
+  <input 
+    id="email" 
+    className={`form-input ${formErrors.email ? 'input-error' : ''}`}
+    type="email"
+    placeholder="Correo para enviarte la cotización" 
+    value={form.email} 
+    onChange={e => {
+      setForm({ ...form, email: e.target.value });
+      if (e.target.value) setFormErrors({...formErrors, email: false});
+    }}
+  />
+  {formErrors.email && <div className="error-message-field">Este campo es obligatorio</div>}
+</div>
 
               <div className="checkbox-line">
                 <input 
