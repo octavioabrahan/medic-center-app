@@ -187,9 +187,9 @@ function CotizacionesAdmin() {
   };
 
   // Ver PDF de cotización
-  const viewPdf = (folio) => {
-    window.open(`${process.env.REACT_APP_API_URL}/pdfs/cotizacion_${folio}_${currentCotizacion?.nombre?.toLowerCase().replace(/\s+/g, '_')}_*.pdf`, '_blank');
-  };
+  //const viewPdf = (folio) => {
+  //  window.open(`${process.env.REACT_APP_API_URL}/pdfs/cotizacion_${folio}_${currentCotizacion?.nombre?.toLowerCase().replace(/\s+/g, '_')}_*.pdf`, '_blank');
+  //};
 
   // Abrir modal de seguimiento
   const openSeguimientoModal = (cotizacion) => {
@@ -403,9 +403,9 @@ function CotizacionesAdmin() {
               <button className="btn-primary" onClick={() => openSeguimientoModal(currentCotizacion)}>
                 Gestionar Seguimiento
               </button>
-              <button className="btn-secondary" onClick={() => viewPdf(currentCotizacion.folio)}>
+            {/*  <button className="btn-secondary" onClick={() => viewPdf(currentCotizacion.folio)}>
                 Ver PDF
-              </button>
+              </button>*/}
             </div>
           </div>
         </div>
