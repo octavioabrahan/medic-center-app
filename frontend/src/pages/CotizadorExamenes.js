@@ -534,7 +534,7 @@ export default function CotizadorExamenes() {
                 {captchaValido ? "CAPTCHA ✓" : "Simular CAPTCHA"}
               </button>
 
-              {/* Botón para mostrar el panel de depuración */}
+              {/* Botón para mostrar el panel de depuración 
               <button 
                 onClick={() => {
                   console.log('🔍 DEBUG: Mostrando información completa');
@@ -552,7 +552,7 @@ export default function CotizadorExamenes() {
                 style={{ marginTop: '10px', background: '#f0f0f0', border: '1px solid #ccc', padding: '5px 10px' }}
               >
                 Mostrar depuración
-              </button>
+              </button>*/}
 
               <div className="form-buttons">
                 <button className="btn-volver" onClick={() => setModoFormulario(false)}>
