@@ -155,6 +155,11 @@ export default function CotizadorExamenes() {
               </div>
 
               <div className="form-group">
+                <label htmlFor="nombre">Apellido</label>
+                <input id="nombre" className="form-input" placeholder="¿Cuál es tu nombre?" value={form.nombre} onChange={e => setForm({ ...form, nombre: e.target.value })} />
+              </div>
+
+              <div className="form-group">
                 <label htmlFor="rut">Cédula</label>
                 <input id="rut" className="form-input" placeholder="Tu número de cédula" value={form.rut} onChange={e => setForm({ ...form, rut: e.target.value })} />
               </div>
