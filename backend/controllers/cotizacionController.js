@@ -57,14 +57,14 @@ const obtenerPorIdOFolio = async (req, res) => {
     // Verificar si es un ID numérico o un folio
     if (!isNaN(id)) {
       cotizacionQuery = await pool.query(`
-        SELECT c.*, cl.nombre, cl.apellido, cl.email 
+        SELECT c.*, cl.nombre, cl.apellido, cl.email, cl.telefono 
         FROM cotizaciones c
         JOIN clientes cl ON c.cedula_cliente = cl.cedula
         WHERE c.id_unico = $1
       `, [id]);
     } else {
       cotizacionQuery = await pool.query(`
-        SELECT c.*, cl.nombre, cl.apellido, cl.email 
+        SELECT c.*, cl.nombre, cl.apellido, cl.email, cl.telefono 
         FROM cotizaciones c
         JOIN clientes cl ON c.cedula_cliente = cl.cedula
         WHERE c.folio = $1
@@ -92,7 +92,6 @@ const obtenerPorIdOFolio = async (req, res) => {
     res.json(resultado);
   } catch (err) {
     console.error('Error al obtener cotización:', err);
-    logGeneral(`❌ Error al obtener cotización: ${err.message}`);
     res.status(500).json({ error: 'Error al obtener cotización' });
   }
 };
