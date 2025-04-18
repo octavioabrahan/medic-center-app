@@ -23,7 +23,7 @@ const AgendamientoPrivadoForm = () => {
   const [profesionalServicioMap, setProfesionalServicioMap] = useState({});
 
   const [especialidadSeleccionada, setEspecialidadSeleccionada] = useState('');
-  const [servicioSeleccionado, setServicioSeleccionado] = useState('');
+  const [serviciosSeleccionados, setServiciosSeleccionados] = useState([]);
   const [profesionalSeleccionado, setProfesionalSeleccionado] = useState('');
   const [fechaSeleccionada, setFechaSeleccionada] = useState(null);
   
@@ -191,21 +191,22 @@ const AgendamientoPrivadoForm = () => {
   };
 
   const enviarAgendamiento = async () => {
-    // Verificar si isLoading es true
     if (isLoading) {
       alert("Aún se están cargando datos necesarios. Por favor espere.");
       return;
     }
     
+    if (serviciosSeleccionados.length === 0) {
+      alert("Debes seleccionar al menos un servicio");
+      return;
+    }
+    
     const representanteCedula = sinCedula ? `${datosRepresentante.cedula}-${datosRepresentante.numeroHijo}` : null;
     
-    // Obtener IDs de categoría y tipo de atención dinámicamente
-    // Ya no usamos modoSeleccion, sino que obtenemos la categoría correspondiente al servicio
-    const servicioObj = servicios.find(s => s.nombre_servicio === servicioSeleccionado);
-    const categoriaId = getCategoriaId('Consulta'); // Siempre usamos consulta por defecto o podríamos derivarlo del servicio
-    const tipoAtencionId = getTipoAtencionId('Presencial'); // Siempre usamos presencial por defecto
+    // Obtener IDs de forma simplificada
+    const categoriaId = getCategoriaId('Consulta');
+    const tipoAtencionId = getTipoAtencionId('Presencial');
     
-    // Validar que existan las categorías y tipos de atención
     if (!categoriaId) {
       alert(`No se encontró la categoría correspondiente.`);
       return;
@@ -231,7 +232,7 @@ const AgendamientoPrivadoForm = () => {
       profesional_id: profesionalSeleccionado,
       fecha_agendada: fechaSeleccionada?.fecha || fechaSeleccionada,
       tipo_atencion_id: tipoAtencionId,
-      observaciones: servicioSeleccionado, // Usamos el servicio seleccionado como observación
+      observaciones: serviciosSeleccionados.join(", "), // Unimos todos los servicios con comas
       id_categoria: categoriaId,
       nro_consulta: fechaSeleccionada?.nro_consulta || null
     };
@@ -412,13 +413,18 @@ const AgendamientoPrivadoForm = () => {
     </div>
 
     <div className="boton-container">
-      <button 
-        type="submit" 
-        className="boton-continuar"
-        disabled={isLoading}
-      >
-        {isLoading ? 'Cargando datos...' : 'Continuar'}
-      </button>
+    <button
+  onClick={() => setStep(3)}
+  className="boton-continuar"
+  disabled={
+    isLoading || 
+    !fechaSeleccionada ||
+    !profesionalSeleccionado ||
+    serviciosSeleccionados.length === 0
+  }
+>
+  {isLoading ? 'Cargando datos...' : 'Continuar'}
+</button>
     </div>
   </form>
 )}
@@ -486,31 +492,44 @@ const AgendamientoPrivadoForm = () => {
             </div>
             
             {profesionalSeleccionado && (
-              <div className="form-column">
-                <label className="etiqueta-grupo">
-                  Servicio <span className="asterisk">*</span>
-                </label>
-                <select
-                  value={servicioSeleccionado}
-                  onChange={e => setServicioSeleccionado(e.target.value)}
-                  required
-                >
-                  <option value="">Selecciona un servicio</option>
-                  {serviciosFiltrados
-                    .filter(s => {
-                      // Filtramos para mostrar solo los servicios del profesional seleccionado
-                      if (!profesionalSeleccionado) return true;
-                      const profServicios = profesionalServicioMap.profToServ?.[profesionalSeleccionado] || [];
-                      return profServicios.includes(s.id_servicio);
-                    })
-                    .map(s => (
-                      <option key={s.id_servicio} value={s.nombre_servicio}>
-                        {s.nombre_servicio}
-                      </option>
-                    ))}
-                </select>
-              </div>
-            )}
+  <div className="form-column">
+    <label className="etiqueta-grupo">
+      Servicios <span className="asterisk">*</span>
+    </label>
+    <div className="servicios-checkbox-container">
+      {servicios
+        .filter(s => {
+          // Filtramos para mostrar solo los servicios del profesional seleccionado
+          if (!profesionalSeleccionado) return false;
+          const profServicios = profesionalServicioMap.profToServ?.[profesionalSeleccionado] || [];
+          return profServicios.includes(s.id_servicio);
+        })
+        .map(s => (
+          <div key={s.id_servicio} className="servicio-checkbox-item">
+            <input
+              type="checkbox"
+              id={`servicio-${s.id_servicio}`}
+              value={s.nombre_servicio}
+              checked={serviciosSeleccionados.includes(s.nombre_servicio)}
+              onChange={(e) => {
+                if (e.target.checked) {
+                  setServiciosSeleccionados([...serviciosSeleccionados, s.nombre_servicio]);
+                } else {
+                  setServiciosSeleccionados(
+                    serviciosSeleccionados.filter(servicio => servicio !== s.nombre_servicio)
+                  );
+                }
+              }}
+            />
+            <label htmlFor={`servicio-${s.id_servicio}`}>{s.nombre_servicio}</label>
+          </div>
+        ))}
+    </div>
+    {serviciosSeleccionados.length === 0 && (
+      <div className="error-message-field">Selecciona al menos un servicio</div>
+    )}
+  </div>
+)}
           </div>
         </div>
 
@@ -573,12 +592,13 @@ const AgendamientoPrivadoForm = () => {
     <div className="bloque-info">
       <h3>Información de su cita</h3>
       <div className="tarjeta-info">
-        <p><strong>🩺 {modoSeleccion === 'consulta' ? especialidadSeleccionada : servicioSeleccionado}</strong></p>
+        <p><strong>🩺 {especialidadSeleccionada}</strong></p>
         <p><strong>👤 {profesionales.find(p => p.profesional_id === profesionalSeleccionado)?.nombre} {profesionales.find(p => p.profesional_id === profesionalSeleccionado)?.apellido}</strong></p>
+        <p><strong>🔬 Servicios:</strong> {serviciosSeleccionados.join(", ")}</p>
         <p><strong>📅 {fechaMostrada()}</strong></p>
         <p><strong>🕐 {horaMostrada()}</strong></p>
         {fechaSeleccionada && fechaSeleccionada.nro_consulta && (
-    <p><strong>🔢 Consulta #{fechaSeleccionada.nro_consulta}</strong></p>)}
+        <p><strong>🔢 Consulta #{fechaSeleccionada.nro_consulta}</strong></p>)}
         <p className="nota-horario">La atención será por orden de llegada según el horario del profesional.</p>
       </div>
     </div>
@@ -621,8 +641,6 @@ const AgendamientoPrivadoForm = () => {
     </div>
   </div>
 )}
-
-
         {/* Paso 4 */}
         {step === 4 && (
   <div className="confirmacion-final">
