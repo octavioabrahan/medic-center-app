@@ -113,10 +113,10 @@ const AgendamientoPrivadoForm = () => {
   );
 
   // Filtrar profesionales por servicio seleccionado (si hay uno)
-  const profesionalesFiltrados = servicioSeleccionados
+  const profesionalesFiltrados = serviciosSeleccionados
     ? profesionalesPorCategoria.filter(p => {
         // Si tenemos un ID de servicio y un mapa de servicio a profesionales
-        const servicioObj = servicios.find(s => s.nombre_servicio === servicioSeleccionados);
+        const servicioObj = servicios.find(s => s.nombre_servicio === serviciosSeleccionados);
         if (servicioObj && profesionalServicioMap.servToProf) {
           const idServicio = servicioObj.id_servicio;
           return profesionalServicioMap.servToProf[idServicio]?.includes(p.profesional_id);
@@ -138,7 +138,7 @@ const AgendamientoPrivadoForm = () => {
 
   // Manejar cambio de servicio
   const handleServicioChange = (e) => {
-    setServicioSeleccionados(e.target.value);
+    setServiciosSeleccionados(e.target.value);
     // Si el profesional actual no puede realizar este servicio, reseteamos la selección
     const servicioObj = servicios.find(s => s.nombre_servicio === e.target.value);
     if (servicioObj && profesionalSeleccionado) {
@@ -154,12 +154,12 @@ const AgendamientoPrivadoForm = () => {
   const handleProfesionalChange = (e) => {
     setProfesionalSeleccionado(e.target.value);
     // Si el servicio actual no puede ser realizado por este profesional, reseteamos la selección
-    const servicioObj = servicios.find(s => s.nombre_servicio === servicioSeleccionados);
+    const servicioObj = servicios.find(s => s.nombre_servicio === serviciosSeleccionados);
     if (servicioObj && e.target.value) {
       const idServicio = servicioObj.id_servicio;
       const puedeRealizarlo = profesionalServicioMap.profToServ[e.target.value]?.includes(idServicio);
       if (!puedeRealizarlo) {
-        setServicioSeleccionados('');
+        setServiciosSeleccionados('');
       }
     }
   };
