@@ -4,7 +4,7 @@ import './CotizadorExamenes.css';
 import MailIcon from '../../assets/Mail.svg';
 import ArrowLeftIcon from '../../assets/ArrowLeft.svg';
 
-export default function CotizadorExamenes() {
+  export default function CotizadorExamenes() {
   const [examenes, setExamenes] = useState([]);
   const [tasaCambio, setTasaCambio] = useState(null);
   const [busqueda, setBusqueda] = useState('');
@@ -295,7 +295,7 @@ export default function CotizadorExamenes() {
                 {formErrors.fecha_nacimiento && <div className="error-message-field">Este campo es obligatorio</div>}
               </div>
 
-              <div className="form-group">
+              <div className="form-group sexo-group">
                 <label>Sexo <span className="required">*</span></label>
                 <div className="radio-group">
                   <label className="radio-label">
