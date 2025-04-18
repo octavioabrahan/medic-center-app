@@ -122,10 +122,6 @@ body {
   padding-left: 1.6rem;
   margin-top: 0.25rem;
   text-align: left;
-  text-decoration: underline;
-  text-underline-offset: 2px;
-  text-decoration-thickness: 1px;
-  text-decoration-color: rgba(0, 0, 0, 0.5);
 }
 
 /* Exámenes seleccionados */
@@ -152,10 +148,6 @@ body {
   color: #000;
   cursor: pointer;
   padding: 0;
-  text-decoration: underline;
-  text-underline-offset: 2px;
-  text-decoration-thickness: 1px;
-  text-decoration-color: rgba(0, 0, 0, 0.5);
 }
 
 /* Botón cerrar (X) */
@@ -268,17 +260,11 @@ body {
   transition: border-color 0.2s, background-color 0.2s;
 }
 
-.form-input::placeholder {
-  color: #6b7280;
-  opacity: 0.8;
-}
-
 .form-input:focus {
   outline: none;
   border-color: #1e3a8a;
   box-shadow: 0 0 0 2px rgba(30, 58, 138, 0.1);
 }
-
 
 .form-group {
   margin-bottom: 1rem;
@@ -540,48 +526,21 @@ body {
   .cotizador-right {
     order: 2;
     width: 100%;
-    margin-top: 1rem;
-    margin-bottom: 5rem; /* Espacio para botones sticky en mobile */
+    margin-top: 1.5rem;
     position: relative;
     top: 0;
   }
 
-  .bottom-button-container {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    background-color: white;
-    padding: 1rem;
-    z-index: 50;
-    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
-    display: flex;
-    justify-content: center;
-  }
-  
-  .btn-continuar {
-    width: 85%;
-    max-width: 250px;
-  }
-
   .form-buttons {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    background-color: white;
-    padding: 1rem;
-    z-index: 50;
-    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
-    margin: 0;
-    flex-direction: row;
-    justify-content: space-between;
+    flex-direction: column;
+    gap: 1rem;
   }
 
   .btn-volver, .btn-enviar {
-    width: 48%;
+    width: 100%;
+    justify-content: center;
   }
-  
+
   .modal-mobile .modal-box {
     width: 95%;
     max-height: 90vh;
@@ -591,10 +550,6 @@ body {
   .thankyou-buttons {
     flex-direction: column;
     align-items: center;
-  }
-  
-  .form-container {
-    padding-bottom: 5rem; /* Espacio para los botones fijos */
   }
 }
 
