@@ -295,24 +295,26 @@ import ArrowLeftIcon from '../../assets/ArrowLeft.svg';
                 {formErrors.fecha_nacimiento && <div className="error-message-field">Este campo es obligatorio</div>}
               </div>
 
-              <div className="form-group sexo-group">
-                <label>Sexo <span className="required">*</span></label>
-                <div className="radio-group">
-                  <label className="radio-label">
+              <div className="form-group" style={{ marginBottom: '0.5rem' }}>
+                <label style={{ color: '#000', marginBottom: 0 }}>Sexo <span className="required">*</span></label>
+                <div style={{ display: 'flex', gap: '30px', marginTop: '5px' }}>
+                  <label style={{ display: 'flex', alignItems: 'center', cursor: 'pointer', color: '#000', fontSize: '14px' }}>
                     <input 
                       type="radio" 
                       name="sexo" 
                       value="F" 
+                      style={{ marginRight: '6px' }}
                       checked={form.sexo === 'F'} 
                       onChange={() => setForm({ ...form, sexo: 'F' })}
                     />
                     Femenino
                   </label>
-                  <label className="radio-label">
+                  <label style={{ display: 'flex', alignItems: 'center', cursor: 'pointer', color: '#000', fontSize: '14px' }}>
                     <input 
                       type="radio" 
                       name="sexo" 
                       value="M" 
+                      style={{ marginRight: '6px' }}
                       checked={form.sexo === 'M'} 
                       onChange={() => setForm({ ...form, sexo: 'M' })}
                     />
