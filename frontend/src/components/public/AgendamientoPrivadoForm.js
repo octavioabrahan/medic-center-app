@@ -200,17 +200,19 @@ const AgendamientoPrivadoForm = () => {
     const representanteCedula = sinCedula ? `${datosRepresentante.cedula}-${datosRepresentante.numeroHijo}` : null;
     
     // Obtener IDs de categoría y tipo de atención dinámicamente
-    const categoriaId = getCategoriaId(modoSeleccion === 'consulta' ? 'Consulta' : 'Estudio');
-    const tipoAtencionId = getTipoAtencionId(modoSeleccion === 'consulta' ? 'Presencial' : 'Previa Cita');
+    // Ya no usamos modoSeleccion, sino que obtenemos la categoría correspondiente al servicio
+    const servicioObj = servicios.find(s => s.nombre_servicio === servicioSeleccionado);
+    const categoriaId = getCategoriaId('Consulta'); // Siempre usamos consulta por defecto o podríamos derivarlo del servicio
+    const tipoAtencionId = getTipoAtencionId('Presencial'); // Siempre usamos presencial por defecto
     
     // Validar que existan las categorías y tipos de atención
     if (!categoriaId) {
-      alert(`No se encontró la categoría correspondiente a ${modoSeleccion}.`);
+      alert(`No se encontró la categoría correspondiente.`);
       return;
     }
     
     if (!tipoAtencionId) {
-      alert(`No se encontró el tipo de atención correspondiente a ${modoSeleccion}.`);
+      alert(`No se encontró el tipo de atención correspondiente.`);
       return;
     }
     
@@ -229,11 +231,11 @@ const AgendamientoPrivadoForm = () => {
       profesional_id: profesionalSeleccionado,
       fecha_agendada: fechaSeleccionada?.fecha || fechaSeleccionada,
       tipo_atencion_id: tipoAtencionId,
-      observaciones: modoSeleccion === 'consulta' ? especialidadSeleccionada : servicioSeleccionado,
+      observaciones: servicioSeleccionado, // Usamos el servicio seleccionado como observación
       id_categoria: categoriaId,
       nro_consulta: fechaSeleccionada?.nro_consulta || null
     };
-
+  
     try {
       await axios.post('/api/agendamiento', payload);
       alert('Agendamiento creado con éxito');
@@ -426,7 +428,7 @@ const AgendamientoPrivadoForm = () => {
       ← Volver al paso anterior
     </button>
 
-    <h2 className="titulo-principal">Selecciona la especialidad, el médico y el día.</h2>
+    <h2 className="titulo-principal">Selecciona el profesional, la especialidad y el día.</h2>
 
     {isLoading ? (
       <div className="loading-message">
@@ -434,139 +436,83 @@ const AgendamientoPrivadoForm = () => {
       </div>
     ) : (
       <>
-        {/* Tipo de atención: Consulta o Estudio */}
         <div className="tarjeta-seleccion">
-          <label className="etiqueta-grupo">Selecciona el tipo de atención</label>
-          <div className="selector-botones-radio personalizado">
-            <label className={`opcion-card ${modoSeleccion === 'consulta' ? 'activa' : ''}`}>
-              <input
-                type="radio"
-                name="categoria"
-                value="consulta"
-                checked={modoSeleccion === 'consulta'}
-                onChange={() => {
-                  setModoSeleccion('consulta');
-                  setServicioSeleccionado('');
-                  setEspecialidadSeleccionada('');
-                  setProfesionalSeleccionado('');
-                  setFechaSeleccionada(null);
-                }}
-              />
-              <div><strong>Consulta médica</strong></div>
-            </label>
-            <label className={`opcion-card ${modoSeleccion === 'estudio' ? 'activa' : ''}`}>
-              <input
-                type="radio"
-                name="categoria"
-                value="estudio"
-                checked={modoSeleccion === 'estudio'}
-                onChange={() => {
-                  setModoSeleccion('estudio');
-                  setServicioSeleccionado('');
-                  setEspecialidadSeleccionada('');
-                  setProfesionalSeleccionado('');
-                  setFechaSeleccionada(null);
-                }}
-              />
-              <div><strong>Estudio</strong></div>
-            </label>
-          </div>
-        </div>
+          <div className="form-row triple">
+            <div className="form-column">
+              <label className="etiqueta-grupo">
+                Especialidad <span className="asterisk">*</span>
+              </label>
+              <select
+                value={especialidadSeleccionada}
+                onChange={e => setEspecialidadSeleccionada(e.target.value)}
+                required
+              >
+                <option value="">Selecciona una especialidad</option>
+                {[...new Set(profesionales.map(p => p.nombre_especialidad))]
+                  .filter(Boolean)
+                  .map((item, i) => (
+                    <option key={i} value={item}>{item}</option>
+                  ))}
+              </select>
+            </div>
 
-        {/* 👇 Mostrar campos solo si se eligió un tipo de atención */}
-        {modoSeleccion && (
-          <div className="tarjeta-seleccion">
-            <div className="form-row triple">
+            <div className="form-column">
+              <label className="etiqueta-grupo">
+                Profesional <span className="asterisk">*</span>
+              </label>
+              <select
+                value={profesionalSeleccionado}
+                onChange={e => {
+                  const id = e.target.value;
+                  setProfesionalSeleccionado(id);
+                  
+                  // Actualizar especialidad basado en el profesional seleccionado
+                  const profesional = profesionales.find(p => p.profesional_id === id);
+                  if (profesional?.nombre_especialidad) {
+                    setEspecialidadSeleccionada(profesional.nombre_especialidad);
+                  }
+                }}
+                required
+              >
+                <option value="">Selecciona al profesional</option>
+                {profesionales
+                  .filter(p => !especialidadSeleccionada || p.nombre_especialidad === especialidadSeleccionada)
+                  .map(p => (
+                    <option key={p.profesional_id} value={p.profesional_id}>
+                      {p.nombre} {p.apellido}
+                    </option>
+                  ))}
+              </select>
+            </div>
+            
+            {profesionalSeleccionado && (
               <div className="form-column">
                 <label className="etiqueta-grupo">
-                  {modoSeleccion === 'consulta' ? 'Especialidad' : 'Servicio'} <span className="asterisk">*</span>
-                </label>
-                {modoSeleccion === 'consulta' ? (
-                  <select
-                    value={especialidadSeleccionada}
-                    onChange={e => setEspecialidadSeleccionada(e.target.value)}
-                    required
-                  >
-                    <option value="">Selecciona una opción</option>
-                    {[...new Set(profesionalesFiltrados.map(p => p.nombre_especialidad))]
-                      .filter(Boolean)
-                      .map((item, i) => (
-                        <option key={i} value={item}>{item}</option>
-                      ))}
-                  </select>
-                ) : (
-                  <select
-                    value={servicioSeleccionado}
-                    onChange={handleServicioChange}
-                    required
-                  >
-                    <option value="">Selecciona una opción</option>
-                    {serviciosFiltrados
-                      .filter(Boolean)
-                      .map((s, i) => (
-                        <option key={i} value={s.nombre_servicio}>{s.nombre_servicio}</option>
-                      ))}
-                  </select>
-                )}
-              </div>
-
-              <div className="form-column">
-                <label className="etiqueta-grupo">
-                  Profesional <span className="asterisk">*</span>
+                  Servicio <span className="asterisk">*</span>
                 </label>
                 <select
-                  value={profesionalSeleccionado}
-                  onChange={e => {
-                    handleProfesionalChange(e);
-                    
-                    // Mantener la lógica adicional específica para esta UI
-                    const id = e.target.value;
-                    const profesional = profesionales.find(p => p.profesional_id === id);
-                    
-                    if (modoSeleccion === 'consulta' && profesional?.nombre_especialidad) {
-                      setEspecialidadSeleccionada(profesional.nombre_especialidad);
-                    }
-                    
-                    if (modoSeleccion === 'estudio' && !servicioSeleccionado && profesional?.servicios && profesional.servicios.length > 0) {
-                      setServicioSeleccionado(profesional.servicios[0]);
-                    }
-                  }}
+                  value={servicioSeleccionado}
+                  onChange={e => setServicioSeleccionado(e.target.value)}
                   required
                 >
-                  <option value="">Selecciona al profesional</option>
-                  {modoSeleccion === 'consulta' 
-                    ? (
-                      profesionalesFiltrados
-                        .filter(p => !especialidadSeleccionada || p.nombre_especialidad === especialidadSeleccionada)
-                        .map(p => (
-                          <option key={p.profesional_id} value={p.profesional_id}>
-                            {p.nombre} {p.apellido}
-                          </option>
-                        ))
-                    )
-                    : (
-                      profesionalesFiltrados
-                        .filter(p => {
-                          if (!servicioSeleccionado) return true;
-                          const servicioObj = servicios.find(s => s.nombre_servicio === servicioSeleccionado);
-                          if (servicioObj && profesionalServicioMap.servToProf) {
-                            const idServicio = servicioObj.id_servicio;
-                            return profesionalServicioMap.servToProf[idServicio]?.includes(p.profesional_id);
-                          }
-                          return true;
-                        })
-                        .map(p => (
-                          <option key={p.profesional_id} value={p.profesional_id}>
-                            {p.nombre} {p.apellido}
-                          </option>
-                        ))
-                    )
-                  }
+                  <option value="">Selecciona un servicio</option>
+                  {serviciosFiltrados
+                    .filter(s => {
+                      // Filtramos para mostrar solo los servicios del profesional seleccionado
+                      if (!profesionalSeleccionado) return true;
+                      const profServicios = profesionalServicioMap.profToServ?.[profesionalSeleccionado] || [];
+                      return profServicios.includes(s.id_servicio);
+                    })
+                    .map(s => (
+                      <option key={s.id_servicio} value={s.nombre_servicio}>
+                        {s.nombre_servicio}
+                      </option>
+                    ))}
                 </select>
               </div>
-            </div>
+            )}
           </div>
-        )}
+        </div>
 
         {/* Mostrar calendario solo si hay profesional seleccionado */}
         {profesionalSeleccionado && (
@@ -602,8 +548,7 @@ const AgendamientoPrivadoForm = () => {
           isLoading || 
           !fechaSeleccionada ||
           !profesionalSeleccionado ||
-          (modoSeleccion === 'consulta' && !especialidadSeleccionada) ||
-          (modoSeleccion === 'estudio' && !servicioSeleccionado)
+          !servicioSeleccionado
         }
       >
         {isLoading ? 'Cargando datos...' : 'Continuar'}
