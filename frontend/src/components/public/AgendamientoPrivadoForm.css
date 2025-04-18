@@ -34,6 +34,14 @@ body {
     align-items: center;
   }
   
+  .titulo-principal {
+    font-size: 1.5rem;
+    color: #20377A;
+    font-weight: 600;
+    text-align: center;
+    margin-bottom: 0.5rem;
+  }
+
   h2.titulo-principal,
   .form-title {
     font-size: 1.5rem;
@@ -41,12 +49,139 @@ body {
     font-weight: 600;
     text-align: center;
   }
-  
+
+  .subtitulo-principal {
+  text-align: center;
+  color: #666;
+  margin-bottom: 2rem;
+  }
+
+  .seleccion-principal {
+    margin-bottom: 2rem;
+  }
+
   form label {
     font-weight: 500;
     display: block;
     margin-bottom: 0.3rem;
     font-size: 1rem;
+  }
+
+  .seleccion-row {
+    display: flex;
+    gap: 1.5rem;
+    justify-content: space-between;
+  }
+  
+  .seleccion-column {
+    flex: 1;
+  }
+  
+  .etiqueta-seleccion {
+    font-weight: 500;
+    display: block;
+    margin-bottom: 0.5rem;
+  }
+  
+  .selector-principal {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #D1D5DB;
+    border-radius: 8px;
+    font-size: 1rem;
+  }
+  
+  .recomendacion-box {
+    background-color: #FFF9C4;
+    border: 1px solid #FFD54F;
+    border-radius: 8px;
+    padding: 1rem;
+    margin-bottom: 2rem;
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+  
+  .info-icon {
+    font-size: 1.2rem;
+    color: #20377A;
+  }
+  
+  .recomendacion-title {
+    font-weight: 600;
+    margin-bottom: 0.3rem;
+  }
+  
+  .servicios-section,
+  .fecha-section {
+    margin-bottom: 2rem;
+  }
+  
+  .servicios-title,
+  .fecha-title {
+    font-size: 1.1rem;
+    font-weight: 500;
+    margin-bottom: 1rem;
+  }
+  
+  .servicios-checkbox-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+  
+  .servicio-checkbox-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  
+  .servicio-checkbox-item input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+  }
+  
+  .fecha-calendario-container {
+    display: flex;
+    gap: 2rem;
+  }
+  
+  .fecha-seleccionada-info {
+    background: white;
+    border: 1px solid #D1D5DB;
+    border-radius: 8px;
+    padding: 1.25rem;
+    min-width: 250px;
+  }
+  
+  .info-fecha,
+  .info-hora,
+  .info-consulta {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.75rem;
+  }
+  
+  .boton-container {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 2rem;
+  }
+  
+  .boton-continuar {
+    background-color: #20377A;
+    color: white;
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 6px;
+    font-weight: 500;
+    cursor: pointer;
+  }
+  
+  .boton-continuar:disabled {
+    background-color: #d1d5db;
+    cursor: not-allowed;
   }
   
   input[type="text"],
@@ -313,17 +448,17 @@ body {
     border-radius: 8px;
     background-color: white;
   }
-  
+
   .servicio-checkbox-item {
     display: flex;
     align-items: center;
     gap: 8px;
   }
-  
+
   .servicio-checkbox-item input[type="checkbox"] {
     margin: 0;
   }
-  
+
   .servicio-checkbox-item label {
     margin-bottom: 0;
     cursor: pointer;
