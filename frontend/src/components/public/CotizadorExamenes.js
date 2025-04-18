@@ -32,6 +32,7 @@ export default function CotizadorExamenes() {
   const [cotizacionEnviada, setCotizacionEnviada] = useState(false);
   const [folioGenerado, setFolioGenerado] = useState('');
   const [cargando, setCargando] = useState(false);
+  // eslint-disable-next-line no-unused-vars
   const [error, setError] = useState(null);
   const [aceptaError, setAceptaError] = useState(false);
   const [captchaError, setCaptchaError] = useState(false);
