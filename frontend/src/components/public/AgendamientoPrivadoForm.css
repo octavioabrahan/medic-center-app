@@ -1,6 +1,6 @@
 body {
   background-color: #FBFBFC;
-  font-family: 'Segoe UI', sans-serif;
+  font-family: 'Inter', 'Segoe UI', sans-serif;
   margin: 0;
 }
 
@@ -30,48 +30,59 @@ body {
   padding: 0 1.5rem;
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: 32px; /* Ajustado según Figma */
   align-items: center;
 }
 
 /* Títulos y textos */
 h2.titulo-principal,
 .form-title {
-  font-size: 1.5rem;
+  font-size: 24px;
   color: #20377A;
   font-weight: 600;
   text-align: center;
   margin-bottom: 0.3rem;
+  line-height: 28.8px;
 }
 
 .subtitulo-principal {
   text-align: center;
-  color: #666;
-  margin-bottom: 1.5rem;
+  color: #757575;
+  margin-bottom: 0;
   margin-top: 0;
+  font-size: 20px;
+  line-height: 24px;
 }
 
 /* Botón Volver */
 .volver-btn {
   background: none;
-  color: #6B7280;
+  color: #1E1E1E;
   border: none;
-  font-weight: 500;
-  font-size: 0.95rem;
+  font-weight: 400;
+  font-size: 16px;
   cursor: pointer;
-  padding: 0;
-  margin-bottom: 0.7rem;
+  padding: 12px;
+  margin-bottom: 0;
   text-align: left;
-}
-
-.volver-btn-gris {
-  background-color: transparent;
-  color: #333;
-  border: none;
   display: flex;
   align-items: center;
-  padding: 0.5rem 0;
-  margin-bottom: 1rem;
+  gap: 8px;
+  border-radius: 8px;
+}
+
+.volver-btn:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+.volver-btn::before {
+  content: "";
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  background-image: url("data:image/svg+xml,%3Csvg width='16' height='16' viewBox='0 0 16 16' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M12.6666 7.99998H3.33325M3.33325 7.99998L7.99992 12.6666M3.33325 7.99998L7.99992 3.33331' stroke='%231E1E1E' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: center;
 }
 
 /* Selectores y campos de formulario */
@@ -81,151 +92,188 @@ input[type="date"],
 input[type="number"],
 select {
   width: 100%;
-  padding: 0.65rem 0.75rem;
-  border: 1px solid #D1D5DB;
+  padding: 12px 16px;
+  border: 1px solid #D9D9D9;
   border-radius: 8px;
   background-color: #fff;
-  font-size: 1rem;
+  font-size: 16px;
   margin-bottom: 1rem;
   transition: border 0.2s;
+  line-height: 16px;
+  height: 40px;
+  box-sizing: border-box;
 }
 
 input:focus,
 select:focus {
-  border-color: #1a3a8a;
+  border-color: #20377A;
   outline: none;
 }
 
 form label, 
 .etiqueta-seleccion,
-.form-column label {
-  font-weight: 500;
+.form-column label,
+.servicios-title,
+.fecha-title {
+  font-weight: 400;
   display: block;
-  margin-bottom: 0.3rem;
-  font-size: 1rem;
+  margin-bottom: 8px;
+  font-size: 16px;
   text-align: left;
+  color: #1E1E1E;
+  line-height: 22.4px;
 }
 
 /* Sección de selección principal */
 .seleccion-principal {
-  margin-bottom: 1.5rem;
+  margin-bottom: 0;
   width: 100%;
 }
 
 .seleccion-row {
   display: flex;
-  gap: 1.5rem;
+  gap: 24px;
   justify-content: space-between;
+  width: 100%;
 }
 
 .seleccion-column {
   flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
 
 .selector-principal {
   width: 100%;
-  padding: 0.75rem;
-  border: 1px solid #D1D5DB;
+  padding: 12px 16px;
+  border: 1px solid #D9D9D9;
   border-radius: 8px;
-  font-size: 1rem;
+  font-size: 16px;
+  height: 40px;
+  box-sizing: border-box;
 }
 
 /* Recuadro de recomendación */
 .recomendacion-box {
-  background-color: #FFF9C4;
-  border: 1px solid #FFD54F;
+  background-color: #FFF1C2;
+  border: 1px solid #BF6A02;
   border-radius: 8px;
-  padding: 1rem;
-  margin-bottom: 1.5rem;
+  padding: 16px;
+  margin-bottom: 0;
   display: flex;
   align-items: flex-start;
-  gap: 1rem;
+  gap: 12px;
   width: 100%;
 }
 
 .recomendacion-title {
   font-weight: 600;
-  margin-bottom: 0.3rem;
+  margin-bottom: 4px;
+  font-size: 16px;
+  line-height: 22.4px;
+  color: #1E1E1E;
+}
+
+.recomendacion-text {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 16px;
+  line-height: 22.4px;
+  color: #1E1E1E;
 }
 
 .info-icon {
-  font-size: 1.2rem;
-  color: #20377A;
+  font-size: 20px;
+  color: #522504;
   flex-shrink: 0;
 }
 
 /* Sección de servicios */
 .servicios-section,
 .fecha-section {
-  margin-bottom: 1.5rem;
+  margin-bottom: 0;
   width: 100%;
-}
-
-.servicios-title,
-.fecha-title {
-  font-size: 1.1rem;
-  font-weight: 500;
-  margin-bottom: 0.8rem;
-  text-align: left;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
 
 .servicios-checkbox-list {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: 0;
 }
 
 .servicio-checkbox-item {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 12px;
+  width: 100%;
 }
 
 .servicio-checkbox-item input[type="checkbox"] {
-  width: 18px;
-  height: 18px;
+  width: 16px;
+  height: 16px;
   margin: 0;
+  appearance: none;
+  -webkit-appearance: none;
+  border: 1px solid #757575;
+  border-radius: 4px;
+  position: relative;
+  cursor: pointer;
+}
+
+.servicio-checkbox-item input[type="checkbox"]:checked {
+  background-color: #2C2C2C;
+  border-color: #2C2C2C;
+}
+
+.servicio-checkbox-item input[type="checkbox"]:checked::after {
+  content: "";
+  position: absolute;
+  top: 2px;
+  left: 5px;
+  width: 5px;
+  height: 10px;
+  border: solid white;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
 }
 
 .servicio-checkbox-item label {
   margin-bottom: 0;
   cursor: pointer;
-  font-weight: normal;
-}
-
-/* Contenedor de checkbox */
-.servicios-checkbox-container {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  max-height: 150px;
-  overflow-y: auto;
-  padding: 10px;
-  border: 1px solid #D1D5DB;
-  border-radius: 8px;
-  background-color: white;
+  font-weight: 400;
+  line-height: 22.4px;
+  flex: 1;
 }
 
 /* Sección de calendario */
 .fecha-calendario-container {
   display: flex;
-  gap: 2rem;
+  gap: 24px;
   align-items: flex-start;
+  width: 100%;
 }
 
 .calendar-wrapper {
   flex: 1;
   min-width: 280px;
-  max-width: 400px;
 }
 
 .fecha-seleccionada-info {
   background: white;
-  border: 1px solid #D1D5DB;
+  border: 1px solid #D9D9D9;
   border-radius: 8px;
-  padding: 1.25rem;
+  padding: 24px;
   min-width: 240px;
-  max-width: 260px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
 }
 
 .info-fecha,
@@ -233,32 +281,150 @@ form label,
 .info-consulta {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
-  margin-bottom: 0.75rem;
+  gap: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 22.4px;
+  color: #1E1E1E;
 }
 
 .info-fecha-hora {
   flex: 1;
   min-width: 240px;
-  max-width: 260px;
-  min-height: 110px;
-  padding: 1rem 1.25rem;
+  padding: 24px;
   border-radius: 8px;
-  border: 1px solid #D1D5DB;
+  border: 1px solid #D9D9D9;
   background-color: white;
-  font-size: 1rem;
-  align-self: start;
+  font-size: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
 }
 
 .info-fecha-hora p {
-  margin: 0.4rem 0;
+  margin: 0;
   text-align: left;
+  color: #1E1E1E;
+  font-weight: 600;
+  line-height: 22.4px;
+}
+
+/* Estilos Calendario */
+.calendario-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.calendario-titulo {
+  font-size: 16px;
+  font-weight: 400;
+  color: #1E1E1E;
+  margin-bottom: 8px;
+  text-align: left;
+}
+
+.calendario-dias-semana {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.dia-semana {
+  flex: 1;
+  text-align: center;
+  color: #7B827E;
+  font-size: 20px;
+  padding: 4px;
+}
+
+.calendario-semana {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.calendario-dia {
+  flex: 1;
+  text-align: center;
+  padding: 4px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.calendario-dia-num {
+  width: 26px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto;
+  font-size: 20px;
+  border-radius: 8px;
+}
+
+.calendario-dia.otro-mes .calendario-dia-num {
+  color: #6C7470;
+}
+
+.calendario-dia.seleccionado .calendario-dia-num {
+  background-color: #20377A;
+  color: white;
+}
+
+.calendario-dia.deshabilitado .calendario-dia-num {
+  color: #C2C5C4;
+  cursor: not-allowed;
+}
+
+/* Botón Continuar */
+.boton-container {
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 0;
+}
+
+.boton-continuar {
+  background-color: #20377A;
+  color: #F0F3FF;
+  padding: 12px;
+  border: 1px solid #20377A;
+  border-radius: 8px;
+  font-weight: 400;
+  font-size: 16px;
+  cursor: pointer;
+  line-height: 16px;
+  min-width: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.boton-continuar:disabled {
+  background-color: #d1d5db;
+  cursor: not-allowed;
+  border-color: #d1d5db;
+}
+
+.boton-continuar:hover:not(:disabled) {
+  background-color: #172c61;
+}
+
+/* Formulario Paso 2 */
+.form-step2 {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  width: 100%;
 }
 
 /* Estilos Calendario React Day Picker */
 .rdp {
   --rdp-accent-color: #20377A;
-  font-family: 'Segoe UI', sans-serif;
+  font-family: 'Inter', 'Segoe UI', sans-serif;
   width: 100%;
 }
 
@@ -269,99 +435,57 @@ form label,
 .rdp-day_selected {
   background-color: #20377A !important;
   color: white !important;
-  border-radius: 100%;
+  border-radius: 8px !important;
 }
 
 .rdp-day_disabled {
-  color: #ccc !important;
-  text-decoration: line-through;
+  color: #C2C5C4 !important;
+  text-decoration: none !important;
   pointer-events: none;
 }
 
 .rdp-day_today {
-  border: 1px dashed #20377A !important;
+  font-weight: bold;
 }
 
 .rdp-caption_label {
   text-transform: capitalize;
   font-weight: 600;
-  font-size: 1rem;
-  color: #0A2472;
+  font-size: 16px;
+  color: #1E1E1E;
 }
 
 .rdp-nav_button {
-  color: #20377A;
+  color: #1E1E1E;
 }
 
-/* Botón Continuar */
-.boton-container {
-  width: 100%;
-  display: flex;
-  justify-content: flex-end;
-  margin-top: 1.5rem;
-}
-
-.boton-continuar {
-  background-color: #20377A;
-  color: white;
-  padding: 0.75rem 1.5rem;
-  border: none;
-  border-radius: 6px;
-  font-weight: 500;
-  cursor: pointer;
-  min-width: 120px;
-}
-
-.boton-continuar:disabled {
-  background-color: #d1d5db;
-  cursor: not-allowed;
-}
-
-.boton-continuar:hover:not(:disabled) {
-  background-color: #0a2472;
-}
-
-/* Formulario Paso 2 */
-.form-step2 {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
+.rdp-table {
   width: 100%;
 }
 
-.form-row.triple {
-  display: flex;
-  gap: 1rem;
-  justify-content: space-between;
-  width: 100%;
+.rdp-head_cell {
+  font-size: 20px;
+  font-weight: 400;
+  color: #7B827E;
+  padding: 4px;
 }
 
-.form-column {
-  flex: 1;
-  align-items: flex-start;
+.rdp-cell {
+  padding: 4px;
 }
 
-.form-column select {
-  width: 100%;
-  padding: 0.75rem 1rem;
-  font-size: 1rem;
+.rdp-day {
+  width: 26px;
+  height: 24px;
+  margin: 0 auto;
+  font-size: 20px;
+  line-height: 24px;
+  color: #0A1811;
   border-radius: 8px;
-  border: 1px solid #D1D5DB;
-  text-align: left;
-  background-color: #fff;
-  height: 40px;
 }
 
-.calendar-section {
-  display: flex;
-  gap: 1.5rem;
-  justify-content: space-between;
-  align-items: flex-start;
-  width: 100%;
-}
-
-.asterisk {
-  color: red;
+.rdp-day_outside {
+  color: #6C7470;
 }
 
 /* Paso 3 - Confirmación */
@@ -499,8 +623,9 @@ form label,
 .checkbox-linea {
   display: flex;
   align-items: center;
-  font-size: 0.95rem;
+  font-size: 16px;
   margin: 1rem 0;
+  gap: 12px;
 }
 
 .input-with-icon {
@@ -581,14 +706,14 @@ form label,
 
 /* Responsive */
 @media (max-width: 1024px) and (min-width: 769px) {
-  .form-row.triple {
+  .seleccion-row {
     flex-direction: column;
-    gap: 1.5rem;
+    gap: 24px;
   }
 
-  .calendar-section {
+  .fecha-calendario-container {
     flex-direction: column;
-    align-items: stretch;
+    gap: 24px;
   }
 }
 
@@ -600,44 +725,27 @@ form label,
 
   .form-step2 {
     flex-direction: column;
-    gap: 1.5rem;
-  }
-
-  .form-row.triple {
-    flex-direction: column;
-    align-items: stretch;
+    gap: 24px;
   }
 
   .seleccion-row {
     flex-direction: column;
-    gap: 1rem;
+    gap: 24px;
   }
 
-  .calendar-section,
   .fecha-calendario-container {
     flex-direction: column;
-    align-items: stretch;
-    gap: 1rem;
+    gap: 24px;
   }
 
-  .form-column,
   .calendar-wrapper,
   .info-fecha-hora,
   .fecha-seleccionada-info {
     width: 100%;
-    max-width: 100%;
   }
 
   .boton-container {
-    flex-direction: column;
-    gap: 1rem;
-    align-items: center;
-  }
-
-  .boton-continuar,
-  .volver-btn-gris {
-    width: 100%;
-    text-align: center;
+    justify-content: center;
   }
 
   .selector-botones-radio {
