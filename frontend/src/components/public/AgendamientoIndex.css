@@ -1,126 +1,157 @@
 .agendamiento-container {
-  font-family: 'Arial', sans-serif;
-  padding: 0;
-  margin: 0;
-  background-color: #f9f9f9;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  max-width: 100%;
   min-height: 100vh;
+  background-color: #ffffff;
+  display: flex;
+  flex-direction: column;
 }
 
 .agendamiento-header {
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 1rem 0 0.5rem;
-  border-bottom: 1px solid #ccc;
+  padding: 1rem 0;
+  border-bottom: 1px solid #e5e7eb;
   background-color: white;
 }
 
 .agendamiento-logo {
-  max-height: 55px;
+  max-height: 50px;
   width: auto;
 }
 
 .agendamiento-content {
-  max-width: 900px;
+  max-width: 1000px;
+  width: 100%;
   margin: 0 auto;
   padding: 2rem 1rem;
   display: flex;
   flex-direction: column;
-  align-items: center;
+  position: relative;
 }
 
-.agendamiento-content h2 {
-  font-size: 1.8rem;
-  color: #0a2472;
-  margin-bottom: 1rem;
+.volver-link {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  color: #333;
+  font-size: 1rem;
+  margin-bottom: 2rem;
+}
+
+.volver-icon {
+  margin-right: 0.5rem;
+}
+
+.agendamiento-title {
+  font-size: 1.75rem;
+  color: #333;
   text-align: center;
+  margin-bottom: 1rem;
+  font-weight: 600;
 }
 
 .agendamiento-subtitle {
-  font-size: 1rem;
-  color: #555;
   text-align: center;
-  max-width: 700px;
-  margin-bottom: 2rem;
+  color: #666;
+  max-width: 800px;
+  margin: 0 auto 2rem;
+  line-height: 1.5;
 }
 
 .agendamiento-opciones {
   display: flex;
-  gap: 1rem;
-  flex-wrap: wrap;
-  justify-content: center;
-  margin-bottom: 2rem;
+  gap: 1.5rem;
   width: 100%;
+  margin-bottom: 2rem;
 }
 
-.opcion {
+.opcion-tarjeta {
+  flex: 1;
+  display: flex;
+  border: 1px solid #d1d5db;
+  border-radius: 0.5rem;
+  padding: 1.25rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  background-color: white;
+}
+
+.opcion-tarjeta:hover {
+  border-color: #9ca3af;
+}
+
+.opcion-tarjeta.seleccionada {
+  border-color: #1e3a8a;
+  background-color: #f8fafc;
+}
+
+.radio-container {
+  margin-right: 1rem;
   display: flex;
   align-items: flex-start;
-  gap: 1rem;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  padding: 1rem;
+  padding-top: 0.25rem;
+}
+
+.radio-container input[type="radio"] {
+  width: 1.25rem;
+  height: 1.25rem;
   cursor: pointer;
-  width: 100%;
-  max-width: 400px;
-  background-color: white;
-  transition: border 0.2s;
 }
 
-.opcion.seleccionado {
-  border: 2px solid #1a3a8a;
-  background-color: #eef2fb;
+.opcion-contenido {
+  flex: 1;
 }
 
-.opcion input[type="radio"] {
-  margin-top: 4px;
+.opcion-contenido h3 {
+  font-size: 1.1rem;
+  margin: 0 0 0.5rem 0;
+  color: #000;
 }
 
-.boton-continuar {
-  background-color: #1a3a8a;
-  color: white;
-  padding: 10px 24px;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
+.opcion-contenido p {
+  margin: 0;
+  color: #4b5563;
+  font-size: 0.95rem;
+  line-height: 1.4;
+}
+
+.continuar-btn {
   align-self: flex-end;
-  transition: background 0.3s;
+  background-color: #1e3a8a;
+  color: white;
+  border: none;
+  border-radius: 0.375rem;
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
 }
 
-.boton-continuar:disabled {
-  background-color: #ccc;
+.continuar-btn:hover:not(:disabled) {
+  background-color: #1e40af;
+}
+
+.continuar-btn:disabled {
+  background-color: #9ca3af;
   cursor: not-allowed;
 }
 
-.volver-link {
-  align-self: flex-start;
-  margin-bottom: 2rem;
-  font-size: 0.95rem;
-  color: #1a3a8a;
-  text-decoration: none;
-}
-
-.volver-link:hover {
-  text-decoration: underline;
-}
-
+/* Responsive */
 @media (max-width: 768px) {
   .agendamiento-opciones {
     flex-direction: column;
-    align-items: stretch;
   }
-
-  .opcion {
-    max-width: 100%;
+  
+  .opcion-tarjeta {
+    width: 100%;
   }
-
-  .boton-continuar {
+  
+  .continuar-btn {
     align-self: center;
     width: 100%;
-    max-width: 300px;
-  }
-
-  .volver-link {
-    align-self: center;
+    margin-top: 1rem;
   }
 }
