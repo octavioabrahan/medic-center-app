@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useMediaQuery } from 'react-responsive';
-import '../../pages/CotizadorExamenes.css'; // Mantenemos la referencia al CSS original
+import './CotizadorExamenes.css';
 import MailIcon from '../../assets/Mail.svg';
 import ArrowLeftIcon from '../../assets/ArrowLeft.svg';
 
@@ -14,9 +14,16 @@ export default function CotizadorExamenes() {
     nombre: '', 
     apellido: '',
     fecha_nacimiento: '',
-    sexo: 'O',
+    sexo: 'M',
     telefono: '', 
     email: '' 
+  });
+  const [formErrors, setFormErrors] = useState({
+    cedula: false,
+    nombre: false,
+    apellido: false,
+    fecha_nacimiento: false,
+    email: false
   });
   const [acepta, setAcepta] = useState(false);
   const [captchaValido, setCaptchaValido] = useState(false);
@@ -26,16 +33,11 @@ export default function CotizadorExamenes() {
   const [folioGenerado, setFolioGenerado] = useState('');
   const [cargando, setCargando] = useState(false);
   const [error, setError] = useState(null);
+  const [aceptaError, setAceptaError] = useState(false);
+  const [captchaError, setCaptchaError] = useState(false);
+  const [examenesError, setExamenesError] = useState(false);
 
   const isMobile = useMediaQuery({ maxWidth: 768 });
-  
-  const [formErrors, setFormErrors] = useState({
-  cedula: false,
-  nombre: false,
-  apellido: false,
-  fecha_nacimiento: false,
-  email: false
-  });
 
   useEffect(() => {
     // Cargar exámenes
@@ -66,12 +68,17 @@ export default function CotizadorExamenes() {
   const handleSelect = (examen) => {
     setSeleccionados([...seleccionados, examen]);
     setExamenes(examenes.filter(e => e.codigo !== examen.codigo));
+    setExamenesError(false);
   };
 
   const handleRemove = (codigo) => {
     const examen = seleccionados.find(e => e.codigo === codigo);
     setExamenes([...examenes, examen]);
     setSeleccionados(seleccionados.filter(e => e.codigo !== codigo));
+    
+    if (seleccionados.length <= 1) {
+      setExamenesError(true);
+    }
   };
 
   const handleSubmit = async () => {
@@ -85,22 +92,17 @@ export default function CotizadorExamenes() {
     };
     
     const hasErrors = Object.values(errors).some(error => error);
+    const noExamenes = seleccionados.length === 0;
     
-    if (hasErrors || !acepta || !captchaValido || seleccionados.length === 0) {
-      setFormErrors(errors);
-      
-      if (seleccionados.length === 0) {
-        setError('Por favor, selecciona al menos un examen.');
-      } else if (!acepta) {
-        setError('Debes aceptar los términos para continuar.');
-      } else if (!captchaValido) {
-        setError('Por favor, completa el captcha.');
-      } else {
-        setError('Por favor, completa todos los campos obligatorios.');
-      }
+    setFormErrors(errors);
+    setAceptaError(!acepta);
+    setCaptchaError(!captchaValido);
+    setExamenesError(noExamenes);
+    
+    if (hasErrors || !acepta || !captchaValido || noExamenes) {
       return;
     }
-  
+
     setCargando(true);
     setError(null);
 
@@ -128,6 +130,16 @@ export default function CotizadorExamenes() {
     } finally {
       setCargando(false);
     }
+  };
+
+  const handleSimularCaptcha = () => {
+    setCaptchaValido(true);
+    setCaptchaError(false);
+  };
+
+  const handleAceptaChange = (e) => {
+    setAcepta(e.target.checked);
+    setAceptaError(!e.target.checked);
   };
 
   const filtrados = examenes.filter(e =>
@@ -158,10 +170,10 @@ export default function CotizadorExamenes() {
     <div className={`cotizador-wrapper ${isMobile ? 'mobile' : 'desktop'}`}>
       <div className="logo-header">LOGO AQUÍ</div>
 
-      {error && (
-        <div className="error-message">
-          {error}
-          <button onClick={() => setError(null)}>×</button>
+      {examenesError && modoFormulario && (
+        <div className="notification error-notification">
+          Por favor, selecciona al menos un examen antes de continuar
+          <button onClick={() => setExamenesError(false)}>×</button>
         </div>
       )}
 
@@ -205,7 +217,7 @@ export default function CotizadorExamenes() {
                 )}
               </div>
 
-              <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+              <div className="bottom-button-container">
                 <button
                   className="btn-continuar"
                   disabled={seleccionados.length === 0}
@@ -216,138 +228,142 @@ export default function CotizadorExamenes() {
               </div>
             </>
           ) : (
-            <>
+            <div className="form-container">
               <h2 className="cotizador-title">Para enviarte tu cotización, necesitamos algunos datos</h2>
               <p className="cotizador-subtitle">
                 Usaremos esta información para contactarte y enviarte el detalle de tu cotización.
               </p>
 
-<div className="form-group">
-  <label htmlFor="cedula">Cédula <span className="required">*</span></label>
-  <input 
-    id="cedula" 
-    className={`form-input ${formErrors.cedula ? 'input-error' : ''}`}
-    placeholder="Tu número de cédula" 
-    value={form.cedula} 
-    onChange={e => {
-      setForm({ ...form, cedula: e.target.value });
-      if (e.target.value) setFormErrors({...formErrors, cedula: false});
-    }} 
-  />
-  {formErrors.cedula && <div className="error-message-field">Este campo es obligatorio</div>}
-</div>
+              <div className="form-group">
+                <label htmlFor="cedula">Cédula <span className="required">*</span></label>
+                <input 
+                  id="cedula" 
+                  className={`form-input ${formErrors.cedula ? 'input-error' : ''}`}
+                  placeholder="Tu número de cédula" 
+                  value={form.cedula} 
+                  onChange={e => {
+                    setForm({ ...form, cedula: e.target.value });
+                    if (e.target.value) setFormErrors({...formErrors, cedula: false});
+                  }} 
+                />
+                {formErrors.cedula && <div className="error-message-field">Este campo es obligatorio</div>}
+              </div>
 
-<div className="form-group">
-  <label htmlFor="nombre">Nombre <span className="required">*</span></label>
-  <input 
-    id="nombre" 
-    className={`form-input ${formErrors.nombre ? 'input-error' : ''}`}
-    placeholder="Tu nombre" 
-    value={form.nombre} 
-    onChange={e => {
-      setForm({ ...form, nombre: e.target.value });
-      if (e.target.value) setFormErrors({...formErrors, nombre: false});
-    }} 
-  />
-  {formErrors.nombre && <div className="error-message-field">Este campo es obligatorio</div>}
-</div>
+              <div className="form-group">
+                <label htmlFor="nombre">Nombre <span className="required">*</span></label>
+                <input 
+                  id="nombre" 
+                  className={`form-input ${formErrors.nombre ? 'input-error' : ''}`}
+                  placeholder="Tu nombre" 
+                  value={form.nombre} 
+                  onChange={e => {
+                    setForm({ ...form, nombre: e.target.value });
+                    if (e.target.value) setFormErrors({...formErrors, nombre: false});
+                  }} 
+                />
+                {formErrors.nombre && <div className="error-message-field">Este campo es obligatorio</div>}
+              </div>
 
-<div className="form-group">
-  <label htmlFor="apellido">Apellido <span className="required">*</span></label>
-  <input 
-    id="apellido" 
-    className={`form-input ${formErrors.apellido ? 'input-error' : ''}`}
-    placeholder="Tu apellido" 
-    value={form.apellido} 
-    onChange={e => {
-      setForm({ ...form, apellido: e.target.value });
-      if (e.target.value) setFormErrors({...formErrors, apellido: false});
-    }}
-  />
-  {formErrors.apellido && <div className="error-message-field">Este campo es obligatorio</div>}
-</div>
+              <div className="form-group">
+                <label htmlFor="apellido">Apellido <span className="required">*</span></label>
+                <input 
+                  id="apellido" 
+                  className={`form-input ${formErrors.apellido ? 'input-error' : ''}`}
+                  placeholder="Tu apellido" 
+                  value={form.apellido} 
+                  onChange={e => {
+                    setForm({ ...form, apellido: e.target.value });
+                    if (e.target.value) setFormErrors({...formErrors, apellido: false});
+                  }}
+                />
+                {formErrors.apellido && <div className="error-message-field">Este campo es obligatorio</div>}
+              </div>
 
-<div className="form-group">
-  <label htmlFor="fecha_nacimiento">Fecha de nacimiento <span className="required">*</span></label>
-  <input 
-    id="fecha_nacimiento" 
-    type="date" 
-    className={`form-input ${formErrors.fecha_nacimiento ? 'input-error' : ''}`}
-    value={form.fecha_nacimiento} 
-    onChange={e => {
-      setForm({ ...form, fecha_nacimiento: e.target.value });
-      if (e.target.value) setFormErrors({...formErrors, fecha_nacimiento: false});
-    }}
-  />
-  {formErrors.fecha_nacimiento && <div className="error-message-field">Este campo es obligatorio</div>}
-</div>
+              <div className="form-group">
+                <label htmlFor="fecha_nacimiento">Fecha de nacimiento <span className="required">*</span></label>
+                <input 
+                  id="fecha_nacimiento" 
+                  type="date" 
+                  className={`form-input ${formErrors.fecha_nacimiento ? 'input-error' : ''}`}
+                  value={form.fecha_nacimiento} 
+                  onChange={e => {
+                    setForm({ ...form, fecha_nacimiento: e.target.value });
+                    if (e.target.value) setFormErrors({...formErrors, fecha_nacimiento: false});
+                  }}
+                />
+                {formErrors.fecha_nacimiento && <div className="error-message-field">Este campo es obligatorio</div>}
+              </div>
 
-<div className="form-group">
-  <label>Sexo <span className="required">*</span></label>
-  <div className="radio-group">
-    <label className="radio-label">
-      <input 
-        type="radio" 
-        name="sexo" 
-        value="F" 
-        checked={form.sexo === 'F'} 
-        onChange={() => setForm({ ...form, sexo: 'F' })}
-      />
-      Femenino
-    </label>
-    <label className="radio-label">
-      <input 
-        type="radio" 
-        name="sexo" 
-        value="M" 
-        checked={form.sexo === 'M'} 
-        onChange={() => setForm({ ...form, sexo: 'M' })}
-      />
-      Masculino
-    </label>
-  </div>
-</div>
+              <div className="form-group">
+                <label>Sexo <span className="required">*</span></label>
+                <div className="radio-group">
+                  <label className="radio-label">
+                    <input 
+                      type="radio" 
+                      name="sexo" 
+                      value="F" 
+                      checked={form.sexo === 'F'} 
+                      onChange={() => setForm({ ...form, sexo: 'F' })}
+                    />
+                    Femenino
+                  </label>
+                  <label className="radio-label">
+                    <input 
+                      type="radio" 
+                      name="sexo" 
+                      value="M" 
+                      checked={form.sexo === 'M'} 
+                      onChange={() => setForm({ ...form, sexo: 'M' })}
+                    />
+                    Masculino
+                  </label>
+                </div>
+              </div>
 
-<div className="form-group">
-  <label htmlFor="telefono">Teléfono</label>
-  <input 
-    id="telefono" 
-    className="form-input"
-    placeholder="Número donde podamos contactarte" 
-    value={form.telefono} 
-    onChange={e => setForm({ ...form, telefono: e.target.value })}
-  />
-</div>
+              <div className="form-group">
+                <label htmlFor="telefono">Teléfono</label>
+                <input 
+                  id="telefono" 
+                  className="form-input"
+                  placeholder="Número donde podamos contactarte" 
+                  value={form.telefono} 
+                  onChange={e => setForm({ ...form, telefono: e.target.value })}
+                />
+              </div>
 
-<div className="form-group">
-  <label htmlFor="email">Correo electrónico <span className="required">*</span></label>
-  <input 
-    id="email" 
-    className={`form-input ${formErrors.email ? 'input-error' : ''}`}
-    type="email"
-    placeholder="Correo para enviarte la cotización" 
-    value={form.email} 
-    onChange={e => {
-      setForm({ ...form, email: e.target.value });
-      if (e.target.value) setFormErrors({...formErrors, email: false});
-    }}
-  />
-  {formErrors.email && <div className="error-message-field">Este campo es obligatorio</div>}
-</div>
+              <div className="form-group">
+                <label htmlFor="email">Correo electrónico <span className="required">*</span></label>
+                <input 
+                  id="email" 
+                  className={`form-input ${formErrors.email ? 'input-error' : ''}`}
+                  type="email"
+                  placeholder="Correo para enviarte la cotización" 
+                  value={form.email} 
+                  onChange={e => {
+                    setForm({ ...form, email: e.target.value });
+                    if (e.target.value) setFormErrors({...formErrors, email: false});
+                  }}
+                />
+                {formErrors.email && <div className="error-message-field">Este campo es obligatorio</div>}
+              </div>
 
-              <div className="checkbox-line">
+              <div className={`checkbox-line ${aceptaError ? 'checkbox-error' : ''}`}>
                 <input 
                   id="acepta-terminos"
                   type="checkbox" 
                   checked={acepta} 
-                  onChange={e => setAcepta(e.target.checked)} 
+                  onChange={handleAceptaChange}
                 />
                 <label htmlFor="acepta-terminos">
                   Autorizo que se me contacte con fines informativos y de marketing del centro médico.
                 </label>
               </div>
+              {aceptaError && <div className="error-message-field checkbox-error-message">Debes aceptar los términos para continuar</div>}
 
-              <button onClick={() => setCaptchaValido(true)}>Simular CAPTCHA ✔️</button><br /><br />
+              <div className={`captcha-container ${captchaError ? 'captcha-error' : ''}`}>
+                <button onClick={handleSimularCaptcha} className="captcha-button">Simular CAPTCHA ✔️</button>
+                {captchaError && <div className="error-message-field">Por favor, completa el captcha</div>}
+              </div>
 
               <div className="form-buttons">
                 <button className="btn-volver" onClick={() => setModoFormulario(false)}>
@@ -370,7 +386,7 @@ export default function CotizadorExamenes() {
                   )}
                 </button>
               </div>
-            </>
+            </div>
           )}
         </div>
 
