@@ -413,18 +413,13 @@ const AgendamientoPrivadoForm = () => {
     </div>
 
     <div className="boton-container">
-    <button
-  onClick={() => setStep(3)}
-  className="boton-continuar"
-  disabled={
-    isLoading || 
-    !fechaSeleccionada ||
-    !profesionalSeleccionado ||
-    serviciosSeleccionados.length === 0
-  }
->
-  {isLoading ? 'Cargando datos...' : 'Continuar'}
-</button>
+      <button 
+        type="submit" 
+        className="boton-continuar"
+        disabled={isLoading}
+      >
+        {isLoading ? 'Cargando datos...' : 'Continuar'}
+      </button>
     </div>
   </form>
 )}
@@ -560,18 +555,18 @@ const AgendamientoPrivadoForm = () => {
 
     {/* Botón de continuar */}
     <div className="boton-container">
-      <button
-        onClick={() => setStep(3)}
-        className="boton-continuar"
-        disabled={
-          isLoading || 
-          !fechaSeleccionada ||
-          !profesionalSeleccionado ||
-          !servicioSeleccionado
-        }
-      >
-        {isLoading ? 'Cargando datos...' : 'Continuar'}
-      </button>
+    <button
+  onClick={() => setStep(3)}
+  className="boton-continuar"
+  disabled={
+    isLoading || 
+    !fechaSeleccionada ||
+    !profesionalSeleccionado ||
+    serviciosSeleccionados.length === 0
+  }
+>
+  {isLoading ? 'Cargando datos...' : 'Continuar'}
+</button>
     </div>
   </div>
 )}
@@ -592,15 +587,15 @@ const AgendamientoPrivadoForm = () => {
     <div className="bloque-info">
       <h3>Información de su cita</h3>
       <div className="tarjeta-info">
-        <p><strong>🩺 {especialidadSeleccionada}</strong></p>
-        <p><strong>👤 {profesionales.find(p => p.profesional_id === profesionalSeleccionado)?.nombre} {profesionales.find(p => p.profesional_id === profesionalSeleccionado)?.apellido}</strong></p>
-        <p><strong>🔬 Servicios:</strong> {serviciosSeleccionados.join(", ")}</p>
-        <p><strong>📅 {fechaMostrada()}</strong></p>
-        <p><strong>🕐 {horaMostrada()}</strong></p>
-        {fechaSeleccionada && fechaSeleccionada.nro_consulta && (
-        <p><strong>🔢 Consulta #{fechaSeleccionada.nro_consulta}</strong></p>)}
-        <p className="nota-horario">La atención será por orden de llegada según el horario del profesional.</p>
-      </div>
+  <p><strong>🩺 {especialidadSeleccionada}</strong></p>
+  <p><strong>👤 {profesionales.find(p => p.profesional_id === profesionalSeleccionado)?.nombre} {profesionales.find(p => p.profesional_id === profesionalSeleccionado)?.apellido}</strong></p>
+  <p><strong>🔬 Servicios:</strong> {serviciosSeleccionados.join(", ")}</p>
+  <p><strong>📅 {fechaMostrada()}</strong></p>
+  <p><strong>🕐 {horaMostrada()}</strong></p>
+  {fechaSeleccionada && fechaSeleccionada.nro_consulta && (
+  <p><strong>🔢 Consulta #{fechaSeleccionada.nro_consulta}</strong></p>)}
+  <p className="nota-horario">La atención será por orden de llegada según el horario del profesional.</p>
+</div>
     </div>
 
     <div className="bloque-info">
@@ -641,6 +636,8 @@ const AgendamientoPrivadoForm = () => {
     </div>
   </div>
 )}
+
+
         {/* Paso 4 */}
         {step === 4 && (
   <div className="confirmacion-final">
