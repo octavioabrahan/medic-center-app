@@ -20,7 +20,7 @@ const AgendamientoEmpresaForm = () => {
   });
 
   const [tieneSeguro] = useState('');
-  //const [modoSeleccion, setModoSeleccion] = useState(null);
+  const [modoSeleccion, setModoSeleccion] = useState(null);
   const [servicios, setServicios] = useState([]);
   const [profesionales, setProfesionales] = useState([]);
   const [profesionalServicioMap, setProfesionalServicioMap] = useState({});
@@ -113,13 +113,13 @@ const getTipoAtencionId = (slug) => {
 };
 
   // Filtrar profesionales por categoría (consulta o estudio)
-  //const profesionalesPorCategoria = profesionales.filter(p =>
-  //  modoSeleccion === 'consulta'
-  //    ? p.categorias?.includes('Consulta')
-  //   : modoSeleccion === 'estudio'
-  //      ? p.categorias?.includes('Estudio')
-  //      : false
-  //);
+  const profesionalesPorCategoria = profesionales.filter(p =>
+    modoSeleccion === 'consulta'
+      ? p.categorias?.includes('Consulta')
+     : modoSeleccion === 'estudio'
+        ? p.categorias?.includes('Estudio')
+        : false
+  );
 
   // Filtrar profesionales por servicio seleccionado (si hay uno)
   const profesionalesFiltrados = serviciosSeleccionados
