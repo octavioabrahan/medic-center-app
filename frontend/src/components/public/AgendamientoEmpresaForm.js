@@ -20,7 +20,7 @@ const AgendamientoEmpresaForm = () => {
   });
 
   const [tieneSeguro] = useState('');
-  //const [modoSeleccion, setModoSeleccion] = useState(null);
+  const [modoSeleccion, setModoSeleccion] = useState(null);
   const [servicios, setServicios] = useState([]);
   const [profesionales, setProfesionales] = useState([]);
   const [profesionalServicioMap, setProfesionalServicioMap] = useState({});
