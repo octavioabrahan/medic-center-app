@@ -3,7 +3,9 @@ const db = require("../models/db");
 const ServiciosController = {
   listar: async (req, res) => {
     try {
-      const result = await db.query("SELECT * FROM servicio ORDER BY nombre_servicio");
+          const result = await db.query(
+           "SELECT id_servicio, nombre_servicio, precio_bs, precio_usd FROM servicio ORDER BY nombre_servicio"
+          );
       res.json(result.rows);
     } catch (err) {
       console.error(err);

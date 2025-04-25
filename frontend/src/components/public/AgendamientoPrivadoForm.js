@@ -522,7 +522,9 @@ const AgendamientoPrivadoForm = () => {
                           }
                         }}
                       />
-                      <label htmlFor={`servicio-${s.id_servicio}`}>{s.nombre_servicio}</label>
+                      <label htmlFor={`servicio-${s.id_servicio}`}>
+                        {s.nombre_servicio} — USD {Number(s.precio_usd).toFixed(2)}
+                      </label>
                     </div>
                   ))}
               </div>
