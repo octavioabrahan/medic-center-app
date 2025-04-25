@@ -200,59 +200,62 @@ const getTipoAtencionId = (slug) => {
   };
 
   const enviarAgendamiento = async () => {
-    if (isLoading) {
-      alert("Aún se están cargando datos necesarios. Por favor espere.");
-      return;
-    }
-    const representanteCedula = sinCedula ? `${datosRepresentante.cedula}-${datosRepresentante.numeroHijo}` : null;
-    if (!archivoAdjuntoId) {
-      alert("Por favor adjunta la orden médica firmada y sellada antes de continuar.");
-      return;
-    }
-    const categoriaId = getCategoriaId(modoSeleccion === 'consulta' ? 'Consulta' : 'Estudio');
-    const tipoAtencionId = getTipoAtencionId(modoSeleccion === 'presencial' ? 'Presencial' : 'Previa Cita');
-    if (!categoriaId) {
-      alert(`No se encontró la categoría correspondiente a ${modoSeleccion}.`);
-      return;
-    }
+      if (isLoading) {
+        alert("Aún se están cargando datos necesarios. Por favor espere.");
+        return;
+      }
+      
+      if (serviciosSeleccionados.length === 0) {
+        alert("Debes seleccionar al menos un servicio");
+        return;
+      }
+      
+      const representanteCedula = sinCedula ? `${datosRepresentante.cedula}-${datosRepresentante.numeroHijo}` : null;
+      
+      // Obtener IDs de forma simplificada
+      const categoriaId = getCategoriaId('Consulta');
+      const tipoAtencionId = getTipoAtencionId('Presencial');
+      
+      if (!categoriaId) {
+        alert(`No se encontró la categoría correspondiente.`);
+        return;
+      }
+      
+      if (!tipoAtencionId) {
+        alert(`No se encontró el tipo de atención correspondiente.`);
+        return;
+      }
+      
+      const payload = {
+        cedula: sinCedula ? `${datosRepresentante.cedula}-${datosRepresentante.numeroHijo}` : datosRepresentante.cedula,
+        nombre: datosPaciente.nombre,
+        apellido: datosPaciente.apellido,
+        fecha_nacimiento: datosPaciente.fechaNacimiento,
+        sexo: datosPaciente.sexo,
+        telefono: sinCedula ? datosRepresentante.telefono : datosPaciente.telefono,
+        email: sinCedula ? datosRepresentante.email : datosPaciente.email,
+        seguro_medico: tieneSeguro === 'si',
+        representante_cedula: representanteCedula,
+        representante_nombre: sinCedula ? datosRepresentante.nombre : null,
+        representante_apellido: sinCedula ? datosRepresentante.apellido : null,
+        id_empresa: empresaSeleccionada,
+        profesional_id: profesionalSeleccionado,
+        fecha_agendada: fechaSeleccionada?.fecha || fechaSeleccionada,
+        tipo_atencion_id: tipoAtencionId,
+        observaciones: serviciosSeleccionados.join(", "), // Unimos todos los servicios con comas
+        id_categoria: categoriaId,
+        nro_consulta: fechaSeleccionada?.nro_consulta || null
+      };
     
-    if (!tipoAtencionId) {
-      alert(`No se encontró el tipo de atención correspondiente a ${modoSeleccion}.`);
-      return;
-    }
-
-    const payload = {
-      cedula: sinCedula ? `${datosRepresentante.cedula}-${datosRepresentante.numeroHijo}` : datosRepresentante.cedula,
-      nombre: datosPaciente.nombre,
-      apellido: datosPaciente.apellido,
-      fecha_nacimiento: datosPaciente.fechaNacimiento,
-      sexo: datosPaciente.sexo,
-      telefono: sinCedula ? datosRepresentante.telefono : datosPaciente.telefono,
-      email: sinCedula ? datosRepresentante.email : datosPaciente.email,
-      seguro_medico: tieneSeguro === 'si',
-      representante_cedula: representanteCedula,
-      representante_nombre: sinCedula ? datosRepresentante.nombre : null,
-      representante_apellido: sinCedula ? datosRepresentante.apellido : null,
-      id_empresa: empresaSeleccionada,
-      profesional_id: profesionalSeleccionado,
-      fecha_agendada: fechaSeleccionada?.fecha || fechaSeleccionada,
-      tipo_atencion_id: tipoAtencionId,
-      observaciones: serviciosSeleccionados.join(", "),
-      id_categoria: categoriaId,
-      archivo_adjunto_id: archivoAdjuntoId,
-      nro_consulta: fechaSeleccionada?.nro_consulta || null
+      try {
+        await axios.post('/api/agendamiento', payload);
+        alert('Agendamiento creado con éxito');
+        setStep(4);
+      } catch (error) {
+        console.error('Error al crear agendamiento:', error.response?.data || error.message);
+        alert(`Error al crear agendamiento: ${error.response?.data?.error || error.message}`);
+      }
     };
-
-    try {
-      await axios.post('/api/agendamiento', payload);
-      alert('Agendamiento creado con éxito');
-      setStep(4);
-      // Redireccionar o limpiar formulario
-    } catch (error) {
-      console.error('Error al crear agendamiento:', error.response?.data || error.message);
-      alert(`Error al crear agendamiento: ${error.response?.data?.error || error.message}`);
-    }
-  };
 
   return (
     <div className="form-wrapper">
