@@ -2,6 +2,10 @@
 import React, { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import "./CitasAgendadas.css";
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
+import { es } from 'date-fns/locale';
+import { startOfWeek, endOfWeek } from 'date-fns';
 
 const TODOS_LOS_ESTADOS = ["pendiente", "confirmada", "cancelada"];
 
@@ -13,6 +17,8 @@ const CitasAgendadas = () => {
   const [profesionales, setProfesionales] = useState([]);
   const [filtroProfesional, setFiltroProfesional] = useState("todos");
   const [periodo, setPeriodo] = useState("14-04-2025 20-04-2025");
+  const [dateRange, setDateRange] = useState([startOfWeek(new Date()), endOfWeek(new Date())]);
+  const [startDate, endDate] = dateRange;
 
   const [mostrarHistorial, setMostrarHistorial] = useState(false);
   const [historial, setHistorial] = useState([]);
@@ -170,14 +176,18 @@ const CitasAgendadas = () => {
             ))}
           </select>
           
-          <select 
+          <DatePicker
+            selectsRange={true}
+            startDate={startDate}
+            endDate={endDate}
+            onChange={(update) => {
+              setDateRange(update);
+            }}
+            locale={es}
             className="filter-select"
-            value={periodo}
-            onChange={(e) => setPeriodo(e.target.value)}
-          >
-            <option value="14-04-2025 20-04-2025">14-04-2025 20-04-2025</option>
-            <option value="21-04-2025 27-04-2025">21-04-2025 27-04-2025</option>
-          </select>
+            dateFormat="dd/MM/yyyy"
+            placeholderText="Seleccione rango de fechas"
+          />
           
           <select 
             value={filtroProfesional} 
