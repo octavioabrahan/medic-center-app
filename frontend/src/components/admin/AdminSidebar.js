@@ -16,9 +16,7 @@ const AdminSidebar = () => {
           Inicio
         </NavLink>
         
-        <NavLink to="/admin/agendamiento" className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}>
-          Agendamiento
-        </NavLink>
+        <div className="nav-section-title">Agendamiento</div>
         
         <NavLink to="/admin/citas" className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}>
           Citas agendadas
@@ -36,9 +34,7 @@ const AdminSidebar = () => {
           Categorías y servicios
         </NavLink>
         
-        <NavLink to="/admin/cotizador" className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}>
-          Cotizador
-        </NavLink>
+        <div className="nav-section-title">Cotizador</div>
         
         <NavLink to="/admin/cotizaciones" className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}>
           Cotizaciones recibidas

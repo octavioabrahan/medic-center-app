@@ -1,19 +1,23 @@
+// frontend/src/pages/admin/AdminAgendamientosModificado.js
 import React, { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
+import "./CitasAgendadas.css"; // Usaremos el mismo CSS que creamos antes
 
 const TODOS_LOS_ESTADOS = ["pendiente", "confirmada", "cancelada"];
 
-const AdminAgendamientos = () => {
+const CitasAgendadas = () => {
   const [agendamientos, setAgendamientos] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchParams, setSearchParams] = useSearchParams();
+  const [searchTerm, setSearchTerm] = useState("");
+  const [profesionales, setProfesionales] = useState([]);
+  const [filtroProfesional, setFiltroProfesional] = useState("todos");
 
   const [mostrarHistorial, setMostrarHistorial] = useState(false);
   const [historial, setHistorial] = useState([]);
   const [historialDe, setHistorialDe] = useState(null);
 
-  const status =
-    searchParams.get("status")?.trim() || TODOS_LOS_ESTADOS.join(",");
+  const status = searchParams.get("status")?.trim() || TODOS_LOS_ESTADOS.join(",");
   const desde = searchParams.get("desde") || null;
   const hasta = searchParams.get("hasta") || null;
 
@@ -29,6 +33,10 @@ const AdminAgendamientos = () => {
         const res = await fetch(url);
         const data = await res.json();
         setAgendamientos(data);
+        
+        // Extraer lista de profesionales únicos
+        const uniqueProfesionales = [...new Set(data.map(a => `${a.profesional_nombre} ${a.profesional_apellido}`))];
+        setProfesionales(uniqueProfesionales);
       } catch (err) {
         console.error("Error al obtener agendamientos:", err);
       } finally {
@@ -93,144 +101,181 @@ const AdminAgendamientos = () => {
     setHistorialDe(null);
   };
 
-  return (
-    <div style={{ padding: "2rem" }}>
-      <h2>Administración de Agendamientos</h2>
+  // Filtrar agendamientos según el término de búsqueda y profesional seleccionado
+  const agendamientosFiltrados = agendamientos.filter(a => {
+    const matchesSearch = searchTerm === "" || 
+      `${a.paciente_nombre} ${a.paciente_apellido}`.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      a.cedula?.toLowerCase().includes(searchTerm.toLowerCase());
+      
+    const matchesProfesional = filtroProfesional === "todos" || 
+      `${a.profesional_nombre} ${a.profesional_apellido}` === filtroProfesional;
+      
+    return matchesSearch && matchesProfesional;
+  });
 
-      {/* Filtros */}
-      <div style={{ margin: "1rem 0" }}>
-        <label>
-          Estado:
-          <select name="status" value={status || ""} onChange={handleFiltro}>
-            <option value="">Todos</option>
+  return (
+    <div className="citas-container">
+      <h2 className="page-title">Citas agendadas</h2>
+      
+      <div className="citas-filters">
+        <div className="search-box">
+          <input 
+            type="text" 
+            placeholder="Buscar por nombre o cédula..." 
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+          <button className="search-button">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M21 21L15 15M17 10C17 13.866 13.866 17 10 17C6.13401 17 3 13.866 3 10C3 6.13401 6.13401 3 10 3C13.866 3 17 6.13401 17 10Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+          </button>
+        </div>
+        
+        <div className="filter-group">
+          <select 
+            name="status"
+            value={status || ""}
+            onChange={handleFiltro}
+            className="filter-select"
+          >
+            <option value="">Todos los estados</option>
             {TODOS_LOS_ESTADOS.map((s) => (
               <option key={s} value={s}>
-                {s}
+                {s.charAt(0).toUpperCase() + s.slice(1)}
               </option>
             ))}
           </select>
-        </label>
-        <label style={{ marginLeft: "1rem" }}>
-          Desde:
-          <input
-            type="date"
-            name="desde"
-            value={desde || ""}
-            onChange={handleFiltro}
-          />
-        </label>
-        <label style={{ marginLeft: "1rem" }}>
-          Hasta:
-          <input
-            type="date"
-            name="hasta"
-            value={hasta || ""}
-            onChange={handleFiltro}
-          />
-        </label>
-      </div>
-
-      {/* Tabla */}
-      {loading ? (
-        <p>Cargando agendamientos...</p>
-      ) : (
-        <table border="1" cellPadding="8" style={{ width: "100%" }}>
-          <thead>
-            <tr>
-              <th>Paciente</th>
-              <th>Email</th>
-              <th>Teléfono</th>
-              <th>Profesional</th>
-              <th>Fecha</th>
-              <th>Tipo Atención</th>
-              <th>Estado</th>
-              <th>Acciones</th>
-            </tr>
-          </thead>
-          <tbody>
-            {agendamientos.map((a) => (
-              <tr key={a.agendamiento_id}>
-                <td>
-                  {a.paciente_nombre} {a.paciente_apellido}
-                </td>
-                <td>{a.paciente_email || "-"}</td>
-                <td>{a.paciente_telefono || "-"}</td>
-                <td>
-                  {a.profesional_nombre} {a.profesional_apellido}
-                </td>
-                <td>{a.fecha_agendada?.split("T")[0]}</td>
-                <td>{a.tipo_atencion}</td>
-                <td>{a.status}</td>
-                <td>
-                  {a.status === "pendiente" && (
-                    <>
-                      <button
-                        onClick={() =>
-                          actualizarEstado(a.agendamiento_id, "confirmada")
-                        }
-                      >
-                        Confirmar
-                      </button>
-                      <button
-                        onClick={() =>
-                          actualizarEstado(a.agendamiento_id, "cancelada")
-                        }
-                        style={{ marginLeft: "0.5rem" }}
-                      >
-                        Cancelar
-                      </button>
-                    </>
-                  )}
-                  {a.status === "cancelada" && (
-                    <button
-                      onClick={() =>
-                        actualizarEstado(a.agendamiento_id, "pendiente")
-                      }
-                    >
-                      Volver a activar
-                    </button>
-                  )}
-                  <br />
-                  <button
-                    onClick={() => abrirHistorial(a.agendamiento_id)}
-                    style={{ marginTop: "0.5rem" }}
-                  >
-                    Historial
-                  </button>
-                </td>
-              </tr>
+          
+          <select 
+            className="filter-select"
+            name="periodo"
+          >
+            <option value="">
+              {desde && hasta 
+                ? `${desde} - ${hasta}` 
+                : 'Seleccione período'}
+            </option>
+          </select>
+          
+          <select 
+            value={filtroProfesional} 
+            onChange={(e) => setFiltroProfesional(e.target.value)}
+            className="filter-select"
+          >
+            <option value="todos">Todos los profesionales</option>
+            {profesionales.map((prof, index) => (
+              <option key={index} value={prof}>{prof}</option>
             ))}
-          </tbody>
-        </table>
+          </select>
+        </div>
+      </div>
+      
+      {loading ? (
+        <div className="loading-container">Cargando citas...</div>
+      ) : (
+        <div className="citas-table-container">
+          <table className="citas-table">
+            <thead>
+              <tr>
+                <th>Fecha cita</th>
+                <th>Paciente</th>
+                <th>Cédula</th>
+                <th>Categoría</th>
+                <th>Profesional</th>
+                <th>Estado</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              {agendamientosFiltrados.map((a) => {
+                const fecha = new Date(a.fecha_agendada);
+                const formattedDate = fecha.toLocaleDateString('es-ES', {
+                  weekday: 'short',
+                  day: 'numeric',
+                  month: 'long'
+                });
+                const formattedTime = fecha.toLocaleTimeString('es-ES', {
+                  hour: '2-digit',
+                  minute: '2-digit'
+                });
+                
+                return (
+                  <tr key={a.agendamiento_id} className={`cita-row ${a.status}`}>
+                    <td className="fecha-cell">
+                      <div className="calendar-icon">📅</div>
+                      <div>
+                        <div>{formattedDate}</div>
+                        <div className="hora">{formattedTime}</div>
+                      </div>
+                    </td>
+                    <td>{a.paciente_nombre} {a.paciente_apellido}</td>
+                    <td>{a.cedula}</td>
+                    <td>{a.tipo_atencion}</td>
+                    <td>{a.profesional_nombre} {a.profesional_apellido}</td>
+                    <td>
+                      <span className={`estado-badge ${a.status}`}>
+                        {a.status.charAt(0).toUpperCase() + a.status.slice(1)}
+                      </span>
+                    </td>
+                    <td className="actions-cell">
+                      {a.status === "pendiente" && (
+                        <>
+                          <button
+                            onClick={() => actualizarEstado(a.agendamiento_id, "confirmada")}
+                            className="action-btn confirm-btn"
+                            title="Confirmar"
+                          >
+                            ✓
+                          </button>
+                          <button
+                            onClick={() => actualizarEstado(a.agendamiento_id, "cancelada")}
+                            className="action-btn cancel-btn"
+                            title="Cancelar"
+                          >
+                            ✕
+                          </button>
+                        </>
+                      )}
+                      {a.status === "confirmada" && (
+                        <>
+                          <button className="action-btn confirm-btn" disabled>✓</button>
+                          <button
+                            onClick={() => actualizarEstado(a.agendamiento_id, "cancelada")}
+                            className="action-btn cancel-btn"
+                            title="Cancelar"
+                          >
+                            ✕
+                          </button>
+                        </>
+                      )}
+                      {a.status === "cancelada" && (
+                        <>
+                          <button
+                            onClick={() => actualizarEstado(a.agendamiento_id, "confirmada")}
+                            className="action-btn confirm-btn"
+                            title="Confirmar"
+                          >
+                            ✓
+                          </button>
+                          <button className="action-btn cancel-btn" disabled>✕</button>
+                        </>
+                      )}
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
       )}
 
-      {/* Modal historial */}
+      {/* Modal historial (mantenemos el modal existente) */}
       {mostrarHistorial && (
-        <div
-          style={{
-            position: "fixed",
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            background: "rgba(0,0,0,0.6)",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center"
-          }}
-        >
-          <div
-            style={{
-              background: "#fff",
-              padding: "1.5rem",
-              borderRadius: "8px",
-              width: "600px",
-              maxHeight: "80vh",
-              overflowY: "auto"
-            }}
-          >
+        <div className="historial-modal">
+          <div className="historial-content">
             <h3>Historial de Agendamiento #{historialDe}</h3>
-            <table border="1" cellPadding="6" style={{ width: "100%" }}>
+            <table className="historial-table">
               <thead>
                 <tr>
                   <th>Anterior</th>
@@ -245,13 +290,13 @@ const AdminAgendamientos = () => {
                     <td>{h.estado_anterior}</td>
                     <td>{h.estado_nuevo}</td>
                     <td>{h.cambiado_por}</td>
-                    <td>{new Date(h.fecha_cambio).toLocaleString()}</td>
+                    <td>{new Date(h.fecha).toLocaleString()}</td>
                   </tr>
                 ))}
               </tbody>
             </table>
-            <div style={{ marginTop: "1rem", textAlign: "right" }}>
-              <button onClick={cerrarHistorial}>Cerrar</button>
+            <div className="historial-actions">
+              <button onClick={cerrarHistorial} className="close-btn">Cerrar</button>
             </div>
           </div>
         </div>
@@ -260,4 +305,4 @@ const AdminAgendamientos = () => {
   );
 };
 
-export default AdminAgendamientos;
+export default CitasAgendadas;
