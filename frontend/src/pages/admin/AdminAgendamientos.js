@@ -1,7 +1,7 @@
 // frontend/src/pages/admin/AdminAgendamientosModificado.js
 import React, { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
-import "./CitasAgendadas.css"; // Usaremos el mismo CSS que creamos antes
+import "./CitasAgendadas.css";
 
 const TODOS_LOS_ESTADOS = ["pendiente", "confirmada", "cancelada"];
 
@@ -12,6 +12,7 @@ const CitasAgendadas = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [profesionales, setProfesionales] = useState([]);
   const [filtroProfesional, setFiltroProfesional] = useState("todos");
+  const [periodo, setPeriodo] = useState("14-04-2025 20-04-2025");
 
   const [mostrarHistorial, setMostrarHistorial] = useState(false);
   const [historial, setHistorial] = useState([]);
@@ -48,11 +49,6 @@ const CitasAgendadas = () => {
   }, [status, desde, hasta]);
 
   const actualizarEstado = async (id, nuevoEstado) => {
-    const confirmar = window.confirm(
-      `¿Confirmar cambio de estado a "${nuevoEstado}"?`
-    );
-    if (!confirmar) return;
-
     try {
       await fetch(`${process.env.REACT_APP_API_URL}/api/agendamiento/${id}`, {
         method: "PUT",
@@ -113,6 +109,33 @@ const CitasAgendadas = () => {
     return matchesSearch && matchesProfesional;
   });
 
+  // Función para formatear la fecha en formato "Lun 14 abril" y "08:00 AM"
+  const formatearFecha = (fechaStr) => {
+    const fecha = new Date(fechaStr);
+    
+    // Días de la semana abreviados
+    const diasSemana = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
+    
+    // Meses
+    const meses = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'];
+    
+    const diaSemana = diasSemana[fecha.getDay()];
+    const dia = fecha.getDate();
+    const mes = meses[fecha.getMonth()];
+    
+    let horas = fecha.getHours();
+    const minutos = fecha.getMinutes().toString().padStart(2, '0');
+    const ampm = horas >= 12 ? 'PM' : 'AM';
+    
+    horas = horas % 12;
+    horas = horas ? horas : 12; // Si es 0, mostrar como 12
+    
+    return {
+      fecha: `${diaSemana} ${dia} ${mes}`,
+      hora: `${horas.toString().padStart(2, '0')}:${minutos} ${ampm}`
+    };
+  };
+
   return (
     <div className="citas-container">
       <h2 className="page-title">Citas agendadas</h2>
@@ -126,7 +149,7 @@ const CitasAgendadas = () => {
             onChange={(e) => setSearchTerm(e.target.value)}
           />
           <button className="search-button">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M21 21L15 15M17 10C17 13.866 13.866 17 10 17C6.13401 17 3 13.866 3 10C3 6.13401 6.13401 3 10 3C13.866 3 17 6.13401 17 10Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
             </svg>
           </button>
@@ -149,13 +172,11 @@ const CitasAgendadas = () => {
           
           <select 
             className="filter-select"
-            name="periodo"
+            value={periodo}
+            onChange={(e) => setPeriodo(e.target.value)}
           >
-            <option value="">
-              {desde && hasta 
-                ? `${desde} - ${hasta}` 
-                : 'Seleccione período'}
-            </option>
+            <option value="14-04-2025 20-04-2025">14-04-2025 20-04-2025</option>
+            <option value="21-04-2025 27-04-2025">21-04-2025 27-04-2025</option>
           </select>
           
           <select 
@@ -189,24 +210,15 @@ const CitasAgendadas = () => {
             </thead>
             <tbody>
               {agendamientosFiltrados.map((a) => {
-                const fecha = new Date(a.fecha_agendada);
-                const formattedDate = fecha.toLocaleDateString('es-ES', {
-                  weekday: 'short',
-                  day: 'numeric',
-                  month: 'long'
-                });
-                const formattedTime = fecha.toLocaleTimeString('es-ES', {
-                  hour: '2-digit',
-                  minute: '2-digit'
-                });
+                const formatoFecha = formatearFecha(a.fecha_agendada);
                 
                 return (
                   <tr key={a.agendamiento_id} className={`cita-row ${a.status}`}>
                     <td className="fecha-cell">
                       <div className="calendar-icon">📅</div>
                       <div>
-                        <div>{formattedDate}</div>
-                        <div className="hora">{formattedTime}</div>
+                        <div>{formatoFecha.fecha}</div>
+                        <div className="hora">{formatoFecha.hora}</div>
                       </div>
                     </td>
                     <td>{a.paciente_nombre} {a.paciente_apellido}</td>
@@ -219,48 +231,20 @@ const CitasAgendadas = () => {
                       </span>
                     </td>
                     <td className="actions-cell">
-                      {a.status === "pendiente" && (
-                        <>
-                          <button
-                            onClick={() => actualizarEstado(a.agendamiento_id, "confirmada")}
-                            className="action-btn confirm-btn"
-                            title="Confirmar"
-                          >
-                            ✓
-                          </button>
-                          <button
-                            onClick={() => actualizarEstado(a.agendamiento_id, "cancelada")}
-                            className="action-btn cancel-btn"
-                            title="Cancelar"
-                          >
-                            ✕
-                          </button>
-                        </>
-                      )}
-                      {a.status === "confirmada" && (
-                        <>
-                          <button className="action-btn confirm-btn" disabled>✓</button>
-                          <button
-                            onClick={() => actualizarEstado(a.agendamiento_id, "cancelada")}
-                            className="action-btn cancel-btn"
-                            title="Cancelar"
-                          >
-                            ✕
-                          </button>
-                        </>
-                      )}
-                      {a.status === "cancelada" && (
-                        <>
-                          <button
-                            onClick={() => actualizarEstado(a.agendamiento_id, "confirmada")}
-                            className="action-btn confirm-btn"
-                            title="Confirmar"
-                          >
-                            ✓
-                          </button>
-                          <button className="action-btn cancel-btn" disabled>✕</button>
-                        </>
-                      )}
+                      <button
+                        onClick={() => actualizarEstado(a.agendamiento_id, "confirmada")}
+                        className="action-btn confirm-btn"
+                        title="Confirmar"
+                      >
+                        ✓
+                      </button>
+                      <button
+                        onClick={() => actualizarEstado(a.agendamiento_id, "cancelada")}
+                        className="action-btn cancel-btn"
+                        title="Cancelar"
+                      >
+                        ✕
+                      </button>
                     </td>
                   </tr>
                 );
@@ -270,7 +254,7 @@ const CitasAgendadas = () => {
         </div>
       )}
 
-      {/* Modal historial (mantenemos el modal existente) */}
+      {/* Modal historial */}
       {mostrarHistorial && (
         <div className="historial-modal">
           <div className="historial-content">
