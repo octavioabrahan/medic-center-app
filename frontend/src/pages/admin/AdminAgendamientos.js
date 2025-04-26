@@ -2,10 +2,12 @@
 import React, { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import "./CitasAgendadas.css";
-import DatePicker from 'react-datepicker';
-import 'react-datepicker/dist/react-datepicker.css';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { DateRangePicker } from '@mui/x-date-pickers-pro/DateRangePicker';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import dayjs from 'dayjs';
+import 'dayjs/locale/es';
 import { es } from 'date-fns/locale';
-import { startOfWeek, endOfWeek } from 'date-fns';
 
 const TODOS_LOS_ESTADOS = ["pendiente", "confirmada", "cancelada"];
 
@@ -17,7 +19,10 @@ const CitasAgendadas = () => {
   const [profesionales, setProfesionales] = useState([]);
   const [filtroProfesional, setFiltroProfesional] = useState("todos");
   const [periodo, setPeriodo] = useState("14-04-2025 20-04-2025");
-  const [dateRange, setDateRange] = useState([startOfWeek(new Date()), endOfWeek(new Date())]);
+  const [dateRange, setDateRange] = useState([
+    dayjs().startOf('week'),
+    dayjs().endOf('week')
+  ]);
   const [startDate, endDate] = dateRange;
 
   const [mostrarHistorial, setMostrarHistorial] = useState(false);
@@ -176,18 +181,23 @@ const CitasAgendadas = () => {
             ))}
           </select>
           
-          <DatePicker
-            selectsRange={true}
-            startDate={startDate}
-            endDate={endDate}
-            onChange={(update) => {
-              setDateRange(update);
-            }}
-            locale={es}
-            className="filter-select"
-            dateFormat="dd/MM/yyyy"
-            placeholderText="Seleccione rango de fechas"
-          />
+          <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="es">
+            <DateRangePicker
+              className="filter-select"
+              value={dateRange}
+              onChange={(newValue) => setDateRange(newValue)}
+              localeText={{ start: 'Inicio', end: 'Fin' }}
+              slotProps={{
+                textField: { 
+                  size: "small",
+                  style: { 
+                    borderRadius: '500px',
+                    backgroundColor: 'white'
+                  }
+                }
+              }}
+            />
+          </LocalizationProvider>
           
           <select 
             value={filtroProfesional} 

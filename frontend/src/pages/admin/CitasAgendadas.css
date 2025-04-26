@@ -257,3 +257,26 @@
   .close-btn:hover {
     background-color: #d1d5db;
   }
+  
+  /* Estilos para el DateRangePicker de MUI */
+  .MuiInputBase-root {
+    border-radius: 500px !important;
+  }
+  
+  .MuiOutlinedInput-notchedOutline {
+    border-color: #E5E7EB !important;
+  }
+  
+  .MuiInputBase-root:hover .MuiOutlinedInput-notchedOutline {
+    border-color: #2C2C2C !important;
+  }
+  
+  .MuiInputBase-root.Mui-focused .MuiOutlinedInput-notchedOutline {
+    border-color: #2C2C2C !important;
+    border-width: 1px !important;
+  }
+  
+  /* Ajustes para el calendario */
+  .filter-group .MuiTextField-root {
+    min-width: 240px;
+  }
