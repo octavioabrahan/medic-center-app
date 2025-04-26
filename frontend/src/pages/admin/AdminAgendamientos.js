@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import "./CitasAgendadas.css";
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { DateRangePicker } from '@mui/x-date-pickers-pro/DateRangePicker';
+import { StaticDateRangePicker } from '@mui/x-date-pickers-pro/StaticDateRangePicker';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import dayjs from 'dayjs';
 import 'dayjs/locale/es';
@@ -18,7 +18,6 @@ const CitasAgendadas = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [profesionales, setProfesionales] = useState([]);
   const [filtroProfesional, setFiltroProfesional] = useState("todos");
-  const [periodo, setPeriodo] = useState("14-04-2025 20-04-2025");
   const [dateRange, setDateRange] = useState([
     dayjs().startOf('week'),
     dayjs().endOf('week')
@@ -182,7 +181,7 @@ const CitasAgendadas = () => {
           </select>
           
           <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="es">
-            <DateRangePicker
+            <StaticDateRangePicker
               className="filter-select"
               value={dateRange}
               onChange={(newValue) => setDateRange(newValue)}

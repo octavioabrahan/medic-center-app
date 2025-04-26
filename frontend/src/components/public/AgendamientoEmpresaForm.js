@@ -20,7 +20,7 @@ const AgendamientoEmpresaForm = () => {
   });
 
   const [tieneSeguro] = useState('');
-  const [modoSeleccion, setModoSeleccion] = useState(null);
+  const [modoSeleccion] = useState(null);
   const [servicios, setServicios] = useState([]);
   const [profesionales, setProfesionales] = useState([]);
   const [profesionalServicioMap, setProfesionalServicioMap] = useState({});
@@ -122,28 +122,10 @@ const getTipoAtencionId = (slug) => {
   );
 
   // Filtrar profesionales por servicio seleccionado (si hay uno)
-  const profesionalesFiltrados = serviciosSeleccionados
-    ? profesionalesPorCategoria.filter(p => {
-        // Si tenemos un ID de servicio y un mapa de servicio a profesionales
-        const servicioObj = servicios.find(s => s.nombre_servicio === serviciosSeleccionados);
-        if (servicioObj && profesionalServicioMap.servToProf) {
-          const idServicio = servicioObj.id_servicio;
-          return profesionalServicioMap.servToProf[idServicio]?.includes(p.profesional_id);
-        }
-        return true;
-      })
-    : profesionalesPorCategoria;
+  const profesionalesFiltrados = profesionales;
 
   // Filtrar servicios por profesional seleccionado (si hay uno)
-  const serviciosFiltrados = profesionalSeleccionado
-    ? servicios.filter(s => {
-        // Si tenemos un ID de profesional y un mapa de profesional a servicios
-        if (profesionalServicioMap.profToServ) {
-          return profesionalServicioMap.profToServ[profesionalSeleccionado]?.includes(s.id_servicio);
-        }
-        return true;
-      })
-    : servicios;
+  const serviciosFiltrados = servicios;
 
   // Manejar cambio de servicio
   const handleServicioChange = (e) => {

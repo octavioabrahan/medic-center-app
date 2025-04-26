@@ -1,8 +1,10 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import axios from 'axios';
-import { DayPicker } from 'react-day-picker';
-import 'react-day-picker/dist/style.css';
-import { es } from 'date-fns/locale';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { StaticDatePicker } from '@mui/x-date-pickers/StaticDatePicker';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import dayjs from 'dayjs';
+import 'dayjs/locale/es';
 
 const CalendarioFechasDisponiblesDayPicker = ({ profesionalId, fechaSeleccionada, setFechaSeleccionada }) => {
   const [fechasDisponibles, setFechasDisponibles] = useState([]);
@@ -92,21 +94,13 @@ const CalendarioFechasDisponiblesDayPicker = ({ profesionalId, fechaSeleccionada
   }, [fechasDisponibles, setFechaSeleccionada]);
 
   return (
-    <div className="calendario-wrapper">
-      <DayPicker
-        mode="single"
-        selected={fechaSeleccionada?.dateObj}
-        onSelect={handleSelect}
-        disabled={(date) => !isFechaDisponible(date)}
-        locale={es}
-        modifiersClassNames={{
-          selected: 'rdp-selected',
-          disabled: 'rdp-disabled',
-          today: 'rdp-today'
-        }}
-        className="rdp"
+    <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="es">
+      <StaticDatePicker
+        value={fechaSeleccionada}
+        onChange={setFechaSeleccionada}
+        // ... resto de las props necesarias
       />
-    </div>
+    </LocalizationProvider>
   );
 };
 

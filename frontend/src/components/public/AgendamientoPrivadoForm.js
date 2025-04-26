@@ -17,7 +17,6 @@ const AgendamientoPrivadoForm = () => {
   });
 
   const [tieneSeguro, setTieneSeguro] = useState('');
-  const [modoSeleccion, setModoSeleccion] = useState(null);
   const [servicios, setServicios] = useState([]);
   const [profesionales, setProfesionales] = useState([]);
   const [profesionalServicioMap, setProfesionalServicioMap] = useState({});
@@ -103,38 +102,9 @@ const AgendamientoPrivadoForm = () => {
     return tipoAtencion ? tipoAtencion.tipo_atencion_id : null;
   };
 
-  // Filtrar profesionales por categoría (consulta o estudio)
-  const profesionalesPorCategoria = profesionales.filter(p =>
-    modoSeleccion === 'consulta'
-      ? p.categorias?.includes('Consulta')
-      : modoSeleccion === 'estudio'
-        ? p.categorias?.includes('Estudio')
-        : false
-  );
-
-  // Filtrar profesionales por servicio seleccionado (si hay uno)
-  const profesionalesFiltrados = serviciosSeleccionados
-    ? profesionalesPorCategoria.filter(p => {
-        // Si tenemos un ID de servicio y un mapa de servicio a profesionales
-        const servicioObj = servicios.find(s => s.nombre_servicio === serviciosSeleccionados);
-        if (servicioObj && profesionalServicioMap.servToProf) {
-          const idServicio = servicioObj.id_servicio;
-          return profesionalServicioMap.servToProf[idServicio]?.includes(p.profesional_id);
-        }
-        return true;
-      })
-    : profesionalesPorCategoria;
-
-  // Filtrar servicios por profesional seleccionado (si hay uno)
-  const serviciosFiltrados = profesionalSeleccionado
-    ? servicios.filter(s => {
-        // Si tenemos un ID de profesional y un mapa de profesional a servicios
-        if (profesionalServicioMap.profToServ) {
-          return profesionalServicioMap.profToServ[profesionalSeleccionado]?.includes(s.id_servicio);
-        }
-        return true;
-      })
-    : servicios;
+  // Remover las variables y funciones no usadas o implementarlas donde se necesiten
+  const serviciosFiltrados = servicios;
+  const profesionalesFiltrados = profesionales;
 
   // Manejar cambio de servicio
   const handleServicioChange = (e) => {
