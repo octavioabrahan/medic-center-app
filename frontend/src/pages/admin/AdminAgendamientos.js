@@ -4,21 +4,24 @@ import { useSearchParams } from "react-router-dom";
 import "./CitasAgendadas.css";
 import { DayPicker } from "react-day-picker";
 import "react-day-picker/dist/style.css";
-import { startOfWeek, endOfWeek, format } from "date-fns";
+import { startOfWeek, endOfWeek, format, startOfDay, endOfDay } from "date-fns";
 import { es } from "date-fns/locale";
 
 const TODOS_LOS_ESTADOS = ["pendiente", "confirmada", "cancelada"];
 
 const CitasAgendadas = () => {
-  const [agendamientos, setAgendamientos] = useState([]);
-  const [loading, setLoading] = useState(true);
   const [searchParams, setSearchParams] = useSearchParams();
   const [searchTerm, setSearchTerm] = useState("");
   const [profesionales, setProfesionales] = useState([]);
   const [filtroProfesional, setFiltroProfesional] = useState("todos");
+  
+  const status = searchParams.get("status")?.trim() || TODOS_LOS_ESTADOS.join(",");
+  const desde = searchParams.get("desde") || null;
+  const hasta = searchParams.get("hasta") || null;
+  
   const [dateRange, setDateRange] = useState({
-    from: startOfWeek(new Date()),
-    to: endOfWeek(new Date())
+    from: desde ? new Date(desde) : startOfWeek(new Date()),
+    to: hasta ? new Date(hasta) : endOfWeek(new Date())
   });
   const startDate = dateRange?.from;
   const endDate = dateRange?.to;
@@ -28,9 +31,8 @@ const CitasAgendadas = () => {
   const [historial, setHistorial] = useState([]);
   const [historialDe, setHistorialDe] = useState(null);
 
-  const status = searchParams.get("status")?.trim() || TODOS_LOS_ESTADOS.join(",");
-  const desde = searchParams.get("desde") || null;
-  const hasta = searchParams.get("hasta") || null;
+  const [agendamientos, setAgendamientos] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchAgendamientos = async () => {
@@ -101,11 +103,32 @@ const CitasAgendadas = () => {
       
     const matchesProfesional = filtroProfesional === "todos" || 
       `${a.profesional_nombre} ${a.profesional_apellido}` === filtroProfesional;
+    
+    // Filtrar por rango de fechas
+    const fechaCita = new Date(a.fecha_agendada);
+    const matchesFecha = !startDate || !endDate || 
+      (fechaCita >= startOfDay(startDate) && fechaCita <= endOfDay(endDate));
       
-    return matchesSearch && matchesProfesional;
+    return matchesSearch && matchesProfesional && matchesFecha;
   });
 
   const toggleDatePicker = () => setShowDatePicker(!showDatePicker);
+
+  // Update dateRange and URL params when dates are selected
+  useEffect(() => {
+    if (startDate && endDate) {
+      const fromFormatted = format(startDate, "yyyy-MM-dd");
+      const toFormatted = format(endDate, "yyyy-MM-dd");
+      
+      // Only update URL parameters if they have changed
+      if (fromFormatted !== desde || toFormatted !== hasta) {
+        const newParams = new URLSearchParams(searchParams);
+        newParams.set("desde", fromFormatted);
+        newParams.set("hasta", toFormatted);
+        setSearchParams(newParams);
+      }
+    }
+  }, [startDate, endDate, searchParams, setSearchParams, desde, hasta]);
 
   const formatDateRange = () => {
     if (!startDate || !endDate) return "Seleccionar fechas";
