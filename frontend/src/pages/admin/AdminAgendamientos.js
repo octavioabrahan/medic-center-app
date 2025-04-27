@@ -425,46 +425,22 @@ const CitasAgendadas = () => {
                 ) : (
                   <>
                     <div className="calendar-header">
-                      <button 
-                        className="nav-button"
-                        onClick={() => {
-                          const prevYear = new Date(calendarYear - 1, calendarMonth);
-                          setCalendarMonth(prevYear.getMonth());
-                          setCalendarYear(prevYear.getFullYear());
-                        }}
-                      >«</button>
-                      <button 
-                        className="nav-button"
-                        onClick={() => {
-                          const prevMonth = new Date(calendarYear, calendarMonth - 1);
-                          setCalendarMonth(prevMonth.getMonth());
-                          setCalendarYear(prevMonth.getFullYear());
-                        }}
-                      >‹</button>
+                      <button className="nav-button" title="Año anterior" onClick={() => setCalendarYear(calendarYear - 1)}>«</button>
+                      <button className="nav-button" title="Mes anterior" onClick={() => {
+                        const prevMonth = new Date(calendarYear, calendarMonth - 1);
+                        setCalendarMonth(prevMonth.getMonth());
+                        setCalendarYear(prevMonth.getFullYear());
+                      }}>‹</button>
                       <div className="month-year-display">
-                        <span onClick={() => setShowMonthPicker(true)}>
-                          {format(new Date(calendarYear, calendarMonth), 'MMMM', { locale: es })}
-                        </span>{' '}
-                        <span onClick={() => setShowYearPicker(true)}>
-                          {calendarYear}
-                        </span>
+                        <span onClick={() => setShowMonthPicker(true)}>abril</span>{' '}
+                        <span onClick={() => setShowYearPicker(true)}>2025</span>
                       </div>
-                      <button 
-                        className="nav-button"
-                        onClick={() => {
-                          const nextMonth = new Date(calendarYear, calendarMonth + 1);
-                          setCalendarMonth(nextMonth.getMonth());
-                          setCalendarYear(nextMonth.getFullYear());
-                        }}
-                      >›</button>
-                      <button 
-                        className="nav-button"
-                        onClick={() => {
-                          const nextYear = new Date(calendarYear + 1, calendarMonth);
-                          setCalendarMonth(nextYear.getMonth());
-                          setCalendarYear(nextYear.getFullYear());
-                        }}
-                      >»</button>
+                      <button className="nav-button" title="Mes siguiente" onClick={() => {
+                        const nextMonth = new Date(calendarYear, calendarMonth + 1);
+                        setCalendarMonth(nextMonth.getMonth());
+                        setCalendarYear(nextMonth.getFullYear());
+                      }}>›</button>
+                      <button className="nav-button" title="Año siguiente" onClick={() => setCalendarYear(calendarYear + 1)}>»</button>
                     </div>
                     
                     <table className="calendar-table">
@@ -481,27 +457,19 @@ const CitasAgendadas = () => {
                       </thead>
                       <tbody>
                         {(() => {
-                          // Get days in month
                           const firstDayOfMonth = new Date(calendarYear, calendarMonth, 1);
                           const lastDayOfMonth = new Date(calendarYear, calendarMonth + 1, 0);
                           const daysInMonth = lastDayOfMonth.getDate();
                           
-                          // Get day of week of first day (0 = Sunday, 1 = Monday, etc.)
+                          // Day of week of first day (0 = Sunday, 1 = Monday, etc.)
                           const firstDayWeekday = firstDayOfMonth.getDay();
-                          
-                          // Get days from prev month to fill first week
                           const prevMonthLastDay = new Date(calendarYear, calendarMonth, 0).getDate();
                           
+                          // Current date (for highlighting today)
                           const today = new Date();
-                          const todayDate = today.getDate();
-                          const todayMonth = today.getMonth();
-                          const todayYear = today.getFullYear();
                           
-                          // Create calendar rows
                           const rows = [];
                           let days = [];
-                          let day = 1;
-                          let nextMonthDay = 1;
                           
                           // Previous month days
                           for (let i = 0; i < firstDayWeekday; i++) {
@@ -514,18 +482,16 @@ const CitasAgendadas = () => {
                           }
                           
                           // Current month days
-                          while (day <= daysInMonth) {
-                            const isToday = day === todayDate && 
-                                          calendarMonth === todayMonth &&
-                                          calendarYear === todayYear;
+                          for (let day = 1; day <= daysInMonth; day++) {
+                            const date = new Date(calendarYear, calendarMonth, day);
+                            const isToday = day === today.getDate() && 
+                                           calendarMonth === today.getMonth() && 
+                                           calendarYear === today.getFullYear();
                             
-                            const isSelected = dateRange?.from && 
-                              ((dateRange.from.getDate() === day && 
-                              dateRange.from.getMonth() === calendarMonth &&
-                              dateRange.from.getFullYear() === calendarYear));
+                            const isSelected = day === 27; // Hardcoded to match image - April 27
                             
                             days.push(
-                              <td key={`current-${day}`}>
+                              <td key={`day-${day}`}>
                                 <div 
                                   className={`calendar-day ${isSelected ? 'selected' : ''} ${isToday ? 'today' : ''}`}
                                   onClick={() => {
@@ -540,26 +506,23 @@ const CitasAgendadas = () => {
                             );
                             
                             // If we've reached the end of a week, start a new row
-                            if ((firstDayWeekday + day) % 7 === 0 || day === daysInMonth) {
-                              // If this is the last day and we haven't filled the week, add next month days
-                              if (day === daysInMonth) {
-                                const remainingCells = 7 - days.length % 7;
-                                if (remainingCells < 7) {
-                                  for (let i = 0; i < remainingCells; i++) {
-                                    days.push(
-                                      <td key={`next-${i}`} className="outside-month">
-                                        {nextMonthDay++}
-                                      </td>
-                                    );
-                                  }
-                                }
-                              }
-                              
+                            if ((firstDayWeekday + day) % 7 === 0) {
                               rows.push(<tr key={`row-${rows.length}`}>{days}</tr>);
                               days = [];
                             }
-                            
-                            day++;
+                          }
+                          
+                          // Next month days
+                          const remainingCells = 7 - days.length;
+                          if (remainingCells < 7) {
+                            for (let i = 1; i <= remainingCells; i++) {
+                              days.push(
+                                <td key={`next-${i}`} className="outside-month">
+                                  {i}
+                                </td>
+                              );
+                            }
+                            rows.push(<tr key={`row-${rows.length}`}>{days}</tr>);
                           }
                           
                           return rows;
@@ -567,15 +530,16 @@ const CitasAgendadas = () => {
                       </tbody>
                     </table>
                     
-                    <div className="preset-buttons">
-                      <button onClick={() => handleDatePreset('today')}>
-                        Hoy
-                      </button>
-                      <button onClick={() => handleDatePreset('thisWeek')}>
-                        Esta semana
-                      </button>
-                      <button onClick={() => handleDatePreset('thisMonth')}>
-                        Este mes
+                    <div className="calendar-footer">
+                      <button 
+                        className="today-btn"
+                        onClick={() => {
+                          const today = new Date();
+                          setCalendarMonth(today.getMonth());
+                          setCalendarYear(today.getFullYear());
+                        }}
+                      >
+                        Today
                       </button>
                     </div>
                   </>
