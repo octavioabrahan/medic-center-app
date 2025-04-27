@@ -24,9 +24,6 @@ const CitasAgendadas = () => {
   const [historial, setHistorial] = useState([]);
   const [historialDe, setHistorialDe] = useState(null);
 
-  const [filterStatus, setFilterStatus] = useState("todos");
-  const [filteredAgendamientos, setFilteredAgendamientos] = useState([]);
-
   const status = searchParams.get("status")?.trim() || TODOS_LOS_ESTADOS.join(",");
   const desde = searchParams.get("desde") || null;
   const hasta = searchParams.get("hasta") || null;
@@ -86,20 +83,6 @@ const CitasAgendadas = () => {
     setSearchParams(newParams);
   };
 
-  const abrirHistorial = async (id) => {
-    try {
-      const res = await fetch(
-        `${process.env.REACT_APP_API_URL}/api/agendamiento/${id}/historial`
-      );
-      const data = await res.json();
-      setHistorial(data);
-      setHistorialDe(id);
-      setMostrarHistorial(true);
-    } catch (err) {
-      alert("Error al obtener historial");
-    }
-  };
-
   const cerrarHistorial = () => {
     setMostrarHistorial(false);
     setHistorial([]);
@@ -123,6 +106,20 @@ const CitasAgendadas = () => {
   const formatDateRange = () => {
     if (!startDate || !endDate) return "Seleccionar fechas";
     return `${format(startDate, "dd/MM/yyyy")} - ${format(endDate, "dd/MM/yyyy")}`;
+  };
+
+  const formatearFecha = (fechaStr) => {
+    const fecha = new Date(fechaStr);
+    const diasSemana = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
+    const meses = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'];
+    const diaSemana = diasSemana[fecha.getDay()];
+    const dia = fecha.getDate();
+    const mes = meses[fecha.getMonth()];
+    let horas = fecha.getHours();
+    const minutos = fecha.getMinutes().toString().padStart(2, '0');
+    const ampm = horas >= 12 ? 'PM' : 'AM';
+    horas = horas % 12 || 12;
+    return { fecha: `${diaSemana} ${dia} ${mes}`, hora: `${horas}:${minutos} ${ampm}` };
   };
 
   return (
