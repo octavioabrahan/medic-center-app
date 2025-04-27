@@ -322,3 +322,72 @@
 .react-datepicker__day:hover {
   background-color: #E5E7EB !important;
 }
+
+/* Styles for the DayPicker dropdown */
+.date-picker-wrapper {
+  position: relative;
+}
+
+.date-picker-toggle {
+  background-color: white;
+  border: 1px solid #E5E7EB;
+  border-radius: 500px;
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  color: #1E1E1E;
+  cursor: pointer;
+  min-width: 200px;
+  text-align: left;
+}
+
+.date-picker-toggle:hover {
+  border-color: #2C2C2C;
+}
+
+.date-picker-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: 1000;
+  background-color: white;
+  border: 1px solid #E5E7EB;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  padding: 1rem;
+  margin-top: 0.5rem;
+}
+
+.date-picker-dropdown .rdp {
+  font-family: 'Inter', 'Segoe UI', sans-serif;
+}
+
+.date-picker-dropdown .rdp-day_selected {
+  background-color: #20377A;
+  color: white;
+  border-radius: 50%;
+}
+
+.date-picker-dropdown .rdp-day:hover {
+  background-color: #E5E7EB;
+  border-radius: 50%;
+}
+
+.date-picker-dropdown .rdp-day_disabled {
+  color: #D1D5DB;
+  pointer-events: none;
+}
+
+.date-picker-dropdown .rdp-caption_label {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #1E1E1E;
+}
+
+.date-picker-dropdown .rdp-nav_button {
+  color: #1E1E1E;
+}
+
+/* Hide the DayPicker dropdown when not visible */
+.date-picker-dropdown.hidden {
+  display: none;
+}

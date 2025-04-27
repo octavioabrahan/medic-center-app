@@ -4,7 +4,7 @@ import { useSearchParams } from "react-router-dom";
 import "./CitasAgendadas.css";
 import { DayPicker } from "react-day-picker";
 import "react-day-picker/dist/style.css";
-import { startOfWeek, endOfWeek } from "date-fns";
+import { startOfWeek, endOfWeek, format } from "date-fns";
 import { es } from "date-fns/locale";
 
 const TODOS_LOS_ESTADOS = ["pendiente", "confirmada", "cancelada"];
@@ -18,6 +18,7 @@ const CitasAgendadas = () => {
   const [filtroProfesional, setFiltroProfesional] = useState("todos");
   const [dateRange, setDateRange] = useState([startOfWeek(new Date()), endOfWeek(new Date())]);
   const [startDate, endDate] = dateRange;
+  const [showDatePicker, setShowDatePicker] = useState(false); // Toggle for DayPicker visibility
 
   const [mostrarHistorial, setMostrarHistorial] = useState(false);
   const [historial, setHistorial] = useState([]);
@@ -117,63 +118,12 @@ const CitasAgendadas = () => {
     return matchesSearch && matchesProfesional;
   });
 
-  // Función para formatear la fecha en formato "Lun 14 abril" y "08:00 AM"
-  const formatearFecha = (fechaStr) => {
-    const fecha = new Date(fechaStr);
-    
-    // Días de la semana abreviados
-    const diasSemana = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
-    
-    // Meses
-    const meses = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'];
-    
-    const diaSemana = diasSemana[fecha.getDay()];
-    const dia = fecha.getDate();
-    const mes = meses[fecha.getMonth()];
-    
-    let horas = fecha.getHours();
-    const minutos = fecha.getMinutes().toString().padStart(2, '0');
-    const ampm = horas >= 12 ? 'PM' : 'AM';
-    
-    horas = horas % 12;
-    horas = horas ? horas : 12; // Si es 0, mostrar como 12
-    
-    return {
-      fecha: `${diaSemana} ${dia} ${mes}`,
-      hora: `${horas.toString().padStart(2, '0')}:${minutos} ${ampm}`
-    };
+  const toggleDatePicker = () => setShowDatePicker(!showDatePicker);
+
+  const formatDateRange = () => {
+    if (!startDate || !endDate) return "Seleccionar fechas";
+    return `${format(startDate, "dd/MM/yyyy")} - ${format(endDate, "dd/MM/yyyy")}`;
   };
-
-  useEffect(() => {
-    if (agendamientos.length > 0) {
-      let results = [...agendamientos];
-      
-      // Filtrar por término de búsqueda
-      if (searchTerm) {
-        const term = searchTerm.toLowerCase();
-        results = results.filter(cita => 
-          cita.nombre?.toLowerCase().includes(term) ||
-          cita.apellido?.toLowerCase().includes(term) ||
-          cita.cedula?.toLowerCase().includes(term)
-        );
-      }
-      
-      // Filtrar por estado
-      if (filterStatus !== 'todos') {
-        results = results.filter(cita => cita.estado === filterStatus);
-      }
-
-      // Filtrar por rango de fechas
-      if (startDate && endDate) {
-        results = results.filter(cita => {
-          const citaDate = new Date(cita.fecha_agendada);
-          return citaDate >= startDate && citaDate <= endDate;
-        });
-      }
-      
-      setFilteredAgendamientos(results);
-    }
-  }, [searchTerm, filterStatus, agendamientos, startDate, endDate]);
 
   return (
     <div className="citas-container">
@@ -209,13 +159,21 @@ const CitasAgendadas = () => {
             ))}
           </select>
           
-          <DayPicker
-            mode="range"
-            selected={dateRange}
-            onSelect={setDateRange}
-            locale={es}
-            className="filter-select day-picker-input"
-          />
+          <div className="date-picker-wrapper">
+            <button className="date-picker-toggle" onClick={toggleDatePicker}>
+              {formatDateRange()}
+            </button>
+            {showDatePicker && (
+              <div className="date-picker-dropdown">
+                <DayPicker
+                  mode="range"
+                  selected={dateRange}
+                  onSelect={setDateRange}
+                  locale={es}
+                />
+              </div>
+            )}
+          </div>
           
           <select 
             value={filtroProfesional} 
