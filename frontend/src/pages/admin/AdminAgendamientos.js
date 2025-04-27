@@ -113,8 +113,8 @@ const CustomCalendar = ({
       result.push(new Date(currentYear, currentMonth, d));
     }
     
-    // Next month days to show
-    const nextMonthDays = 10; // Show more days from the next month
+    // Next month days to show - reduced from 10 to 7 to avoid clutter
+    const nextMonthDays = 7; 
     for (let d = 1; d <= nextMonthDays; d++) {
       result.push(new Date(currentYear, currentMonth + 1, d));
     }
@@ -166,21 +166,26 @@ const CustomCalendar = ({
     <div className="custom-calendar">
       <div className="calendar-header">
         <div className="month-year">
-          <span onClick={onMonthClick}>{format(currentDate, 'MMMM', { locale: es })}</span>{' '}
-          <span onClick={onYearClick}>{format(currentDate, 'yyyy')}</span>
+          <span onClick={onMonthClick} className="month-selector">{format(currentDate, 'MMMM', { locale: es })}</span>{' '}
+          <span onClick={onYearClick} className="year-selector">{format(currentDate, 'yyyy')}</span>
         </div>
         <div className="navigation-buttons">
-          <button onClick={goToPrevYear} className="nav-button">&lt;&lt;</button>
-          <button onClick={goToPrevMonth} className="nav-button">&lt;</button>
-          <button onClick={goToNextMonth} className="nav-button">&gt;</button>
-          <button onClick={goToNextYear} className="nav-button">&gt;&gt;</button>
+          <button onClick={goToPrevYear} className="nav-button year-nav">&lt;&lt;</button>
+          <button onClick={goToPrevMonth} className="nav-button month-nav">&lt;</button>
+          <button onClick={goToNextMonth} className="nav-button month-nav">&gt;</button>
+          <button onClick={goToNextYear} className="nav-button year-nav">&gt;&gt;</button>
         </div>
+      </div>
+      <div className="weekday-header">
+        {['Lu', 'Ma', 'Mi', 'Ju', 'Vi', 'Sa', 'Do'].map(day => (
+          <div key={day} className="weekday-cell">{day}</div>
+        ))}
       </div>
       <div className="calendar-days">
         {days.map((day, index) => (
           <div 
             key={index}
-            className={`day-row ${isSelected(day) ? 'selected' : ''} ${isToday(day) ? 'today' : ''} ${!isCurrentMonth(day) ? 'outside-month' : ''}`}
+            className={`day-cell ${isSelected(day) ? 'selected' : ''} ${isToday(day) ? 'today' : ''} ${!isCurrentMonth(day) ? 'outside-month' : ''}`}
             onClick={() => handleDayClick(day)}
           >
             <div className="day-number">{day.getDate()}</div>
@@ -413,7 +418,8 @@ const CitasAgendadas = () => {
                   setShowDatePicker(!showDatePicker);
                 }}
               >
-                {startDate ? format(startDate, "dd/MM/yyyy") : "Start date"}
+                <span className="calendar-icon">📅</span>
+                {startDate ? format(startDate, "dd/MM/yyyy") : "Fecha inicial"}
               </button>
               <span className="date-separator">—</span>
               <button 
@@ -423,11 +429,12 @@ const CitasAgendadas = () => {
                   setShowDatePicker(!showDatePicker);
                 }}
               >
-                {endDate ? format(endDate, "dd/MM/yyyy") : "End date"}
+                <span className="calendar-icon">📅</span>
+                {endDate ? format(endDate, "dd/MM/yyyy") : "Fecha final"}
               </button>
             </div>
             {showDatePicker && (
-              <div className="date-picker-dropdown">
+              <div className="date-picker-dropdown enhanced">
                 {showMonthPicker ? (
                   <MonthSelector
                     currentMonth={calendarMonth}
@@ -448,8 +455,13 @@ const CitasAgendadas = () => {
                     onCancel={() => setShowYearPicker(false)}
                   />
                 ) : (
-                  <div className="calendar-wrapper">
+                  <div className="calendar-wrapper enhanced">
                     <div className="calendar-container">
+                      <div className="calendar-header-row">
+                        <h4 className="calendar-selection-title">
+                          {datePickerMode === 'start' ? 'Seleccione fecha inicial' : 'Seleccione fecha final'}
+                        </h4>
+                      </div>
                       <div className="two-month-container">
                         {/* First month */}
                         <div className="month-container">
@@ -461,10 +473,10 @@ const CitasAgendadas = () => {
                               setCalendarYear(prevMonth.getFullYear());
                             }}>‹</button>
                             <div className="month-year-display">
-                              <span onClick={() => setShowMonthPicker(true)}>
-                                {format(new Date(calendarYear, calendarMonth), 'MMM', { locale: es })}
+                              <span onClick={() => setShowMonthPicker(true)} className="month-label">
+                                {format(new Date(calendarYear, calendarMonth), 'MMMM', { locale: es })}
                               </span>{' '}
-                              <span onClick={() => setShowYearPicker(true)}>
+                              <span onClick={() => setShowYearPicker(true)} className="year-label">
                                 {calendarYear}
                               </span>
                             </div>
@@ -660,10 +672,10 @@ const CitasAgendadas = () => {
                         <div className="month-container">
                           <div className="calendar-header">
                             <div className="month-year-display">
-                              <span onClick={() => setShowMonthPicker(true)}>
-                                {format(new Date(calendarYear, calendarMonth + 1), 'MMM', { locale: es })}
+                              <span onClick={() => setShowMonthPicker(true)} className="month-label">
+                                {format(new Date(calendarYear, calendarMonth + 1), 'MMMM', { locale: es })}
                               </span>{' '}
-                              <span onClick={() => setShowYearPicker(true)}>
+                              <span onClick={() => setShowYearPicker(true)} className="year-label">
                                 {calendarMonth === 11 ? calendarYear + 1 : calendarYear}
                               </span>
                             </div>
@@ -868,56 +880,22 @@ const CitasAgendadas = () => {
                       </div>
                     </div>
                     
-                    <div style={{
-                      display: "flex",
-                      flexDirection: "column",
-                      borderLeft: "1px solid #eee",
-                      width: "85px",
-                      padding: "5px 0",
-                      margin: "0",
-                    }}>
+                    <div className="date-presets">
                       <button 
                         onClick={() => handleDatePreset('today')}
-                        style={{
-                          textAlign: "left",
-                          border: "none",
-                          background: "none",
-                          padding: "2px 8px",
-                          margin: "0",
-                          fontSize: "13px",
-                          color: "#0366d6",
-                          cursor: "pointer",
-                        }}
+                        className="preset-button"
                       >
                         Hoy
                       </button>
                       <button 
                         onClick={() => handleDatePreset('thisWeek')}
-                        style={{
-                          textAlign: "left",
-                          border: "none",
-                          background: "none",
-                          padding: "2px 8px",
-                          margin: "0",
-                          fontSize: "13px",
-                          color: "#0366d6",
-                          cursor: "pointer",
-                        }}
+                        className="preset-button"
                       >
                         Esta Semana
                       </button>
                       <button 
                         onClick={() => handleDatePreset('thisMonth')}
-                        style={{
-                          textAlign: "left",
-                          border: "none",
-                          background: "none",
-                          padding: "2px 8px",
-                          margin: "0",
-                          fontSize: "13px",
-                          color: "#0366d6",
-                          cursor: "pointer",
-                        }}
+                        className="preset-button"
                       >
                         Este Mes
                       </button>

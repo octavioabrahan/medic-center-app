@@ -1,287 +1,365 @@
 /* frontend/src/pages/admin/CitasAgendadas.css */
+
+/* General styles */
 .citas-container {
-    padding: 0;
-    font-family: 'Inter', 'Segoe UI', sans-serif;
-  }
-  
-  .page-title {
-    color: #20377A;
-    font-size: 1.2rem;
-    font-weight: 600;
-    margin-bottom: 1.5rem;
-    padding-bottom: 0.5rem;
-    border-bottom: 1px solid #E5E7EB;
-  }
-  
+  padding: 24px;
+  font-family: 'Inter', 'Segoe UI', sans-serif;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.page-title {
+  color: #20377A;
+  font-size: 24px;
+  font-weight: 600;
+  margin-bottom: 24px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #E5E7EB;
+}
+
+/* Filters section */
+.citas-filters {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+  gap: 16px;
+  background-color: #f9fafb;
+  padding: 16px;
+  border-radius: 8px;
+}
+
+.search-box {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid #E5E7EB;
+  border-radius: 500px;
+  padding: 8px 16px;
+  background-color: white;
+  width: 300px;
+  flex-shrink: 0;
+}
+
+.search-box input {
+  border: none;
+  outline: none;
+  width: 100%;
+  font-size: 14px;
+}
+
+.search-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #6B7280;
+}
+
+.search-button:hover {
+  color: #20377A;
+}
+
+.filter-group {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.filter-select {
+  padding: 8px 16px;
+  border: 1px solid #E5E7EB;
+  border-radius: 6px;
+  background-color: white;
+  font-size: 14px;
+  min-width: 180px;
+  cursor: pointer;
+}
+
+/* Calendar and date picker improvements */
+.date-picker-wrapper {
+  position: relative;
+}
+
+.date-range-inputs {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.date-picker-input {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  background-color: white;
+  border: 1px solid #E5E7EB;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  min-width: 130px;
+}
+
+.date-separator {
+  font-size: 16px;
+  color: #6B7280;
+}
+
+.date-picker-dropdown {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin-top: 8px;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  z-index: 100;
+  min-width: 700px;
+}
+
+/* Table styles */
+.citas-table-container {
+  overflow-x: auto;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.citas-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.citas-table th {
+  text-align: left;
+  padding: 16px;
+  font-weight: 600;
+  color: #374151;
+  border-bottom: 1px solid #E5E7EB;
+  background-color: #F9FAFB;
+}
+
+.citas-table td {
+  padding: 16px;
+  border-bottom: 1px solid #E5E7EB;
+  color: #1F2937;
+}
+
+.cita-row:hover {
+  background-color: #F9FAFB;
+}
+
+.cita-row.pendiente .estado-badge {
+  background-color: #FEF3C7;
+  color: #92400E;
+}
+
+.cita-row.confirmada .estado-badge {
+  background-color: #D1FAE5;
+  color: #065F46;
+}
+
+.cita-row.cancelada .estado-badge {
+  background-color: #FEE2E2;
+  color: #991B1B;
+}
+
+.fecha-cell {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.calendar-icon {
+  font-size: 20px;
+  color: #6B7280;
+}
+
+.hora {
+  font-size: 14px;
+  color: #6B7280;
+  margin-top: 4px;
+}
+
+.estado-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 12px;
+  border-radius: 9999px;
+  font-size: 12px;
+  font-weight: 500;
+  text-transform: capitalize;
+}
+
+.actions-cell {
+  display: flex;
+  gap: 8px;
+}
+
+.action-btn {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: 1px solid #E5E7EB;
+  border-radius: 9999px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.action-btn:hover {
+  background-color: #F3F4F6;
+}
+
+.action-btn.confirm-btn:hover {
+  background-color: #D1FAE5;
+  border-color: #10B981;
+}
+
+.action-btn.cancel-btn:hover {
+  background-color: #FEE2E2;
+  border-color: #EF4444;
+}
+
+/* Loading state */
+.loading-container {
+  display: flex;
+  justify-content: center;
+  padding: 48px;
+  background-color: white;
+  border-radius: 8px;
+  color: #6B7280;
+}
+
+/* Responsive adjustments */
+@media (max-width: 1200px) {
   .citas-filters {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 1.5rem;
-    flex-wrap: wrap;
-    gap: 1rem;
+    flex-direction: column;
+    align-items: flex-start;
   }
   
   .search-box {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    border: 1px solid #E5E7EB;
-    border-radius: 500px;
-    padding: 0.5rem 1rem;
-    background-color: white;
-    width: 300px;
-    flex-shrink: 0;
-  }
-  
-  .search-box input {
-    border: none;
-    outline: none;
     width: 100%;
-    background: transparent;
-    color: #1E1E1E;
-  }
-  
-  .search-box input::placeholder {
-    color: #9CA3AF;
-  }
-  
-  .search-button {
-    border: none;
-    background: none;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0;
-    color: #666;
   }
   
   .filter-group {
-    display: flex;
-    gap: 1rem;
-    align-items: center;
+    width: 100%;
+    justify-content: space-between;
+  }
+}
+
+@media (max-width: 768px) {
+  .citas-container {
+    padding: 16px;
+  }
+  
+  .date-picker-dropdown {
+    left: 0;
+    right: 0;
+    min-width: auto;
+    width: 100%;
+  }
+  
+  .filter-group {
+    flex-direction: column;
+    align-items: stretch;
   }
   
   .filter-select {
-    appearance: none;
-    background-color: white;
-    border: 1px solid #E5E7EB;
-    border-radius: 500px;
-    padding: 0.5rem 2.5rem 0.5rem 1rem;
-    color: #1E1E1E;
-    font-size: 0.875rem;
-    background-image: url("data:image/svg+xml,%3Csvg width='16' height='16' viewBox='0 0 16 16' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M4 6L8 10L12 6' stroke='%236B7280' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
-    background-repeat: no-repeat;
-    background-position: right 1rem center;
-    min-width: 180px;
-  }
-  
-  .filter-select:focus {
-    outline: none;
-    border-color: #2C2C2C;
-  }
-  
-  .citas-table-container {
-    overflow-x: auto;
-    border-radius: 0.5rem;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-  }
-  
-  .citas-table {
     width: 100%;
-    border-collapse: collapse;
-    background-color: white;
   }
-  
-  .citas-table th,
-  .citas-table td {
-    padding: 1rem;
-    text-align: left;
-    border-bottom: 1px solid #f3f4f6;
-  }
-  
-  .citas-table th {
-    font-weight: 500;
-    color: #333;
-    border-bottom: 2px solid #f3f4f6;
-  }
-  
-  .citas-table td {
-    border-bottom: 1px solid #f3f4f6;
-  }
-  
-  .cita-row:hover {
-    background-color: #f9fafb;
-  }
-  
-  .fecha-cell {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-  }
-  
-  .calendar-icon {
-    width: 24px;
-    height: 24px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background-color: #f3f4f6;
-    border-radius: 4px;
-    color: #333;
-  }
-  
-  .hora {
-    font-size: 0.9rem;
-    color: #666;
-    margin-top: 0.25rem;
-  }
-  
-  .estado-badge {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0.25rem 0.75rem;
-    border-radius: 500px;
-    font-size: 0.85rem;
-    font-weight: 500;
-  }
-  
-  .estado-badge.confirmada {
-    background-color: #ecfdf5;
-    color: #059669;
-  }
-  
-  .estado-badge.pendiente {
-    background-color: #fffbeb;
-    color: #d97706;
-  }
-  
-  .estado-badge.cancelada {
-    background-color: #fee2e2;
-    color: #dc2626;
-  }
-  
-  .actions-cell {
-    display: flex;
-    gap: 0.5rem;
-  }
-  
-  .action-btn {
-    width: 24px;
-    height: 24px;
-    border-radius: 50%;
-    border: none;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    font-size: 0.9rem;
-    color: white;
-  }
-  
-  .confirm-btn {
-    background-color: #10b981;
-  }
-  
-  .cancel-btn {
-    background-color: #ef4444;
-  }
-  
-  .loading-container {
-    display: flex;
-    height: 300px;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.1rem;
-    color: #666;
-  }
-  
-  /* Estilos para el modal de historial */
-  .historial-modal {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: rgba(0, 0, 0, 0.5);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 1000;
-  }
-  
-  .historial-content {
-    background-color: white;
-    border-radius: 8px;
-    padding: 1.5rem;
-    width: 600px;
-    max-width: 90vw;
-    max-height: 80vh;
-    overflow-y: auto;
-  }
-  
-  .historial-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 1rem;
-  }
-  
-  .historial-table th,
-  .historial-table td {
-    padding: 0.75rem;
-    text-align: left;
-    border-bottom: 1px solid #e5e7eb;
-  }
-  
-  .historial-table th {
-    background-color: #f9fafb;
-    font-weight: 500;
-  }
-  
-  .historial-actions {
-    margin-top: 1.5rem;
-    display: flex;
-    justify-content: flex-end;
-  }
-  
-  .close-btn {
-    padding: 0.5rem 1rem;
-    background-color: #e5e7eb;
-    border: none;
-    border-radius: 0.25rem;
-    cursor: pointer;
-  }
-  
-  .close-btn:hover {
-    background-color: #d1d5db;
-  }
-  
-  /* Estilos para el DateRangePicker de MUI */
-  .MuiInputBase-root {
-    border-radius: 500px !important;
-  }
-  
-  .MuiOutlinedInput-notchedOutline {
-    border-color: #E5E7EB !important;
-  }
-  
-  .MuiInputBase-root:hover .MuiOutlinedInput-notchedOutline {
-    border-color: #2C2C2C !important;
-  }
-  
-  .MuiInputBase-root.Mui-focused .MuiOutlinedInput-notchedOutline {
-    border-color: #2C2C2C !important;
-    border-width: 1px !important;
-  }
-  
-  /* Ajustes para el calendario */
-  .filter-group .MuiTextField-root {
-    min-width: 240px;
-  }
+}
 
-  /* Estilos para DatePicker */
+/* Estilos para el modal de historial */
+.historial-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.historial-content {
+  background-color: white;
+  border-radius: 8px;
+  padding: 1.5rem;
+  width: 600px;
+  max-width: 90vw;
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+.historial-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
+}
+
+.historial-table th,
+.historial-table td {
+  padding: 0.75rem;
+  text-align: left;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.historial-table th {
+  background-color: #f9fafb;
+  font-weight: 500;
+}
+
+.historial-actions {
+  margin-top: 1.5rem;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.close-btn {
+  padding: 0.5rem 1rem;
+  background-color: #e5e7eb;
+  border: none;
+  border-radius: 0.25rem;
+  cursor: pointer;
+}
+
+.close-btn:hover {
+  background-color: #d1d5db;
+}
+
+/* Estilos para el DateRangePicker de MUI */
+.MuiInputBase-root {
+  border-radius: 500px !important;
+}
+
+.MuiOutlinedInput-notchedOutline {
+  border-color: #E5E7EB !important;
+}
+
+.MuiInputBase-root:hover .MuiOutlinedInput-notchedOutline {
+  border-color: #2C2C2C !important;
+}
+
+.MuiInputBase-root.Mui-focused .MuiOutlinedInput-notchedOutline {
+  border-color: #2C2C2C !important;
+  border-width: 1px !important;
+}
+
+/* Ajustes para el calendario */
+.filter-group .MuiTextField-root {
+  min-width: 240px;
+}
+
+/* Estilos para DatePicker */
 .date-picker-input {
   background-color: white !important;
   border: 1px solid #E5E7EB !important;
