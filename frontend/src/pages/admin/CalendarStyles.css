@@ -116,6 +116,7 @@
   padding: 6px 0;
   text-align: center;
   border-top: 1px solid #eee;
+  background-color: white;
 }
 
 .today-btn {
@@ -181,7 +182,7 @@
   border-top: 1px solid #eee;
   cursor: pointer;
   text-align: center;
-  font-size: 14px;
+  font-size: 16px;
   color: #333;
 }
 
@@ -190,7 +191,7 @@
   display: flex;
   padding: 8px;
   border-top: 1px solid #eee;
-  background-color: #f9f9f9;
+  background-color: white;
 }
 
 .preset-buttons button {
@@ -201,6 +202,7 @@
   font-size: 13px;
   color: #0366d6;
   cursor: pointer;
+  text-align: center;
 }
 
 .preset-buttons button:hover {

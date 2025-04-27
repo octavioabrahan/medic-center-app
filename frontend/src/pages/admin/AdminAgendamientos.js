@@ -51,7 +51,7 @@ const MonthSelector = ({ currentMonth, currentYear, onSelect, onCancel }) => {
           </button>
         ))}
       </div>
-      <button onClick={onCancel} className="close-btn">Cancelar</button>
+      <button onClick={onCancel} className="close-btn">Volver</button>
     </div>
   );
 };
@@ -79,7 +79,7 @@ const YearSelector = ({ currentYear, onSelect, onCancel }) => {
           </button>
         ))}
       </div>
-      <button onClick={onCancel} className="close-btn">Cancelar</button>
+      <button onClick={onCancel} className="close-btn">Volver</button>
     </div>
   );
 };
