@@ -173,7 +173,8 @@
   color: white;
 }
 
-.close-btn {
+.month-selector .close-btn,
+.year-selector .close-btn {
   width: 100%;
   margin-top: 10px;
   padding: 8px;
@@ -182,7 +183,7 @@
   border-top: 1px solid #eee;
   cursor: pointer;
   text-align: center;
-  font-size: 16px;
+  font-size: 16px !important;  /* Force this font size */
   color: #333;
 }
 
