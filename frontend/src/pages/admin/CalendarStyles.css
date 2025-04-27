@@ -293,35 +293,52 @@
 
 /* Month and Year selectors - compact grid style */
 .month-selector, .year-selector {
-  padding: 10px;
+  padding: 15px;
   background: white;
-  width: 100%;
-  max-width: 250px;
+  width: 220px;
   margin: 0 auto;
+  text-align: center;
 }
 
 .month-grid, .year-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  grid-gap: 5px;
+  grid-gap: 8px;
+  margin-bottom: 15px;
 }
 
 .month-grid button, .year-grid button {
-  padding: 8px;
+  padding: 8px 0;
   background: #f7f7f7;
   border: none;
   border-radius: 4px;
   cursor: pointer;
-  text-align: center;
   font-size: 13px;
   color: #333;
 }
 
 .month-grid button:hover, .year-grid button:hover {
-  background: #efefef;
+  background: #e6e6e6;
 }
 
 .month-grid button.selected, .year-grid button.selected {
   background-color: #1976d2;
   color: white;
+}
+
+.close-btn {
+  padding: 8px 20px;
+  background: none;
+  border: none;
+  font-size: 14px;
+  color: #666;
+  cursor: pointer;
+  border-top: 1px solid #eee;
+  width: 100%;
+  margin-top: 5px;
+  padding-top: 10px;
+}
+
+.close-btn:hover {
+  text-decoration: underline;
 }

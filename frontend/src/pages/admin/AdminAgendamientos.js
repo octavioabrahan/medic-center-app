@@ -34,8 +34,10 @@ const CalendarCaption = ({ displayMonth, displayYear, onMonthClick, onYearClick 
 
 const MonthSelector = ({ currentMonth, currentYear, onSelect, onCancel }) => {
   const monthNames = [
-    'ene', 'feb', 'mar', 'abr', 'may', 'jun',
-    'jul', 'ago', 'sep', 'oct', 'nov', 'dic'
+    'ene', 'feb', 'mar', 
+    'abr', 'may', 'jun',
+    'jul', 'ago', 'sep',
+    'oct', 'nov', 'dic'
   ];
   
   return (
@@ -57,14 +59,14 @@ const MonthSelector = ({ currentMonth, currentYear, onSelect, onCancel }) => {
 };
 
 const YearSelector = ({ currentYear, onSelect, onCancel }) => {
-  // Calculate years to display in a 3x4 grid (start with current year - 2 in top-left)
-  const baseYear = currentYear - 2;
-  const years = [
-    2020, 2021, 2022,
-    2023, 2024, 2025,
-    2026, 2027, 2028,
-    2029, 2030
-  ];
+  // Create an array of years centered around current year
+  const years = [];
+  const startYear = 2020;
+  const endYear = 2030;
+  
+  for (let year = startYear; year <= endYear; year++) {
+    years.push(year);
+  }
   
   return (
     <div className="year-selector">
