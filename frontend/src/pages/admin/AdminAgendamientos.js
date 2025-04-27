@@ -868,57 +868,59 @@ const CitasAgendadas = () => {
                       </div>
                     </div>
                     
-                    <div className="preset-buttons-wrapper" style={{ 
-                      flex: "0 0 auto", 
-                      borderLeft: "1px solid #eee", 
-                      display: "flex", 
-                      flexDirection: "column", 
-                      padding: "2px 0", 
-                      width: "100px", 
-                      marginLeft: 0 
+                    <div style={{
+                      display: "flex",
+                      flexDirection: "column",
+                      borderLeft: "1px solid #eee",
+                      width: "85px",
+                      padding: "5px 0",
+                      margin: "0",
                     }}>
                       <button 
-                        onClick={() => handleDatePreset('today')} 
-                        style={{ 
-                          padding: "4px 2px", 
-                          margin: "1px 0", 
-                          background: "none", 
-                          border: "none", 
-                          textAlign: "left", 
-                          fontSize: "13px", 
-                          color: "#0366d6", 
-                          cursor: "pointer", 
-                          paddingLeft: "10px" 
+                        onClick={() => handleDatePreset('today')}
+                        style={{
+                          textAlign: "left",
+                          border: "none",
+                          background: "none",
+                          padding: "2px 8px",
+                          margin: "0",
+                          fontSize: "13px",
+                          color: "#0366d6",
+                          cursor: "pointer",
                         }}
-                      >Hoy</button>
+                      >
+                        Hoy
+                      </button>
                       <button 
-                        onClick={() => handleDatePreset('thisWeek')} 
-                        style={{ 
-                          padding: "4px 2px", 
-                          margin: "1px 0", 
-                          background: "none", 
-                          border: "none", 
-                          textAlign: "left", 
-                          fontSize: "13px", 
-                          color: "#0366d6", 
-                          cursor: "pointer", 
-                          paddingLeft: "10px" 
+                        onClick={() => handleDatePreset('thisWeek')}
+                        style={{
+                          textAlign: "left",
+                          border: "none",
+                          background: "none",
+                          padding: "2px 8px",
+                          margin: "0",
+                          fontSize: "13px",
+                          color: "#0366d6",
+                          cursor: "pointer",
                         }}
-                      >Esta Semana</button>
+                      >
+                        Esta Semana
+                      </button>
                       <button 
-                        onClick={() => handleDatePreset('thisMonth')} 
-                        style={{ 
-                          padding: "4px 2px", 
-                          margin: "1px 0", 
-                          background: "none", 
-                          border: "none", 
-                          textAlign: "left", 
-                          fontSize: "13px", 
-                          color: "#0366d6", 
-                          cursor: "pointer", 
-                          paddingLeft: "10px" 
+                        onClick={() => handleDatePreset('thisMonth')}
+                        style={{
+                          textAlign: "left",
+                          border: "none",
+                          background: "none",
+                          padding: "2px 8px",
+                          margin: "0",
+                          fontSize: "13px",
+                          color: "#0366d6",
+                          cursor: "pointer",
                         }}
-                      >Este Mes</button>
+                      >
+                        Este Mes
+                      </button>
                     </div>
                   </div>
                 )}
