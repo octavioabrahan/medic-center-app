@@ -502,10 +502,23 @@ const CitasAgendadas = () => {
                                           calendarMonth === today.getMonth() && 
                                           calendarYear === today.getFullYear();
                             
-                            const isSelected = dateRange?.from && 
-                              ((dateRange.from.getDate() === day && 
-                              dateRange.from.getMonth() === calendarMonth &&
-                              dateRange.from.getFullYear() === calendarYear));
+                            // Check if date is within the selected range
+                            const isInRange = dateRange?.from && dateRange?.to && 
+                              date >= startOfDay(dateRange.from) && 
+                              date <= endOfDay(dateRange.to);
+                            
+                            // Check if date is exactly the start or end date
+                            const isRangeStart = dateRange?.from && 
+                              day === dateRange.from.getDate() && 
+                              calendarMonth === dateRange.from.getMonth() && 
+                              calendarYear === dateRange.from.getFullYear();
+                            
+                            const isRangeEnd = dateRange?.to && 
+                              day === dateRange.to.getDate() && 
+                              calendarMonth === dateRange.to.getMonth() && 
+                              calendarYear === dateRange.to.getFullYear();
+                            
+                            const isSelected = isRangeStart || isRangeEnd || isInRange;
                             
                             days.push(
                               <td key={`day-${day}`}>
