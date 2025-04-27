@@ -8,7 +8,7 @@
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
   background: white;
   z-index: 100;
-  width: 530px; /* Good compromise width */
+  width: 520px;
   padding: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
   font-size: 14px;
@@ -74,7 +74,7 @@
 .calendar-table {
   width: 100%;
   border-collapse: collapse;
-  table-layout: fixed; /* Added to ensure equal column widths */
+  table-layout: fixed;
 }
 
 .calendar-table th {
@@ -91,8 +91,8 @@
 .calendar-table td {
   text-align: center;
   padding: 1px;
-  height: 28px; /* Slightly smaller for more compact look */
-  width: 14.28%; /* Ensure each cell takes exactly 1/7 of the table width */
+  height: 26px;
+  width: 14.28%;
   box-sizing: border-box;
 }
 
@@ -100,8 +100,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 28px; /* Smaller day circles */
-  height: 28px; /* Smaller day circles */
+  width: 26px;
+  height: 26px;
   margin: 0 auto;
   cursor: pointer;
   font-size: 13px;
@@ -260,39 +260,40 @@
   }
 }
 
-/* Calendar layout with separate section for buttons */
+/* Calendar layout with buttons on the right */
 .calendar-wrapper {
   display: flex;
 }
 
 .calendar-container {
-  flex: 8; /* Give more space to the calendar and less to buttons */
+  flex: 5;
 }
 
+/* This is the key styling for the right side buttons */
 .preset-buttons-wrapper {
-  flex: 1;
+  flex: 0 0 auto;
   border-left: 1px solid #eee;
   display: flex;
   flex-direction: column;
-  padding-left: 4px; /* Less side padding */
-  max-width: 80px; /* Limit the width of the buttons area */
+  padding: 2px 0;
+  width: 100px;
+  margin-left: 0;
 }
 
 .preset-buttons-wrapper button {
-  padding: 5px 3px; /* Reduce padding significantly */
-  margin: 2px 0; /* Very little margin */
+  padding: 4px 2px; /* Reduced padding */
+  margin: 1px 0; /* Very minimal margin */
   background: none;
   border: none;
   text-align: left;
-  font-size: 12px; /* Smaller font */
+  font-size: 13px;
   color: #0366d6;
   cursor: pointer;
-  white-space: nowrap;
+  padding-left: 10px;
 }
 
 .preset-buttons-wrapper button:hover {
   background-color: #f0f0f0;
-  text-decoration: none;
 }
 
 /* Month and Year selectors */
