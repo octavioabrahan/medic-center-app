@@ -148,6 +148,37 @@ const CitasAgendadas = () => {
     };
   };
 
+  useEffect(() => {
+    if (agendamientos.length > 0) {
+      let results = [...agendamientos];
+      
+      // Filtrar por término de búsqueda
+      if (searchTerm) {
+        const term = searchTerm.toLowerCase();
+        results = results.filter(cita => 
+          cita.nombre?.toLowerCase().includes(term) ||
+          cita.apellido?.toLowerCase().includes(term) ||
+          cita.cedula?.toLowerCase().includes(term)
+        );
+      }
+      
+      // Filtrar por estado
+      if (filterStatus !== 'todos') {
+        results = results.filter(cita => cita.estado === filterStatus);
+      }
+
+      // Filtrar por rango de fechas
+      if (startDate && endDate) {
+        results = results.filter(cita => {
+          const citaDate = new Date(cita.fecha_agendada);
+          return citaDate >= startDate && citaDate <= endDate;
+        });
+      }
+      
+      setFilteredAgendamientos(results);
+    }
+  }, [searchTerm, filterStatus, agendamientos, startDate, endDate]);
+
   return (
     <div className="citas-container">
       <h2 className="page-title">Citas agendadas</h2>

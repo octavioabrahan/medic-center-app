@@ -1,26 +1,13 @@
-import React, { useEffect, useState, useCallback } from 'react';
-import axios from 'axios';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { StaticDatePicker } from '@mui/x-date-pickers/StaticDatePicker';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import dayjs from 'dayjs';
-import 'dayjs/locale/es';
+import React, { useEffect, useState } from 'react';
+import DatePicker from 'react-datepicker';
+import "react-datepicker/dist/react-datepicker.css";
+import { registerLocale } from 'react-datepicker';
+import es from 'date-fns/locale/es';
+
+registerLocale('es', es);
 
 const CalendarioFechasDisponiblesDayPicker = ({ profesionalId, fechaSeleccionada, setFechaSeleccionada }) => {
   const [fechasDisponibles, setFechasDisponibles] = useState([]);
-
-  const parseFechaLocal = useCallback((fechaStr) => {
-    const [y, m, d] = fechaStr.split('-').map(Number);
-    return new Date(y, m - 1, d); // mes 0-indexed
-  }, []);
-
-  const formatDate = useCallback((input) => {
-    const date = typeof input === 'string' ? parseFechaLocal(input) : input;
-    const y = date.getFullYear();
-    const m = String(date.getMonth() + 1).padStart(2, '0');
-    const d = String(date.getDate()).padStart(2, '0');
-    return `${y}-${m}-${d}`;
-  }, [parseFechaLocal]);  
 
   useEffect(() => {
     const fetchFechas = async () => {
@@ -71,36 +58,17 @@ const CalendarioFechasDisponiblesDayPicker = ({ profesionalId, fechaSeleccionada
     };
 
     if (profesionalId) fetchFechas();
-  }, [profesionalId, formatDate, parseFechaLocal]);
-
-  const isFechaDisponible = useCallback((date) => {
-    return fechasDisponibles.some(d =>
-      d.dateObj.getFullYear() === date.getFullYear() &&
-      d.dateObj.getMonth() === date.getMonth() &&
-      d.dateObj.getDate() === date.getDate()
-    );
-  }, [fechasDisponibles]);
-
-  const handleSelect = useCallback((date) => {
-    if (!date) return;
-    const match = fechasDisponibles.find(d =>
-      d.dateObj.getFullYear() === date.getFullYear() &&
-      d.dateObj.getMonth() === date.getMonth() &&
-      d.dateObj.getDate() === date.getDate()
-    );
-    if (match) {
-      setFechaSeleccionada(match);
-    }
-  }, [fechasDisponibles, setFechaSeleccionada]);
+  }, [profesionalId]);
 
   return (
-    <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="es">
-      <StaticDatePicker
-        value={fechaSeleccionada}
-        onChange={setFechaSeleccionada}
-        // ... resto de las props necesarias
-      />
-    </LocalizationProvider>
+    <DatePicker
+      selected={fechaSeleccionada}
+      onChange={setFechaSeleccionada}
+      includeDates={fechasDisponibles}
+      inline
+      locale="es"
+      dateFormat="dd/MM/yyyy"
+    />
   );
 };
 
