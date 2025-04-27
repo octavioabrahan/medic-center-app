@@ -206,11 +206,12 @@ const CitasAgendadas = () => {
   });
   const [startDate, setStartDate] = useState(dateRange?.from);
   const [endDate, setEndDate] = useState(dateRange?.to);
-  const [showDatePicker, setShowDatePicker] = useState(false); // Toggle for DayPicker visibility
+  const [showDatePicker, setShowDatePicker] = useState(false);
   const [showMonthPicker, setShowMonthPicker] = useState(false);
   const [showYearPicker, setShowYearPicker] = useState(false);
   const [calendarMonth, setCalendarMonth] = useState(new Date().getMonth());
   const [calendarYear, setCalendarYear] = useState(new Date().getFullYear());
+  const [datePickerMode, setDatePickerMode] = useState('start'); // 'start' or 'end'
 
   const [mostrarHistorial, setMostrarHistorial] = useState(false);
   const [historial, setHistorial] = useState([]);
@@ -402,17 +403,27 @@ const CitasAgendadas = () => {
           </select>
           
           <div className="date-picker-wrapper">
-            <button className="date-picker-toggle" onClick={toggleDatePicker}>
-              {startDate && endDate ? (
-                <>
-                  <span>{format(startDate, "dd/MM/yyyy")}</span>
-                  <span className="date-separator">—</span>
-                  <span>{format(endDate, "dd/MM/yyyy")}</span>
-                </>
-              ) : (
-                <span className="placeholder">Start date — End date</span>
-              )}
-            </button>
+            <div className="date-range-inputs">
+              <button 
+                className="date-picker-input" 
+                onClick={() => {
+                  setDatePickerMode('start');
+                  setShowDatePicker(!showDatePicker);
+                }}
+              >
+                {startDate ? format(startDate, "dd/MM/yyyy") : "Start date"}
+              </button>
+              <span className="date-separator">—</span>
+              <button 
+                className="date-picker-input" 
+                onClick={() => {
+                  setDatePickerMode('end');
+                  setShowDatePicker(!showDatePicker);
+                }}
+              >
+                {endDate ? format(endDate, "dd/MM/yyyy") : "End date"}
+              </button>
+            </div>
             {showDatePicker && (
               <div className="date-picker-dropdown">
                 {showMonthPicker ? (
@@ -502,10 +513,10 @@ const CitasAgendadas = () => {
                                       if (startDate && !endDate) {
                                         // If selecting end date after start date
                                         if (prevDate > startDate) {
-                                          setDateRange({ from: startDate, to: prevDate });
-                                        } else {
                                           // If end date is before start date, swap them
                                           setDateRange({ from: prevDate, to: startDate });
+                                        } else {
+                                          setDateRange({ from: startDate, to: prevDate });
                                         }
                                         setShowDatePicker(false);
                                       } else {
@@ -555,19 +566,36 @@ const CitasAgendadas = () => {
                                   <div 
                                     className={className}
                                     onClick={() => {
-                                      if (startDate && !endDate) {
-                                        // If selecting end date after start date
-                                        if (date >= startDate) {
-                                          setDateRange({ from: startDate, to: date });
+                                      const selectedDate = new Date(calendarYear, calendarMonth, day);
+                                      
+                                      if (datePickerMode === 'start') {
+                                        // If we're selecting a start date
+                                        if (endDate && selectedDate > endDate) {
+                                          // If selected start date is after current end date, reset end date
+                                          setDateRange({ from: selectedDate, to: null });
+                                          setShowDatePicker(true); // Keep calendar open to select end date
+                                          setDatePickerMode('end'); // Switch to end date selection
                                         } else {
-                                          // If end date is before start date, swap them
-                                          setDateRange({ from: date, to: startDate });
+                                          // Normal start date selection
+                                          setDateRange({ 
+                                            from: selectedDate, 
+                                            to: endDate || selectedDate // Keep end date if it exists
+                                          });
+                                          setShowDatePicker(false);
+                                        }
+                                      } else {
+                                        // If we're selecting an end date
+                                        if (startDate && selectedDate < startDate) {
+                                          // If selected end date is before start date, swap them
+                                          setDateRange({ from: selectedDate, to: startDate });
+                                        } else {
+                                          // Normal end date selection
+                                          setDateRange({ 
+                                            from: startDate || selectedDate, // Keep start date if it exists
+                                            to: selectedDate 
+                                          });
                                         }
                                         setShowDatePicker(false);
-                                      } else {
-                                        // Start new selection
-                                        setDateRange({ from: date, to: null });
-                                        // Don't close the picker yet, wait for the second date
                                       }
                                     }}
                                   >
@@ -748,19 +776,36 @@ const CitasAgendadas = () => {
                                   <div 
                                     className={className}
                                     onClick={() => {
-                                      if (startDate && !endDate) {
-                                        // If selecting end date after start date
-                                        if (date >= startDate) {
-                                          setDateRange({ from: startDate, to: date });
+                                      const selectedDate = new Date(nextMonthYear, nextMonth, day);
+                                      
+                                      if (datePickerMode === 'start') {
+                                        // If we're selecting a start date
+                                        if (endDate && selectedDate > endDate) {
+                                          // If selected start date is after current end date, reset end date
+                                          setDateRange({ from: selectedDate, to: null });
+                                          setShowDatePicker(true); // Keep calendar open to select end date
+                                          setDatePickerMode('end'); // Switch to end date selection
                                         } else {
-                                          // If end date is before start date, swap them
-                                          setDateRange({ from: date, to: startDate });
+                                          // Normal start date selection
+                                          setDateRange({ 
+                                            from: selectedDate, 
+                                            to: endDate || selectedDate // Keep end date if it exists
+                                          });
+                                          setShowDatePicker(false);
+                                        }
+                                      } else {
+                                        // If we're selecting an end date
+                                        if (startDate && selectedDate < startDate) {
+                                          // If selected end date is before start date, swap them
+                                          setDateRange({ from: selectedDate, to: startDate });
+                                        } else {
+                                          // Normal end date selection
+                                          setDateRange({ 
+                                            from: startDate || selectedDate, // Keep start date if it exists
+                                            to: selectedDate 
+                                          });
                                         }
                                         setShowDatePicker(false);
-                                      } else {
-                                        // Start new selection
-                                        setDateRange({ from: date, to: null });
-                                        // Don't close the picker yet, wait for the second date
                                       }
                                     }}
                                   >

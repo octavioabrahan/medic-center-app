@@ -166,12 +166,45 @@
   color: #999;
 }
 
+/* Date range picker inputs */
+.date-range-inputs {
+  display: flex;
+  align-items: center;
+  background-color: white;
+  border: 1px solid #E5E7EB;
+  border-radius: 500px;
+  padding: 0.25rem 0.5rem;
+}
+
+.date-picker-input {
+  background-color: transparent;
+  border: none;
+  padding: 0.25rem 0.5rem;
+  font-size: 0.875rem;
+  color: #1E1E1E;
+  cursor: pointer;
+  text-align: center;
+  min-width: 80px;
+}
+
+.date-picker-input:focus {
+  outline: none;
+}
+
+.date-separator {
+  margin: 0 5px;
+  color: #999;
+}
+
 /* Calendar footer */
 .calendar-footer {
   padding: 8px 0;
   text-align: center;
   border-top: 1px solid #eee;
   background-color: white;
+  position: sticky;
+  bottom: 0;
+  z-index: 5;
 }
 
 /* Preset buttons */
@@ -180,6 +213,7 @@
   padding: 8px;
   background-color: white;
   justify-content: center;
+  flex-wrap: wrap;
 }
 
 .preset-buttons button {
@@ -195,4 +229,32 @@
 
 .preset-buttons button:hover {
   text-decoration: underline;
+}
+
+/* Make the calendar responsive */
+@media (max-width: 600px) {
+  .date-picker-dropdown {
+    width: auto;
+    max-width: 95vw;
+    left: 50%;
+    transform: translateX(-50%);
+    position: fixed;
+    top: 50%;
+    margin-top: 0;
+    transform: translate(-50%, -50%);
+    z-index: 1000;
+  }
+  
+  .two-month-container {
+    flex-direction: column;
+  }
+  
+  .month-container {
+    border-right: none;
+    border-bottom: 1px solid #eee;
+  }
+  
+  .month-container:last-child {
+    border-bottom: none;
+  }
 }
