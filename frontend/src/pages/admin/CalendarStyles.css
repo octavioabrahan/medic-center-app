@@ -8,10 +8,10 @@
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
   background: white;
   z-index: 100;
-  width: 500px; /* Reduced width for more compact display */
+  width: 520px; /* Slightly wider for better readability */
   padding: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
-  font-size: 13px;
+  font-size: 14px; /* Increased font size */
 }
 
 /* Container for the two months */
@@ -24,7 +24,7 @@
 .month-container {
   flex: 1;
   border-right: 1px solid #eee;
-  padding: 0; /* Remove padding for more compact look */
+  padding: 2px; /* Small padding for better spacing */
 }
 
 .month-container:last-child {
@@ -33,7 +33,7 @@
 
 /* Calendar header with month/year and navigation buttons */
 .calendar-header {
-  padding: 4px 6px; /* Reduced padding */
+  padding: 6px 8px; /* Increased padding */
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -41,7 +41,7 @@
 }
 
 .month-year-display {
-  font-size: 13px; /* Slightly smaller font */
+  font-size: 14px; /* Restored font size */
   font-weight: normal;
   color: #333;
   flex: 1;
@@ -60,12 +60,12 @@
   background: none;
   border: none;
   cursor: pointer;
-  width: 20px; /* Smaller buttons */
-  height: 20px; /* Smaller buttons */
+  width: 22px; /* Slightly larger buttons */
+  height: 22px; /* Slightly larger buttons */
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 13px;
+  font-size: 14px;
   color: #666;
   padding: 0;
 }
@@ -78,11 +78,11 @@
 }
 
 .calendar-table th {
-  padding: 3px 0; /* Less padding */
+  padding: 4px 0; /* More padding */
   text-align: center;
   font-weight: normal;
   color: #666;
-  font-size: 11px; /* Smaller font */
+  font-size: 12px; /* Increased font size */
   border-bottom: 1px solid #eee;
   width: 14.28%;
   box-sizing: border-box;
@@ -90,8 +90,8 @@
 
 .calendar-table td {
   text-align: center;
-  padding: 0; /* No padding */
-  height: 26px; /* Reduced cell height */
+  padding: 1px; /* Small padding */
+  height: 30px; /* Increased cell height */
   width: 14.28%; /* Ensure each cell takes exactly 1/7 of the table width */
   box-sizing: border-box;
 }
@@ -100,11 +100,11 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 26px; /* Smaller day circles */
-  height: 26px; /* Smaller day circles */
+  width: 30px; /* Larger day circles */
+  height: 30px; /* Larger day circles */
   margin: 0 auto;
   cursor: pointer;
-  font-size: 12px; /* Smaller font */
+  font-size: 13px; /* Increased font size */
   border-radius: 4px;
 }
 
@@ -141,7 +141,7 @@
 
 .outside-month {
   color: #ccc;
-  font-size: 11px; /* Even smaller font for outside month dates */
+  font-size: 12px; /* Increased font size */
 }
 
 /* Date range picker input */
@@ -275,16 +275,16 @@
   border-left: 1px solid #eee;
   display: flex;
   flex-direction: column;
-  padding-left: 5px; /* Reduced padding */
+  padding-left: 6px; /* Slightly more padding */
 }
 
 .preset-buttons-wrapper button {
-  padding: 6px 4px; /* Reduced padding */
-  margin: 2px 0; /* Much less margin between buttons */
+  padding: 8px 6px; /* Slightly more padding */
+  margin: 3px 0; /* Slightly more margin but still compact */
   background: none;
   border: none;
   text-align: left;
-  font-size: 12px; /* Smaller font */
+  font-size: 13px; /* Increased font size */
   color: #0366d6;
   cursor: pointer;
 }
@@ -295,9 +295,9 @@
 
 /* Month and Year selectors - more compact grid style */
 .month-selector, .year-selector {
-  padding: 10px; /* Less padding */
+  padding: 12px; /* More padding */
   background: white;
-  width: 200px; /* Smaller width */
+  width: 220px; /* Wider selector */
   margin: 0 auto;
   text-align: center;
 }
@@ -305,17 +305,17 @@
 .month-grid, .year-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  grid-gap: 5px; /* Smaller gap */
-  margin-bottom: 10px; /* Less margin */
+  grid-gap: 6px; /* Slightly larger gap */
+  margin-bottom: 12px; /* More margin */
 }
 
 .month-grid button, .year-grid button {
-  padding: 6px 0; /* Less padding */
+  padding: 8px 0; /* More padding */
   background: #f7f7f7;
   border: none;
   border-radius: 4px;
   cursor: pointer;
-  font-size: 12px; /* Smaller font */
+  font-size: 13px; /* Larger font */
   color: #333;
 }
 
@@ -329,16 +329,16 @@
 }
 
 .close-btn {
-  padding: 6px 16px; /* Less padding */
+  padding: 8px 16px; /* More padding */
   background: none;
   border: none;
-  font-size: 13px; /* Smaller font */
+  font-size: 14px; /* Larger font */
   color: #666;
   cursor: pointer;
   border-top: 1px solid #eee;
   width: 100%;
-  margin-top: 3px; /* Less margin */
-  padding-top: 6px; /* Less padding */
+  margin-top: 4px; /* More margin */
+  padding-top: 8px; /* More padding */
 }
 
 .close-btn:hover {
