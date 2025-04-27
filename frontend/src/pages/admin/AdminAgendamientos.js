@@ -2,11 +2,12 @@
 import React, { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import "./CitasAgendadas.css";
-import { DayPicker } from "react-day-picker";
-import "react-day-picker/dist/style.css";
+import "./CalendarStyles.css";
 import { 
   startOfWeek, endOfWeek, format, startOfDay, endOfDay,
-  startOfToday, endOfToday, startOfMonth, endOfMonth
+  startOfToday, endOfToday, startOfMonth, endOfMonth, 
+  addMonths, subMonths, addYears, subYears, isSameDay, isWithinInterval,
+  eachDayOfInterval, getDay, setMonth, setYear, isSameMonth
 } from "date-fns";
 import { es } from "date-fns/locale";
 
@@ -75,6 +76,112 @@ const YearSelector = ({ currentYear, onSelect, onCancel }) => {
         ))}
       </div>
       <button onClick={onCancel} className="close-btn">Cancelar</button>
+    </div>
+  );
+};
+
+// Custom Calendar Component
+const CustomCalendar = ({ 
+  currentMonth, 
+  currentYear, 
+  selectedDate, 
+  onDateSelect, 
+  onMonthChange,
+  onYearChange,
+  onMonthClick,
+  onYearClick
+}) => {
+  const today = new Date();
+  const currentDate = new Date(currentYear, currentMonth, 1);
+  
+  // Get days for the current month including some from previous/next months to fill calendar
+  const getDaysInMonth = () => {
+    const firstDayOfMonth = new Date(currentYear, currentMonth, 1);
+    const lastDayOfMonth = new Date(currentYear, currentMonth + 1, 0);
+    
+    // Previous month days to show
+    const result = [];
+    
+    // Current month days
+    for (let d = 1; d <= lastDayOfMonth.getDate(); d++) {
+      result.push(new Date(currentYear, currentMonth, d));
+    }
+    
+    // Next month days to show
+    const nextMonthDays = 10; // Show more days from the next month
+    for (let d = 1; d <= nextMonthDays; d++) {
+      result.push(new Date(currentYear, currentMonth + 1, d));
+    }
+    
+    return result;
+  };
+  
+  const days = getDaysInMonth();
+  
+  // Navigate to previous/next month
+  const goToPrevMonth = () => onMonthChange(subMonths(currentDate, 1));
+  const goToNextMonth = () => onMonthChange(addMonths(currentDate, 1));
+  const goToPrevYear = () => onMonthChange(subYears(currentDate, 1));
+  const goToNextYear = () => onMonthChange(addYears(currentDate, 1));
+  
+  // Handle day selection
+  const handleDayClick = (day) => {
+    onDateSelect(day);
+  };
+  
+  // Check if day is selected
+  const isSelected = (day) => {
+    if (!selectedDate) return false;
+    return isSameDay(day, selectedDate.from) || 
+           (selectedDate.to && isSameDay(day, selectedDate.to)) || 
+           (selectedDate.from && selectedDate.to && isWithinInterval(day, {
+             start: selectedDate.from, 
+             end: selectedDate.to
+           }));
+  };
+  
+  // Check if day is today
+  const isToday = (day) => {
+    return isSameDay(day, today);
+  };
+  
+  // Check if day is in current month
+  const isCurrentMonth = (day) => {
+    return day.getMonth() === currentMonth;
+  };
+  
+  // Format day names (like "lu" for Monday)
+  const getDayAbbreviation = (day) => {
+    const dayNames = ['lu', 'ma', 'mi', 'ju', 'vi', 'sa', 'do'];
+    return dayNames[getDay(day)];
+  };
+  
+  return (
+    <div className="custom-calendar">
+      <div className="calendar-header">
+        <div className="month-year">
+          <span onClick={onMonthClick}>{format(currentDate, 'MMMM', { locale: es })}</span>{' '}
+          <span onClick={onYearClick}>{format(currentDate, 'yyyy')}</span>
+        </div>
+        <div className="navigation-buttons">
+          <button onClick={goToPrevYear} className="nav-button">&lt;&lt;</button>
+          <button onClick={goToPrevMonth} className="nav-button">&lt;</button>
+          <button onClick={goToNextMonth} className="nav-button">&gt;</button>
+          <button onClick={goToNextYear} className="nav-button">&gt;&gt;</button>
+        </div>
+      </div>
+      <div className="calendar-days">
+        {days.map((day, index) => (
+          <div 
+            key={index}
+            className={`day-row ${isSelected(day) ? 'selected' : ''} ${isToday(day) ? 'today' : ''} ${!isCurrentMonth(day) ? 'outside-month' : ''}`}
+            onClick={() => handleDayClick(day)}
+          >
+            <div className="day-number">{day.getDate()}</div>
+            <div className="day-name">{getDayAbbreviation(day)}</div>
+          </div>
+        ))}
+      </div>
     </div>
   );
 };
@@ -317,98 +424,140 @@ const CitasAgendadas = () => {
                   />
                 ) : (
                   <>
-                    <DayPicker
-                      mode="range"
-                      selected={dateRange}
-                      onSelect={(newRange) => {
-                        if (newRange) {
-                          setDateRange(newRange);
-                        }
-                      }}
-                      locale={es}
-                      month={new Date(calendarYear, calendarMonth)}
-                      captionLayout="buttons"
-                      onMonthChange={(newMonth) => {
-                        setCalendarMonth(newMonth.getMonth());
-                        setCalendarYear(newMonth.getFullYear());
-                      }}
-                      showOutsideDays
-                      modifiersClassNames={{
-                        today: 'rdp-day_today',
-                        selected: 'rdp-day_selected'
-                      }}
-                      components={{
-                        IconLeft: () => <span>&lt;</span>,
-                        IconRight: () => <span>&gt;</span>,
-                        Caption: ({ displayMonth, displayYear }) => (
-                          <div className="rdp-caption">
+                    <div className="calendar-left">
+                      <div className="preset-options">
+                        <button 
+                          className="preset-option" 
+                          onClick={() => handleDatePreset('today')}
+                        >
+                          Hoy
+                        </button>
+                        <button 
+                          className="preset-option" 
+                          onClick={() => handleDatePreset('thisWeek')}
+                        >
+                          Esta semana
+                        </button>
+                        <button 
+                          className="preset-option" 
+                          onClick={() => handleDatePreset('thisMonth')}
+                        >
+                          Este mes
+                        </button>
+                      </div>
+                    </div>
+                    
+                    <div className="calendar-right">
+                      <div className="custom-calendar">
+                        <div className="calendar-header">
+                          <div className="month-year">
+                            <span onClick={() => setShowMonthPicker(true)}>{format(new Date(calendarYear, calendarMonth), 'MMMM', { locale: es })}</span>{' '}
+                            <span onClick={() => setShowYearPicker(true)}>{format(new Date(calendarYear, calendarMonth), 'yyyy')}</span>
+                          </div>
+                          <div className="navigation-buttons">
                             <button 
+                              className="nav-button"
                               onClick={() => {
                                 const prevYear = new Date(calendarYear - 1, calendarMonth);
                                 setCalendarMonth(prevYear.getMonth());
                                 setCalendarYear(prevYear.getFullYear());
-                              }} 
-                              className="rdp-nav_button"
-                              title="Previous year"
-                            >
-                              &lt;&lt;
-                            </button>
+                              }}
+                            >&lt;&lt;</button>
                             <button 
+                              className="nav-button"
                               onClick={() => {
                                 const prevMonth = new Date(calendarYear, calendarMonth - 1);
                                 setCalendarMonth(prevMonth.getMonth());
                                 setCalendarYear(prevMonth.getFullYear());
-                              }} 
-                              className="rdp-nav_button"
-                              title="Previous month"
-                            >
-                              &lt;
-                            </button>
-                            <div 
-                              className="rdp-caption_label"
-                              onClick={() => setShowMonthPicker(true)}
-                            >
-                              {format(new Date(calendarYear, calendarMonth), 'MMMM yyyy', { locale: es })}
-                            </div>
+                              }}
+                            >&lt;</button>
                             <button 
+                              className="nav-button"
                               onClick={() => {
                                 const nextMonth = new Date(calendarYear, calendarMonth + 1);
                                 setCalendarMonth(nextMonth.getMonth());
                                 setCalendarYear(nextMonth.getFullYear());
-                              }} 
-                              className="rdp-nav_button"
-                              title="Next month"
-                            >
-                              &gt;
-                            </button>
+                              }}
+                            >&gt;</button>
                             <button 
+                              className="nav-button"
                               onClick={() => {
                                 const nextYear = new Date(calendarYear + 1, calendarMonth);
                                 setCalendarMonth(nextYear.getMonth());
                                 setCalendarYear(nextYear.getFullYear());
-                              }} 
-                              className="rdp-nav_button"
-                              title="Next year"
-                            >
-                              &gt;&gt;
-                            </button>
+                              }}
+                            >&gt;&gt;</button>
                           </div>
-                        )
-                      }}
-                    />
-                    <div className="today-button-container">
-                      <button 
-                        className="today-button" 
-                        onClick={() => {
-                          const today = new Date();
-                          setCalendarMonth(today.getMonth());
-                          setCalendarYear(today.getFullYear());
-                          setDateRange({ from: today, to: today });
-                          setShowDatePicker(false);
-                        }}
-                      >
-                        Today
-                      </button>
+                        </div>
+                        
+                        <div className="calendar-days">
+                          {(() => {
+                            // Generate the days of the month
+                            const firstDay = new Date(calendarYear, calendarMonth, 1);
+                            const lastDay = new Date(calendarYear, calendarMonth + 1, 0);
+                            const daysInMonth = lastDay.getDate();
+                            const today = new Date();
+                            
+                            // Current month days
+                            const days = [];
+                            for (let i = 1; i <= daysInMonth; i++) {
+                              const currentDate = new Date(calendarYear, calendarMonth, i);
+                              const isToday = currentDate.getDate() === today.getDate() && 
+                                             currentDate.getMonth() === today.getMonth() && 
+                                             currentDate.getFullYear() === today.getFullYear();
+                              
+                              const isSelected = dateRange?.from && 
+                                ((dateRange.from.getDate() === i && 
+                                dateRange.from.getMonth() === calendarMonth &&
+                                dateRange.from.getFullYear() === calendarYear) || 
+                                (dateRange.to && 
+                                dateRange.to.getDate() === i && 
+                                dateRange.to.getMonth() === calendarMonth &&
+                                dateRange.to.getFullYear() === calendarYear));
+                              
+                              days.push(
+                                <div 
+                                  key={i} 
+                                  className={`day-row ${isSelected ? 'selected' : ''} ${isToday ? 'today' : ''}`}
+                                  onClick={() => {
+                                    const selectedDate = new Date(calendarYear, calendarMonth, i);
+                                    setDateRange({ from: selectedDate, to: selectedDate });
+                                    setShowDatePicker(false);
+                                  }}
+                                >
+                                  <div className="day-number">{i}</div>
+                                  <div className="day-name">{format(new Date(calendarYear, calendarMonth, i), 'iii', { locale: es })}</div>
+                                </div>
+                              );
+                            }
+                            
+                            // Next month days (show a few)
+                            for (let i = 1; i <= 5; i++) {
+                              days.push(
+                                <div key={`next-${i}`} className="day-row outside-month">
+                                  <div className="day-number">{i}</div>
+                                  <div className="day-name">{format(new Date(calendarYear, calendarMonth + 1, i), 'iii', { locale: es })}</div>
+                                </div>
+                              );
+                            }
+                            
+                            return days;
+                          })()}
+                        </div>
+                        
+                        <div className="today-button">
+                          <button 
+                            className="today-btn"
+                            onClick={() => {
+                              const today = new Date();
+                              setCalendarMonth(today.getMonth());
+                              setCalendarYear(today.getFullYear());
+                            }}
+                          >
+                            Today
+                          </button>
+                        </div>
+                      </div>
                     </div>
                   </>
                 )}
