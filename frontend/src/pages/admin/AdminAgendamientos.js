@@ -427,7 +427,7 @@ const CitasAgendadas = () => {
                     onCancel={() => setShowYearPicker(false)}
                   />
                 ) : (
-                  <>
+                  <div className="calendar-container">
                     <div className="calendar-header">
                       <button className="nav-button" title="Año anterior" onClick={() => setCalendarYear(calendarYear - 1)}>«</button>
                       <button className="nav-button" title="Mes anterior" onClick={() => {
@@ -436,8 +436,12 @@ const CitasAgendadas = () => {
                         setCalendarYear(prevMonth.getFullYear());
                       }}>‹</button>
                       <div className="month-year-display">
-                        <span onClick={() => setShowMonthPicker(true)}>abril</span>{' '}
-                        <span onClick={() => setShowYearPicker(true)}>2025</span>
+                        <span onClick={() => setShowMonthPicker(true)}>
+                          {format(new Date(calendarYear, calendarMonth), 'MMMM', { locale: es })}
+                        </span>{' '}
+                        <span onClick={() => setShowYearPicker(true)}>
+                          {calendarYear}
+                        </span>
                       </div>
                       <button className="nav-button" title="Mes siguiente" onClick={() => {
                         const nextMonth = new Date(calendarYear, calendarMonth + 1);
@@ -495,10 +499,13 @@ const CitasAgendadas = () => {
                           for (let day = 1; day <= daysInMonth; day++) {
                             const date = new Date(calendarYear, calendarMonth, day);
                             const isToday = day === today.getDate() && 
-                                           calendarMonth === today.getMonth() && 
-                                           calendarYear === today.getFullYear();
+                                          calendarMonth === today.getMonth() && 
+                                          calendarYear === today.getFullYear();
                             
-                            const isSelected = day === 27 && calendarMonth === 3 && calendarYear === 2025; // April 27, 2025
+                            const isSelected = dateRange?.from && 
+                              ((dateRange.from.getDate() === day && 
+                              dateRange.from.getMonth() === calendarMonth &&
+                              dateRange.from.getFullYear() === calendarYear));
                             
                             days.push(
                               <td key={`day-${day}`}>
@@ -516,7 +523,6 @@ const CitasAgendadas = () => {
                             );
                             
                             // If we've reached the end of a week, start a new row
-                            // With Monday as first day, we need to check if we have 7 days
                             if (days.length === 7) {
                               rows.push(<tr key={`row-${rows.length}`}>{days}</tr>);
                               days = [];
@@ -542,18 +548,13 @@ const CitasAgendadas = () => {
                     </table>
                     
                     <div className="calendar-footer">
-                      <button 
-                        className="today-btn"
-                        onClick={() => {
-                          const today = new Date();
-                          setCalendarMonth(today.getMonth());
-                          setCalendarYear(today.getFullYear());
-                        }}
-                      >
-                        Today
-                      </button>
+                      <div className="preset-buttons">
+                        <button onClick={() => handleDatePreset('today')}>Hoy</button>
+                        <button onClick={() => handleDatePreset('thisWeek')}>Esta semana</button>
+                        <button onClick={() => handleDatePreset('thisMonth')}>Este mes</button>
+                      </div>
                     </div>
-                  </>
+                  </div>
                 )}
               </div>
             )}
