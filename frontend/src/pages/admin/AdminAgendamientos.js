@@ -2,12 +2,10 @@
 import React, { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import "./CitasAgendadas.css";
-import DatePicker, { registerLocale } from 'react-datepicker';
-import "react-datepicker/dist/react-datepicker.css";
-import { startOfWeek, endOfWeek } from 'date-fns';
-import { es } from 'date-fns/locale';
-
-registerLocale('es', es);
+import { DayPicker } from "react-day-picker";
+import "react-day-picker/dist/style.css";
+import { startOfWeek, endOfWeek } from "date-fns";
+import { es } from "date-fns/locale";
 
 const TODOS_LOS_ESTADOS = ["pendiente", "confirmada", "cancelada"];
 
@@ -211,18 +209,12 @@ const CitasAgendadas = () => {
             ))}
           </select>
           
-          <DatePicker
-            selectsRange={true}
-            startDate={startDate}
-            endDate={endDate}
-            onChange={(update) => {
-              setDateRange(update);
-            }}
-            locale="es"
-            className="filter-select date-picker-input"
-            dateFormat="dd/MM/yyyy"
-            placeholderText="Seleccionar fechas"
-            isClearable={true}
+          <DayPicker
+            mode="range"
+            selected={dateRange}
+            onSelect={setDateRange}
+            locale={es}
+            className="filter-select day-picker-input"
           />
           
           <select 
