@@ -280,3 +280,45 @@
   .filter-group .MuiTextField-root {
     min-width: 240px;
   }
+
+  /* Estilos para DatePicker */
+.date-picker-input {
+  background-color: white !important;
+  border: 1px solid #E5E7EB !important;
+  border-radius: 500px !important;
+  padding: 0.5rem 1rem !important;
+  font-size: 0.875rem !important;
+  min-width: 200px !important;
+  cursor: pointer;
+}
+
+.date-picker-input:focus {
+  outline: none !important;
+  border-color: #2C2C2C !important;
+}
+
+.react-datepicker {
+  font-family: 'Inter', 'Segoe UI', sans-serif !important;
+  border: 1px solid #E5E7EB !important;
+  border-radius: 8px !important;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1) !important;
+}
+
+.react-datepicker__header {
+  background-color: white !important;
+  border-bottom: 1px solid #E5E7EB !important;
+}
+
+.react-datepicker__day--selected,
+.react-datepicker__day--in-range {
+  background-color: #20377A !important;
+  color: white !important;
+}
+
+.react-datepicker__day--in-selecting-range {
+  background-color: rgba(32, 55, 122, 0.5) !important;
+}
+
+.react-datepicker__day:hover {
+  background-color: #E5E7EB !important;
+}
