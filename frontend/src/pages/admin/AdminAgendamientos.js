@@ -6,8 +6,7 @@ import { DayPicker } from "react-day-picker";
 import "react-day-picker/dist/style.css";
 import { 
   startOfWeek, endOfWeek, format, startOfDay, endOfDay,
-  startOfToday, endOfToday, startOfMonth, endOfMonth,
-  addMonths, addYears, getYear, setMonth, setYear
+  startOfToday, endOfToday, startOfMonth, endOfMonth
 } from "date-fns";
 import { es } from "date-fns/locale";
 
@@ -212,6 +211,16 @@ const CitasAgendadas = () => {
     setShowDatePicker(false);
   };
 
+  // Update startDate and endDate when dateRange changes
+  useEffect(() => {
+    if (dateRange?.from) {
+      setStartDate(dateRange.from);
+    }
+    if (dateRange?.to) {
+      setEndDate(dateRange.to);
+    }
+  }, [dateRange]);
+
   // Update dateRange and URL params when dates are selected
   useEffect(() => {
     if (startDate && endDate) {
@@ -283,7 +292,7 @@ const CitasAgendadas = () => {
           
           <div className="date-picker-wrapper">
             <button className="date-picker-toggle" onClick={toggleDatePicker}>
-              {formatDateRange()}
+              {desde && hasta ? `${format(new Date(desde), "dd/MM/yyyy")} - ${format(new Date(hasta), "dd/MM/yyyy")}` : "Seleccionar fechas"}
             </button>
             {showDatePicker && (
               <div className="date-picker-dropdown">
@@ -294,6 +303,9 @@ const CitasAgendadas = () => {
                     onSelect={(month) => {
                       setCalendarMonth(month);
                       setShowMonthPicker(false);
+                      // Update the calendar to show the selected month
+                      const newDate = new Date(calendarYear, month, 1);
+                      // No need to call onMonthChange as we're updating the state directly
                     }}
                     onCancel={() => setShowMonthPicker(false)}
                   />
@@ -303,6 +315,9 @@ const CitasAgendadas = () => {
                     onSelect={(year) => {
                       setCalendarYear(year);
                       setShowYearPicker(false);
+                      // Update the calendar to show the selected year
+                      const newDate = new Date(year, calendarMonth, 1);
+                      // No need to call onMonthChange as we're updating the state directly
                     }}
                     onCancel={() => setShowYearPicker(false)}
                   />
@@ -311,7 +326,11 @@ const CitasAgendadas = () => {
                     <DayPicker
                       mode="range"
                       selected={dateRange}
-                      onSelect={setDateRange}
+                      onSelect={(newRange) => {
+                        if (newRange) {
+                          setDateRange(newRange);
+                        }
+                      }}
                       locale={es}
                       month={new Date(calendarYear, calendarMonth)}
                       captionLayout="buttons"
