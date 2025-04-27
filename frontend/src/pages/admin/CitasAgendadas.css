@@ -492,6 +492,7 @@
   padding: 0;
   overflow: hidden;
   display: flex;
+  width: 100%; /* Make it use available space */
 }
 
 .calendar-container {
@@ -500,9 +501,10 @@
 }
 
 .date-options {
-  flex: 1;
-  border-right: 1px solid #eee;
-  min-width: 120px;
+  flex: 0 0 85px; /* Fixed width for date options */
+  border-left: 1px solid #eee;
+  min-width: 85px;
+  padding: 5px 0;
 }
 
 /* Preset buttons for Today, This week, and This month */
@@ -517,12 +519,12 @@
   text-align: left;
   background: none;
   border: none;
-  padding: 10px 15px;
-  font-size: 14px;
-  color: #333;
+  padding: 5px 8px; /* Reduced padding */
+  margin: 0;
+  font-size: 13px;
+  color: #0366d6;
   cursor: pointer;
   transition: background-color 0.2s;
-  text-transform: capitalize;
 }
 
 .preset-buttons button:hover {
@@ -535,6 +537,3 @@
 }
 
 /* Clean up other styles */
-.preset-buttons {
-  display: none;  /* Hide preset buttons as they're not in the image */
-}
