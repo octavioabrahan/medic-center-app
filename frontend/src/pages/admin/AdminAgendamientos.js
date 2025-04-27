@@ -2,15 +2,10 @@
 import React, { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import "./CitasAgendadas.css";
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { StaticDateRangePicker } from '@mui/x-date-pickers-pro/StaticDateRangePicker';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import dayjs from 'dayjs';
-import 'dayjs/locale/es';
-import { es } from 'date-fns/locale';
 import DatePicker, { registerLocale } from 'react-datepicker';
 import "react-datepicker/dist/react-datepicker.css";
 import { startOfWeek, endOfWeek } from 'date-fns';
+import { es } from 'date-fns/locale';
 
 registerLocale('es', es);
 
@@ -29,6 +24,9 @@ const CitasAgendadas = () => {
   const [mostrarHistorial, setMostrarHistorial] = useState(false);
   const [historial, setHistorial] = useState([]);
   const [historialDe, setHistorialDe] = useState(null);
+
+  const [filterStatus, setFilterStatus] = useState("todos");
+  const [filteredAgendamientos, setFilteredAgendamientos] = useState([]);
 
   const status = searchParams.get("status")?.trim() || TODOS_LOS_ESTADOS.join(",");
   const desde = searchParams.get("desde") || null;
