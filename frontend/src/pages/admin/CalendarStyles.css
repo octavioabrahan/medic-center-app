@@ -8,7 +8,7 @@
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
   background: white;
   z-index: 100;
-  width: 550px; /* Increased width for two-month display */
+  width: 500px; /* Reduced width for more compact display */
   padding: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
   font-size: 13px;
@@ -24,6 +24,7 @@
 .month-container {
   flex: 1;
   border-right: 1px solid #eee;
+  padding: 0; /* Remove padding for more compact look */
 }
 
 .month-container:last-child {
@@ -32,7 +33,7 @@
 
 /* Calendar header with month/year and navigation buttons */
 .calendar-header {
-  padding: 6px 8px;
+  padding: 4px 6px; /* Reduced padding */
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -40,7 +41,7 @@
 }
 
 .month-year-display {
-  font-size: 14px;
+  font-size: 13px; /* Slightly smaller font */
   font-weight: normal;
   color: #333;
   flex: 1;
@@ -59,12 +60,12 @@
   background: none;
   border: none;
   cursor: pointer;
-  width: 24px;
-  height: 24px;
+  width: 20px; /* Smaller buttons */
+  height: 20px; /* Smaller buttons */
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 14px;
+  font-size: 13px;
   color: #666;
   padding: 0;
 }
@@ -77,11 +78,11 @@
 }
 
 .calendar-table th {
-  padding: 5px 0;
+  padding: 3px 0; /* Less padding */
   text-align: center;
   font-weight: normal;
   color: #666;
-  font-size: 12px;
+  font-size: 11px; /* Smaller font */
   border-bottom: 1px solid #eee;
   width: 14.28%;
   box-sizing: border-box;
@@ -89,8 +90,8 @@
 
 .calendar-table td {
   text-align: center;
-  padding: 1px;
-  height: 30px;
+  padding: 0; /* No padding */
+  height: 26px; /* Reduced cell height */
   width: 14.28%; /* Ensure each cell takes exactly 1/7 of the table width */
   box-sizing: border-box;
 }
@@ -99,14 +100,15 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 30px;
-  height: 30px;
+  width: 26px; /* Smaller day circles */
+  height: 26px; /* Smaller day circles */
   margin: 0 auto;
   cursor: pointer;
-  font-size: 13px;
+  font-size: 12px; /* Smaller font */
   border-radius: 4px;
 }
 
+/* Other calendar day styles remain unchanged */
 .calendar-day:hover {
   background-color: #f0f0f0;
 }
@@ -139,7 +141,7 @@
 
 .outside-month {
   color: #ccc;
-  font-size: 13px;
+  font-size: 11px; /* Even smaller font for outside month dates */
 }
 
 /* Date range picker input */
@@ -265,7 +267,7 @@
 }
 
 .calendar-container {
-  flex: 3;
+  flex: 4; /* More space for calendar */
 }
 
 .preset-buttons-wrapper {
@@ -273,16 +275,16 @@
   border-left: 1px solid #eee;
   display: flex;
   flex-direction: column;
-  padding-left: 10px;
+  padding-left: 5px; /* Reduced padding */
 }
 
 .preset-buttons-wrapper button {
-  padding: 8px;
-  margin: 5px 0;
+  padding: 6px 4px; /* Reduced padding */
+  margin: 2px 0; /* Much less margin between buttons */
   background: none;
   border: none;
   text-align: left;
-  font-size: 13px;
+  font-size: 12px; /* Smaller font */
   color: #0366d6;
   cursor: pointer;
 }
@@ -291,11 +293,11 @@
   text-decoration: underline;
 }
 
-/* Month and Year selectors - compact grid style */
+/* Month and Year selectors - more compact grid style */
 .month-selector, .year-selector {
-  padding: 15px;
+  padding: 10px; /* Less padding */
   background: white;
-  width: 220px;
+  width: 200px; /* Smaller width */
   margin: 0 auto;
   text-align: center;
 }
@@ -303,17 +305,17 @@
 .month-grid, .year-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  grid-gap: 8px;
-  margin-bottom: 15px;
+  grid-gap: 5px; /* Smaller gap */
+  margin-bottom: 10px; /* Less margin */
 }
 
 .month-grid button, .year-grid button {
-  padding: 8px 0;
+  padding: 6px 0; /* Less padding */
   background: #f7f7f7;
   border: none;
   border-radius: 4px;
   cursor: pointer;
-  font-size: 13px;
+  font-size: 12px; /* Smaller font */
   color: #333;
 }
 
@@ -327,16 +329,16 @@
 }
 
 .close-btn {
-  padding: 8px 20px;
+  padding: 6px 16px; /* Less padding */
   background: none;
   border: none;
-  font-size: 14px;
+  font-size: 13px; /* Smaller font */
   color: #666;
   cursor: pointer;
   border-top: 1px solid #eee;
   width: 100%;
-  margin-top: 5px;
-  padding-top: 10px;
+  margin-top: 3px; /* Less margin */
+  padding-top: 6px; /* Less padding */
 }
 
 .close-btn:hover {
