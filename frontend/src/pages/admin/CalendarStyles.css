@@ -8,10 +8,10 @@
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
   background: white;
   z-index: 100;
-  width: 520px; /* Slightly wider for better readability */
+  width: 530px; /* Good compromise width */
   padding: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
-  font-size: 14px; /* Increased font size */
+  font-size: 14px;
 }
 
 /* Container for the two months */
@@ -24,7 +24,7 @@
 .month-container {
   flex: 1;
   border-right: 1px solid #eee;
-  padding: 2px; /* Small padding for better spacing */
+  padding: 2px;
 }
 
 .month-container:last-child {
@@ -33,7 +33,7 @@
 
 /* Calendar header with month/year and navigation buttons */
 .calendar-header {
-  padding: 6px 8px; /* Increased padding */
+  padding: 6px 8px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -41,7 +41,7 @@
 }
 
 .month-year-display {
-  font-size: 14px; /* Restored font size */
+  font-size: 14px;
   font-weight: normal;
   color: #333;
   flex: 1;
@@ -60,8 +60,8 @@
   background: none;
   border: none;
   cursor: pointer;
-  width: 22px; /* Slightly larger buttons */
-  height: 22px; /* Slightly larger buttons */
+  width: 22px;
+  height: 22px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -78,11 +78,11 @@
 }
 
 .calendar-table th {
-  padding: 4px 0; /* More padding */
+  padding: 4px 0;
   text-align: center;
   font-weight: normal;
   color: #666;
-  font-size: 12px; /* Increased font size */
+  font-size: 12px;
   border-bottom: 1px solid #eee;
   width: 14.28%;
   box-sizing: border-box;
@@ -90,8 +90,8 @@
 
 .calendar-table td {
   text-align: center;
-  padding: 1px; /* Small padding */
-  height: 30px; /* Increased cell height */
+  padding: 1px;
+  height: 28px; /* Slightly smaller for more compact look */
   width: 14.28%; /* Ensure each cell takes exactly 1/7 of the table width */
   box-sizing: border-box;
 }
@@ -100,15 +100,14 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 30px; /* Larger day circles */
-  height: 30px; /* Larger day circles */
+  width: 28px; /* Smaller day circles */
+  height: 28px; /* Smaller day circles */
   margin: 0 auto;
   cursor: pointer;
-  font-size: 13px; /* Increased font size */
+  font-size: 13px;
   border-radius: 4px;
 }
 
-/* Other calendar day styles remain unchanged */
 .calendar-day:hover {
   background-color: #f0f0f0;
 }
@@ -141,7 +140,7 @@
 
 .outside-month {
   color: #ccc;
-  font-size: 12px; /* Increased font size */
+  font-size: 12px;
 }
 
 /* Date range picker input */
@@ -200,7 +199,7 @@
 
 /* Calendar footer */
 .calendar-footer {
-  padding: 8px 0;
+  padding: 6px 0;
   text-align: center;
   border-top: 1px solid #eee;
   background-color: white;
@@ -212,21 +211,21 @@
 /* Preset buttons */
 .preset-buttons {
   display: flex;
-  padding: 8px;
+  padding: 6px;
   background-color: white;
   justify-content: center;
   flex-wrap: wrap;
 }
 
 .preset-buttons button {
-  padding: 6px 12px;
+  padding: 4px 8px;
   background: none;
   border: none;
   font-size: 13px;
   color: #0366d6;
   cursor: pointer;
   text-align: center;
-  margin: 0 5px;
+  margin: 0 3px;
 }
 
 .preset-buttons button:hover {
@@ -267,7 +266,7 @@
 }
 
 .calendar-container {
-  flex: 4; /* More space for calendar */
+  flex: 8; /* Give more space to the calendar and less to buttons */
 }
 
 .preset-buttons-wrapper {
@@ -275,29 +274,32 @@
   border-left: 1px solid #eee;
   display: flex;
   flex-direction: column;
-  padding-left: 6px; /* Slightly more padding */
+  padding-left: 4px; /* Less side padding */
+  max-width: 80px; /* Limit the width of the buttons area */
 }
 
 .preset-buttons-wrapper button {
-  padding: 8px 6px; /* Slightly more padding */
-  margin: 3px 0; /* Slightly more margin but still compact */
+  padding: 5px 3px; /* Reduce padding significantly */
+  margin: 2px 0; /* Very little margin */
   background: none;
   border: none;
   text-align: left;
-  font-size: 13px; /* Increased font size */
+  font-size: 12px; /* Smaller font */
   color: #0366d6;
   cursor: pointer;
+  white-space: nowrap;
 }
 
 .preset-buttons-wrapper button:hover {
-  text-decoration: underline;
+  background-color: #f0f0f0;
+  text-decoration: none;
 }
 
-/* Month and Year selectors - more compact grid style */
+/* Month and Year selectors */
 .month-selector, .year-selector {
-  padding: 12px; /* More padding */
+  padding: 10px;
   background: white;
-  width: 220px; /* Wider selector */
+  width: 220px;
   margin: 0 auto;
   text-align: center;
 }
@@ -305,17 +307,17 @@
 .month-grid, .year-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  grid-gap: 6px; /* Slightly larger gap */
-  margin-bottom: 12px; /* More margin */
+  grid-gap: 5px;
+  margin-bottom: 10px;
 }
 
 .month-grid button, .year-grid button {
-  padding: 8px 0; /* More padding */
+  padding: 6px 0;
   background: #f7f7f7;
   border: none;
   border-radius: 4px;
   cursor: pointer;
-  font-size: 13px; /* Larger font */
+  font-size: 13px;
   color: #333;
 }
 
@@ -329,18 +331,19 @@
 }
 
 .close-btn {
-  padding: 8px 16px; /* More padding */
+  padding: 6px 12px;
   background: none;
   border: none;
-  font-size: 14px; /* Larger font */
+  font-size: 13px;
   color: #666;
   cursor: pointer;
   border-top: 1px solid #eee;
   width: 100%;
-  margin-top: 4px; /* More margin */
-  padding-top: 8px; /* More padding */
+  margin-top: 3px;
+  padding-top: 6px;
 }
 
 .close-btn:hover {
-  text-decoration: underline;
+  background-color: #f0f0f0;
+  text-decoration: none;
 }
