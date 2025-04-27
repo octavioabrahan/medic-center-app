@@ -303,9 +303,6 @@ const CitasAgendadas = () => {
                     onSelect={(month) => {
                       setCalendarMonth(month);
                       setShowMonthPicker(false);
-                      // Update the calendar to show the selected month
-                      const newDate = new Date(calendarYear, month, 1);
-                      // No need to call onMonthChange as we're updating the state directly
                     }}
                     onCancel={() => setShowMonthPicker(false)}
                   />
@@ -315,9 +312,6 @@ const CitasAgendadas = () => {
                     onSelect={(year) => {
                       setCalendarYear(year);
                       setShowYearPicker(false);
-                      // Update the calendar to show the selected year
-                      const newDate = new Date(year, calendarMonth, 1);
-                      // No need to call onMonthChange as we're updating the state directly
                     }}
                     onCancel={() => setShowYearPicker(false)}
                   />
@@ -338,21 +332,83 @@ const CitasAgendadas = () => {
                         setCalendarMonth(newMonth.getMonth());
                         setCalendarYear(newMonth.getFullYear());
                       }}
+                      showOutsideDays
+                      modifiersClassNames={{
+                        today: 'rdp-day_today',
+                        selected: 'rdp-day_selected'
+                      }}
                       components={{
-                        Caption: (props) => (
-                          <CalendarCaption
-                            displayMonth={calendarMonth}
-                            displayYear={calendarYear}
-                            onMonthClick={() => setShowMonthPicker(true)}
-                            onYearClick={() => setShowYearPicker(true)}
-                          />
+                        IconLeft: () => <span>&lt;</span>,
+                        IconRight: () => <span>&gt;</span>,
+                        Caption: ({ displayMonth, displayYear }) => (
+                          <div className="rdp-caption">
+                            <button 
+                              onClick={() => {
+                                const prevYear = new Date(calendarYear - 1, calendarMonth);
+                                setCalendarMonth(prevYear.getMonth());
+                                setCalendarYear(prevYear.getFullYear());
+                              }} 
+                              className="rdp-nav_button"
+                              title="Previous year"
+                            >
+                              &lt;&lt;
+                            </button>
+                            <button 
+                              onClick={() => {
+                                const prevMonth = new Date(calendarYear, calendarMonth - 1);
+                                setCalendarMonth(prevMonth.getMonth());
+                                setCalendarYear(prevMonth.getFullYear());
+                              }} 
+                              className="rdp-nav_button"
+                              title="Previous month"
+                            >
+                              &lt;
+                            </button>
+                            <div 
+                              className="rdp-caption_label"
+                              onClick={() => setShowMonthPicker(true)}
+                            >
+                              {format(new Date(calendarYear, calendarMonth), 'MMMM yyyy', { locale: es })}
+                            </div>
+                            <button 
+                              onClick={() => {
+                                const nextMonth = new Date(calendarYear, calendarMonth + 1);
+                                setCalendarMonth(nextMonth.getMonth());
+                                setCalendarYear(nextMonth.getFullYear());
+                              }} 
+                              className="rdp-nav_button"
+                              title="Next month"
+                            >
+                              &gt;
+                            </button>
+                            <button 
+                              onClick={() => {
+                                const nextYear = new Date(calendarYear + 1, calendarMonth);
+                                setCalendarMonth(nextYear.getMonth());
+                                setCalendarYear(nextYear.getFullYear());
+                              }} 
+                              className="rdp-nav_button"
+                              title="Next year"
+                            >
+                              &gt;&gt;
+                            </button>
+                          </div>
                         )
                       }}
                     />
-                    <div className="preset-buttons">
-                      <button onClick={() => handleDatePreset('today')}>Hoy</button>
-                      <button onClick={() => handleDatePreset('thisWeek')}>Esta semana</button>
-                      <button onClick={() => handleDatePreset('thisMonth')}>Este mes</button>
+                    <div className="today-button-container">
+                      <button 
+                        className="today-button" 
+                        onClick={() => {
+                          const today = new Date();
+                          setCalendarMonth(today.getMonth());
+                          setCalendarYear(today.getFullYear());
+                          setDateRange({ from: today, to: today });
+                          setShowDatePicker(false);
+                        }}
+                      >
+                        Today
+                      </button>
                     </div>
                   </>
                 )}
