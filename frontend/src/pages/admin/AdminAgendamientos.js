@@ -868,10 +868,57 @@ const CitasAgendadas = () => {
                       </div>
                     </div>
                     
-                    <div className="preset-buttons-wrapper">
-                      <button onClick={() => handleDatePreset('today')}>Hoy</button>
-                      <button onClick={() => handleDatePreset('thisWeek')}>Esta Semana</button>
-                      <button onClick={() => handleDatePreset('thisMonth')}>Este Mes</button>
+                    <div className="preset-buttons-wrapper" style={{ 
+                      flex: "0 0 auto", 
+                      borderLeft: "1px solid #eee", 
+                      display: "flex", 
+                      flexDirection: "column", 
+                      padding: "2px 0", 
+                      width: "100px", 
+                      marginLeft: 0 
+                    }}>
+                      <button 
+                        onClick={() => handleDatePreset('today')} 
+                        style={{ 
+                          padding: "4px 2px", 
+                          margin: "1px 0", 
+                          background: "none", 
+                          border: "none", 
+                          textAlign: "left", 
+                          fontSize: "13px", 
+                          color: "#0366d6", 
+                          cursor: "pointer", 
+                          paddingLeft: "10px" 
+                        }}
+                      >Hoy</button>
+                      <button 
+                        onClick={() => handleDatePreset('thisWeek')} 
+                        style={{ 
+                          padding: "4px 2px", 
+                          margin: "1px 0", 
+                          background: "none", 
+                          border: "none", 
+                          textAlign: "left", 
+                          fontSize: "13px", 
+                          color: "#0366d6", 
+                          cursor: "pointer", 
+                          paddingLeft: "10px" 
+                        }}
+                      >Esta Semana</button>
+                      <button 
+                        onClick={() => handleDatePreset('thisMonth')} 
+                        style={{ 
+                          padding: "4px 2px", 
+                          margin: "1px 0", 
+                          background: "none", 
+                          border: "none", 
+                          textAlign: "left", 
+                          fontSize: "13px", 
+                          color: "#0366d6", 
+                          cursor: "pointer", 
+                          paddingLeft: "10px" 
+                        }}
+                      >Este Mes</button>
                     </div>
                   </div>
                 )}
