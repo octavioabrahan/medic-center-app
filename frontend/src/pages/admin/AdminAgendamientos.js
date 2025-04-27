@@ -446,431 +446,433 @@ const CitasAgendadas = () => {
                     onCancel={() => setShowYearPicker(false)}
                   />
                 ) : (
-                  <div className="two-month-container">
-                    {/* First month */}
-                    <div className="month-container">
-                      <div className="calendar-header">
-                        <button className="nav-button" title="Año anterior" onClick={() => setCalendarYear(calendarYear - 1)}>«</button>
-                        <button className="nav-button" title="Mes anterior" onClick={() => {
-                          const prevMonth = new Date(calendarYear, calendarMonth - 1);
-                          setCalendarMonth(prevMonth.getMonth());
-                          setCalendarYear(prevMonth.getFullYear());
-                        }}>‹</button>
-                        <div className="month-year-display">
-                          <span onClick={() => setShowMonthPicker(true)}>
-                            {format(new Date(calendarYear, calendarMonth), 'MMM', { locale: es })}
-                          </span>{' '}
-                          <span onClick={() => setShowYearPicker(true)}>
-                            {calendarYear}
-                          </span>
+                  <div className="calendar-wrapper">
+                    <div className="calendar-container">
+                      <div className="two-month-container">
+                        {/* First month */}
+                        <div className="month-container">
+                          <div className="calendar-header">
+                            <button className="nav-button" title="Año anterior" onClick={() => setCalendarYear(calendarYear - 1)}>«</button>
+                            <button className="nav-button" title="Mes anterior" onClick={() => {
+                              const prevMonth = new Date(calendarYear, calendarMonth - 1);
+                              setCalendarMonth(prevMonth.getMonth());
+                              setCalendarYear(prevMonth.getFullYear());
+                            }}>‹</button>
+                            <div className="month-year-display">
+                              <span onClick={() => setShowMonthPicker(true)}>
+                                {format(new Date(calendarYear, calendarMonth), 'MMM', { locale: es })}
+                              </span>{' '}
+                              <span onClick={() => setShowYearPicker(true)}>
+                                {calendarYear}
+                              </span>
+                            </div>
+                          </div>
+                          
+                          <table className="calendar-table">
+                            <thead>
+                              <tr>
+                                <th>Lu</th>
+                                <th>Ma</th>
+                                <th>Mi</th>
+                                <th>Ju</th>
+                                <th>Vi</th>
+                                <th>Sa</th>
+                                <th>Do</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {(() => {
+                                const firstDayOfMonth = new Date(calendarYear, calendarMonth, 1);
+                                const lastDayOfMonth = new Date(calendarYear, calendarMonth + 1, 0);
+                                const daysInMonth = lastDayOfMonth.getDate();
+                                
+                                // Convert Sunday (0) to 6, and other days to day-1 (Monday = 0, Tuesday = 1, etc.)
+                                const getAdjustedDay = (date) => {
+                                  const day = date.getDay();
+                                  return day === 0 ? 6 : day - 1;
+                                };
+                                
+                                // Day of week of first day (0 = Monday, 1 = Tuesday, etc. with our adjustment)
+                                const firstDayWeekday = getAdjustedDay(firstDayOfMonth);
+                                const prevMonthLastDay = new Date(calendarYear, calendarMonth, 0).getDate();
+                                
+                                // Current date (for highlighting today)
+                                const today = new Date();
+                                
+                                const rows = [];
+                                let days = [];
+                                
+                                // Previous month days
+                                for (let i = 0; i < firstDayWeekday; i++) {
+                                  const prevDay = prevMonthLastDay - (firstDayWeekday - i - 1);
+                                  const prevDate = new Date(calendarYear, calendarMonth - 1, prevDay);
+                                  
+                                  days.push(
+                                    <td key={`prev-${i}`} className="outside-month">
+                                      <div 
+                                        className="calendar-day"
+                                        onClick={() => {
+                                          if (startDate && !endDate) {
+                                            // If selecting end date after start date
+                                            if (prevDate > startDate) {
+                                              // If end date is before start date, swap them
+                                              setDateRange({ from: prevDate, to: startDate });
+                                            } else {
+                                              setDateRange({ from: startDate, to: prevDate });
+                                            }
+                                            setShowDatePicker(false);
+                                          } else {
+                                            // Start new selection
+                                            setDateRange({ from: prevDate, to: null });
+                                            // Don't close the picker yet, wait for the second date
+                                          }
+                                        }}
+                                      >
+                                        {prevDay}
+                                      </div>
+                                    </td>
+                                  );
+                                }
+                                
+                                // Current month days
+                                for (let day = 1; day <= daysInMonth; day++) {
+                                  const date = new Date(calendarYear, calendarMonth, day);
+                                  const isToday = day === today.getDate() && 
+                                                calendarMonth === today.getMonth() && 
+                                                calendarYear === today.getFullYear();
+                                  
+                                  // Check if date is within the selected range
+                                  const isInRange = dateRange?.from && dateRange?.to && 
+                                    date >= startOfDay(dateRange.from) && 
+                                    date <= endOfDay(dateRange.to);
+                                  
+                                  // Check if date is exactly the start or end date
+                                  const isRangeStart = dateRange?.from && 
+                                    day === dateRange.from.getDate() && 
+                                    calendarMonth === dateRange.from.getMonth() && 
+                                    calendarYear === dateRange.from.getFullYear();
+                                  
+                                  const isRangeEnd = dateRange?.to && 
+                                    day === dateRange.to.getDate() && 
+                                    calendarMonth === dateRange.to.getMonth() && 
+                                    calendarYear === dateRange.to.getFullYear();
+                                  
+                                  let className = "calendar-day";
+                                  if (isToday) className += " today";
+                                  if (isRangeStart) className += " range-start selected";
+                                  else if (isRangeEnd) className += " range-end selected";
+                                  else if (isInRange) className += " range-middle";
+                                  
+                                  days.push(
+                                    <td key={`day-${day}`}>
+                                      <div 
+                                        className={className}
+                                        onClick={() => {
+                                          const selectedDate = new Date(calendarYear, calendarMonth, day);
+                                          
+                                          if (datePickerMode === 'start') {
+                                            // If we're selecting a start date
+                                            if (endDate && selectedDate > endDate) {
+                                              // If selected start date is after current end date, reset end date
+                                              setDateRange({ from: selectedDate, to: null });
+                                              setShowDatePicker(true); // Keep calendar open to select end date
+                                              setDatePickerMode('end'); // Switch to end date selection
+                                            } else {
+                                              // Normal start date selection
+                                              setDateRange({ 
+                                                from: selectedDate, 
+                                                to: endDate || selectedDate // Keep end date if it exists
+                                              });
+                                              setShowDatePicker(false);
+                                            }
+                                          } else {
+                                            // If we're selecting an end date
+                                            if (startDate && selectedDate < startDate) {
+                                              // If selected end date is before start date, swap them
+                                              setDateRange({ from: selectedDate, to: startDate });
+                                            } else {
+                                              // Normal end date selection
+                                              setDateRange({ 
+                                                from: startDate || selectedDate, // Keep start date if it exists
+                                                to: selectedDate 
+                                              });
+                                            }
+                                            setShowDatePicker(false);
+                                          }
+                                        }}
+                                      >
+                                        {day}
+                                      </div>
+                                    </td>
+                                  );
+                                  
+                                  // If we've reached the end of a week, start a new row
+                                  if (days.length === 7) {
+                                    rows.push(<tr key={`row-${rows.length}`}>{days}</tr>);
+                                    days = [];
+                                  }
+                                }
+                                
+                                // Next month days
+                                if (days.length > 0) {
+                                  const remainingCells = 7 - days.length;
+                                  for (let i = 1; i <= remainingCells; i++) {
+                                    const nextDate = new Date(calendarYear, calendarMonth + 1, i);
+                                    
+                                    days.push(
+                                      <td key={`next-${i}`} className="outside-month">
+                                        <div 
+                                          className="calendar-day"
+                                          onClick={() => {
+                                            if (startDate && !endDate) {
+                                              // If selecting end date after start date
+                                              if (nextDate >= startDate) {
+                                                setDateRange({ from: startDate, to: nextDate });
+                                              } else {
+                                                // If end date is before start date, swap them
+                                                setDateRange({ from: nextDate, to: startDate });
+                                              }
+                                              setShowDatePicker(false);
+                                            } else {
+                                              // Start new selection
+                                              setDateRange({ from: nextDate, to: null });
+                                              // Don't close the picker yet, wait for the second date
+                                            }
+                                          }}
+                                        >
+                                          {i}
+                                        </div>
+                                      </td>
+                                    );
+                                  }
+                                  rows.push(<tr key={`row-${rows.length}`}>{days}</tr>);
+                                }
+                                
+                                return rows;
+                              })()}
+                            </tbody>
+                          </table>
+                        </div>
+                        
+                        {/* Second month */}
+                        <div className="month-container">
+                          <div className="calendar-header">
+                            <div className="month-year-display">
+                              <span onClick={() => setShowMonthPicker(true)}>
+                                {format(new Date(calendarYear, calendarMonth + 1), 'MMM', { locale: es })}
+                              </span>{' '}
+                              <span onClick={() => setShowYearPicker(true)}>
+                                {calendarMonth === 11 ? calendarYear + 1 : calendarYear}
+                              </span>
+                            </div>
+                            <button className="nav-button" title="Mes siguiente" onClick={() => {
+                              const nextMonth = new Date(calendarYear, calendarMonth + 1);
+                              setCalendarMonth(nextMonth.getMonth());
+                              setCalendarYear(nextMonth.getFullYear());
+                            }}>›</button>
+                            <button className="nav-button" title="Año siguiente" onClick={() => setCalendarYear(calendarYear + 1)}>»</button>
+                          </div>
+                          
+                          <table className="calendar-table">
+                            <thead>
+                              <tr>
+                                <th>Lu</th>
+                                <th>Ma</th>
+                                <th>Mi</th>
+                                <th>Ju</th>
+                                <th>Vi</th>
+                                <th>Sa</th>
+                                <th>Do</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {(() => {
+                                // Get the next month
+                                const nextMonthDate = new Date(calendarYear, calendarMonth + 1);
+                                const nextMonthYear = nextMonthDate.getFullYear();
+                                const nextMonth = nextMonthDate.getMonth();
+                                
+                                const firstDayOfMonth = new Date(nextMonthYear, nextMonth, 1);
+                                const lastDayOfMonth = new Date(nextMonthYear, nextMonth + 1, 0);
+                                const daysInMonth = lastDayOfMonth.getDate();
+                                
+                                // Convert Sunday (0) to 6, and other days to day-1 (Monday = 0, Tuesday = 1, etc.)
+                                const getAdjustedDay = (date) => {
+                                  const day = date.getDay();
+                                  return day === 0 ? 6 : day - 1;
+                                };
+                                
+                                // Day of week of first day (0 = Monday, 1 = Tuesday, etc. with our adjustment)
+                                const firstDayWeekday = getAdjustedDay(firstDayOfMonth);
+                                const prevMonthLastDay = new Date(nextMonthYear, nextMonth, 0).getDate();
+                                
+                                // Current date (for highlighting today)
+                                const today = new Date();
+                                
+                                const rows = [];
+                                let days = [];
+                                
+                                // Previous month days
+                                for (let i = 0; i < firstDayWeekday; i++) {
+                                  const prevDay = prevMonthLastDay - (firstDayWeekday - i - 1);
+                                  const prevDate = new Date(nextMonthYear, nextMonth - 1, prevDay);
+                                  
+                                  days.push(
+                                    <td key={`prev-${i}`} className="outside-month">
+                                      <div 
+                                        className="calendar-day"
+                                        onClick={() => {
+                                          if (startDate && !endDate) {
+                                            // If selecting end date after start date
+                                            if (prevDate >= startDate) {
+                                              setDateRange({ from: startDate, to: prevDate });
+                                            } else {
+                                              // If end date is before start date, swap them
+                                              setDateRange({ from: prevDate, to: startDate });
+                                            }
+                                            setShowDatePicker(false);
+                                          } else {
+                                            // Start new selection
+                                            setDateRange({ from: prevDate, to: null });
+                                            // Don't close the picker yet, wait for the second date
+                                          }
+                                        }}
+                                      >
+                                        {prevDay}
+                                      </div>
+                                    </td>
+                                  );
+                                }
+                                
+                                // Current month days
+                                for (let day = 1; day <= daysInMonth; day++) {
+                                  const date = new Date(nextMonthYear, nextMonth, day);
+                                  const isToday = day === today.getDate() && 
+                                                nextMonth === today.getMonth() && 
+                                                nextMonthYear === today.getFullYear();
+                                  
+                                  // Check if date is within the selected range
+                                  const isInRange = dateRange?.from && dateRange?.to && 
+                                    date >= startOfDay(dateRange.from) && 
+                                    date <= endOfDay(dateRange.to);
+                                  
+                                  // Check if date is exactly the start or end date
+                                  const isRangeStart = dateRange?.from && 
+                                    day === dateRange.from.getDate() && 
+                                    nextMonth === dateRange.from.getMonth() && 
+                                    nextMonthYear === dateRange.from.getFullYear();
+                                  
+                                  const isRangeEnd = dateRange?.to && 
+                                    day === dateRange.to.getDate() && 
+                                    nextMonth === dateRange.to.getMonth() && 
+                                    nextMonthYear === dateRange.to.getFullYear();
+                                  
+                                  let className = "calendar-day";
+                                  if (isToday) className += " today";
+                                  if (isRangeStart) className += " range-start selected";
+                                  else if (isRangeEnd) className += " range-end selected";
+                                  else if (isInRange) className += " range-middle";
+                                  
+                                  days.push(
+                                    <td key={`day-${day}`}>
+                                      <div 
+                                        className={className}
+                                        onClick={() => {
+                                          const selectedDate = new Date(nextMonthYear, nextMonth, day);
+                                          
+                                          if (datePickerMode === 'start') {
+                                            // If we're selecting a start date
+                                            if (endDate && selectedDate > endDate) {
+                                              // If selected start date is after current end date, reset end date
+                                              setDateRange({ from: selectedDate, to: null });
+                                              setShowDatePicker(true); // Keep calendar open to select end date
+                                              setDatePickerMode('end'); // Switch to end date selection
+                                            } else {
+                                              // Normal start date selection
+                                              setDateRange({ 
+                                                from: selectedDate, 
+                                                to: endDate || selectedDate // Keep end date if it exists
+                                              });
+                                              setShowDatePicker(false);
+                                            }
+                                          } else {
+                                            // If we're selecting an end date
+                                            if (startDate && selectedDate < startDate) {
+                                              // If selected end date is before start date, swap them
+                                              setDateRange({ from: selectedDate, to: startDate });
+                                            } else {
+                                              // Normal end date selection
+                                              setDateRange({ 
+                                                from: startDate || selectedDate, // Keep start date if it exists
+                                                to: selectedDate 
+                                              });
+                                            }
+                                            setShowDatePicker(false);
+                                          }
+                                        }}
+                                      >
+                                        {day}
+                                      </div>
+                                    </td>
+                                  );
+                                  
+                                  // If we've reached the end of a week, start a new row
+                                  if (days.length === 7) {
+                                    rows.push(<tr key={`row-${rows.length}`}>{days}</tr>);
+                                    days = [];
+                                  }
+                                }
+                                
+                                // Next month days
+                                if (days.length > 0) {
+                                  const remainingCells = 7 - days.length;
+                                  for (let i = 1; i <= remainingCells; i++) {
+                                    const nextNextDate = new Date(nextMonthYear, nextMonth + 1, i);
+                                    
+                                    days.push(
+                                      <td key={`next-${i}`} className="outside-month">
+                                        <div 
+                                          className="calendar-day"
+                                          onClick={() => {
+                                            if (startDate && !endDate) {
+                                              // If selecting end date after start date
+                                              if (nextNextDate >= startDate) {
+                                                setDateRange({ from: startDate, to: nextNextDate });
+                                              } else {
+                                                // If end date is before start date, swap them
+                                                setDateRange({ from: nextNextDate, to: startDate });
+                                              }
+                                              setShowDatePicker(false);
+                                            } else {
+                                              // Start new selection
+                                              setDateRange({ from: nextNextDate, to: null });
+                                              // Don't close the picker yet, wait for the second date
+                                            }
+                                          }}
+                                        >
+                                          {i}
+                                        </div>
+                                      </td>
+                                    );
+                                  }
+                                  rows.push(<tr key={`row-${rows.length}`}>{days}</tr>);
+                                }
+                                
+                                return rows;
+                              })()}
+                            </tbody>
+                          </table>
                         </div>
                       </div>
-                      
-                      <table className="calendar-table">
-                        <thead>
-                          <tr>
-                            <th>Lu</th>
-                            <th>Ma</th>
-                            <th>Mi</th>
-                            <th>Ju</th>
-                            <th>Vi</th>
-                            <th>Sa</th>
-                            <th>Do</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {(() => {
-                            const firstDayOfMonth = new Date(calendarYear, calendarMonth, 1);
-                            const lastDayOfMonth = new Date(calendarYear, calendarMonth + 1, 0);
-                            const daysInMonth = lastDayOfMonth.getDate();
-                            
-                            // Convert Sunday (0) to 6, and other days to day-1 (Monday = 0, Tuesday = 1, etc.)
-                            const getAdjustedDay = (date) => {
-                              const day = date.getDay();
-                              return day === 0 ? 6 : day - 1;
-                            };
-                            
-                            // Day of week of first day (0 = Monday, 1 = Tuesday, etc. with our adjustment)
-                            const firstDayWeekday = getAdjustedDay(firstDayOfMonth);
-                            const prevMonthLastDay = new Date(calendarYear, calendarMonth, 0).getDate();
-                            
-                            // Current date (for highlighting today)
-                            const today = new Date();
-                            
-                            const rows = [];
-                            let days = [];
-                            
-                            // Previous month days
-                            for (let i = 0; i < firstDayWeekday; i++) {
-                              const prevDay = prevMonthLastDay - (firstDayWeekday - i - 1);
-                              const prevDate = new Date(calendarYear, calendarMonth - 1, prevDay);
-                              
-                              days.push(
-                                <td key={`prev-${i}`} className="outside-month">
-                                  <div 
-                                    className="calendar-day"
-                                    onClick={() => {
-                                      if (startDate && !endDate) {
-                                        // If selecting end date after start date
-                                        if (prevDate > startDate) {
-                                          // If end date is before start date, swap them
-                                          setDateRange({ from: prevDate, to: startDate });
-                                        } else {
-                                          setDateRange({ from: startDate, to: prevDate });
-                                        }
-                                        setShowDatePicker(false);
-                                      } else {
-                                        // Start new selection
-                                        setDateRange({ from: prevDate, to: null });
-                                        // Don't close the picker yet, wait for the second date
-                                      }
-                                    }}
-                                  >
-                                    {prevDay}
-                                  </div>
-                                </td>
-                              );
-                            }
-                            
-                            // Current month days
-                            for (let day = 1; day <= daysInMonth; day++) {
-                              const date = new Date(calendarYear, calendarMonth, day);
-                              const isToday = day === today.getDate() && 
-                                            calendarMonth === today.getMonth() && 
-                                            calendarYear === today.getFullYear();
-                              
-                              // Check if date is within the selected range
-                              const isInRange = dateRange?.from && dateRange?.to && 
-                                date >= startOfDay(dateRange.from) && 
-                                date <= endOfDay(dateRange.to);
-                              
-                              // Check if date is exactly the start or end date
-                              const isRangeStart = dateRange?.from && 
-                                day === dateRange.from.getDate() && 
-                                calendarMonth === dateRange.from.getMonth() && 
-                                calendarYear === dateRange.from.getFullYear();
-                              
-                              const isRangeEnd = dateRange?.to && 
-                                day === dateRange.to.getDate() && 
-                                calendarMonth === dateRange.to.getMonth() && 
-                                calendarYear === dateRange.to.getFullYear();
-                              
-                              let className = "calendar-day";
-                              if (isToday) className += " today";
-                              if (isRangeStart) className += " range-start selected";
-                              else if (isRangeEnd) className += " range-end selected";
-                              else if (isInRange) className += " range-middle";
-                              
-                              days.push(
-                                <td key={`day-${day}`}>
-                                  <div 
-                                    className={className}
-                                    onClick={() => {
-                                      const selectedDate = new Date(calendarYear, calendarMonth, day);
-                                      
-                                      if (datePickerMode === 'start') {
-                                        // If we're selecting a start date
-                                        if (endDate && selectedDate > endDate) {
-                                          // If selected start date is after current end date, reset end date
-                                          setDateRange({ from: selectedDate, to: null });
-                                          setShowDatePicker(true); // Keep calendar open to select end date
-                                          setDatePickerMode('end'); // Switch to end date selection
-                                        } else {
-                                          // Normal start date selection
-                                          setDateRange({ 
-                                            from: selectedDate, 
-                                            to: endDate || selectedDate // Keep end date if it exists
-                                          });
-                                          setShowDatePicker(false);
-                                        }
-                                      } else {
-                                        // If we're selecting an end date
-                                        if (startDate && selectedDate < startDate) {
-                                          // If selected end date is before start date, swap them
-                                          setDateRange({ from: selectedDate, to: startDate });
-                                        } else {
-                                          // Normal end date selection
-                                          setDateRange({ 
-                                            from: startDate || selectedDate, // Keep start date if it exists
-                                            to: selectedDate 
-                                          });
-                                        }
-                                        setShowDatePicker(false);
-                                      }
-                                    }}
-                                  >
-                                    {day}
-                                  </div>
-                                </td>
-                              );
-                              
-                              // If we've reached the end of a week, start a new row
-                              if (days.length === 7) {
-                                rows.push(<tr key={`row-${rows.length}`}>{days}</tr>);
-                                days = [];
-                              }
-                            }
-                            
-                            // Next month days
-                            if (days.length > 0) {
-                              const remainingCells = 7 - days.length;
-                              for (let i = 1; i <= remainingCells; i++) {
-                                const nextDate = new Date(calendarYear, calendarMonth + 1, i);
-                                
-                                days.push(
-                                  <td key={`next-${i}`} className="outside-month">
-                                    <div 
-                                      className="calendar-day"
-                                      onClick={() => {
-                                        if (startDate && !endDate) {
-                                          // If selecting end date after start date
-                                          if (nextDate >= startDate) {
-                                            setDateRange({ from: startDate, to: nextDate });
-                                          } else {
-                                            // If end date is before start date, swap them
-                                            setDateRange({ from: nextDate, to: startDate });
-                                          }
-                                          setShowDatePicker(false);
-                                        } else {
-                                          // Start new selection
-                                          setDateRange({ from: nextDate, to: null });
-                                          // Don't close the picker yet, wait for the second date
-                                        }
-                                      }}
-                                    >
-                                      {i}
-                                    </div>
-                                  </td>
-                                );
-                              }
-                              rows.push(<tr key={`row-${rows.length}`}>{days}</tr>);
-                            }
-                            
-                            return rows;
-                          })()}
-                        </tbody>
-                      </table>
                     </div>
                     
-                    {/* Second month */}
-                    <div className="month-container">
-                      <div className="calendar-header">
-                        <div className="month-year-display">
-                          <span onClick={() => setShowMonthPicker(true)}>
-                            {format(new Date(calendarYear, calendarMonth + 1), 'MMM', { locale: es })}
-                          </span>{' '}
-                          <span onClick={() => setShowYearPicker(true)}>
-                            {calendarMonth === 11 ? calendarYear + 1 : calendarYear}
-                          </span>
-                        </div>
-                        <button className="nav-button" title="Mes siguiente" onClick={() => {
-                          const nextMonth = new Date(calendarYear, calendarMonth + 1);
-                          setCalendarMonth(nextMonth.getMonth());
-                          setCalendarYear(nextMonth.getFullYear());
-                        }}>›</button>
-                        <button className="nav-button" title="Año siguiente" onClick={() => setCalendarYear(calendarYear + 1)}>»</button>
-                      </div>
-                      
-                      <table className="calendar-table">
-                        <thead>
-                          <tr>
-                            <th>Lu</th>
-                            <th>Ma</th>
-                            <th>Mi</th>
-                            <th>Ju</th>
-                            <th>Vi</th>
-                            <th>Sa</th>
-                            <th>Do</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {(() => {
-                            // Get the next month
-                            const nextMonthDate = new Date(calendarYear, calendarMonth + 1);
-                            const nextMonthYear = nextMonthDate.getFullYear();
-                            const nextMonth = nextMonthDate.getMonth();
-                            
-                            const firstDayOfMonth = new Date(nextMonthYear, nextMonth, 1);
-                            const lastDayOfMonth = new Date(nextMonthYear, nextMonth + 1, 0);
-                            const daysInMonth = lastDayOfMonth.getDate();
-                            
-                            // Convert Sunday (0) to 6, and other days to day-1 (Monday = 0, Tuesday = 1, etc.)
-                            const getAdjustedDay = (date) => {
-                              const day = date.getDay();
-                              return day === 0 ? 6 : day - 1;
-                            };
-                            
-                            // Day of week of first day (0 = Monday, 1 = Tuesday, etc. with our adjustment)
-                            const firstDayWeekday = getAdjustedDay(firstDayOfMonth);
-                            const prevMonthLastDay = new Date(nextMonthYear, nextMonth, 0).getDate();
-                            
-                            // Current date (for highlighting today)
-                            const today = new Date();
-                            
-                            const rows = [];
-                            let days = [];
-                            
-                            // Previous month days
-                            for (let i = 0; i < firstDayWeekday; i++) {
-                              const prevDay = prevMonthLastDay - (firstDayWeekday - i - 1);
-                              const prevDate = new Date(nextMonthYear, nextMonth - 1, prevDay);
-                              
-                              days.push(
-                                <td key={`prev-${i}`} className="outside-month">
-                                  <div 
-                                    className="calendar-day"
-                                    onClick={() => {
-                                      if (startDate && !endDate) {
-                                        // If selecting end date after start date
-                                        if (prevDate >= startDate) {
-                                          setDateRange({ from: startDate, to: prevDate });
-                                        } else {
-                                          // If end date is before start date, swap them
-                                          setDateRange({ from: prevDate, to: startDate });
-                                        }
-                                        setShowDatePicker(false);
-                                      } else {
-                                        // Start new selection
-                                        setDateRange({ from: prevDate, to: null });
-                                        // Don't close the picker yet, wait for the second date
-                                      }
-                                    }}
-                                  >
-                                    {prevDay}
-                                  </div>
-                                </td>
-                              );
-                            }
-                            
-                            // Current month days
-                            for (let day = 1; day <= daysInMonth; day++) {
-                              const date = new Date(nextMonthYear, nextMonth, day);
-                              const isToday = day === today.getDate() && 
-                                            nextMonth === today.getMonth() && 
-                                            nextMonthYear === today.getFullYear();
-                              
-                              // Check if date is within the selected range
-                              const isInRange = dateRange?.from && dateRange?.to && 
-                                date >= startOfDay(dateRange.from) && 
-                                date <= endOfDay(dateRange.to);
-                              
-                              // Check if date is exactly the start or end date
-                              const isRangeStart = dateRange?.from && 
-                                day === dateRange.from.getDate() && 
-                                nextMonth === dateRange.from.getMonth() && 
-                                nextMonthYear === dateRange.from.getFullYear();
-                              
-                              const isRangeEnd = dateRange?.to && 
-                                day === dateRange.to.getDate() && 
-                                nextMonth === dateRange.to.getMonth() && 
-                                nextMonthYear === dateRange.to.getFullYear();
-                              
-                              let className = "calendar-day";
-                              if (isToday) className += " today";
-                              if (isRangeStart) className += " range-start selected";
-                              else if (isRangeEnd) className += " range-end selected";
-                              else if (isInRange) className += " range-middle";
-                              
-                              days.push(
-                                <td key={`day-${day}`}>
-                                  <div 
-                                    className={className}
-                                    onClick={() => {
-                                      const selectedDate = new Date(nextMonthYear, nextMonth, day);
-                                      
-                                      if (datePickerMode === 'start') {
-                                        // If we're selecting a start date
-                                        if (endDate && selectedDate > endDate) {
-                                          // If selected start date is after current end date, reset end date
-                                          setDateRange({ from: selectedDate, to: null });
-                                          setShowDatePicker(true); // Keep calendar open to select end date
-                                          setDatePickerMode('end'); // Switch to end date selection
-                                        } else {
-                                          // Normal start date selection
-                                          setDateRange({ 
-                                            from: selectedDate, 
-                                            to: endDate || selectedDate // Keep end date if it exists
-                                          });
-                                          setShowDatePicker(false);
-                                        }
-                                      } else {
-                                        // If we're selecting an end date
-                                        if (startDate && selectedDate < startDate) {
-                                          // If selected end date is before start date, swap them
-                                          setDateRange({ from: selectedDate, to: startDate });
-                                        } else {
-                                          // Normal end date selection
-                                          setDateRange({ 
-                                            from: startDate || selectedDate, // Keep start date if it exists
-                                            to: selectedDate 
-                                          });
-                                        }
-                                        setShowDatePicker(false);
-                                      }
-                                    }}
-                                  >
-                                    {day}
-                                  </div>
-                                </td>
-                              );
-                              
-                              // If we've reached the end of a week, start a new row
-                              if (days.length === 7) {
-                                rows.push(<tr key={`row-${rows.length}`}>{days}</tr>);
-                                days = [];
-                              }
-                            }
-                            
-                            // Next month days
-                            if (days.length > 0) {
-                              const remainingCells = 7 - days.length;
-                              for (let i = 1; i <= remainingCells; i++) {
-                                const nextNextDate = new Date(nextMonthYear, nextMonth + 1, i);
-                                
-                                days.push(
-                                  <td key={`next-${i}`} className="outside-month">
-                                    <div 
-                                      className="calendar-day"
-                                      onClick={() => {
-                                        if (startDate && !endDate) {
-                                          // If selecting end date after start date
-                                          if (nextNextDate >= startDate) {
-                                            setDateRange({ from: startDate, to: nextNextDate });
-                                          } else {
-                                            // If end date is before start date, swap them
-                                            setDateRange({ from: nextNextDate, to: startDate });
-                                          }
-                                          setShowDatePicker(false);
-                                        } else {
-                                          // Start new selection
-                                          setDateRange({ from: nextNextDate, to: null });
-                                          // Don't close the picker yet, wait for the second date
-                                        }
-                                      }}
-                                    >
-                                      {i}
-                                    </div>
-                                  </td>
-                                );
-                              }
-                              rows.push(<tr key={`row-${rows.length}`}>{days}</tr>);
-                            }
-                            
-                            return rows;
-                          })()}
-                        </tbody>
-                      </table>
+                    <div className="preset-buttons-wrapper">
+                      <button onClick={() => handleDatePreset('today')}>Hoy</button>
+                      <button onClick={() => handleDatePreset('thisWeek')}>Esta Semana</button>
+                      <button onClick={() => handleDatePreset('thisMonth')}>Este Mes</button>
                     </div>
                   </div>
                 )}
-                
-                <div className="calendar-footer">
-                  <div className="preset-buttons">
-                    <button onClick={() => handleDatePreset('today')}>Hoy</button>
-                    <button onClick={() => handleDatePreset('thisWeek')}>Esta semana</button>
-                    <button onClick={() => handleDatePreset('thisMonth')}>Este mes</button>
-                  </div>
-                </div>
               </div>
             )}
           </div>

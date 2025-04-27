@@ -258,3 +258,70 @@
     border-bottom: none;
   }
 }
+
+/* Calendar layout with separate section for buttons */
+.calendar-wrapper {
+  display: flex;
+}
+
+.calendar-container {
+  flex: 3;
+}
+
+.preset-buttons-wrapper {
+  flex: 1;
+  border-left: 1px solid #eee;
+  display: flex;
+  flex-direction: column;
+  padding-left: 10px;
+}
+
+.preset-buttons-wrapper button {
+  padding: 8px;
+  margin: 5px 0;
+  background: none;
+  border: none;
+  text-align: left;
+  font-size: 13px;
+  color: #0366d6;
+  cursor: pointer;
+}
+
+.preset-buttons-wrapper button:hover {
+  text-decoration: underline;
+}
+
+/* Month and Year selectors - compact grid style */
+.month-selector, .year-selector {
+  padding: 10px;
+  background: white;
+  width: 100%;
+  max-width: 250px;
+  margin: 0 auto;
+}
+
+.month-grid, .year-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-gap: 5px;
+}
+
+.month-grid button, .year-grid button {
+  padding: 8px;
+  background: #f7f7f7;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  text-align: center;
+  font-size: 13px;
+  color: #333;
+}
+
+.month-grid button:hover, .year-grid button:hover {
+  background: #efefef;
+}
+
+.month-grid button.selected, .year-grid button.selected {
+  background-color: #1976d2;
+  color: white;
+}
