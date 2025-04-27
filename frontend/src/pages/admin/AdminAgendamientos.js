@@ -33,23 +33,21 @@ const CalendarCaption = ({ displayMonth, displayYear, onMonthClick, onYearClick 
 };
 
 const MonthSelector = ({ currentMonth, currentYear, onSelect, onCancel }) => {
-  const months = Array.from({ length: 12 }, (_, i) => {
-    return {
-      month: i,
-      label: format(new Date(currentYear, i), 'MMM', { locale: es })
-    };
-  });
+  const monthNames = [
+    'ene', 'feb', 'mar', 'abr', 'may', 'jun',
+    'jul', 'ago', 'sep', 'oct', 'nov', 'dic'
+  ];
   
   return (
     <div className="month-selector">
       <div className="month-grid">
-        {months.map(({ month, label }) => (
+        {monthNames.map((name, idx) => (
           <button 
-            key={month}
-            onClick={() => onSelect(month)}
-            className={month === currentMonth ? 'selected' : ''}
+            key={idx}
+            onClick={() => onSelect(idx)}
+            className={idx === currentMonth ? 'selected' : ''}
           >
-            {label}
+            {name}
           </button>
         ))}
       </div>
@@ -59,8 +57,14 @@ const MonthSelector = ({ currentMonth, currentYear, onSelect, onCancel }) => {
 };
 
 const YearSelector = ({ currentYear, onSelect, onCancel }) => {
-  const startYear = currentYear - 5;
-  const years = Array.from({ length: 11 }, (_, i) => startYear + i);
+  // Calculate years to display in a 3x4 grid (start with current year - 2 in top-left)
+  const baseYear = currentYear - 2;
+  const years = [
+    2020, 2021, 2022,
+    2023, 2024, 2025,
+    2026, 2027, 2028,
+    2029, 2030
+  ];
   
   return (
     <div className="year-selector">
@@ -446,13 +450,13 @@ const CitasAgendadas = () => {
                     <table className="calendar-table">
                       <thead>
                         <tr>
-                          <th>Do</th>
                           <th>Lu</th>
                           <th>Ma</th>
                           <th>Mi</th>
                           <th>Ju</th>
                           <th>Vi</th>
                           <th>Sa</th>
+                          <th>Do</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -461,8 +465,14 @@ const CitasAgendadas = () => {
                           const lastDayOfMonth = new Date(calendarYear, calendarMonth + 1, 0);
                           const daysInMonth = lastDayOfMonth.getDate();
                           
-                          // Day of week of first day (0 = Sunday, 1 = Monday, etc.)
-                          const firstDayWeekday = firstDayOfMonth.getDay();
+                          // Convert Sunday (0) to 6, and other days to day-1 (Monday = 0, Tuesday = 1, etc.)
+                          const getAdjustedDay = (date) => {
+                            const day = date.getDay();
+                            return day === 0 ? 6 : day - 1;
+                          };
+                          
+                          // Day of week of first day (0 = Monday, 1 = Tuesday, etc. with our adjustment)
+                          const firstDayWeekday = getAdjustedDay(firstDayOfMonth);
                           const prevMonthLastDay = new Date(calendarYear, calendarMonth, 0).getDate();
                           
                           // Current date (for highlighting today)
@@ -488,7 +498,7 @@ const CitasAgendadas = () => {
                                            calendarMonth === today.getMonth() && 
                                            calendarYear === today.getFullYear();
                             
-                            const isSelected = day === 27; // Hardcoded to match image - April 27
+                            const isSelected = day === 27 && calendarMonth === 3 && calendarYear === 2025; // April 27, 2025
                             
                             days.push(
                               <td key={`day-${day}`}>
@@ -506,15 +516,16 @@ const CitasAgendadas = () => {
                             );
                             
                             // If we've reached the end of a week, start a new row
-                            if ((firstDayWeekday + day) % 7 === 0) {
+                            // With Monday as first day, we need to check if we have 7 days
+                            if (days.length === 7) {
                               rows.push(<tr key={`row-${rows.length}`}>{days}</tr>);
                               days = [];
                             }
                           }
                           
                           // Next month days
-                          const remainingCells = 7 - days.length;
-                          if (remainingCells < 7) {
+                          if (days.length > 0) {
+                            const remainingCells = 7 - days.length;
                             for (let i = 1; i <= remainingCells; i++) {
                               days.push(
                                 <td key={`next-${i}`} className="outside-month">
