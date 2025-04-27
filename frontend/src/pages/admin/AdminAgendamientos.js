@@ -4,10 +4,81 @@ import { useSearchParams } from "react-router-dom";
 import "./CitasAgendadas.css";
 import { DayPicker } from "react-day-picker";
 import "react-day-picker/dist/style.css";
-import { startOfWeek, endOfWeek, format, startOfDay, endOfDay } from "date-fns";
+import { 
+  startOfWeek, endOfWeek, format, startOfDay, endOfDay,
+  startOfToday, endOfToday, startOfMonth, endOfMonth,
+  addMonths, addYears, getYear, setMonth, setYear
+} from "date-fns";
 import { es } from "date-fns/locale";
 
 const TODOS_LOS_ESTADOS = ["pendiente", "confirmada", "cancelada"];
+
+const CalendarCaption = ({ displayMonth, displayYear, onMonthClick, onYearClick }) => {
+  return (
+    <div className="rdp-caption">
+      <div className="rdp-caption_label">
+        <span onClick={onMonthClick} style={{ cursor: 'pointer' }}>
+          {format(new Date(displayYear, displayMonth), 'MMMM', { locale: es })}
+        </span>
+        {' '}
+        <span onClick={onYearClick} style={{ cursor: 'pointer' }}>
+          {displayYear}
+        </span>
+      </div>
+      <div className="rdp-nav">
+        {/* Navigation buttons are handled by DayPicker */}
+      </div>
+    </div>
+  );
+};
+
+const MonthSelector = ({ currentMonth, currentYear, onSelect, onCancel }) => {
+  const months = Array.from({ length: 12 }, (_, i) => {
+    return {
+      month: i,
+      label: format(new Date(currentYear, i), 'MMM', { locale: es })
+    };
+  });
+  
+  return (
+    <div className="month-selector">
+      <div className="month-grid">
+        {months.map(({ month, label }) => (
+          <button 
+            key={month}
+            onClick={() => onSelect(month)}
+            className={month === currentMonth ? 'selected' : ''}
+          >
+            {label}
+          </button>
+        ))}
+      </div>
+      <button onClick={onCancel} className="close-btn">Cancelar</button>
+    </div>
+  );
+};
+
+const YearSelector = ({ currentYear, onSelect, onCancel }) => {
+  const startYear = currentYear - 5;
+  const years = Array.from({ length: 11 }, (_, i) => startYear + i);
+  
+  return (
+    <div className="year-selector">
+      <div className="year-grid">
+        {years.map((year) => (
+          <button 
+            key={year}
+            onClick={() => onSelect(year)}
+            className={year === currentYear ? 'selected' : ''}
+          >
+            {year}
+          </button>
+        ))}
+      </div>
+      <button onClick={onCancel} className="close-btn">Cancelar</button>
+    </div>
+  );
+};
 
 const CitasAgendadas = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -23,9 +94,13 @@ const CitasAgendadas = () => {
     from: desde ? new Date(desde) : startOfWeek(new Date()),
     to: hasta ? new Date(hasta) : endOfWeek(new Date())
   });
-  const startDate = dateRange?.from;
-  const endDate = dateRange?.to;
+  const [startDate, setStartDate] = useState(dateRange?.from);
+  const [endDate, setEndDate] = useState(dateRange?.to);
   const [showDatePicker, setShowDatePicker] = useState(false); // Toggle for DayPicker visibility
+  const [showMonthPicker, setShowMonthPicker] = useState(false);
+  const [showYearPicker, setShowYearPicker] = useState(false);
+  const [calendarMonth, setCalendarMonth] = useState(new Date().getMonth());
+  const [calendarYear, setCalendarYear] = useState(new Date().getFullYear());
 
   const [mostrarHistorial, setMostrarHistorial] = useState(false);
   const [historial, setHistorial] = useState([]);
@@ -114,6 +189,29 @@ const CitasAgendadas = () => {
 
   const toggleDatePicker = () => setShowDatePicker(!showDatePicker);
 
+  // Handle preset date ranges
+  const handleDatePreset = (preset) => {
+    const today = new Date();
+    let newRange;
+    
+    switch(preset) {
+      case 'today':
+        newRange = { from: startOfToday(), to: endOfToday() };
+        break;
+      case 'thisWeek':
+        newRange = { from: startOfWeek(today), to: endOfWeek(today) };
+        break;
+      case 'thisMonth':
+        newRange = { from: startOfMonth(today), to: endOfMonth(today) };
+        break;
+      default:
+        return;
+    }
+    
+    setDateRange(newRange);
+    setShowDatePicker(false);
+  };
+
   // Update dateRange and URL params when dates are selected
   useEffect(() => {
     if (startDate && endDate) {
@@ -189,12 +287,56 @@ const CitasAgendadas = () => {
             </button>
             {showDatePicker && (
               <div className="date-picker-dropdown">
-                <DayPicker
-                  mode="range"
-                  selected={dateRange}
-                  onSelect={setDateRange}
-                  locale={es}
-                />
+                {showMonthPicker ? (
+                  <MonthSelector
+                    currentMonth={calendarMonth}
+                    currentYear={calendarYear}
+                    onSelect={(month) => {
+                      setCalendarMonth(month);
+                      setShowMonthPicker(false);
+                    }}
+                    onCancel={() => setShowMonthPicker(false)}
+                  />
+                ) : showYearPicker ? (
+                  <YearSelector
+                    currentYear={calendarYear}
+                    onSelect={(year) => {
+                      setCalendarYear(year);
+                      setShowYearPicker(false);
+                    }}
+                    onCancel={() => setShowYearPicker(false)}
+                  />
+                ) : (
+                  <>
+                    <DayPicker
+                      mode="range"
+                      selected={dateRange}
+                      onSelect={setDateRange}
+                      locale={es}
+                      month={new Date(calendarYear, calendarMonth)}
+                      captionLayout="buttons"
+                      onMonthChange={(newMonth) => {
+                        setCalendarMonth(newMonth.getMonth());
+                        setCalendarYear(newMonth.getFullYear());
+                      }}
+                      components={{
+                        Caption: (props) => (
+                          <CalendarCaption
+                            displayMonth={calendarMonth}
+                            displayYear={calendarYear}
+                            onMonthClick={() => setShowMonthPicker(true)}
+                            onYearClick={() => setShowYearPicker(true)}
+                          />
+                        )
+                      }}
+                    />
+                    <div className="preset-buttons">
+                      <button onClick={() => handleDatePreset('today')}>Hoy</button>
+                      <button onClick={() => handleDatePreset('thisWeek')}>Esta semana</button>
+                      <button onClick={() => handleDatePreset('thisMonth')}>Este mes</button>
+                    </div>
+                  </>
+                )}
               </div>
             )}
           </div>
