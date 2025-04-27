@@ -16,8 +16,12 @@ const CitasAgendadas = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [profesionales, setProfesionales] = useState([]);
   const [filtroProfesional, setFiltroProfesional] = useState("todos");
-  const [dateRange, setDateRange] = useState([startOfWeek(new Date()), endOfWeek(new Date())]);
-  const [startDate, endDate] = dateRange;
+  const [dateRange, setDateRange] = useState({
+    from: startOfWeek(new Date()),
+    to: endOfWeek(new Date())
+  });
+  const startDate = dateRange?.from;
+  const endDate = dateRange?.to;
   const [showDatePicker, setShowDatePicker] = useState(false); // Toggle for DayPicker visibility
 
   const [mostrarHistorial, setMostrarHistorial] = useState(false);
