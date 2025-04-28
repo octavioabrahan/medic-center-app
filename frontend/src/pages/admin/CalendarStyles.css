@@ -1146,6 +1146,7 @@
 .admin-calendar-wrapper.enhanced {
   min-width: 700px;
   padding: 16px;
+  display: none; /* Hides the duplicate white box */
 }
 
 /* Calendar Table Styles - Fixing spacing */
