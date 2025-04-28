@@ -34,14 +34,15 @@ const CalendarCaption = ({ displayMonth, displayYear, onMonthClick, onYearClick 
 
 const MonthSelector = ({ currentMonth, currentYear, onSelect, onCancel }) => {
   const monthNames = [
-    'ene', 'feb', 'mar', 
-    'abr', 'may', 'jun',
-    'jul', 'ago', 'sep',
-    'oct', 'nov', 'dic'
+    'Enero', 'Febrero', 'Marzo', 
+    'Abril', 'Mayo', 'Junio',
+    'Julio', 'Agosto', 'Septiembre',
+    'Octubre', 'Noviembre', 'Diciembre'
   ];
   
   return (
     <div className="month-selector">
+      <h4>Seleccione mes</h4>
       <div className="month-grid">
         {monthNames.map((name, idx) => (
           <button 
@@ -433,7 +434,6 @@ const CitasAgendadas = () => {
                 {endDate ? format(endDate, "dd/MM/yyyy") : "Fecha final"}
               </button>
             </div>
-            {showDatePicker && (
               <div className="date-picker-dropdown enhanced">
                 {showMonthPicker ? (
                   <MonthSelector
