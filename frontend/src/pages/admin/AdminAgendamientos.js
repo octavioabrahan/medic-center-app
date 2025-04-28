@@ -34,10 +34,10 @@ const CalendarCaption = ({ displayMonth, displayYear, onMonthClick, onYearClick 
 
 const MonthSelector = ({ currentMonth, currentYear, onSelect, onCancel }) => {
   const monthNames = [
-    'Enero', 'Febrero', 'Marzo', 
-    'Abril', 'Mayo', 'Junio',
-    'Julio', 'Agosto', 'Septiembre',
-    'Octubre', 'Noviembre', 'Diciembre'
+    'Ene', 'Feb', 'Mar', 
+    'Abr', 'May', 'Jun',
+    'Jul', 'Ago', 'Sep',
+    'Oct', 'Nov', 'Dic'
   ];
   
   return (
@@ -420,7 +420,7 @@ const CitasAgendadas = () => {
                 }}
               >
                 <span className="calendar-icon">📅</span>
-                {startDate ? format(startDate, "dd/MM/yyyy") : "Fecha inicial"}
+                {startDate ? format(startDate, "dd/MM/yy") : "Inicio"}
               </button>
               <span className="date-separator">—</span>
               <button 
@@ -431,7 +431,7 @@ const CitasAgendadas = () => {
                 }}
               >
                 <span className="calendar-icon">📅</span>
-                {endDate ? format(endDate, "dd/MM/yyyy") : "Fecha final"}
+                {endDate ? format(endDate, "dd/MM/yy") : "Fin"}
               </button>
             </div>
             {showDatePicker && (

@@ -2,7 +2,7 @@
 
 /* General styles */
 .citas-container {
-  padding: 24px;
+  padding: 16px;
   font-family: 'Inter', 'Segoe UI', sans-serif;
   max-width: 1400px;
   margin: 0 auto;
@@ -10,10 +10,10 @@
 
 .page-title {
   color: #20377A;
-  font-size: 24px;
+  font-size: 18px;
   font-weight: 600;
-  margin-bottom: 24px;
-  padding-bottom: 12px;
+  margin-bottom: 16px;
+  padding-bottom: 8px;
   border-bottom: 1px solid #E5E7EB;
 }
 
@@ -22,11 +22,11 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 24px;
+  margin-bottom: 16px;
   flex-wrap: wrap;
-  gap: 16px;
+  gap: 12px;
   background-color: #f9fafb;
-  padding: 16px;
+  padding: 12px;
   border-radius: 8px;
 }
 
@@ -36,9 +36,9 @@
   gap: 8px;
   border: 1px solid #E5E7EB;
   border-radius: 500px;
-  padding: 8px 16px;
+  padding: 6px 12px;
   background-color: white;
-  width: 300px;
+  width: 280px;
   flex-shrink: 0;
 }
 
@@ -46,7 +46,7 @@
   border: none;
   outline: none;
   width: 100%;
-  font-size: 14px;
+  font-size: 13px;
 }
 
 .search-button {
@@ -66,17 +66,17 @@
 .filter-group {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 12px;
   flex-wrap: wrap;
 }
 
 .filter-select {
-  padding: 8px 16px;
+  padding: 6px 12px;
   border: 1px solid #E5E7EB;
   border-radius: 6px;
   background-color: white;
-  font-size: 14px;
-  min-width: 180px;
+  font-size: 13px;
+  min-width: 160px;
   cursor: pointer;
 }
 
@@ -88,24 +88,24 @@
 .date-range-inputs {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
 }
 
 .date-picker-input {
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 8px 16px;
+  gap: 6px;
+  padding: 6px 12px;
   background-color: white;
   border: 1px solid #E5E7EB;
   border-radius: 6px;
   cursor: pointer;
-  font-size: 14px;
-  min-width: 130px;
+  font-size: 13px;
+  min-width: 120px;
 }
 
 .date-separator {
-  font-size: 16px;
+  font-size: 14px;
   color: #6B7280;
 }
 
