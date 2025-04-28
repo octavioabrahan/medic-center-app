@@ -456,7 +456,7 @@ const CitasAgendadas = () => {
                     onCancel={() => setShowYearPicker(false)}
                   />
                 ) : (
-                  <div className="calendar-wrapper enhanced">
+                  <div className="admin-calendar-wrapper enhanced">
                     <div className="date-presets">
                       <button 
                         onClick={() => handleDatePreset('today')}
