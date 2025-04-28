@@ -111,23 +111,24 @@
 }
 
 .calendar-table td {
+  padding: 0; /* Remove padding completely to reduce spacing */
   text-align: center;
-  padding: 1px;
   height: 26px;
   width: 14.28%;
   box-sizing: border-box;
   vertical-align: middle;
+  cursor: pointer;
 }
 
 .calendar-day {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 36px;
-  height: 36px;
+  width: 28px; /* Reduce width to make days closer together */
+  height: 28px; /* Reduce height to match width */
   margin: 2px auto;
   cursor: pointer;
-  font-size: 14px;
+  font-size: 13px;
   border-radius: 50%;
   transition: all 0.2s ease;
   position: relative;
@@ -732,9 +733,10 @@
 }
 
 .calendar-table td {
-  padding: 1px;
+  padding: 0; /* Remove padding completely to reduce spacing */
   text-align: center;
   vertical-align: middle;
+  cursor: pointer;
 }
 
 .calendar-day {
@@ -1150,19 +1152,19 @@
 }
 
 .calendar-table td {
-  padding: 2px; /* Reduced padding to fix excessive spacing */
+  padding: 0; /* Remove padding completely to reduce spacing */
   cursor: pointer;
 }
 
 .calendar-day {
-  width: 34px; /* Fixed width for consistency */
-  height: 34px; /* Fixed height for consistency */
+  width: 28px; /* Reduce width to make days closer together */
+  height: 28px; /* Reduce height to match width */
   display: flex;
   align-items: center;
   justify-content: center;
   margin: 0 auto;
   border-radius: 50%;
-  font-size: 14px;
+  font-size: 13px;
   transition: background-color 0.2s;
 }
 
@@ -1173,11 +1175,17 @@
 /* Month and Year Selectors - Fixing sizing and centering */
 .month-selector,
 .year-selector {
-  width: 100%;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 280px; /* Set a fixed width */
   padding: 16px;
   background: white;
   border-radius: 8px;
   text-align: center;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  z-index: 1010;
 }
 
 .month-selector h4 {
@@ -1229,6 +1237,12 @@
   display: block;
   margin: 0 auto;
   font-weight: 500;
+  width: 100%; /* Make button full width */
+  margin-top: 12px;
+  position: relative;
+  bottom: 0;
+  left: 0;
+  text-align: center;
 }
 
 .close-btn:hover {
