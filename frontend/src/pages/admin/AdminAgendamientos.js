@@ -434,6 +434,7 @@ const CitasAgendadas = () => {
                 {endDate ? format(endDate, "dd/MM/yyyy") : "Fecha final"}
               </button>
             </div>
+            {showDatePicker && (
               <div className="date-picker-dropdown enhanced">
                 {showMonthPicker ? (
                   <MonthSelector
