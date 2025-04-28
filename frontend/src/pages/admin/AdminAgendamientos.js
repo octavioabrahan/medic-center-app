@@ -457,6 +457,26 @@ const CitasAgendadas = () => {
                   />
                 ) : (
                   <div className="calendar-wrapper enhanced">
+                    <div className="date-presets">
+                      <button 
+                        onClick={() => handleDatePreset('today')}
+                        className="preset-button"
+                      >
+                        Hoy
+                      </button>
+                      <button 
+                        onClick={() => handleDatePreset('thisWeek')}
+                        className="preset-button"
+                      >
+                        Esta Semana
+                      </button>
+                      <button 
+                        onClick={() => handleDatePreset('thisMonth')}
+                        className="preset-button"
+                      >
+                        Este Mes
+                      </button>
+                    </div>
                     <div className="calendar-container">
                       <div className="calendar-header-row">
                         <h4 className="calendar-selection-title">
@@ -879,27 +899,6 @@ const CitasAgendadas = () => {
                           </table>
                         </div>
                       </div>
-                    </div>
-                    
-                    <div className="date-presets">
-                      <button 
-                        onClick={() => handleDatePreset('today')}
-                        className="preset-button"
-                      >
-                        Hoy
-                      </button>
-                      <button 
-                        onClick={() => handleDatePreset('thisWeek')}
-                        className="preset-button"
-                      >
-                        Esta Semana
-                      </button>
-                      <button 
-                        onClick={() => handleDatePreset('thisMonth')}
-                        className="preset-button"
-                      >
-                        Este Mes
-                      </button>
                     </div>
                   </div>
                 )}

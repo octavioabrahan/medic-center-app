@@ -625,7 +625,7 @@
 .calendar-wrapper.enhanced {
   padding: 10px;
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   gap: 8px;
 }
 
@@ -652,7 +652,7 @@
 .two-month-container {
   display: flex;
   gap: 16px;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
 }
 
 .month-container {
@@ -946,7 +946,7 @@
 .date-range-inputs {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
 }
 
 .date-picker-input {
@@ -998,8 +998,9 @@
   flex-direction: column;
   gap: 4px;
   padding: 10px;
-  border-left: 1px solid #eaeaea;
+  border-right: 1px solid #eaeaea;
   min-width: 100px;
+  margin-right: 10px;
 }
 
 .preset-button {
@@ -1020,20 +1021,26 @@
 
 /* Responsiveness */
 @media (max-width: 1024px) {
+  .calendar-wrapper.enhanced {
+    flex-direction: column;
+  }
+  
   .two-month-container {
     flex-direction: column;
+  }
+  
+  .date-presets {
+    flex-direction: row;
+    border-right: none;
+    border-bottom: 1px solid #eaeaea;
+    margin-right: 0;
+    margin-bottom: 10px;
   }
   
   .date-picker-dropdown {
     width: 320px;
     left: 50%;
     transform: translateX(-50%);
-  }
-  
-  .date-presets {
-    flex-direction: row;
-    border-left: none;
-    border-top: 1px solid #eaeaea;
   }
 }
 
