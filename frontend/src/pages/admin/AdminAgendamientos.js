@@ -478,11 +478,6 @@ const CitasAgendadas = () => {
                       </button>
                     </div>
                     <div className="calendar-container">
-                      <div className="calendar-header-row">
-                        <h4 className="calendar-selection-title">
-                          {datePickerMode === 'start' ? 'Seleccione fecha inicial' : 'Seleccione fecha final'}
-                        </h4>
-                      </div>
                       <div className="two-month-container">
                         {/* First month */}
                         <div className="month-container">

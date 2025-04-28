@@ -36,6 +36,8 @@
   min-width: 240px;
   max-width: 300px;
   background-color: #fff;
+  position: relative;
+  border-radius: 4px;
 }
 
 .month-container:last-child {
@@ -317,6 +319,7 @@
   font-family: 'Inter', 'Segoe UI', sans-serif;
   width: 100%;
   max-width: 100%;
+  overflow: hidden; /* Prevent elements from overflowing */
 }
 
 .calendar-wrapper.enhanced {
@@ -386,6 +389,16 @@
   gap: 8px;
   border: 1px solid #e0e0e0;
   border-radius: 8px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  z-index: 20;
+  padding: 16px;
+  text-align: center;
 }
 
 .month-grid, .year-grid {
@@ -624,6 +637,7 @@
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   font-family: 'Inter', 'Segoe UI', sans-serif;
   width: 100%;
+  overflow: hidden; /* Prevent elements from overflowing */
 }
 
 .calendar-wrapper.enhanced {
@@ -659,11 +673,14 @@
   flex-wrap: nowrap;
 }
 
+/* Month container - ensure clean appearance */
 .month-container {
   flex: 1;
   min-width: 240px;
   max-width: 300px;
   background-color: #fff;
+  position: relative;
+  border-radius: 4px;
 }
 
 /* Month/Year Header */
@@ -784,40 +801,53 @@
   color: #bbb;
 }
 
-/* Month/Year Selectors */
+/* Month/Year Selectors - Fixed styling */
 .month-selector, .year-selector {
-  max-width: 450px;
-  padding: 12px;
-  border: 1px solid #e0e0e0;
-  border-radius: 8px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
   background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  z-index: 20;
+  padding: 16px;
+  text-align: center;
 }
 
+/* Month selector - make it look like the design in image 3 */
 .month-selector h4, .year-selector h4 {
   margin-top: 0;
-  margin-bottom: 8px;
-  font-size: 14px;
+  margin-bottom: 12px;
+  font-size: 16px;
+  text-align: center;
+  font-weight: 500;
+  color: #404040;
 }
 
 .month-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 6px;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin-bottom: 12px;
 }
 
 .year-grid {
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: 6px;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  margin-bottom: 12px;
+  max-height: 200px;
+  overflow-y: auto;
 }
 
 .month-selector button, .year-selector button {
-  padding: 6px 4px;
+  padding: 8px;
   background-color: #fff;
   border: 1px solid #e0e0e0;
   border-radius: 4px;
   cursor: pointer;
-  font-size: 13px;
+  font-size: 14px;
   transition: all 0.2s ease;
 }
 
@@ -855,91 +885,6 @@
   border-radius: 8px;
   padding: 10px;
   background-color: white;
-}
-
-.custom-calendar .calendar-header {
-  margin-bottom: 8px;
-  padding: 0;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.custom-calendar .month-year {
-  font-size: 14px;
-  font-weight: 500;
-}
-
-.custom-calendar .navigation-buttons {
-  display: flex;
-  gap: 4px;
-}
-
-.custom-calendar .nav-button {
-  width: 22px;
-  height: 22px;
-  font-size: 12px;
-}
-
-.custom-calendar .weekday-header {
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  gap: 1px;
-  margin-bottom: 4px;
-}
-
-.custom-calendar .weekday-cell {
-  text-align: center;
-  font-size: 12px;
-  font-weight: 500;
-  color: #666;
-  padding: 2px 0;
-}
-
-.custom-calendar .calendar-days {
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  gap: 1px;
-}
-
-.custom-calendar .day-cell {
-  aspect-ratio: 1/1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  border-radius: 4px;
-  transition: all 0.2s ease;
-  position: relative;
-}
-
-.custom-calendar .day-cell:hover {
-  background-color: #f0f0f0;
-}
-
-.custom-calendar .day-cell.selected {
-  background-color: #20377A;
-  color: white;
-}
-
-.custom-calendar .day-cell.today {
-  border: 1px solid #20377A;
-}
-
-.custom-calendar .day-cell.outside-month {
-  color: #bbb;
-}
-
-.custom-calendar .day-number {
-  font-size: 12px;
-  font-weight: 500;
-}
-
-.custom-calendar .day-name {
-  font-size: 9px;
-  margin-top: 1px;
-  color: #666;
 }
 
 /* Date Picker Updates */
@@ -990,12 +935,8 @@
   border-radius: 8px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   z-index: 100;
-  width: auto; /* Let it size based on content instead of fixed width */
-}
-
-.date-picker-dropdown.enhanced {
+  width: auto;
   max-width: 600px;
-  width: max-content;
 }
 
 .date-presets {
