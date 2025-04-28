@@ -435,7 +435,7 @@ const CitasAgendadas = () => {
               </button>
             </div>
             {showDatePicker && (
-              <div className="date-picker-dropdown enhanced">
+              <div className="admin-calendar-wrapper enhanced">
                 {showMonthPicker ? (
                   <MonthSelector
                     currentMonth={calendarMonth}
