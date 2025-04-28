@@ -1117,3 +1117,238 @@
     margin-bottom: 10px;
   }
 }
+
+/* Base Calendar Styles */
+.admin-calendar-wrapper {
+  position: absolute;
+  z-index: 1000;
+  background-color: white;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  width: 100%;
+  max-width: 600px;
+}
+
+.admin-calendar-wrapper.enhanced {
+  min-width: 590px;
+  padding: 16px;
+}
+
+/* Calendar Table Styles - Fixing spacing */
+.calendar-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: center;
+}
+
+.calendar-table th {
+  font-weight: 600;
+  padding: 8px 0;
+  color: #555;
+  font-size: 14px;
+}
+
+.calendar-table td {
+  padding: 2px; /* Reduced padding to fix excessive spacing */
+  cursor: pointer;
+}
+
+.calendar-day {
+  width: 34px; /* Fixed width for consistency */
+  height: 34px; /* Fixed height for consistency */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto;
+  border-radius: 50%;
+  font-size: 14px;
+  transition: background-color 0.2s;
+}
+
+.calendar-day:hover {
+  background-color: #f0f0f0;
+}
+
+/* Month and Year Selectors - Fixing sizing and centering */
+.month-selector,
+.year-selector {
+  width: 100%;
+  padding: 16px;
+  background: white;
+  border-radius: 8px;
+  text-align: center;
+}
+
+.month-selector h4 {
+  margin-top: 0;
+  margin-bottom: 16px;
+}
+
+.month-grid,
+.year-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr); /* 4 columns for months */
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.year-grid {
+  grid-template-columns: repeat(3, 1fr); /* 3 columns for years */
+}
+
+.month-selector button,
+.year-selector button {
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  background: white;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 14px;
+}
+
+.month-selector button:hover,
+.year-selector button:hover {
+  background: #f5f5f5;
+}
+
+.month-selector button.selected,
+.year-selector button.selected {
+  background: #1976d2;
+  color: white;
+  font-weight: 600;
+}
+
+.close-btn {
+  padding: 8px 16px;
+  border: none;
+  background: #f0f0f0;
+  border-radius: 4px;
+  cursor: pointer;
+  display: block;
+  margin: 0 auto;
+  font-weight: 500;
+}
+
+.close-btn:hover {
+  background: #e0e0e0;
+}
+
+/* Calendar Header */
+.calendar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+  margin-bottom: 8px;
+}
+
+.month-year-display {
+  font-weight: 600;
+  font-size: 16px;
+  text-transform: capitalize;
+}
+
+.month-label,
+.year-label {
+  cursor: pointer;
+}
+
+.month-label:hover,
+.year-label:hover {
+  color: #1976d2;
+}
+
+.nav-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  padding: 4px 8px;
+  border-radius: 4px;
+}
+
+.nav-button:hover {
+  background: #f0f0f0;
+}
+
+/* Selected range styling */
+.calendar-day.selected {
+  background-color: #1976d2;
+  color: white;
+}
+
+.calendar-day.today {
+  border: 2px solid #1976d2;
+  font-weight: bold;
+}
+
+.calendar-day.range-middle {
+  background-color: rgba(25, 118, 210, 0.2);
+}
+
+.calendar-day.range-start {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.calendar-day.range-end {
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+}
+
+.outside-month {
+  color: #bbb;
+}
+
+/* Dual month display */
+.two-month-container {
+  display: flex;
+  gap: 16px;
+}
+
+.month-container {
+  flex: 1;
+}
+
+/* Date preset buttons */
+.date-presets {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+  justify-content: center;
+}
+
+.preset-button {
+  background: #f9f9f9;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 6px 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.preset-button:hover {
+  background: #f0f0f0;
+}
+
+.calendar-selection-title {
+  margin: 0 0 10px 0;
+  text-align: center;
+  font-weight: 500;
+  color: #333;
+}
+
+/* Fix for month/year selector panel centering and sizing */
+.admin-calendar-wrapper .month-selector,
+.admin-calendar-wrapper .year-selector {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  min-width: 320px;
+  max-width: 400px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  z-index: 1010;
+}
