@@ -788,11 +788,18 @@
 
 /* Month/Year Selectors */
 .month-selector, .year-selector {
-  max-width: 450px;
-  padding: 12px;
-  border: 1px solid #e0e0e0;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 320px;
+  padding: 16px;
+  background: white;
   border-radius: 8px;
-  background-color: white;
+  text-align: center;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  z-index: 1010;
+  display: block; /* Change from grid to block */
 }
 
 .month-selector h4, .year-selector h4 {
@@ -803,14 +810,16 @@
 
 .month-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 6px;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin-bottom: 16px;
 }
 
 .year-grid {
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: 6px;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin-bottom: 16px;
 }
 
 .month-selector button, .year-selector button {
@@ -834,16 +843,18 @@
   border-color: #20377A;
 }
 
-.close-btn {
-  padding: 6px 12px;
-  background-color: #f0f0f0;
+.month-selector .close-btn, .year-selector .close-btn {
+  padding: 8px 16px;
   border: none;
+  background: #f0f0f0;
   border-radius: 4px;
   cursor: pointer;
-  margin-top: 10px;
-  font-size: 13px;
+  display: block;
+  width: 100%;
+  margin-top: 16px;
+  position: relative;
+  font-size: 14px;
   text-align: center;
-  transition: background-color 0.2s;
 }
 
 .close-btn:hover {
@@ -1175,17 +1186,18 @@
 /* Month and Year Selectors - Fixing sizing and centering */
 .month-selector,
 .year-selector {
-  position: absolute;
+  position: fixed;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 280px; /* Set a fixed width */
+  width: 320px;
   padding: 16px;
   background: white;
   border-radius: 8px;
   text-align: center;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   z-index: 1010;
+  display: block; /* Change from grid to block */
 }
 
 .month-selector h4 {
@@ -1196,13 +1208,9 @@
 .month-grid,
 .year-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr); /* 4 columns for months */
+  grid-template-columns: repeat(3, 1fr); /* 3 columns for months/years */
   gap: 8px;
   margin-bottom: 16px;
-}
-
-.year-grid {
-  grid-template-columns: repeat(3, 1fr); /* 3 columns for years */
 }
 
 .month-selector button,
@@ -1228,20 +1236,18 @@
   font-weight: 600;
 }
 
-.close-btn {
+.month-selector .close-btn,
+.year-selector .close-btn {
   padding: 8px 16px;
   border: none;
   background: #f0f0f0;
   border-radius: 4px;
   cursor: pointer;
   display: block;
-  margin: 0 auto;
-  font-weight: 500;
-  width: 100%; /* Make button full width */
-  margin-top: 12px;
+  width: 100%;
+  margin-top: 16px;
   position: relative;
-  bottom: 0;
-  left: 0;
+  font-size: 14px;
   text-align: center;
 }
 
