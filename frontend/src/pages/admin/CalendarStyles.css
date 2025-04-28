@@ -3,7 +3,7 @@
   position: absolute;
   top: 100%;
   left: 0;
-  margin-top: 8px;
+  margin-top: 4px;
   border-radius: 8px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   background: white;
@@ -12,10 +12,11 @@
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
   font-size: 14px;
   min-width: 650px;
+  width: auto; /* Let it size based on content instead of fixed width */
 }
 
 .date-picker-dropdown.enhanced {
-  max-width: 800px;
+  max-width: 600px;
   width: max-content;
 }
 
@@ -23,8 +24,8 @@
 .two-month-container {
   display: flex;
   width: 100%;
-  gap: 24px;
-  flex-wrap: wrap;
+  gap: 16px;
+  flex-wrap: nowrap;
 }
 
 /* Each month takes half the space */
@@ -32,7 +33,9 @@
   flex: 1;
   border-right: 1px solid #eee;
   padding: 2px;
-  min-width: 280px;
+  min-width: 240px;
+  max-width: 300px;
+  background-color: #fff;
 }
 
 .month-container:last-child {
@@ -92,16 +95,16 @@
 .calendar-table {
   width: 100%;
   border-collapse: separate;
-  border-spacing: 2px;
+  border-spacing: 1px;
   table-layout: fixed;
 }
 
 .calendar-table th {
-  padding: 8px 4px;
+  padding: 2px;
   text-align: center;
   font-weight: 500;
   color: #666;
-  font-size: 14px;
+  font-size: 12px;
   border-bottom: 1px solid #eee;
   width: 14.28%;
   box-sizing: border-box;
@@ -109,7 +112,7 @@
 
 .calendar-table td {
   text-align: center;
-  padding: 0;
+  padding: 1px;
   height: 26px;
   width: 14.28%;
   box-sizing: border-box;
@@ -317,10 +320,10 @@
 }
 
 .calendar-wrapper.enhanced {
-  padding: 16px;
+  padding: 10px;
   display: flex;
-  flex-direction: column;
-  gap: 16px;
+  flex-direction: row;
+  gap: 8px;
 }
 
 .calendar-container {
@@ -332,14 +335,14 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 16px;
-  padding-bottom: 8px;
+  margin-bottom: 8px;
+  padding-bottom: 4px;
   border-bottom: 1px solid #eaeaea;
 }
 
 .calendar-selection-title {
   margin: 0;
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 500;
   color: #404040;
 }
@@ -553,10 +556,11 @@
 .date-presets {
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  padding: 16px;
-  border-left: 1px solid #eaeaea;
-  min-width: 120px;
+  gap: 4px;
+  padding: 10px;
+  border-right: 1px solid #eaeaea;
+  min-width: 100px;
+  margin-right: 10px;
 }
 
 .preset-button {
@@ -589,7 +593,7 @@
   
   .date-presets {
     flex-direction: row;
-    border-left: none;
+    border-right: none;
     border-top: 1px solid #eaeaea;
   }
 }
@@ -659,6 +663,7 @@
   flex: 1;
   min-width: 240px;
   max-width: 300px;
+  background-color: #fff;
 }
 
 /* Month/Year Header */
@@ -985,7 +990,7 @@
   border-radius: 8px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   z-index: 100;
-  width: 600px;
+  width: auto; /* Let it size based on content instead of fixed width */
 }
 
 .date-picker-dropdown.enhanced {
