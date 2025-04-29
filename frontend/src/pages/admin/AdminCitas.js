@@ -21,9 +21,25 @@ const AdminCitas = () => {
   const datePickerRef = useRef(null);
 
   // Estados para el calendario
-  const [dateRange, setDateRange] = useState({
-    from: startOfWeek(new Date()),
-    to: endOfWeek(new Date())
+  const [dateRange, setDateRange] = useState(() => {
+    // Obtener la fecha del lunes de la semana actual
+    const today = new Date();
+    const day = today.getDay(); // 0 = domingo, 1 = lunes, ..., 6 = sábado
+    const diff = day === 0 ? -6 : 1 - day; // Si es domingo, retrocedemos 6 días, sino calculamos distancia a lunes
+    
+    const monday = new Date(today);
+    monday.setDate(today.getDate() + diff);
+    monday.setHours(0, 0, 0, 0);
+    
+    // Obtener el domingo de la semana actual
+    const sunday = new Date(monday);
+    sunday.setDate(monday.getDate() + 6);
+    sunday.setHours(23, 59, 59, 999);
+    
+    return {
+      from: monday,
+      to: sunday
+    };
   });
   const [showDatePicker, setShowDatePicker] = useState(false);
 
@@ -271,20 +287,24 @@ const AdminCitas = () => {
                     >
                       👁️
                     </button>
-                    <button
-                      onClick={() => actualizarEstado(agendamiento.agendamiento_id, "confirmada")}
-                      className="btn-confirm"
-                      title="Confirmar"
-                    >
-                      ✓
-                    </button>
-                    <button
-                      onClick={() => actualizarEstado(agendamiento.agendamiento_id, "cancelada")}
-                      className="btn-cancel"
-                      title="Cancelar"
-                    >
-                      ✕
-                    </button>
+                    {agendamiento.status && agendamiento.status.toLowerCase() === 'pendiente' && (
+                      <>
+                        <button
+                          onClick={() => actualizarEstado(agendamiento.agendamiento_id, "confirmada")}
+                          className="btn-confirm"
+                          title="Confirmar"
+                        >
+                          ✓
+                        </button>
+                        <button
+                          onClick={() => actualizarEstado(agendamiento.agendamiento_id, "cancelada")}
+                          className="btn-cancel"
+                          title="Cancelar"
+                        >
+                          ✕
+                        </button>
+                      </>
+                    )}
                   </td>
                 </tr>
               );
