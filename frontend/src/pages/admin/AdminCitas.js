@@ -244,7 +244,12 @@ const AdminCitas = () => {
               return (
                 <tr key={agendamiento.agendamiento_id}>
                   <td className="empresa-cell">
-                    {agendamiento.id_empresa && <div className="empresa-icon">💼</div>}
+                    {agendamiento.id_empresa && (
+                      <div className="tooltip">
+                        <div className="empresa-icon">💼</div>
+                        <span className="tooltip-text">Agendamiento con convenio</span>
+                      </div>
+                    )}
                   </td>
                   <td>
                     {formatoFecha}
@@ -323,6 +328,11 @@ const AdminCitas = () => {
                 <div>
                   <strong>Tipo:</strong> {currentAgendamiento.tipo_atencion}
                 </div>
+                {currentAgendamiento.id_empresa && (
+                  <div>
+                    <strong>Empresa:</strong> {currentAgendamiento.nombre_empresa || 'Convenio empresarial'}
+                  </div>
+                )}
               </div>
             </div>
 
