@@ -1,0 +1,386 @@
+/* Estilos generales */
+.agendamiento-admin {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+}
+
+.agendamiento-admin h1 {
+  color: #1e3a8a;
+  margin-bottom: 20px;
+  font-size: 28px;
+}
+
+/* Barra de filtros */
+.filters-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  margin-bottom: 20px;
+  padding: 15px;
+  background-color: #f3f4f6;
+  border-radius: 8px;
+  align-items: center;
+}
+
+.search-container {
+  flex: 1;
+  min-width: 250px;
+}
+
+.search-container input {
+  width: 100%;
+  padding: 10px 15px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 14px;
+}
+
+.filter-container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.filter-container label {
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.filter-container select {
+  padding: 10px 15px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 14px;
+  background-color: white;
+}
+
+.date-picker-input {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 15px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  background-color: white;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.calendar-icon {
+  margin-right: 5px;
+}
+
+.date-picker-wrapper {
+  position: relative;
+}
+
+.admin-calendar-wrapper {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: 100;
+  background-color: white;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  padding: 10px;
+  margin-top: 5px;
+}
+
+.refresh-btn {
+  padding: 10px 15px;
+  background-color: #1e3a8a;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.refresh-btn:hover {
+  background-color: #2563eb;
+}
+
+/* Tabla de agendamientos */
+.table-container {
+  overflow-x: auto;
+  background-color: white;
+  margin-bottom: 20px;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.agendamientos-table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: white;
+}
+
+.agendamientos-table th,
+.agendamientos-table td {
+  padding: 12px 15px;
+  text-align: left;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.agendamientos-table th {
+  background-color: #f9fafb;
+  font-weight: 600;
+  color: #374151;
+  position: sticky;
+  top: 0;
+}
+
+.agendamientos-table tr:hover {
+  background-color: #f9fafb;
+}
+
+/* Estados */
+.status-badge {
+  display: inline-block;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 500;
+  text-transform: uppercase;
+}
+
+.status-pending,
+.status-pendiente {
+  background-color: #fff4de;
+  color: #ff8a00;
+}
+
+.status-confirmed,
+.status-confirmada {
+  background-color: #e6f7e6;
+  color: #28a745;
+}
+
+.status-cancelled,
+.status-cancelada {
+  background-color: #ffe6e6;
+  color: #dc3545;
+}
+
+/* Celdas de acciones */
+.actions-cell {
+  display: flex;
+  gap: 5px;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.btn-action {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  padding: 5px;
+  border-radius: 4px;
+  transition: background-color 0.2s;
+}
+
+.btn-action:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+.btn-view {
+  color: #3b82f6;
+}
+
+.btn-follow {
+  color: #10b981;
+}
+
+/* Modales */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background-color: white;
+  border-radius: 8px;
+  max-width: 800px;
+  width: 90%;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 20px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.modal-header h2 {
+  margin: 0;
+  font-size: 20px;
+  color: #1e3a8a;
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  color: #6b7280;
+}
+
+.modal-body {
+  padding: 20px;
+}
+
+/* Modal de detalles */
+.detail-section {
+  margin-bottom: 25px;
+}
+
+.detail-section h3 {
+  font-size: 16px;
+  color: #374151;
+  margin-bottom: 10px;
+  padding-bottom: 5px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.detail-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 15px;
+}
+
+.detail-grid > div {
+  font-size: 14px;
+}
+
+.fecha-cell {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.fecha-cell .calendar-icon {
+  font-size: 18px;
+  color: #1e3a8a;
+}
+
+.fecha-cell .hora {
+  font-size: 12px;
+  color: #6b7280;
+}
+
+.historial-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1100;
+}
+
+.historial-content {
+  background-color: white;
+  border-radius: 8px;
+  max-width: 600px;
+  width: 90%;
+  max-height: 90vh;
+  overflow-y: auto;
+  padding: 20px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.historial-content h3 {
+  margin-top: 0;
+  color: #1e3a8a;
+  margin-bottom: 15px;
+}
+
+.historial-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.historial-table th,
+.historial-table td {
+  padding: 8px 12px;
+  text-align: left;
+  border-bottom: 1px solid #e5e7eb;
+  font-size: 14px;
+}
+
+.historial-table th {
+  background-color: #f9fafb;
+  font-weight: 500;
+}
+
+.historial-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 20px;
+}
+
+/* Estados de carga, error y sin resultados */
+.loading,
+.error-message,
+.no-results {
+  padding: 20px;
+  text-align: center;
+  border-radius: 8px;
+  margin: 20px 0;
+}
+
+.loading {
+  background-color: #f9fafb;
+  color: #6b7280;
+}
+
+.error-message {
+  background-color: #ffe6e6;
+  color: #dc3545;
+}
+
+.no-results {
+  background-color: #f9fafb;
+  color: #6b7280;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .filters-bar {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .search-container,
+  .filter-container {
+    width: 100%;
+  }
+  
+  .action-buttons {
+    flex-direction: column;
+  }
+  
+  .btn-primary,
+  .btn-secondary {
+    width: 100%;
+  }
+}

@@ -12,13 +12,13 @@ import RolesPage from "./pages/admin/RolesPage";
 import ExcepcionesPage from "./pages/admin/ExcepcionesPage";
 import AgendamientoPrivadoForm from "./components/public/AgendamientoPrivadoForm";
 import ProfesionalAsignarServicios from './pages/admin/ProfesionalAsignarServicios';
-//import AdminAgendamientos from "./pages/admin/AdminAgendamientos";
 import AdminCitas from './pages/admin/AdminCitas';
 import AdminEmpresas from "./pages/admin/AdminEmpresas";
 import AgendamientoEmpresaForm from "./components/public/AgendamientoEmpresaForm";
 import AgendamientoIndex from './components/public/AgendamientoIndex';
 import CotizacionesAdmin from './components/admin/CotizacionesAdmin';
 import AdminLayout from './components/admin/AdminLayout';
+import AgendamientoAdminPage from './pages/admin/AgendamientoAdminPage';
 
 function App() {
   return (
@@ -42,9 +42,8 @@ function App() {
           <Route path="tipo-atencion" element={<TipoAtencionPage />} />
           <Route path="roles" element={<RolesPage />} />
           <Route path="excepciones" element={<ExcepcionesPage />} />
-          {/*<Route path="agendamientos" element={<AdminAgendamientos />} />
-          <Route path="citas" element={<AdminAgendamientos />} />*/}
           <Route path="citas" element={<AdminCitas />} />
+          <Route path="agendamientos" element={<AgendamientoAdminPage />} />
           <Route path="empresas" element={<AdminEmpresas />} />
           <Route path="cotizaciones" element={<CotizacionesAdmin />} />
           {/* Añadir más rutas de administración según sea necesario */}

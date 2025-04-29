@@ -22,6 +22,10 @@ const AdminSidebar = () => {
           Citas agendadas
         </NavLink>
         
+        <NavLink to="/admin/agendamientos" className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}>
+          Administrar agendamientos
+        </NavLink>
+        
         <NavLink to="/admin/horarios" className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}>
           Horarios de atención
         </NavLink>
