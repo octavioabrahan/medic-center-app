@@ -1,3 +1,4 @@
+// frontend/src/pages/admin/AdminAgendamientosModificado.js
 import React, { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import "./CitasAgendadas.css";
@@ -168,36 +169,68 @@ const CitasAgendadas = () => {
     <div className="citas-container">
       <h2 className="page-title">Citas agendadas</h2>
       
-      <div className="citas-filters" style={{ width: '100%', display: 'inline-flex', justifyContent: 'flex-start', alignItems: 'center', gap: 24 }}>
-        <div style={{ flex: '1 1 0', padding: '12px 16px', background: 'white', borderRadius: 9999, outline: '1px solid #D9D9D9', display: 'flex', alignItems: 'center', gap: 8 }}>
-            <div style={{ flex: '1 1 0', color: '#B3B3B3', fontSize: 16, fontFamily: 'Inter', fontWeight: 400 }}>Buscar por nombre o cédula</div>
-            <div style={{ width: 16, height: 16, position: 'relative' }}>
-                <div style={{ width: 12, height: 12, position: 'absolute', left: 2, top: 2, outline: '1.6px solid #1E1E1E' }} />
-            </div>
+      <div className="citas-filters">
+        <div className="search-box">
+          <input 
+            type="text" 
+            placeholder="Buscar por nombre o cédula..." 
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+          <button className="search-button">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M21 21L15 15M17 10C17 13.866 13.866 17 10 17C6.13401 17 3 13.866 3 10C3 6.13401 6.13401 3 10 3C13.866 3 17 6.13401 17 10Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+          </button>
         </div>
-        <div style={{ flex: '1 1 0', display: 'inline-flex', flexDirection: 'column', gap: 8 }}>
-            <div style={{ height: 40, minWidth: 240, padding: '12px 16px', background: 'white', borderRadius: 8, outline: '1px solid #D9D9D9', display: 'flex', alignItems: 'center', gap: 8 }}>
-                <div style={{ flex: '1 1 0', color: '#1E1E1E', fontSize: 16, fontFamily: 'Inter', fontWeight: 400 }}>Todos los estados</div>
-                <div style={{ width: 16, height: 16, position: 'relative' }}>
-                    <div style={{ width: 8, height: 4, position: 'absolute', left: 4, top: 6, outline: '1.6px solid #1E1E1E' }} />
-                </div>
+        
+        <div className="filter-group">
+          <select 
+            name="status"
+            value={status || ""}
+            onChange={handleFiltro}
+            className="filter-select"
+          >
+            <option value="">Todos los estados</option>
+            {TODOS_LOS_ESTADOS.map((s) => (
+              <option key={s} value={s}>
+                {s.charAt(0).toUpperCase() + s.slice(1)}
+              </option>
+            ))}
+          </select>
+          
+          <div className="date-picker-wrapper">
+            <div className="date-range-inputs">
+              <button 
+                className="date-picker-input" 
+                onClick={toggleDatePicker}
+              >
+                <span className="calendar-icon">📅</span>
+                {formatDateRange()}
+              </button>
             </div>
-        </div>
-        <div style={{ display: 'inline-flex', flexDirection: 'column', gap: 8 }}>
-            <div style={{ width: 240, height: 40, minWidth: 240, padding: '12px 16px', background: 'white', borderRadius: 8, outline: '1px solid #D9D9D9', display: 'flex', alignItems: 'center', gap: 8 }}>
-                <div style={{ color: '#1E1E1E', fontSize: 16, fontFamily: 'Inter', fontWeight: 400 }}>14-04-2025 20-04-2025</div>
-                <div style={{ width: 16, height: 16, position: 'relative' }}>
-                    <div style={{ width: 8, height: 4, position: 'absolute', left: 4, top: 6, outline: '1.6px solid #1E1E1E' }} />
-                </div>
-            </div>
-        </div>
-        <div style={{ flex: '1 1 0', display: 'inline-flex', flexDirection: 'column', gap: 8 }}>
-            <div style={{ width: 240, height: 40, minWidth: 240, padding: '12px 16px', background: 'white', borderRadius: 8, outline: '1px solid #D9D9D9', display: 'flex', alignItems: 'center', gap: 8 }}>
-                <div style={{ flex: '1 1 0', color: '#1E1E1E', fontSize: 16, fontFamily: 'Inter', fontWeight: 400 }}>Todos los profesionales</div>
-                <div style={{ width: 16, height: 16, position: 'relative' }}>
-                    <div style={{ width: 8, height: 4, position: 'absolute', left: 4, top: 6, outline: '1.6px solid #1E1E1E' }} />
-                </div>
-            </div>
+            {showDatePicker && (
+              <div className="admin-calendar-wrapper enhanced">
+                <Calendar
+                  initialDateRange={dateRange}
+                  onDateRangeChange={handleDateRangeChange}
+                  onClose={() => setShowDatePicker(false)}
+                  showPresets={true}
+                />
+              </div>
+            )}
+          </div>
+          
+          <select 
+            value={filtroProfesional} 
+            onChange={(e) => setFiltroProfesional(e.target.value)}
+            className="filter-select"
+          >
+            <option value="todos">Todos los profesionales</option>
+            {profesionales.map((prof, index) => (
+              <option key={index} value={prof}>{prof}</option>
+            ))}
+          </select>
         </div>
       </div>
       

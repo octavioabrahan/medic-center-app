@@ -1,0 +1,75 @@
+.admin-citas-container {
+  padding: 20px;
+  font-family: Arial, sans-serif;
+}
+
+.filters {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.filters input,
+.filters select {
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.citas-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.citas-table th,
+.citas-table td {
+  padding: 10px;
+  text-align: left;
+  border: 1px solid #ddd;
+}
+
+.citas-table th {
+  background-color: #f4f4f4;
+}
+
+.estado {
+  padding: 5px 10px;
+  border-radius: 4px;
+  color: white;
+  font-weight: bold;
+}
+
+.estado.pendiente {
+  background-color: #f0ad4e;
+}
+
+.estado.confirmada {
+  background-color: #5cb85c;
+}
+
+.estado.cancelada {
+  background-color: #d9534f;
+}
+
+.confirm-btn {
+  background-color: #5cb85c;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.cancel-btn {
+  background-color: #d9534f;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.confirm-btn:hover,
+.cancel-btn:hover {
+  opacity: 0.8;
+}
