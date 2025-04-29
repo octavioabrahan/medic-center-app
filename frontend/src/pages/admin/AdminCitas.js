@@ -39,20 +39,25 @@ const AdminCitas = () => {
   // Filtrar agendamientos cuando cambian los criterios
   useEffect(() => {
     if (agendamientos.length > 0) {
+      console.log("Agendamientos cargados:", agendamientos);
       let results = [...agendamientos];
       
       // Filtrar por término de búsqueda
       if (searchTerm) {
         const term = searchTerm.toLowerCase();
         results = results.filter(agendamiento => 
-          `${agendamiento.paciente_nombre} ${agendamiento.paciente_apellido}`.toLowerCase().includes(term) ||
-          agendamiento.cedula?.toLowerCase().includes(term)
+          `${agendamiento.paciente_nombre || ''} ${agendamiento.paciente_apellido || ''}`.toLowerCase().includes(term) ||
+          (agendamiento.cedula || '').toLowerCase().includes(term)
         );
       }
       
-      // Filtrar por estado
+      // Filtrar por estado - Corregido para asegurar compatibilidad
       if (filterStatus !== 'todos') {
-        results = results.filter(agendamiento => agendamiento.status === filterStatus);
+        results = results.filter(agendamiento => {
+          // Agregamos log para depuración
+          console.log("Comparando estado:", agendamiento.status, "con filtro:", filterStatus);
+          return agendamiento.status && agendamiento.status.toLowerCase() === filterStatus.toLowerCase();
+        });
       }
       
       // Filtrar por profesional
@@ -70,6 +75,7 @@ const AdminCitas = () => {
         });
       }
       
+      console.log("Resultados filtrados:", results.length);
       setFilteredAgendamientos(results);
     }
   }, [searchTerm, filterStatus, filtroProfesional, dateRange, agendamientos]);
@@ -83,6 +89,7 @@ const AdminCitas = () => {
       if (dateRange.to) params.append('hasta', format(dateRange.to, 'yyyy-MM-dd'));
       
       const response = await axios.get(`/api/agendamiento?${params.toString()}`);
+      console.log("Datos cargados de la API:", response.data);
       setAgendamientos(response.data);
       
       // Extraer lista de profesionales únicos
@@ -232,8 +239,8 @@ const AdminCitas = () => {
                 <td>{agendamiento.tipo_atencion}</td>
                 <td>{agendamiento.profesional_nombre} {agendamiento.profesional_apellido}</td>
                 <td>
-                  <span className={`status-badge ${agendamiento.status}`}>
-                    {agendamiento.status}
+                  <span className={`status-badge ${agendamiento.status ? agendamiento.status.toLowerCase() : ''}`}>
+                    {agendamiento.status || 'Sin estado'}
                   </span>
                 </td>
                 <td className="actions-cell">
@@ -300,8 +307,8 @@ const AdminCitas = () => {
                 </div>
                 <div>
                   <strong>Estado:</strong> 
-                  <span className={`status-badge ${currentAgendamiento.status}`}>
-                    {currentAgendamiento.status}
+                  <span className={`status-badge ${currentAgendamiento.status ? currentAgendamiento.status.toLowerCase() : ''}`}>
+                    {currentAgendamiento.status || 'Sin estado'}
                   </span>
                 </div>
                 <div>
