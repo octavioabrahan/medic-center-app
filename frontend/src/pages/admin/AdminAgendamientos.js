@@ -43,6 +43,9 @@ const AdminAgendamientos = () => {
 
         const url = `${process.env.REACT_APP_API_URL}/api/agendamiento?${params.toString()}`;
         const res = await fetch(url);
+        if (!res.ok) {
+          throw new Error("Failed to fetch appointments");
+        }
         const data = await res.json();
         setAgendamientos(data);
 
@@ -60,11 +63,14 @@ const AdminAgendamientos = () => {
 
   const actualizarEstado = async (id, nuevoEstado) => {
     try {
-      await fetch(`${process.env.REACT_APP_API_URL}/api/agendamiento/${id}`, {
+      const res = await fetch(`${process.env.REACT_APP_API_URL}/api/agendamiento/${id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ status: nuevoEstado }),
       });
+      if (!res.ok) {
+        throw new Error("Failed to update status");
+      }
       setAgendamientos((prev) =>
         prev.map((a) =>
           a.agendamiento_id === id ? { ...a, status: nuevoEstado } : a
