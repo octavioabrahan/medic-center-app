@@ -18,7 +18,13 @@ const AdminCitas = () => {
     const fetchCitas = async () => {
       setLoading(true);
       try {
-        const response = await axios.get("/api/agendamientos");
+        const response = await axios.get("/api/agendamientos", {
+          params: {
+            status: statusFilter !== "todos" ? statusFilter : undefined,
+            desde: dateRange?.from?.toISOString(),
+            hasta: dateRange?.to?.toISOString(),
+          },
+        });
         setCitas(response.data);
         setFilteredCitas(response.data);
       } catch (error) {
@@ -39,7 +45,7 @@ const AdminCitas = () => {
 
     fetchCitas();
     fetchProfesionales();
-  }, []);
+  }, [statusFilter, dateRange]);
 
   useEffect(() => {
     let filtered = [...citas];
@@ -52,38 +58,26 @@ const AdminCitas = () => {
       );
     }
 
-    if (statusFilter !== "todos") {
-      filtered = filtered.filter((cita) => cita.estado === statusFilter);
-    }
-
     if (selectedProfesional !== "todos") {
       filtered = filtered.filter(
-        (cita) => cita.profesional === selectedProfesional
-      );
-    }
-
-    if (dateRange) {
-      filtered = filtered.filter(
-        (cita) =>
-          new Date(cita.fecha_cita) >= dateRange.from &&
-          new Date(cita.fecha_cita) <= dateRange.to
+        (cita) => cita.profesional_id === parseInt(selectedProfesional)
       );
     }
 
     setFilteredCitas(filtered);
-  }, [searchTerm, statusFilter, selectedProfesional, dateRange, citas]);
+  }, [searchTerm, selectedProfesional, citas]);
 
-  const handleStatusChange = (id, newStatus) => {
-    axios
-      .patch(`/api/agendamientos/${id}`, { status: newStatus })
-      .then(() => {
-        setCitas((prev) =>
-          prev.map((cita) =>
-            cita.id === id ? { ...cita, estado: newStatus } : cita
-          )
-        );
-      })
-      .catch((error) => console.error("Error updating status:", error));
+  const handleStatusChange = async (id, newStatus) => {
+    try {
+      await axios.patch(`/api/agendamientos/${id}`, { status: newStatus });
+      setCitas((prev) =>
+        prev.map((cita) =>
+          cita.id === id ? { ...cita, estado: newStatus } : cita
+        )
+      );
+    } catch (error) {
+      console.error("Error updating status:", error);
+    }
   };
 
   return (
@@ -127,7 +121,7 @@ const AdminCitas = () => {
         >
           <option value="todos">Todos los profesionales</option>
           {profesionales.map((prof) => (
-            <option key={prof.profesional_id} value={prof.nombre}>
+            <option key={prof.profesional_id} value={prof.profesional_id}>
               {prof.nombre} {prof.apellido}
             </option>
           ))}
