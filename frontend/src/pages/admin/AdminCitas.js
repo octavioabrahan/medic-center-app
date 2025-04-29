@@ -17,7 +17,7 @@ const AdminCitas = () => {
   const [profesionales, setProfesionales] = useState([]);
   const [filtroProfesional, setFiltroProfesional] = useState("todos");
 
-  // Referencia para el contenedor del calendario
+  // Referencia para el selector de fechas
   const datePickerRef = useRef(null);
 
   // Estados para el calendario
@@ -34,20 +34,22 @@ const AdminCitas = () => {
   const [historial, setHistorial] = useState([]);
   const [historialDe, setHistorialDe] = useState(null);
 
-  // Efectos para detectar clics fuera del calendario
+  // Detectar clics fuera del selector de fechas para cerrarlo
   useEffect(() => {
-    const handleClickOutside = (event) => {
+    function handleClickOutside(event) {
+      // Solo ejecutar si el calendario está visible
+      if (!showDatePicker) return;
+      
+      // Verificar si el clic fue dentro del selector de fechas
       if (datePickerRef.current && !datePickerRef.current.contains(event.target)) {
         setShowDatePicker(false);
       }
-    };
-
-    // Añadir listener solo cuando el calendario está visible
-    if (showDatePicker) {
-      document.addEventListener("mousedown", handleClickOutside);
     }
 
-    // Limpiar listener
+    // Agregar el event listener cuando el componente se monta o cuando showDatePicker cambia
+    document.addEventListener("mousedown", handleClickOutside);
+    
+    // Limpiar el event listener cuando el componente se desmonta o showDatePicker cambia
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
@@ -165,10 +167,16 @@ const AdminCitas = () => {
     setHistorialDe(null);
   };
 
-  // Manejar cambio de rango de fechas
+  // Manejar clic en el input de fecha
+  const handleDateInputClick = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setShowDatePicker(prevState => !prevState);
+  };
+
+  // Manejar cambio de rango de fechas desde el calendario
   const handleDateRangeChange = (newDateRange) => {
     setDateRange(newDateRange);
-    setShowDatePicker(false);
   };
 
   // Formatear fecha para mostrar en la tabla
@@ -440,27 +448,58 @@ const AdminCitas = () => {
           </select>
         </div>
         
+        {/* Componente de selección de fechas con manejo correcto de eventos */}
         <div className="date-picker-container" ref={datePickerRef}>
-          <div className="date-input-wrapper">
+          <div 
+            className="date-input-wrapper"
+            onClick={handleDateInputClick}
+          >
             <span className="calendar-icon">📅</span>
             <input 
               type="text" 
               className="date-input"
               placeholder="Seleccionar rango de fechas"
               value={formatDateRange()}
-              onClick={() => setShowDatePicker(!showDatePicker)}
               readOnly
             />
           </div>
           
           {showDatePicker && (
-            <div className="calendar-dropdown">
+            <div 
+              className="calendar-dropdown"
+              onClick={e => e.stopPropagation()}
+            >
               <Calendar
                 initialDateRange={dateRange}
                 onDateRangeChange={handleDateRangeChange}
                 onClose={() => setShowDatePicker(false)}
                 showPresets={true}
               />
+
+              {/* Botones de acción para fechas */}
+              <div className="calendar-actions">
+                <button 
+                  className="btn-apply"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    fetchAgendamientos();
+                    setShowDatePicker(false);
+                  }}
+                >
+                  Aplicar
+                </button>
+                <button 
+                  className="btn-cancel"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    setShowDatePicker(false);
+                  }}
+                >
+                  Cancelar
+                </button>
+              </div>
             </div>
           )}
         </div>
