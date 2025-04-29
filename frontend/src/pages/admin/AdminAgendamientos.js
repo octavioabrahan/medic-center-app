@@ -1,9 +1,8 @@
-// frontend/src/pages/admin/AdminAgendamientosModificado.js
 import React, { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import "./CitasAgendadas.css";
 import { 
-  startOfWeek, endOfWeek, format, startOfDay, endOfDay, parseISO 
+  startOfWeek, endOfWeek, format, startOfDay, endOfDay 
 } from "date-fns";
 import Calendar from "../../components/common/Calendar";
 
@@ -19,13 +18,14 @@ const AdminAgendamientos = () => {
   const desde = searchParams.get("desde") || format(startOfWeek(new Date()), "yyyy-MM-dd");
   const hasta = searchParams.get("hasta") || format(endOfWeek(new Date()), "yyyy-MM-dd");
   
-  // Initialize date range
   const [dateRange, setDateRange] = useState({
-    from: desde ? parseISO(desde) : startOfWeek(new Date()),
-    to: hasta ? parseISO(hasta) : endOfWeek(new Date())
+    from: desde ? new Date(desde) : startOfWeek(new Date()),
+    to: hasta ? new Date(hasta) : endOfWeek(new Date())
   });
-  
+  const [startDate, setStartDate] = useState(dateRange?.from);
+  const [endDate, setEndDate] = useState(dateRange?.to);
   const [showDatePicker, setShowDatePicker] = useState(false);
+
   const [agendamientos, setAgendamientos] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -95,37 +95,43 @@ const AdminAgendamientos = () => {
     
     // Filtrar por rango de fechas
     const fechaCita = new Date(a.fecha_agendada);
-    const matchesFecha = !dateRange.from || !dateRange.to || 
-      (fechaCita >= startOfDay(dateRange.from) && fechaCita <= endOfDay(dateRange.to));
+    const matchesFecha = !startDate || !endDate || 
+      (fechaCita >= startOfDay(startDate) && fechaCita <= endOfDay(endDate));
       
     return matchesSearch && matchesProfesional && matchesFecha;
   });
 
-  // Toggle date picker visibility
-  const toggleDatePicker = (e) => {
-    e.preventDefault();
-    setShowDatePicker(!showDatePicker);
-  };
+  const toggleDatePicker = () => setShowDatePicker(!showDatePicker);
 
-  // Handle date range change from the Calendar component
-  const handleDateRangeChange = (newDateRange) => {
-    setDateRange(newDateRange);
-    
-    // Update URL params with new date range
-    if (newDateRange?.from && newDateRange?.to) {
-      const newParams = new URLSearchParams(searchParams);
-      newParams.set("desde", format(newDateRange.from, "yyyy-MM-dd"));
-      newParams.set("hasta", format(newDateRange.to, "yyyy-MM-dd"));
-      setSearchParams(newParams);
+  // Update startDate and endDate when dateRange changes
+  useEffect(() => {
+    if (dateRange?.from) {
+      setStartDate(dateRange.from);
     }
-    
-    // Close the date picker
-    setShowDatePicker(false);
-  };
+    if (dateRange?.to) {
+      setEndDate(dateRange.to);
+    }
+  }, [dateRange]);
+
+  // Update dateRange and URL params when dates are selected
+  useEffect(() => {
+    if (startDate && endDate) {
+      const fromFormatted = format(startDate, "yyyy-MM-dd");
+      const toFormatted = format(endDate, "yyyy-MM-dd");
+      
+      // Only update URL parameters if they have changed
+      if (fromFormatted !== desde || toFormatted !== hasta) {
+        const newParams = new URLSearchParams(searchParams);
+        newParams.set("desde", fromFormatted);
+        newParams.set("hasta", toFormatted);
+        setSearchParams(newParams);
+      }
+    }
+  }, [startDate, endDate, searchParams, setSearchParams, desde, hasta]);
 
   const formatDateRange = () => {
-    if (!dateRange?.from || !dateRange?.to) return "Seleccionar fechas";
-    return `${format(dateRange.from, "dd-MM-yyyy")} a ${format(dateRange.to, "dd-MM-yyyy")}`;
+    if (!startDate || !endDate) return "Seleccionar fechas";
+    return `${format(startDate, "dd-MM-yyyy")} ${format(endDate, "dd-MM-yyyy")}`;
   };
 
   const formatearFecha = (fechaStr) => {
@@ -142,6 +148,12 @@ const AdminAgendamientos = () => {
     return { fecha: `${diaSemana} ${dia} ${mes}`, hora: `${horas}:${minutos} ${ampm}` };
   };
 
+  // Handle date range change from the Calendar component
+  const handleDateRangeChange = (newDateRange) => {
+    setDateRange(newDateRange);
+    setShowDatePicker(false);
+  };
+
   return (
     <div className="citas-container">
       <h2 className="page-title">Citas agendadas</h2>
@@ -154,7 +166,7 @@ const AdminAgendamientos = () => {
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
-          <button className="search-button" type="button">
+          <button className="search-button">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M21 21L15 15M17 10C17 13.866 13.866 17 10 17C6.13401 17 3 13.866 3 10C3 6.13401 6.13401 3 10 3C13.866 3 17 6.13401 17 10Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
             </svg>
@@ -177,23 +189,22 @@ const AdminAgendamientos = () => {
           </select>
           
           <div className="date-picker-wrapper">
-            <button 
-              className="date-picker-input" 
-              onClick={toggleDatePicker}
-              type="button"
-            >
-              <span className="calendar-icon">📅</span>
-              <span>{formatDateRange()}</span>
-            </button>
+            <div className="date-range-inputs">
+              <button 
+                className="date-picker-input" 
+                onClick={toggleDatePicker}
+              >
+                <span className="calendar-icon">📅</span>
+                {formatDateRange()}
+              </button>
+            </div>
             {showDatePicker && (
-              <div className="admin-calendar-wrapper">
+              <div className="admin-calendar-wrapper enhanced">
                 <Calendar
                   initialDateRange={dateRange}
                   onDateRangeChange={handleDateRangeChange}
                   onClose={() => setShowDatePicker(false)}
                   showPresets={true}
-                  singleDateMode={false}
-                  title="Seleccionar rango de fechas"
                 />
               </div>
             )}
@@ -255,7 +266,6 @@ const AdminAgendamientos = () => {
                         onClick={() => actualizarEstado(a.agendamiento_id, "confirmada")}
                         className="action-btn confirm-btn"
                         title="Confirmar"
-                        type="button"
                       >
                         ✓
                       </button>
@@ -263,7 +273,6 @@ const AdminAgendamientos = () => {
                         onClick={() => actualizarEstado(a.agendamiento_id, "cancelada")}
                         className="action-btn cancel-btn"
                         title="Cancelar"
-                        type="button"
                       >
                         ✕
                       </button>
