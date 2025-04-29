@@ -42,8 +42,8 @@ function App() {
           <Route path="tipo-atencion" element={<TipoAtencionPage />} />
           <Route path="roles" element={<RolesPage />} />
           <Route path="excepciones" element={<ExcepcionesPage />} />
-          <Route path="agendamientos" element={<AdminAgendamientos />} />
-          {/*<Route path="citas" element={<AdminAgendamientos />} />*/}
+          {/*<Route path="agendamientos" element={<AdminAgendamientos />} />
+          <Route path="citas" element={<AdminAgendamientos />} />*/}
           <Route path="citas" element={<AdminCitas />} />
           <Route path="empresas" element={<AdminEmpresas />} />
           <Route path="cotizaciones" element={<CotizacionesAdmin />} />
