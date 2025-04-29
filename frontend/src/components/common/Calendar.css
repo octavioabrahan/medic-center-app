@@ -1,64 +1,59 @@
 /* Calendar Component Styles */
 .custom-calendar-wrapper {
   background-color: white;
-  border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  border-radius: 4px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   overflow: hidden;
   width: 100%;
   max-width: 700px;
   margin: 0 auto;
   z-index: 1000;
   display: flex;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
 }
 
 /* Date presets */
 .date-presets {
   display: flex;
   flex-direction: column;
-  padding: 16px 10px;
-  border-right: 1px solid #eaeaea;
-  background-color: #f9f9f9;
+  padding: 10px;
+  background-color: #fff;
   min-width: 120px;
+  border-right: 1px solid #eee;
 }
 
 .preset-button {
-  background-color: #fff;
+  background-color: #f5f5f5;
   border: 1px solid #ddd;
   border-radius: 4px;
   padding: 8px 12px;
-  margin-bottom: 8px;
+  margin-bottom: 10px;
   cursor: pointer;
-  font-size: 0.9rem;
+  font-size: 14px;
   transition: all 0.2s;
-  text-align: left;
+  text-align: center;
+  color: #333;
+  font-weight: normal;
 }
 
 .preset-button:hover {
-  background-color: #e6f7ff;
-  border-color: #91d5ff;
+  background-color: #e9e9e9;
 }
 
 .preset-button:active {
-  background-color: #1890ff;
+  background-color: #007bff;
   color: white;
+  border-color: #007bff;
 }
 
 /* Calendar container */
 .calendar-container {
-  padding: 16px;
+  padding: 10px 16px;
   flex: 1;
 }
 
 .calendar-header-row {
-  text-align: center;
-  margin-bottom: 16px;
-}
-
-.calendar-selection-title {
-  margin: 0;
-  color: #333;
-  font-size: 1rem;
-  font-weight: 500;
+  display: none; /* Removing the unnecessary text */
 }
 
 /* Two month layout */
@@ -78,41 +73,40 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 8px 4px;
-  margin-bottom: 10px;
+  padding: 5px 0;
+  margin-bottom: 8px;
 }
 
 .month-year-display {
+  flex: 1;
   display: flex;
+  justify-content: center;
   align-items: center;
   font-weight: 500;
+  color: #333;
+  font-size: 14px;
 }
 
-.month-label,
-.year-label {
+.month-label {
   cursor: pointer;
-  padding: 4px;
-  border-radius: 4px;
+  padding: 4px 8px;
 }
 
-.month-label:hover,
-.year-label:hover {
-  background-color: #f0f0f0;
+.month-label:hover {
+  text-decoration: underline;
 }
 
 .nav-button {
   background: none;
   border: none;
-  font-size: 1.2rem;
+  font-size: 16px;
   cursor: pointer;
   padding: 4px 8px;
-  color: #555;
+  color: #777;
 }
 
 .nav-button:hover {
-  background-color: #f0f0f0;
   color: #333;
-  border-radius: 4px;
 }
 
 /* Calendar table */
@@ -123,11 +117,12 @@
 }
 
 .calendar-table th {
-  padding: 8px 0;
-  font-weight: 500;
-  font-size: 0.85rem;
+  padding: 6px 0;
+  font-weight: normal;
+  font-size: 12px;
   text-align: center;
   color: #666;
+  border-bottom: 1px solid #eee;
 }
 
 .calendar-table td {
@@ -147,28 +142,29 @@
   margin: 0 auto;
   border-radius: 50%;
   transition: all 0.2s;
-  font-size: 0.9rem;
+  font-size: 13px;
   position: relative;
+  color: #333;
 }
 
 .calendar-day:hover {
-  background-color: #e6f7ff;
+  background-color: #f0f0f0;
 }
 
 /* Special day states */
 .today {
   font-weight: bold;
-  color: #1890ff;
-  border: 1px solid #1890ff;
+  color: #333;
+  border: 1px solid #007bff;
 }
 
 .selected {
-  background-color: #1890ff;
+  background-color: #007bff;
   color: white !important;
 }
 
 .range-middle {
-  background-color: #e6f7ff;
+  background-color: #e6f2ff;
   border-radius: 0;
 }
 
@@ -187,7 +183,7 @@
 }
 
 .outside-month .calendar-day {
-  color: #bbb;
+  color: #ccc;
 }
 
 /* Month selector */
@@ -200,7 +196,7 @@
   width: 300px;
   padding: 16px;
   background: white;
-  border-radius: 8px;
+  border-radius: 4px;
   text-align: center;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   z-index: 1010;
@@ -210,83 +206,56 @@
 .year-selector h4 {
   margin-top: 0;
   margin-bottom: 12px;
-  font-size: 16px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #333;
 }
 
-.month-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 10px;
-  margin-bottom: 16px;
-}
-
-.month-grid button {
-  padding: 10px;
-  background-color: #f5f5f5;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 0.9rem;
-}
-
-.month-grid button:hover {
-  background-color: #e6f7ff;
-  border-color: #91d5ff;
-}
-
-.month-grid button.selected {
-  background-color: #1890ff;
-  color: white;
-  border-color: #1890ff;
-}
-
-/* Year selector */
-.year-selector {
-  max-height: 400px;
-  overflow-y: auto;
-}
-
+.month-grid,
 .year-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 10px;
+  gap: 8px;
+  margin-bottom: 16px;
 }
 
+.month-grid button,
 .year-grid button {
-  padding: 10px;
+  padding: 8px;
   background-color: #f5f5f5;
   border: 1px solid #ddd;
   border-radius: 4px;
   cursor: pointer;
-  font-size: 0.9rem;
+  font-size: 13px;
 }
 
+.month-grid button:hover,
 .year-grid button:hover {
-  background-color: #e6f7ff;
-  border-color: #91d5ff;
+  background-color: #e9e9e9;
 }
 
+.month-grid button.selected,
 .year-grid button.selected {
-  background-color: #1890ff;
+  background-color: #007bff;
   color: white;
-  border-color: #1890ff;
+  border-color: #007bff;
 }
 
 /* Action buttons */
 .calendar-actions {
   display: flex;
   justify-content: flex-end;
-  padding-top: 16px;
-  margin-top: 16px;
-  border-top: 1px solid #eaeaea;
+  padding-top: 12px;
+  margin-top: 12px;
+  border-top: 1px solid #eee;
 }
 
 .calendar-button {
-  padding: 8px 16px;
+  padding: 6px 12px;
   border-radius: 4px;
   cursor: pointer;
-  font-size: 0.9rem;
-  margin-left: 10px;
+  font-size: 13px;
+  margin-left: 8px;
   transition: all 0.2s;
 }
 
@@ -301,14 +270,13 @@
 }
 
 .calendar-button.confirm {
-  background-color: #1890ff;
-  border: 1px solid #1890ff;
+  background-color: #007bff;
+  border: 1px solid #007bff;
   color: white;
 }
 
 .calendar-button.confirm:hover {
-  background-color: #40a9ff;
-  border-color: #40a9ff;
+  background-color: #0069d9;
 }
 
 .calendar-button:disabled {
@@ -322,12 +290,13 @@
 .close-btn {
   display: block;
   margin: 0 auto;
-  padding: 8px 16px;
+  padding: 6px 12px;
   background-color: #fff;
   border: 1px solid #ddd;
   border-radius: 4px;
   cursor: pointer;
-  font-size: 0.9rem;
+  font-size: 13px;
+  color: #666;
 }
 
 .close-btn:hover {
@@ -357,12 +326,14 @@
     flex-direction: row;
     justify-content: space-around;
     border-right: none;
-    border-bottom: 1px solid #eaeaea;
+    border-bottom: 1px solid #eee;
+    padding: 8px;
   }
 
   .preset-button {
     margin-right: 4px;
     margin-bottom: 0;
+    flex: 1;
   }
 
   .two-month-container {

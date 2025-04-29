@@ -310,6 +310,12 @@ const Calendar = ({
   
   const nextMonth = getNextMonthData();
   
+  // Get month name for display
+  const getMonthName = (month) => {
+    const monthNames = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'];
+    return monthNames[month];
+  };
+  
   // Handle Apply button click
   const handleApply = () => {
     onClose && onClose();
@@ -355,28 +361,19 @@ const Calendar = ({
         />
       ) : (
         <div className="calendar-container">
-          <div className="calendar-header-row">
-            <h4 className="calendar-selection-title">
-              {singleDateMode ? title : (
-                datePickerMode === 'start' ? 'Seleccione fecha inicial' : 'Seleccione fecha final'
-              )}
-            </h4>
-          </div>
-          
           <div className="two-month-container">
             {/* First month */}
             <div className="month-container">
               <div className="calendar-header">
-                <button className="nav-button" title="Año anterior" onClick={goToPrevYear}>«</button>
-                <button className="nav-button" title="Mes anterior" onClick={goToPrevMonth}>‹</button>
+                <button className="nav-button" title="Anterior" onClick={goToPrevMonth}>«</button>
+                <button className="nav-button" title="Anterior" onClick={goToPrevMonth}>‹</button>
                 <div className="month-year-display">
                   <span onClick={() => setShowMonthPicker(true)} className="month-label">
-                    {format(new Date(calendarYear, calendarMonth), 'MMMM', { locale: es })}
-                  </span>{' '}
-                  <span onClick={() => setShowYearPicker(true)} className="year-label">
-                    {calendarYear}
+                    {getMonthName(calendarMonth)} {calendarYear}
                   </span>
                 </div>
+                <button className="nav-button" title="Siguiente" onClick={goToNextMonth}>›</button>
+                <button className="nav-button" title="Siguiente" onClick={goToNextYear}>»</button>
               </div>
               
               <table className="calendar-table">
@@ -400,16 +397,15 @@ const Calendar = ({
             {/* Second month */}
             <div className="month-container">
               <div className="calendar-header">
+                <button className="nav-button" title="Anterior" onClick={goToPrevMonth}>«</button>
+                <button className="nav-button" title="Anterior" onClick={goToPrevMonth}>‹</button>
                 <div className="month-year-display">
                   <span onClick={() => setShowMonthPicker(true)} className="month-label">
-                    {format(new Date(nextMonth.year, nextMonth.month), 'MMMM', { locale: es })}
-                  </span>{' '}
-                  <span onClick={() => setShowYearPicker(true)} className="year-label">
-                    {nextMonth.year}
+                    {getMonthName(nextMonth.month)} {nextMonth.year}
                   </span>
                 </div>
-                <button className="nav-button" title="Mes siguiente" onClick={goToNextMonth}>›</button>
-                <button className="nav-button" title="Año siguiente" onClick={goToNextYear}>»</button>
+                <button className="nav-button" title="Siguiente" onClick={goToNextMonth}>›</button>
+                <button className="nav-button" title="Siguiente" onClick={goToNextYear}>»</button>
               </div>
               
               <table className="calendar-table">
