@@ -420,7 +420,7 @@ const AdminCitas = () => {
       <h1>Citas agendadas</h1>
       
       <div className="admin-citas-filters">
-        <div className="search-container">
+        <div className="admin-citas-search">
           <input
             type="text"
             placeholder="Buscar por nombre o cédula..."

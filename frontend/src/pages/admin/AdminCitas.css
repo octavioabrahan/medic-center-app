@@ -32,12 +32,12 @@
   /* Esta clase ya no se usa en este componente */
 }
 
-.search-container {
+.admin-citas-search {
   position: relative;
   flex: 1;
 }
 
-.search-container input {
+.admin-citas-search input {
   width: 100%;
   padding: 8px 12px;
   border: 1px solid #e2e8f0;
@@ -46,16 +46,9 @@
   height: 38px;
 }
 
-.search-icon {
-  position: absolute;
-  right: 10px;
-  top: 50%;
-  transform: translateY(-50%);
-  color: #9ca3af;
-  pointer-events: none;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+/* Eliminar la definición anterior de .search-container que podría estar causando conflictos */
+.search-container {
+  /* Esta clase ya no se usa en este componente */
 }
 
 .filter-container {
@@ -433,43 +426,37 @@
   text-align: center;
   padding: 5px;
   border-radius: 6px;
+  
+  /* Modificar posicionamiento para que aparezca encima */
   position: absolute;
-  z-index: 1;
-  bottom: 125%;
+  z-index: 1500; /* Valor alto para asegurar que esté por encima de todo */
+  bottom: 130%; /* Alejarlo un poco más hacia arriba */
   left: 50%;
   transform: translateX(-50%);
+  
   opacity: 0;
   transition: opacity 0.3s;
   font-size: 12px;
   font-weight: normal;
   text-transform: none;
+  pointer-events: none; /* Evitar que el tooltip interfiera con clicks */
+}
+
+/* Agregar una flecha al tooltip */
+.tooltip .tooltip-text::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: rgba(0, 0, 0, 0.8) transparent transparent transparent;
 }
 
 .tooltip:hover .tooltip-text {
   visibility: visible;
   opacity: 1;
-}
-
-.calendar-icon {
-  font-size: 18px;
-  color: #1e3a8a;
-}
-
-.fecha-cell .hora {
-  font-size: 12px;
-  color: #6b7280;
-  margin-top: 3px;
-}
-
-/* Estilos para la celda de maletín */
-.empresa-cell {
-  width: 40px;
-  text-align: center;
-}
-
-.empresa-icon {
-  font-size: 16px;
-  color: #1e3a8a;
 }
 
 /* Modales */

@@ -66,11 +66,13 @@ const AgendamientoModel = {
              p.nombre AS paciente_nombre, p.apellido AS paciente_apellido, 
              p.email AS paciente_email, p.telefono AS paciente_telefono,
              pr.nombre AS profesional_nombre, pr.apellido AS profesional_apellido,
-             ta.nombre AS tipo_atencion
+             ta.nombre AS tipo_atencion,
+             e.nombre AS nombre_empresa
       FROM agendamiento a
       JOIN pacientes p ON a.cedula = p.cedula
       JOIN profesionales pr ON a.profesional_id = pr.profesional_id
       JOIN tipo_atencion ta ON a.tipo_atencion_id = ta.tipo_atencion_id
+      LEFT JOIN empresas e ON a.id_empresa = e.id_empresa
       ${where}
       ORDER BY a.fecha_agendada DESC
     `;
