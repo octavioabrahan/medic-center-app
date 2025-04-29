@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import { format, startOfWeek, endOfWeek, startOfToday, endOfToday } from 'date-fns';
 import Calendar from '../../components/common/Calendar';
@@ -17,6 +17,10 @@ const AdminCitas = () => {
   const [profesionales, setProfesionales] = useState([]);
   const [filtroProfesional, setFiltroProfesional] = useState("todos");
 
+  // Referencias para manejar clics fuera del calendario
+  const calendarRef = useRef(null);
+  const calendarButtonRef = useRef(null);
+
   // Estados para el calendario
   const [dateRange, setDateRange] = useState({
     from: startOfWeek(new Date()),
@@ -30,6 +34,29 @@ const AdminCitas = () => {
   const [mostrarHistorial, setMostrarHistorial] = useState(false);
   const [historial, setHistorial] = useState([]);
   const [historialDe, setHistorialDe] = useState(null);
+
+  // Efecto para manejar clics fuera del calendario
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (showDatePicker && 
+          calendarRef.current && 
+          !calendarRef.current.contains(event.target) &&
+          calendarButtonRef.current &&
+          !calendarButtonRef.current.contains(event.target)) {
+        setShowDatePicker(false);
+      }
+    }
+
+    // Agregar el event listener cuando el calendario está abierto
+    if (showDatePicker) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+    
+    // Limpieza del event listener
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [showDatePicker]);
 
   // Cargar agendamientos al montar el componente
   useEffect(() => {
@@ -137,7 +164,12 @@ const AdminCitas = () => {
   };
 
   // Toggle para mostrar/ocultar el selector de fechas
-  const toggleDatePicker = () => {
+  const toggleDatePicker = (e) => {
+    // Detener la propagación para evitar que el evento llegue al documento
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
     setShowDatePicker(!showDatePicker);
   };
 
@@ -443,6 +475,7 @@ const AdminCitas = () => {
         
         <div className="date-picker-wrapper">
           <button 
+            ref={calendarButtonRef}
             className="date-picker-input" 
             onClick={toggleDatePicker}
           >
@@ -450,7 +483,10 @@ const AdminCitas = () => {
             {formatDateRange()}
           </button>
           {showDatePicker && (
-            <div className="admin-calendar-wrapper" onClick={(e) => e.stopPropagation()}>
+            <div 
+              ref={calendarRef}
+              className="admin-calendar-wrapper"
+            >
               <Calendar
                 initialDateRange={dateRange}
                 onDateRangeChange={handleDateRangeChange}
