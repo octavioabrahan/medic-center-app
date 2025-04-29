@@ -67,7 +67,7 @@ const AgendamientoModel = {
              p.email AS paciente_email, p.telefono AS paciente_telefono,
              pr.nombre AS profesional_nombre, pr.apellido AS profesional_apellido,
              ta.nombre AS tipo_atencion,
-             e.nombre AS nombre_empresa
+             e.nombre_empresa
       FROM agendamiento a
       JOIN pacientes p ON a.cedula = p.cedula
       JOIN profesionales pr ON a.profesional_id = pr.profesional_id

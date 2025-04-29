@@ -35,15 +35,26 @@
 .admin-citas-search {
   position: relative;
   flex: 1;
+  display: flex;
+  align-items: center;
 }
 
 .admin-citas-search input {
   width: 100%;
   padding: 8px 12px;
+  padding-right: 30px; /* Espacio para el icono */
   border: 1px solid #e2e8f0;
   border-radius: 4px;
   font-size: 13px;
   height: 38px;
+}
+
+.search-icon {
+  position: absolute;
+  right: 10px;
+  color: #9ca3af;
+  pointer-events: none;
+  font-size: 14px;
 }
 
 /* Eliminar la definición anterior de .search-container que podría estar causando conflictos */
