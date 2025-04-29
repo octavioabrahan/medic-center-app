@@ -3,65 +3,10 @@ import {
   format, startOfDay, endOfDay, startOfToday, endOfToday,
   startOfWeek, endOfWeek, startOfMonth, endOfMonth,
   addMonths, subMonths, addYears, subYears, isSameDay, isWithinInterval,
-  getDay
+  getDay, addDays, subDays
 } from "date-fns";
 import { es } from "date-fns/locale";
 import "./Calendar.css";
-
-const MonthSelector = ({ currentMonth, currentYear, onSelect, onCancel }) => {
-  const monthNames = [
-    'Ene', 'Feb', 'Mar', 
-    'Abr', 'May', 'Jun',
-    'Jul', 'Ago', 'Sep',
-    'Oct', 'Nov', 'Dic'
-  ];
-  
-  return (
-    <div className="month-selector">
-      <h4>Seleccione mes</h4>
-      <div className="month-grid">
-        {monthNames.map((name, idx) => (
-          <button 
-            key={idx}
-            onClick={() => onSelect(idx)}
-            className={idx === currentMonth ? 'selected' : ''}
-          >
-            {name}
-          </button>
-        ))}
-      </div>
-      <button onClick={onCancel} className="close-btn">Volver</button>
-    </div>
-  );
-};
-
-const YearSelector = ({ currentYear, onSelect, onCancel }) => {
-  // Create an array of years centered around current year
-  const years = [];
-  const startYear = 2020;
-  const endYear = 2030;
-  
-  for (let year = startYear; year <= endYear; year++) {
-    years.push(year);
-  }
-  
-  return (
-    <div className="year-selector">
-      <div className="year-grid">
-        {years.map((year) => (
-          <button 
-            key={year}
-            onClick={() => onSelect(year)}
-            className={year === currentYear ? 'selected' : ''}
-          >
-            {year}
-          </button>
-        ))}
-      </div>
-      <button onClick={onCancel} className="close-btn">Volver</button>
-    </div>
-  );
-};
 
 const Calendar = ({ 
   onDateRangeChange, 
@@ -89,6 +34,9 @@ const Calendar = ({
       : { from: startOfWeek(new Date()), to: endOfWeek(new Date()) }
     )
   );
+  
+  // Current date for "today" highlighting
+  const today = new Date();
 
   // Handle date range change
   useEffect(() => {
@@ -98,46 +46,35 @@ const Calendar = ({
   }, [dateRange, onDateRangeChange]);
 
   // Handle preset date ranges
-  const handleDatePreset = (preset) => {
-    const today = new Date();
-    let newRange;
+  const handleDatePreset = (days) => {
+    const endDate = new Date();
+    const startDate = subDays(endDate, days);
     
-    switch(preset) {
-      case 'today':
-        newRange = { from: startOfToday(), to: endOfToday() };
-        break;
-      case 'thisWeek':
-        newRange = { from: startOfWeek(today), to: endOfWeek(today) };
-        break;
-      case 'thisMonth':
-        newRange = { from: startOfMonth(today), to: endOfMonth(today) };
-        break;
-      default:
-        return;
-    }
+    const newRange = { 
+      from: startOfDay(startDate), 
+      to: endOfDay(endDate)
+    };
     
     setDateRange(newRange);
-    // Do not close automatically, let user decide when to close
+    if (onDateRangeChange) {
+      onDateRangeChange(newRange);
+    }
   };
 
   // Render the calendar body with all days
-  const renderCalendarBody = (year, month, isSecondMonth = false) => {
-    // Convert Sunday (0) to 6, and other days to day-1 (Monday = 0, Tuesday = 1, etc.)
+  const renderCalendarDays = (year, month) => {
+    // Function to get the day number in week (0 = Sunday, 1 = Monday, etc.)
     const getAdjustedDay = (date) => {
-      const day = date.getDay();
-      return day === 0 ? 6 : day - 1;
+      return date.getDay();
     };
     
     const firstDayOfMonth = new Date(year, month, 1);
     const lastDayOfMonth = new Date(year, month + 1, 0);
     const daysInMonth = lastDayOfMonth.getDate();
     
-    // Day of week of first day (0 = Monday, 1 = Tuesday, etc. with our adjustment)
+    // Day of week of first day (0 = Sunday, 1 = Monday, etc.)
     const firstDayWeekday = getAdjustedDay(firstDayOfMonth);
     const prevMonthLastDay = new Date(year, month, 0).getDate();
-    
-    // Current date (for highlighting today)
-    const today = new Date();
     
     const rows = [];
     let days = [];
@@ -163,8 +100,8 @@ const Calendar = ({
     for (let day = 1; day <= daysInMonth; day++) {
       const date = new Date(year, month, day);
       const isToday = day === today.getDate() && 
-                    month === today.getMonth() && 
-                    year === today.getFullYear();
+                     month === today.getMonth() && 
+                     year === today.getFullYear();
       
       // Check if date is within the selected range
       const isInRange = dateRange?.from && dateRange?.to && 
@@ -172,20 +109,14 @@ const Calendar = ({
         date <= endOfDay(dateRange.to);
       
       // Check if date is exactly the start or end date
-      const isRangeStart = dateRange?.from && 
+      const isSelected = dateRange?.from && 
         day === dateRange.from.getDate() && 
         month === dateRange.from.getMonth() && 
         year === dateRange.from.getFullYear();
       
-      const isRangeEnd = dateRange?.to && 
-        day === dateRange.to.getDate() && 
-        month === dateRange.to.getMonth() && 
-        year === dateRange.to.getFullYear();
-      
       let className = "calendar-day";
       if (isToday) className += " today";
-      if (isRangeStart) className += " range-start selected";
-      else if (isRangeEnd) className += " range-end selected";
+      if (isSelected) className += " selected";
       else if (isInRange) className += " range-middle";
       
       days.push(
@@ -232,43 +163,20 @@ const Calendar = ({
   // Handle date selection
   const handleDateSelection = (date) => {
     if (singleDateMode) {
-      // In single date mode, just select this date and close
+      // In single date mode, just select this date
       setDateRange({ from: date, to: date });
-      onClose && onClose();
-      return;
-    }
-    
-    if (datePickerMode === 'start') {
-      // If we're selecting a start date
-      if (dateRange?.to && date > dateRange.to) {
-        // If selected start date is after current end date, reset end date
-        setDateRange({ from: date, to: null });
-        setDatePickerMode('end'); // Switch to end date selection
-      } else {
-        // Normal start date selection
-        setDateRange({ 
-          from: date, 
-          to: dateRange?.to || date // Keep end date if it exists
-        });
-        
-        if (!dateRange?.to) {
-          setDatePickerMode('end'); // Switch to end date selection if no end date
-        }
+      
+      if (onDateRangeChange) {
+        onDateRangeChange({ from: date, to: date });
       }
     } else {
-      // If we're selecting an end date
-      if (dateRange?.from && date < dateRange.from) {
-        // If selected end date is before start date, swap them
-        setDateRange({ from: date, to: dateRange.from });
-      } else {
-        // Normal end date selection
-        setDateRange({ 
-          from: dateRange?.from || date, // Keep start date if it exists
-          to: date 
-        });
+      // For range selection, we'll use a simpler approach than before
+      // Just select the date and update the range
+      setDateRange({ from: date, to: date });
+      
+      if (onDateRangeChange) {
+        onDateRangeChange({ from: date, to: date });
       }
-      setDatePickerMode('start'); // Reset to start selection mode
-      // Don't close automatically, let the user apply the selection
     }
   };
   
@@ -285,18 +193,14 @@ const Calendar = ({
     setCalendarYear(nextMonth.getFullYear());
   };
   
-  const goToPrevYear = () => setCalendarYear(calendarYear - 1);
-  const goToNextYear = () => setCalendarYear(calendarYear + 1);
-  
-  // Handle month/year selection
-  const handleMonthSelect = (month) => {
-    setCalendarMonth(month);
-    setShowMonthPicker(false);
+  const goToPrevYear = () => {
+    const prevYear = new Date(calendarYear - 1, calendarMonth);
+    setCalendarYear(prevYear.getFullYear());
   };
   
-  const handleYearSelect = (year) => {
-    setCalendarYear(year);
-    setShowYearPicker(false);
+  const goToNextYear = () => {
+    const nextYear = new Date(calendarYear + 1, calendarMonth);
+    setCalendarYear(nextYear.getFullYear());
   };
   
   // Render the second month
@@ -310,15 +214,10 @@ const Calendar = ({
   
   const nextMonth = getNextMonthData();
   
-  // Get month name for display
-  const getMonthName = (month) => {
-    const monthNames = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'];
+  // Get abbreviated month name
+  const getShortMonthName = (month) => {
+    const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
     return monthNames[month];
-  };
-  
-  // Handle Apply button click
-  const handleApply = () => {
-    onClose && onClose();
   };
 
   return (
@@ -326,123 +225,92 @@ const Calendar = ({
       {showPresets && (
         <div className="date-presets">
           <button 
-            onClick={() => handleDatePreset('today')}
+            onClick={() => handleDatePreset(7)}
             className="preset-button"
           >
-            Hoy
+            Last 7 Days
           </button>
           <button 
-            onClick={() => handleDatePreset('thisWeek')}
+            onClick={() => handleDatePreset(14)}
             className="preset-button"
           >
-            Esta Semana
+            Last 14 Days
           </button>
           <button 
-            onClick={() => handleDatePreset('thisMonth')}
+            onClick={() => handleDatePreset(30)}
             className="preset-button"
           >
-            Este Mes
+            Last 30 Days
+          </button>
+          <button 
+            onClick={() => handleDatePreset(90)}
+            className="preset-button"
+          >
+            Last 90 Days
           </button>
         </div>
       )}
       
-      {showMonthPicker ? (
-        <MonthSelector
-          currentMonth={calendarMonth}
-          currentYear={calendarYear}
-          onSelect={handleMonthSelect}
-          onCancel={() => setShowMonthPicker(false)}
-        />
-      ) : showYearPicker ? (
-        <YearSelector
-          currentYear={calendarYear}
-          onSelect={handleYearSelect}
-          onCancel={() => setShowYearPicker(false)}
-        />
-      ) : (
-        <div className="calendar-container">
-          <div className="two-month-container">
-            {/* First month */}
-            <div className="month-container">
-              <div className="calendar-header">
-                <button className="nav-button" title="Anterior" onClick={goToPrevMonth}>«</button>
-                <button className="nav-button" title="Anterior" onClick={goToPrevMonth}>‹</button>
-                <div className="month-year-display">
-                  <span onClick={() => setShowMonthPicker(true)} className="month-label">
-                    {getMonthName(calendarMonth)} {calendarYear}
-                  </span>
-                </div>
-                <button className="nav-button" title="Siguiente" onClick={goToNextMonth}>›</button>
-                <button className="nav-button" title="Siguiente" onClick={goToNextYear}>»</button>
-              </div>
-              
-              <table className="calendar-table">
-                <thead>
-                  <tr>
-                    <th>Lu</th>
-                    <th>Ma</th>
-                    <th>Mi</th>
-                    <th>Ju</th>
-                    <th>Vi</th>
-                    <th>Sa</th>
-                    <th>Do</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {renderCalendarBody(calendarYear, calendarMonth)}
-                </tbody>
-              </table>
-            </div>
-            
-            {/* Second month */}
-            <div className="month-container">
-              <div className="calendar-header">
-                <button className="nav-button" title="Anterior" onClick={goToPrevMonth}>«</button>
-                <button className="nav-button" title="Anterior" onClick={goToPrevMonth}>‹</button>
-                <div className="month-year-display">
-                  <span onClick={() => setShowMonthPicker(true)} className="month-label">
-                    {getMonthName(nextMonth.month)} {nextMonth.year}
-                  </span>
-                </div>
-                <button className="nav-button" title="Siguiente" onClick={goToNextMonth}>›</button>
-                <button className="nav-button" title="Siguiente" onClick={goToNextYear}>»</button>
-              </div>
-              
-              <table className="calendar-table">
-                <thead>
-                  <tr>
-                    <th>Lu</th>
-                    <th>Ma</th>
-                    <th>Mi</th>
-                    <th>Ju</th>
-                    <th>Vi</th>
-                    <th>Sa</th>
-                    <th>Do</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {renderCalendarBody(nextMonth.year, nextMonth.month, true)}
-                </tbody>
-              </table>
-            </div>
+      <div className="calendar-container">
+        <div className="calendar-header">
+          <div className="month-navigation">
+            <button className="nav-button" onClick={goToPrevYear} title="Previous Year">&lt;&lt;</button>
+            <button className="nav-button" onClick={goToPrevMonth} title="Previous Month">&lt;</button>
           </div>
           
-          {!singleDateMode && (
-            <div className="calendar-actions">
-              <button onClick={onClose} className="calendar-button cancel">
-                Cancelar
-              </button>
-              <button 
-                onClick={handleApply}
-                disabled={!dateRange?.from || !dateRange?.to} 
-                className="calendar-button confirm"
-              >
-                Aplicar
-              </button>
-            </div>
-          )}
+          <div className="month-titles">
+            <div className="month-title">{getShortMonthName(calendarMonth)} {calendarYear}</div>
+            <div className="month-title">{getShortMonthName(nextMonth.month)} {nextMonth.year}</div>
+          </div>
+          
+          <div className="month-navigation">
+            <button className="nav-button" onClick={goToNextMonth} title="Next Month">&gt;</button>
+            <button className="nav-button" onClick={goToNextYear} title="Next Year">&gt;&gt;</button>
+          </div>
         </div>
-      )}
+        
+        <div className="two-month-container">
+          {/* First month */}
+          <div className="month-container">
+            <table className="calendar-table">
+              <thead>
+                <tr>
+                  <th>Su</th>
+                  <th>Mo</th>
+                  <th>Tu</th>
+                  <th>We</th>
+                  <th>Th</th>
+                  <th>Fr</th>
+                  <th>Sa</th>
+                </tr>
+              </thead>
+              <tbody>
+                {renderCalendarDays(calendarYear, calendarMonth)}
+              </tbody>
+            </table>
+          </div>
+          
+          {/* Second month */}
+          <div className="month-container">
+            <table className="calendar-table">
+              <thead>
+                <tr>
+                  <th>Su</th>
+                  <th>Mo</th>
+                  <th>Tu</th>
+                  <th>We</th>
+                  <th>Th</th>
+                  <th>Fr</th>
+                  <th>Sa</th>
+                </tr>
+              </thead>
+              <tbody>
+                {renderCalendarDays(nextMonth.year, nextMonth.month)}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };
