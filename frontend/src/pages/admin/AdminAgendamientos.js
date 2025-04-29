@@ -1,7 +1,7 @@
 // frontend/src/pages/admin/AdminAgendamientosModificado.js
 import React, { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
-import "./CitasAgendadas.css";
+//import "./CitasAgendadas.css";
 import { 
   startOfWeek, endOfWeek, format, startOfDay, endOfDay 
 } from "date-fns";
