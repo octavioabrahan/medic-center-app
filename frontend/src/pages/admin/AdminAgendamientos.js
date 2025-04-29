@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import "./CitasAgendadas.css";
 import { startOfWeek, endOfWeek, format, startOfDay, endOfDay } from "date-fns";
-import Calendar from "../../components/common/Calendar";
 import Filters from "../../components/admin/Filters";
 import AppointmentsTable from "../../components/admin/AppointmentsTable";
 import LoadingSpinner from "../../components/common/LoadingSpinner";
