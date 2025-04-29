@@ -12,6 +12,7 @@ const AdminCitas = () => {
   const [profesionales, setProfesionales] = useState([]);
   const [selectedProfesional, setSelectedProfesional] = useState("todos");
   const [dateRange, setDateRange] = useState(null);
+  const [showCalendar, setShowCalendar] = useState(false);
 
   useEffect(() => {
     const fetchCitas = async () => {
@@ -104,10 +105,22 @@ const AdminCitas = () => {
           <option value="confirmada">Confirmada</option>
           <option value="cancelada">Cancelada</option>
         </select>
-        <Calendar
-          onDateRangeChange={setDateRange}
-          title="Seleccionar rango de fechas"
-        />
+        <div className="calendar-filter">
+          <button onClick={() => setShowCalendar(!showCalendar)}>
+            {dateRange
+              ? `${dateRange.from.toLocaleDateString()} - ${dateRange.to.toLocaleDateString()}`
+              : "Seleccionar rango de fechas"}
+          </button>
+          {showCalendar && (
+            <Calendar
+              onDateRangeChange={(range) => {
+                setDateRange(range);
+                setShowCalendar(false);
+              }}
+              title="Seleccionar rango de fechas"
+            />
+          )}
+        </div>
         <select
           value={selectedProfesional}
           onChange={(e) => setSelectedProfesional(e.target.value)}

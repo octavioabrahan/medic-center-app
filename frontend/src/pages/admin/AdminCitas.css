@@ -10,10 +10,30 @@
 }
 
 .filters input,
-.filters select {
+.filters select,
+.filters button {
   padding: 8px;
   border: 1px solid #ccc;
   border-radius: 4px;
+}
+
+.calendar-filter {
+  position: relative;
+}
+
+.calendar-filter button {
+  background-color: white;
+  cursor: pointer;
+}
+
+.calendar-filter .custom-calendar-wrapper {
+  position: absolute;
+  top: 40px;
+  z-index: 10;
+  background: white;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .citas-table {
