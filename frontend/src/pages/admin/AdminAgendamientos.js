@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import "./CitasAgendadas.css";
-import { startOfWeek, endOfWeek, format, startOfDay, endOfDay } from "date-fns";
 import Filters from "../../components/admin/Filters";
 import AppointmentsTable from "../../components/admin/AppointmentsTable";
 import LoadingSpinner from "../../components/common/LoadingSpinner";
@@ -10,7 +9,7 @@ import ModalHistorial from "../../components/admin/ModalHistorial";
 const TODOS_LOS_ESTADOS = ["pendiente", "confirmada", "cancelada"];
 
 const AdminAgendamientos = () => {
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useState(new URLSearchParams());
   const [searchTerm, setSearchTerm] = useState("");
   const [profesionales, setProfesionales] = useState([]);
   const [filtroProfesional, setFiltroProfesional] = useState("todos");
@@ -20,11 +19,11 @@ const AdminAgendamientos = () => {
   const hasta = searchParams.get("hasta") || null;
 
   const [dateRange, setDateRange] = useState({
-    from: desde ? new Date(desde) : startOfWeek(new Date()),
-    to: hasta ? new Date(hasta) : endOfWeek(new Date()),
+    from: desde ? new Date(desde) : new Date(),
+    to: hasta ? new Date(hasta) : new Date(),
   });
-  const [startDate, setStartDate] = useState(dateRange?.from);
-  const [endDate, setEndDate] = useState(dateRange?.to);
+  const [startDate, setStartDate] = useState(dateRange.from);
+  const [endDate, setEndDate] = useState(dateRange.to);
   const [showDatePicker, setShowDatePicker] = useState(false);
 
   const [mostrarHistorial, setMostrarHistorial] = useState(false);
@@ -108,7 +107,7 @@ const AdminAgendamientos = () => {
     const matchesFecha =
       !startDate ||
       !endDate ||
-      (fechaCita >= startOfDay(startDate) && fechaCita <= endOfDay(endDate));
+      (fechaCita >= startDate && fechaCita <= endDate);
 
     return matchesSearch && matchesProfesional && matchesFecha;
   });
@@ -116,27 +115,13 @@ const AdminAgendamientos = () => {
   const toggleDatePicker = () => setShowDatePicker(!showDatePicker);
 
   useEffect(() => {
-    if (dateRange?.from) {
+    if (dateRange.from) {
       setStartDate(dateRange.from);
     }
-    if (dateRange?.to) {
+    if (dateRange.to) {
       setEndDate(dateRange.to);
     }
   }, [dateRange]);
-
-  useEffect(() => {
-    if (startDate && endDate) {
-      const fromFormatted = format(startDate, "yyyy-MM-dd");
-      const toFormatted = format(endDate, "yyyy-MM-dd");
-
-      if (fromFormatted !== desde || toFormatted !== hasta) {
-        const newParams = new URLSearchParams(searchParams);
-        newParams.set("desde", fromFormatted);
-        newParams.set("hasta", toFormatted);
-        setSearchParams(newParams);
-      }
-    }
-  }, [startDate, endDate, searchParams, setSearchParams, desde, hasta]);
 
   return (
     <div className="citas-container">
