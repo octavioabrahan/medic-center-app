@@ -2,7 +2,8 @@
 .admin-citas-container {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 20px;
+  padding: 32px;
+  padding-left: 32px; /* Margen izquierdo de 32px */
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
 }
 
@@ -14,15 +15,15 @@
   font-weight: 600;
 }
 
-/* Barra de filtros rediseñada para estar alineada horizontalmente */
+/* Barra de filtros rediseñada sin fondo */
 .filters-bar {
   display: flex;
   flex-wrap: nowrap;
   gap: 15px;
-  margin-bottom: 25px;
-  padding: 20px;
-  background-color: #f5f7fa;
-  border-radius: 6px;
+  margin-bottom: 24px; /* Ajustado a 24px entre filtros y tabla */
+  padding: 0; /* Sin padding */
+  background-color: transparent; /* Transparente */
+  border-radius: 0;
   align-items: center;
   justify-content: space-between;
 }
@@ -39,7 +40,6 @@
   border-radius: 4px;
   font-size: 13px;
   height: 38px;
-  padding-left: 12px;
 }
 
 .search-icon {
@@ -49,6 +49,9 @@
   transform: translateY(-50%);
   color: #9ca3af;
   pointer-events: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .filter-container {
@@ -263,12 +266,14 @@
   }
 }
 
-/* Tabla de citas rediseñada */
+/* Tabla de citas rediseñada con scroll interno */
 .table-container {
   overflow-x: auto;
   margin-bottom: 20px;
   border-radius: 4px;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  max-height: calc(100vh - 200px); /* Ajustar altura máxima para pantalla completa */
+  overflow-y: auto; /* Añadir scroll vertical */
 }
 
 .citas-table {
@@ -412,6 +417,17 @@
   font-size: 12px;
   color: #6b7280;
   margin-top: 3px;
+}
+
+/* Estilos para la celda de maletín */
+.empresa-cell {
+  width: 40px;
+  text-align: center;
+}
+
+.empresa-icon {
+  font-size: 16px;
+  color: #1e3a8a;
 }
 
 /* Modales */

@@ -221,6 +221,7 @@ const AdminCitas = () => {
         <table className="citas-table">
           <thead>
             <tr>
+              <th></th> {/* Columna para icono de maletín */}
               <th>Fecha cita</th>
               <th>Paciente</th>
               <th>Cédula</th>
@@ -242,8 +243,10 @@ const AdminCitas = () => {
               
               return (
                 <tr key={agendamiento.agendamiento_id}>
-                  <td className="fecha-cell">
+                  <td className="empresa-cell">
                     {agendamiento.id_empresa && <div className="empresa-icon">💼</div>}
+                  </td>
+                  <td>
                     {formatoFecha}
                   </td>
                   <td>{agendamiento.paciente_nombre} {agendamiento.paciente_apellido}</td>
