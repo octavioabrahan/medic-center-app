@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
-import { format, startOfWeek, endOfWeek, startOfToday, endOfToday } from 'date-fns';
+import { format } from 'date-fns';
 import Calendar from '../../components/common/Calendar';
 import "./AdminCitas.css";
 
@@ -110,6 +110,7 @@ const AdminCitas = () => {
   useEffect(() => {
     fetchAgendamientos();
     fetchProfesionales();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Aplicar filtros cuando cambian los criterios
@@ -160,6 +161,7 @@ const AdminCitas = () => {
     if (agendamientos.length > 0) {
       applyFilters();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchTerm, filterStatus, filtroProfesional]);
 
   // Obtener datos nuevamente cuando cambia el rango de fechas
@@ -167,6 +169,7 @@ const AdminCitas = () => {
     if (dateRange.from && dateRange.to) {
       fetchAgendamientos();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dateRange.from, dateRange.to]);
 
   // Obtener historial de un agendamiento
@@ -185,7 +188,7 @@ const AdminCitas = () => {
   // Cambiar estado de agendamiento
   const actualizarEstado = async (id, nuevoEstado) => {
     try {
-      const response = await axios.put(`/api/agendamiento/${id}`, { status: nuevoEstado });
+      await axios.put(`/api/agendamiento/${id}`, { status: nuevoEstado });
       
       // Actualizar estado en la lista local
       const updatedAgendamientos = agendamientos.map(agendamiento => 
@@ -335,6 +338,13 @@ const AdminCitas = () => {
                         </button>
                       </>
                     )}
+                    <button
+                      className="btn-action btn-history"
+                      onClick={() => fetchHistorial(agendamiento.agendamiento_id)}
+                      title="Ver historial"
+                    >
+                      📋
+                    </button>
                   </td>
                 </tr>
               );
