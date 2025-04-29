@@ -232,17 +232,19 @@ const AdminCitas = () => {
           </thead>
           <tbody>
             {filteredAgendamientos.map(agendamiento => {
-              const formatoFecha = formatearFecha(agendamiento.fecha_agendada);
+              // Simplificar formato de fecha para mostrar solo la parte necesaria
+              const fecha = new Date(agendamiento.fecha_agendada);
+              const formatoFecha = fecha.toLocaleDateString('es-ES', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric'
+              });
               
               return (
                 <tr key={agendamiento.agendamiento_id}>
                   <td className="fecha-cell">
                     {agendamiento.id_empresa && <div className="empresa-icon">💼</div>}
-                    <div className="calendar-icon">📅</div>
-                    <div>
-                      <div>{formatoFecha.fecha}</div>
-                      <div className="hora">{formatoFecha.hora}</div>
-                    </div>
+                    {formatoFecha}
                   </td>
                   <td>{agendamiento.paciente_nombre} {agendamiento.paciente_apellido}</td>
                   <td>{agendamiento.cedula}</td>
@@ -412,6 +414,7 @@ const AdminCitas = () => {
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
+          <span className="search-icon">🔍</span>
         </div>
         
         <div className="filter-container">
@@ -442,60 +445,61 @@ const AdminCitas = () => {
           </select>
         </div>
         
-        {/* Componente de selección de fechas con manejo correcto de eventos */}
-        <div className="date-picker-container" ref={datePickerRef}>
-          <div 
-            className="date-input-wrapper"
-            onClick={handleDateInputClick}
-          >
-            <span className="calendar-icon">📅</span>
-            <input 
-              type="text" 
-              className="date-input"
-              placeholder="Seleccionar rango de fechas"
-              value={formatDateRange()}
-              readOnly
-            />
-          </div>
-          
-          {showDatePicker && (
+        <div className="filter-container">
+          <label>Fecha:</label>
+          <div className="date-picker-container" ref={datePickerRef}>
             <div 
-              className="calendar-dropdown"
-              onClick={e => e.stopPropagation()}
+              className="date-input-wrapper"
+              onClick={handleDateInputClick}
             >
-              <Calendar
-                initialDateRange={dateRange}
-                onDateRangeChange={handleDateRangeChange}
-                onClose={() => setShowDatePicker(false)}
-                showPresets={true}
+              <div className="calendar-icon">📅</div>
+              <input 
+                type="text" 
+                className="date-input"
+                placeholder="dd/mm/yyyy - dd/mm/yyyy"
+                value={formatDateRange()}
+                readOnly
               />
-
-              {/* Botones de acción para fechas */}
-              <div className="calendar-actions">
-                <button 
-                  className="btn-apply"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    fetchAgendamientos();
-                    setShowDatePicker(false);
-                  }}
-                >
-                  Aplicar
-                </button>
-                <button 
-                  className="btn-cancel"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    setShowDatePicker(false);
-                  }}
-                >
-                  Cancelar
-                </button>
-              </div>
             </div>
-          )}
+            
+            {showDatePicker && (
+              <div 
+                className="calendar-dropdown"
+                onClick={e => e.stopPropagation()}
+              >
+                <Calendar
+                  initialDateRange={dateRange}
+                  onDateRangeChange={handleDateRangeChange}
+                  onClose={() => setShowDatePicker(false)}
+                  showPresets={true}
+                />
+
+                <div className="calendar-actions">
+                  <button 
+                    className="btn-apply"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      fetchAgendamientos();
+                      setShowDatePicker(false);
+                    }}
+                  >
+                    Aplicar
+                  </button>
+                  <button 
+                    className="btn-cancel"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      setShowDatePicker(false);
+                    }}
+                  >
+                    Cancelar
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
         </div>
       </div>
       
