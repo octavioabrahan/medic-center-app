@@ -1,11 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { 
-  format, startOfDay, endOfDay, startOfToday, endOfToday,
-  startOfWeek, endOfWeek, startOfMonth, endOfMonth,
-  addMonths, subMonths, addYears, subYears, isSameDay, isWithinInterval,
-  getDay, addDays, subDays
+  startOfDay, endOfDay,
+  subDays
 } from "date-fns";
-import { es } from "date-fns/locale";
 import "./Calendar.css";
 
 const Calendar = ({ 
@@ -16,19 +13,18 @@ const Calendar = ({
   onClose,
   title = "Seleccione fecha"
 }) => {
-  // Current view state (calendar, month selector, or year selector)
-  const [showMonthPicker, setShowMonthPicker] = useState(false);
-  const [showYearPicker, setShowYearPicker] = useState(false);
-  
   // Calendar navigation state
   const [calendarMonth, setCalendarMonth] = useState(new Date().getMonth());
   const [calendarYear, setCalendarYear] = useState(new Date().getFullYear());
+  
+  // Date selection mode ('start' or 'end')
+  const [datePickerMode, setDatePickerMode] = useState(singleDateMode ? 'single' : 'start');
   
   // Selected date range
   const [dateRange, setDateRange] = useState(
     initialDateRange || (singleDateMode 
       ? { from: new Date(), to: new Date() }
-      : { from: startOfWeek(new Date()), to: endOfWeek(new Date()) }
+      : { from: new Date(), to: new Date() }
     )
   );
   
