@@ -18,7 +18,6 @@ import AgendamientoEmpresaForm from "./components/public/AgendamientoEmpresaForm
 import AgendamientoIndex from './components/public/AgendamientoIndex';
 import CotizacionesAdmin from './components/admin/CotizacionesAdmin';
 import AdminLayout from './components/admin/AdminLayout';
-import AgendamientoAdminPage from './pages/admin/AgendamientoAdminPage';
 
 function App() {
   return (
@@ -43,7 +42,6 @@ function App() {
           <Route path="roles" element={<RolesPage />} />
           <Route path="excepciones" element={<ExcepcionesPage />} />
           <Route path="citas" element={<AdminCitas />} />
-          <Route path="agendamientos" element={<AgendamientoAdminPage />} />
           <Route path="empresas" element={<AdminEmpresas />} />
           <Route path="cotizaciones" element={<CotizacionesAdmin />} />
           {/* Añadir más rutas de administración según sea necesario */}
