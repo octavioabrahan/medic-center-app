@@ -97,13 +97,30 @@
   left: 0;
   z-index: 1000;
   background: white;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
   border-radius: 6px;
-  margin-top: 4px;
-  padding: 15px;
+  margin-top: 8px;
+  padding: 12px;
   border: 1px solid #e5e7eb;
-  width: 650px; /* Aumentado el ancho para acomodar dos meses */
+  width: 560px; /* Reducido a un tamaño más compacto */
   max-width: 95vw; /* Responsive */
+  /* Asegurar que el calendario no se salga de la pantalla */
+  transform: translateX(0);
+}
+
+/* Asegurar que el calendario no se salga de la pantalla a la derecha */
+.date-picker-container {
+  position: relative;
+  min-width: 220px;
+}
+
+/* Detectar si está cerca del borde derecho y reposicionar */
+@media (min-width: 600px) {
+  .date-picker-container:nth-last-child(2) .calendar-dropdown,
+  .date-picker-container:last-child .calendar-dropdown {
+    right: 0;
+    left: auto;
+  }
 }
 
 /* Estilos para el contenido del calendario dentro del dropdown */
@@ -119,11 +136,11 @@
 }
 
 .calendar-dropdown .preset-button {
-  padding: 6px 10px;
+  padding: 5px 8px;
   background-color: #f3f4f6;
   border: 1px solid #d1d5db;
   border-radius: 4px;
-  font-size: 13px;
+  font-size: 12px;
   cursor: pointer;
 }
 
@@ -131,67 +148,91 @@
   background-color: #e5e7eb;
 }
 
-.calendar-dropdown .month-container {
-  min-width: 280px; /* Mínimo ancho para cada mes */
-}
-
+/* Ajustar el tamaño de los meses y asegurar que estén uno al lado del otro */
 .calendar-dropdown .two-month-container {
   display: flex;
-  flex-wrap: wrap;
-  gap: 15px;
+  justify-content: space-between;
+  margin: 0 auto;
+  max-width: 100%;
+}
+
+.calendar-dropdown .month-container {
+  width: 48%; /* Para que quepan dos meses lado a lado con espacio entre ellos */
+  min-width: 0; /* Permite que se reduzca si es necesario */
+}
+
+.calendar-dropdown .calendar-table {
+  width: 100%;
+  font-size: 12px; /* Texto más pequeño */
+}
+
+.calendar-dropdown .calendar-day {
+  padding: 5px; /* Reducir el padding de cada celda del día */
+  height: 25px; /* Altura fija más pequeña */
+  width: 25px; /* Ancho fijo más pequeño */
+  display: flex;
+  align-items: center;
   justify-content: center;
 }
 
-/* Nuevos botones de acción para el calendario */
+/* Arreglar los botones de Aplicar y Cancelar */
 .calendar-actions {
   display: flex;
   justify-content: flex-end;
-  margin-top: 15px;
-  padding-top: 10px;
+  margin-top: 10px;
+  padding-top: 8px;
   border-top: 1px solid #e5e7eb;
   gap: 8px;
 }
 
-.btn-apply, 
-.btn-cancel {
-  padding: 8px 15px;
+.calendar-dropdown .btn-apply, 
+.calendar-dropdown .btn-cancel {
+  padding: 6px 12px;
   border: none;
   border-radius: 4px;
   cursor: pointer;
-  font-size: 14px;
+  font-size: 12px;
   font-weight: 500;
 }
 
-.btn-apply {
+.calendar-dropdown .btn-apply {
   background-color: #1e3a8a;
   color: white;
 }
 
-.btn-apply:hover {
+.calendar-dropdown .btn-apply:hover {
   background-color: #2563eb;
 }
 
-.btn-cancel {
+.calendar-dropdown .btn-cancel {
   background-color: #e5e7eb;
   color: #374151;
 }
 
-.btn-cancel:hover {
+.calendar-dropdown .btn-cancel:hover {
   background-color: #d1d5db;
 }
 
-.refresh-btn {
-  padding: 10px 15px;
-  background-color: #1e3a8a;
-  color: white;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  font-weight: 500;
-}
-
-.refresh-btn:hover {
-  background-color: #2563eb;
+/* Ajuste responsivo para pantallas pequeñas */
+@media (max-width: 600px) {
+  .calendar-dropdown {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 90%;
+    max-height: 90vh;
+    overflow-y: auto;
+  }
+  
+  .calendar-dropdown .two-month-container {
+    flex-direction: column;
+  }
+  
+  .calendar-dropdown .month-container {
+    width: 100%;
+    margin-bottom: 15px;
+  }
 }
 
 /* Tabla de citas */
