@@ -3,7 +3,7 @@
 /* General styles */
 .citas-container {
   padding: 20px;
-  background-color: #fff;
+  background-color: #f9fafb;
   font-family: 'Inter', 'Segoe UI', sans-serif;
   max-width: 1400px;
   margin: 0 auto;
@@ -26,9 +26,10 @@
   margin-bottom: 20px;
   align-items: center;
   justify-content: space-between;
-  background-color: #f9fafb;
-  padding: 12px;
+  background-color: #ffffff;
+  padding: 15px;
   border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
 }
 
 .search-box {
@@ -42,13 +43,13 @@
   border-radius: 500px;
   padding: 6px 12px;
   background-color: white;
-  width: 280px;
+  width: 300px;
   flex-shrink: 0;
 }
 
 .search-box input {
   width: 100%;
-  padding: 10px 35px 10px 10px;
+  padding: 10px 35px 10px 15px;
   border: 1px solid #ddd;
   border-radius: 4px;
   font-size: 14px;
@@ -58,7 +59,7 @@
 
 .search-button {
   position: absolute;
-  right: 10px;
+  right: 15px;
   top: 50%;
   transform: translateY(-50%);
   background: none;
@@ -76,24 +77,27 @@
 
 .filter-group {
   display: flex;
-  gap: 10px;
+  gap: 15px;
   flex-wrap: wrap;
   align-items: center;
+  flex-grow: 1;
 }
 
 .filter-select {
-  padding: 10px;
+  padding: 10px 15px;
   border: 1px solid #ddd;
   border-radius: 4px;
   background-color: white;
   font-size: 14px;
   min-width: 180px;
   cursor: pointer;
+  flex-grow: 1;
 }
 
 /* Calendar and date picker improvements */
 .date-picker-wrapper {
   position: relative;
+  flex-grow: 1;
 }
 
 .date-range-inputs {
@@ -105,14 +109,16 @@
 .date-picker-input {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: 5px;
-  padding: 10px;
+  padding: 10px 15px;
   border: 1px solid #ddd;
   border-radius: 4px;
   background-color: white;
   font-size: 14px;
   cursor: pointer;
   min-width: 120px;
+  width: 100%;
 }
 
 .date-separator {
@@ -134,7 +140,7 @@
 
 .admin-calendar-wrapper {
   position: absolute;
-  top: 100%;
+  top: calc(100% + 5px);
   left: 0;
   z-index: 100;
   background: white;

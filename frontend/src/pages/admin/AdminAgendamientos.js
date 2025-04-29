@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import "./CitasAgendadas.css";
 import { 
-  startOfWeek, endOfWeek, format, startOfDay, endOfDay 
+  startOfWeek, endOfWeek, format, startOfDay, endOfDay, parseISO 
 } from "date-fns";
 import Calendar from "../../components/common/Calendar";
 
@@ -20,8 +20,8 @@ const AdminAgendamientos = () => {
   const hasta = searchParams.get("hasta") || format(endOfWeek(new Date()), "yyyy-MM-dd");
   
   const [dateRange, setDateRange] = useState({
-    from: desde ? new Date(desde) : startOfWeek(new Date()),
-    to: hasta ? new Date(hasta) : endOfWeek(new Date())
+    from: desde ? parseISO(desde) : startOfWeek(new Date()),
+    to: hasta ? parseISO(hasta) : endOfWeek(new Date())
   });
   const [startDate, setStartDate] = useState(dateRange?.from);
   const [endDate, setEndDate] = useState(dateRange?.to);
@@ -190,17 +190,22 @@ const AdminAgendamientos = () => {
           </select>
           
           <div className="date-picker-wrapper">
-            <div className="date-range-inputs">
-              <button 
-                className="date-picker-input" 
-                onClick={toggleDatePicker}
-              >
-                <span className="calendar-icon">📅</span>
-                {formatDateRange()}
-              </button>
-            </div>
+            <button 
+              className="date-picker-input" 
+              onClick={toggleDatePicker}
+              type="button"
+            >
+              <span className="calendar-icon">📅</span>
+              <span>
+                {startDate && endDate ? (
+                  `${format(startDate, "dd-MM-yyyy")} ${format(endDate, "dd-MM-yyyy")}`
+                ) : (
+                  "Seleccionar fechas"
+                )}
+              </span>
+            </button>
             {showDatePicker && (
-              <div className="admin-calendar-wrapper enhanced">
+              <div className="admin-calendar-wrapper">
                 <Calendar
                   initialDateRange={dateRange}
                   onDateRangeChange={handleDateRangeChange}
@@ -267,6 +272,7 @@ const AdminAgendamientos = () => {
                         onClick={() => actualizarEstado(a.agendamiento_id, "confirmada")}
                         className="action-btn confirm-btn"
                         title="Confirmar"
+                        type="button"
                       >
                         ✓
                       </button>
@@ -274,6 +280,7 @@ const AdminAgendamientos = () => {
                         onClick={() => actualizarEstado(a.agendamiento_id, "cancelada")}
                         className="action-btn cancel-btn"
                         title="Cancelar"
+                        type="button"
                       >
                         ✕
                       </button>
