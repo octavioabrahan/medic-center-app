@@ -17,9 +17,8 @@ const AdminCitas = () => {
   const [profesionales, setProfesionales] = useState([]);
   const [filtroProfesional, setFiltroProfesional] = useState("todos");
 
-  // Referencias para manejar clics fuera del calendario
-  const calendarRef = useRef(null);
-  const calendarButtonRef = useRef(null);
+  // Referencia para el contenedor del calendario
+  const datePickerRef = useRef(null);
 
   // Estados para el calendario
   const [dateRange, setDateRange] = useState({
@@ -35,24 +34,20 @@ const AdminCitas = () => {
   const [historial, setHistorial] = useState([]);
   const [historialDe, setHistorialDe] = useState(null);
 
-  // Efecto para manejar clics fuera del calendario
+  // Efectos para detectar clics fuera del calendario
   useEffect(() => {
-    function handleClickOutside(event) {
-      if (showDatePicker && 
-          calendarRef.current && 
-          !calendarRef.current.contains(event.target) &&
-          calendarButtonRef.current &&
-          !calendarButtonRef.current.contains(event.target)) {
+    const handleClickOutside = (event) => {
+      if (datePickerRef.current && !datePickerRef.current.contains(event.target)) {
         setShowDatePicker(false);
       }
-    }
+    };
 
-    // Agregar el event listener cuando el calendario está abierto
+    // Añadir listener solo cuando el calendario está visible
     if (showDatePicker) {
       document.addEventListener("mousedown", handleClickOutside);
     }
-    
-    // Limpieza del event listener
+
+    // Limpiar listener
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
@@ -163,16 +158,6 @@ const AdminCitas = () => {
     }
   };
 
-  // Toggle para mostrar/ocultar el selector de fechas
-  const toggleDatePicker = (e) => {
-    // Detener la propagación para evitar que el evento llegue al documento
-    if (e) {
-      e.preventDefault();
-      e.stopPropagation();
-    }
-    setShowDatePicker(!showDatePicker);
-  };
-
   // Cerrar el modal de historial
   const cerrarHistorial = () => {
     setMostrarHistorial(false);
@@ -208,24 +193,6 @@ const AdminCitas = () => {
   const formatDateRange = () => {
     if (!dateRange.from || !dateRange.to) return "Seleccionar fechas";
     return `${format(dateRange.from, 'dd/MM/yyyy')} - ${format(dateRange.to, 'dd/MM/yyyy')}`;
-  };
-
-  // Filtros rápidos predefinidos
-  const aplicarFiltroRapido = (tipo) => {
-    let nuevaFecha = {};
-    
-    switch (tipo) {
-      case 'hoy':
-        nuevaFecha = { from: startOfToday(), to: endOfToday() };
-        break;
-      case 'semana':
-        nuevaFecha = { from: startOfWeek(new Date()), to: endOfWeek(new Date()) };
-        break;
-      default:
-        nuevaFecha = { from: startOfWeek(new Date()), to: endOfWeek(new Date()) };
-    }
-    
-    setDateRange(nuevaFecha);
   };
 
   // Mostrar detalles del agendamiento (utilizando el agendamiento directamente)
@@ -473,20 +440,21 @@ const AdminCitas = () => {
           </select>
         </div>
         
-        <div className="date-picker-wrapper">
-          <button 
-            ref={calendarButtonRef}
-            className="date-picker-input" 
-            onClick={toggleDatePicker}
-          >
+        <div className="date-picker-container" ref={datePickerRef}>
+          <div className="date-input-wrapper">
             <span className="calendar-icon">📅</span>
-            {formatDateRange()}
-          </button>
+            <input 
+              type="text" 
+              className="date-input"
+              placeholder="Seleccionar rango de fechas"
+              value={formatDateRange()}
+              onClick={() => setShowDatePicker(!showDatePicker)}
+              readOnly
+            />
+          </div>
+          
           {showDatePicker && (
-            <div 
-              ref={calendarRef}
-              className="admin-calendar-wrapper"
-            >
+            <div className="calendar-dropdown">
               <Calendar
                 initialDateRange={dateRange}
                 onDateRangeChange={handleDateRangeChange}
