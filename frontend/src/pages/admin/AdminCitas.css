@@ -14,17 +14,22 @@
   font-weight: 600;
 }
 
-/* Barra de filtros rediseñada para coincidir con la imagen */
-.filters-bar {
+/* Barra de filtros específica para AdminCitas */
+.admin-citas-filters {
   display: flex;
   flex-wrap: nowrap;
   gap: 15px;
   margin-bottom: 24px;
-  padding: 15px;
-  background-color: #f8f9fa;
-  border-radius: 8px;
+  padding: 0;
+  background-color: transparent;
+  border-radius: 0;
   align-items: center;
   justify-content: space-between;
+}
+
+/* Eliminar la definición anterior de .filters-bar que podría estar causando conflictos */
+.filters-bar {
+  /* Esta clase ya no se usa en este componente */
 }
 
 .search-container {

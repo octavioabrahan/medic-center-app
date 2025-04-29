@@ -419,7 +419,7 @@ const AdminCitas = () => {
     <div className="admin-citas-container">
       <h1>Citas agendadas</h1>
       
-      <div className="filters-bar">
+      <div className="admin-citas-filters">
         <div className="search-container">
           <input
             type="text"
