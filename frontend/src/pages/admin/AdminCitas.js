@@ -418,7 +418,6 @@ const AdminCitas = () => {
         </div>
         
         <div className="filter-container">
-          <label>Estado:</label>
           <select 
             value={filterStatus}
             onChange={(e) => setFilterStatus(e.target.value)}
@@ -431,7 +430,6 @@ const AdminCitas = () => {
         </div>
         
         <div className="filter-container">
-          <label>Profesional:</label>
           <select 
             value={filtroProfesional}
             onChange={(e) => setFiltroProfesional(e.target.value)}
@@ -445,9 +443,11 @@ const AdminCitas = () => {
           </select>
         </div>
         
-        <div className="filter-container">
-          <label>Fecha:</label>
-          <div className="date-input-wrapper" onClick={handleDateInputClick}>
+        <div className="filter-container" ref={datePickerRef}>
+          <div 
+            className="date-input-wrapper" 
+            onClick={handleDateInputClick}
+          >
             <span className="calendar-icon">📅</span>
             <input 
               type="text" 
@@ -462,7 +462,6 @@ const AdminCitas = () => {
             <div 
               className="calendar-dropdown"
               onClick={e => e.stopPropagation()}
-              ref={datePickerRef}
             >
               <Calendar
                 initialDateRange={dateRange}

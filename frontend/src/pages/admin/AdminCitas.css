@@ -20,10 +20,11 @@
   flex-wrap: nowrap;
   gap: 15px;
   margin-bottom: 25px;
-  padding: 15px;
+  padding: 20px;
   background-color: #f5f7fa;
   border-radius: 6px;
-  align-items: flex-start;
+  align-items: center;
+  justify-content: space-between;
 }
 
 .search-container {
@@ -38,6 +39,7 @@
   border-radius: 4px;
   font-size: 13px;
   height: 38px;
+  padding-left: 12px;
 }
 
 .search-icon {
@@ -50,9 +52,6 @@
 }
 
 .filter-container {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
   flex: 1;
 }
 
@@ -111,8 +110,8 @@
 /* Estilo corregido para el dropdown del calendario */
 .calendar-dropdown {
   position: absolute;
-  top: 100%;
-  left: 0;
+  top: 48px; /* Ajustado para posicionarse debajo del input de fecha */
+  right: 0;
   z-index: 1000;
   background: white;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
