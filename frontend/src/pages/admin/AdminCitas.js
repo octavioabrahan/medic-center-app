@@ -71,56 +71,6 @@ const AdminCitas = () => {
     };
   }, [showDatePicker]);
 
-  // Cargar agendamientos al montar el componente
-  useEffect(() => {
-    fetchAgendamientos();
-  }, []);
-
-  // Filtrar agendamientos cuando cambian los criterios
-  useEffect(() => {
-    if (agendamientos.length > 0) {
-      console.log("Agendamientos cargados:", agendamientos);
-      let results = [...agendamientos];
-      
-      // Filtrar por término de búsqueda
-      if (searchTerm) {
-        const term = searchTerm.toLowerCase();
-        results = results.filter(agendamiento => 
-          `${agendamiento.paciente_nombre || ''} ${agendamiento.paciente_apellido || ''}`.toLowerCase().includes(term) ||
-          (agendamiento.cedula || '').toLowerCase().includes(term)
-        );
-      }
-      
-      // Filtrar por estado - Corregido para asegurar compatibilidad
-      if (filterStatus !== 'todos') {
-        results = results.filter(agendamiento => {
-          return agendamiento.status && agendamiento.status.toLowerCase() === filterStatus.toLowerCase();
-        });
-      }
-      
-      // Filtrar por profesional
-      if (filtroProfesional !== 'todos') {
-        results = results.filter(agendamiento => 
-          agendamiento.profesional_id === filtroProfesional
-        );
-      }
-      
-      // Filtrar por rango de fechas
-      if (dateRange.from && dateRange.to) {
-        results = results.filter(agendamiento => {
-          const fechaAgendada = new Date(agendamiento.fecha_agendada);
-          return fechaAgendada >= dateRange.from && fechaAgendada <= dateRange.to;
-        });
-      }
-      
-      console.log("Resultados filtrados:", results.length);
-      setFilteredAgendamientos(results);
-      
-      // Aplicar los filtros automáticamente a la API
-      fetchAgendamientos();
-    }
-  }, [searchTerm, filterStatus, filtroProfesional, dateRange]);
-
   // Obtener agendamientos desde la API
   const fetchAgendamientos = async () => {
     setLoading(true);
@@ -131,11 +81,13 @@ const AdminCitas = () => {
       
       const response = await axios.get(`/api/agendamiento?${params.toString()}`);
       console.log("Datos cargados de la API:", response.data);
+      
+      // Guardar los datos originales
       setAgendamientos(response.data);
       
-      // Extraer lista de profesionales únicos
-      const profData = await axios.get("/api/profesionales");
-      setProfesionales(profData.data);
+      // Inicialmente mostrar todos los datos sin filtrar
+      applyFilters(response.data);
+      
     } catch (err) {
       console.error('Error:', err);
       setError('No se pudieron cargar los agendamientos. Por favor, intenta de nuevo.');
@@ -143,6 +95,79 @@ const AdminCitas = () => {
       setLoading(false);
     }
   };
+
+  // Cargar profesionales al montar el componente
+  const fetchProfesionales = async () => {
+    try {
+      const profData = await axios.get("/api/profesionales");
+      setProfesionales(profData.data);
+    } catch (err) {
+      console.error('Error cargando profesionales:', err);
+    }
+  };
+
+  // Cargar datos iniciales al montar el componente
+  useEffect(() => {
+    fetchAgendamientos();
+    fetchProfesionales();
+  }, []);
+
+  // Aplicar filtros cuando cambian los criterios
+  const applyFilters = (data = agendamientos) => {
+    if (!data || data.length === 0) return;
+    
+    console.log("Aplicando filtros a", data.length, "registros");
+    let results = [...data];
+    
+    // Filtrar por término de búsqueda
+    if (searchTerm) {
+      const term = searchTerm.toLowerCase();
+      results = results.filter(agendamiento => 
+        `${agendamiento.paciente_nombre || ''} ${agendamiento.paciente_apellido || ''}`.toLowerCase().includes(term) ||
+        (agendamiento.cedula || '').toLowerCase().includes(term)
+      );
+    }
+    
+    // Filtrar por estado
+    if (filterStatus !== 'todos') {
+      results = results.filter(agendamiento => {
+        return agendamiento.status && agendamiento.status.toLowerCase() === filterStatus.toLowerCase();
+      });
+    }
+    
+    // Filtrar por profesional
+    if (filtroProfesional !== 'todos') {
+      results = results.filter(agendamiento => 
+        agendamiento.profesional_id === filtroProfesional
+      );
+    }
+    
+    // Filtrar por rango de fechas
+    if (dateRange.from && dateRange.to) {
+      results = results.filter(agendamiento => {
+        const fechaAgendada = new Date(agendamiento.fecha_agendada);
+        return fechaAgendada >= dateRange.from && fechaAgendada <= dateRange.to;
+      });
+    }
+    
+    console.log("Resultados filtrados:", results.length);
+    setFilteredAgendamientos(results);
+  };
+
+  // Reaccionar a cambios en los filtros
+  useEffect(() => {
+    // Solo aplicar filtros si ya tenemos datos cargados
+    if (agendamientos.length > 0) {
+      applyFilters();
+    }
+  }, [searchTerm, filterStatus, filtroProfesional]);
+
+  // Obtener datos nuevamente cuando cambia el rango de fechas
+  useEffect(() => {
+    if (dateRange.from && dateRange.to) {
+      fetchAgendamientos();
+    }
+  }, [dateRange.from, dateRange.to]);
 
   // Obtener historial de un agendamiento
   const fetchHistorial = async (id) => {
@@ -163,9 +188,14 @@ const AdminCitas = () => {
       const response = await axios.put(`/api/agendamiento/${id}`, { status: nuevoEstado });
       
       // Actualizar estado en la lista local
-      setAgendamientos(prev => prev.map(agendamiento => 
+      const updatedAgendamientos = agendamientos.map(agendamiento => 
         agendamiento.agendamiento_id === id ? { ...agendamiento, status: nuevoEstado } : agendamiento
-      ));
+      );
+      
+      setAgendamientos(updatedAgendamientos);
+      
+      // Volver a aplicar filtros para actualizar la vista
+      applyFilters(updatedAgendamientos);
 
       // Si el agendamiento está siendo mostrado en detalle, actualizar su estado
       if (currentAgendamiento && currentAgendamiento.agendamiento_id === id) {
