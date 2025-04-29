@@ -90,6 +90,7 @@
   color: #374151;
 }
 
+/* Estilo corregido para el dropdown del calendario */
 .calendar-dropdown {
   position: absolute;
   top: 100%;
@@ -99,16 +100,53 @@
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   border-radius: 6px;
   margin-top: 4px;
-  padding: 10px;
+  padding: 15px;
   border: 1px solid #e5e7eb;
-  width: 300px;
+  width: 650px; /* Aumentado el ancho para acomodar dos meses */
+  max-width: 95vw; /* Responsive */
+}
+
+/* Estilos para el contenido del calendario dentro del dropdown */
+.calendar-dropdown .custom-calendar-wrapper {
+  width: 100%;
+}
+
+.calendar-dropdown .date-presets {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 10px;
+  flex-wrap: wrap;
+}
+
+.calendar-dropdown .preset-button {
+  padding: 6px 10px;
+  background-color: #f3f4f6;
+  border: 1px solid #d1d5db;
+  border-radius: 4px;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.calendar-dropdown .preset-button:hover {
+  background-color: #e5e7eb;
+}
+
+.calendar-dropdown .month-container {
+  min-width: 280px; /* Mínimo ancho para cada mes */
+}
+
+.calendar-dropdown .two-month-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  justify-content: center;
 }
 
 /* Nuevos botones de acción para el calendario */
 .calendar-actions {
   display: flex;
   justify-content: flex-end;
-  margin-top: 10px;
+  margin-top: 15px;
   padding-top: 10px;
   border-top: 1px solid #e5e7eb;
   gap: 8px;
@@ -116,7 +154,7 @@
 
 .btn-apply, 
 .btn-cancel {
-  padding: 8px 12px;
+  padding: 8px 15px;
   border: none;
   border-radius: 4px;
   cursor: pointer;
@@ -482,5 +520,15 @@
   .btn-primary,
   .btn-secondary {
     width: 100%;
+  }
+
+  .calendar-dropdown {
+    width: 100%;
+    left: 0;
+    right: 0;
+  }
+  
+  .calendar-dropdown .two-month-container {
+    flex-direction: column;
   }
 }
