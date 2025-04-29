@@ -46,9 +46,6 @@ const AdminCitas = () => {
   // Estados para modales
   const [currentAgendamiento, setCurrentAgendamiento] = useState(null);
   const [showDetailModal, setShowDetailModal] = useState(false);
-  const [mostrarHistorial, setMostrarHistorial] = useState(false);
-  const [historial, setHistorial] = useState([]);
-  const [historialDe, setHistorialDe] = useState(null);
 
   // Detectar clics fuera del selector de fechas para cerrarlo
   useEffect(() => {
@@ -172,19 +169,6 @@ const AdminCitas = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dateRange.from, dateRange.to]);
 
-  // Obtener historial de un agendamiento
-  const fetchHistorial = async (id) => {
-    try {
-      const response = await axios.get(`/api/agendamiento/${id}/historial`);
-      setHistorial(response.data);
-      setHistorialDe(id);
-      setMostrarHistorial(true);
-    } catch (err) {
-      console.error('Error:', err);
-      setError('No se pudo cargar el historial del agendamiento.');
-    }
-  };
-
   // Cambiar estado de agendamiento
   const actualizarEstado = async (id, nuevoEstado) => {
     try {
@@ -208,13 +192,6 @@ const AdminCitas = () => {
       console.error('Error:', err);
       setError('Error al actualizar el estado del agendamiento.');
     }
-  };
-
-  // Cerrar el modal de historial
-  const cerrarHistorial = () => {
-    setMostrarHistorial(false);
-    setHistorial([]);
-    setHistorialDe(null);
   };
 
   // Manejar clic en el input de fecha
@@ -338,13 +315,6 @@ const AdminCitas = () => {
                         </button>
                       </>
                     )}
-                    <button
-                      className="btn-action btn-history"
-                      onClick={() => fetchHistorial(agendamiento.agendamiento_id)}
-                      title="Ver historial"
-                    >
-                      📋
-                    </button>
                   </td>
                 </tr>
               );
@@ -433,42 +403,6 @@ const AdminCitas = () => {
                 Cerrar
               </button>
             </div>
-          </div>
-        </div>
-      </div>
-    );
-  };
-
-  // Modal de historial
-  const renderHistorialModal = () => {
-    if (!mostrarHistorial) return null;
-
-    return (
-      <div className="historial-modal">
-        <div className="historial-content">
-          <h3>Historial de Agendamiento #{historialDe}</h3>
-          <table className="historial-table">
-            <thead>
-              <tr>
-                <th>Anterior</th>
-                <th>Nuevo</th>
-                <th>Quién</th>
-                <th>Cuándo</th>
-              </tr>
-            </thead>
-            <tbody>
-              {historial.map((h) => (
-                <tr key={h.historial_id || h.id}>
-                  <td>{h.estado_anterior}</td>
-                  <td>{h.estado_nuevo}</td>
-                  <td>{h.cambiado_por}</td>
-                  <td>{new Date(h.fecha).toLocaleString()}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-          <div className="historial-actions">
-            <button onClick={cerrarHistorial} className="btn-primary">Cerrar</button>
           </div>
         </div>
       </div>
@@ -568,7 +502,6 @@ const AdminCitas = () => {
       
       {renderAgendamientosTable()}
       {renderDetailModal()}
-      {renderHistorialModal()}
     </div>
   );
 };
