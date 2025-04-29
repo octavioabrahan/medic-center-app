@@ -117,9 +117,7 @@ const Calendar = ({
     }
     
     setDateRange(newRange);
-    if (!singleDateMode) {
-      onClose && onClose();
-    }
+    // Do not close automatically, let user decide when to close
   };
 
   // Render the calendar body with all days
@@ -255,8 +253,6 @@ const Calendar = ({
         
         if (!dateRange?.to) {
           setDatePickerMode('end'); // Switch to end date selection if no end date
-        } else {
-          onClose && onClose();
         }
       }
     } else {
@@ -271,7 +267,8 @@ const Calendar = ({
           to: date 
         });
       }
-      onClose && onClose();
+      setDatePickerMode('start'); // Reset to start selection mode
+      // Don't close automatically, let the user apply the selection
     }
   };
   
@@ -312,6 +309,11 @@ const Calendar = ({
   };
   
   const nextMonth = getNextMonthData();
+  
+  // Handle Apply button click
+  const handleApply = () => {
+    onClose && onClose();
+  };
 
   return (
     <div className="custom-calendar-wrapper">
@@ -435,7 +437,7 @@ const Calendar = ({
                 Cancelar
               </button>
               <button 
-                onClick={onClose}
+                onClick={handleApply}
                 disabled={!dateRange?.from || !dateRange?.to} 
                 className="calendar-button confirm"
               >
