@@ -444,19 +444,14 @@ const AdminCitas = () => {
         </div>
         
         <div className="filter-container" ref={datePickerRef}>
-          <div 
-            className="date-input-wrapper" 
+          <input 
+            type="text" 
+            className="date-select"
+            placeholder="dd/mm/yyyy - dd/mm/yyyy"
+            value={formatDateRange()}
+            readOnly
             onClick={handleDateInputClick}
-          >
-            <span className="calendar-icon">📅</span>
-            <input 
-              type="text" 
-              className="date-input"
-              placeholder="dd/mm/yyyy - dd/mm/yyyy"
-              value={formatDateRange()}
-              readOnly
-            />
-          </div>
+          />
           
           {showDatePicker && (
             <div 

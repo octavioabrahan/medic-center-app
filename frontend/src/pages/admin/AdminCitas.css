@@ -107,7 +107,7 @@
   color: #374151;
 }
 
-/* Estilo corregido para el dropdown del calendario */
+/* Selector de fechas modificado para parecer un select */
 .calendar-dropdown {
   position: absolute;
   top: 48px; /* Ajustado para posicionarse debajo del input de fecha */
@@ -123,6 +123,19 @@
   max-width: 95vw; /* Responsive */
   /* Asegurar que el calendario no se salga de la pantalla */
   transform: translateX(0);
+}
+
+/* Selector de fechas modificado para parecer un select */
+.date-select {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #e2e8f0;
+  border-radius: 4px;
+  font-size: 13px;
+  background-color: white;
+  height: 38px;
+  appearance: none;
+  cursor: pointer;
 }
 
 /* Detectar si está cerca del borde derecho y reposicionar */
