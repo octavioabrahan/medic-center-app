@@ -1,7 +1,6 @@
-import React, { useEffect, useState } from "react";
-import Calendar from "../../components/common/Calendar";
-import "./AdminCitas.css";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
+import "./AdminCitas.css";
 
 const AdminCitas = () => {
   const [citas, setCitas] = useState([]);
@@ -11,43 +10,40 @@ const AdminCitas = () => {
   const [statusFilter, setStatusFilter] = useState("todos");
   const [profesionales, setProfesionales] = useState([]);
   const [selectedProfesional, setSelectedProfesional] = useState("todos");
-  const [dateRange, setDateRange] = useState(null);
-  const [showCalendar, setShowCalendar] = useState(false);
+  const [dateRange, setDateRange] = useState({ from: null, to: null });
 
   useEffect(() => {
-    const fetchCitas = async () => {
-      setLoading(true);
-      try {
-        const response = await axios.get("/api/agendamientos", {
-          params: {
-            status: statusFilter !== "todos" ? statusFilter : undefined,
-            desde: dateRange?.from?.toISOString(),
-            hasta: dateRange?.to?.toISOString(),
-          },
-        });
-        setCitas(response.data);
-        setFilteredCitas(response.data);
-      } catch (error) {
-        console.error("Error fetching citas:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    const fetchProfesionales = async () => {
-      try {
-        const response = await axios.get("/api/profesionales");
-        setProfesionales(response.data);
-      } catch (error) {
-        console.error("Error fetching profesionales:", error);
-      }
-    };
-
     fetchCitas();
     fetchProfesionales();
-  }, [statusFilter, dateRange]);
+  }, []);
 
   useEffect(() => {
+    filterCitas();
+  }, [searchTerm, statusFilter, selectedProfesional, dateRange, citas]);
+
+  const fetchCitas = async () => {
+    setLoading(true);
+    try {
+      const response = await axios.get("/api/agendamientos");
+      setCitas(response.data);
+      setFilteredCitas(response.data);
+    } catch (error) {
+      console.error("Error fetching citas:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchProfesionales = async () => {
+    try {
+      const response = await axios.get("/api/profesionales");
+      setProfesionales(response.data);
+    } catch (error) {
+      console.error("Error fetching profesionales:", error);
+    }
+  };
+
+  const filterCitas = () => {
     let filtered = [...citas];
 
     if (searchTerm) {
@@ -58,14 +54,26 @@ const AdminCitas = () => {
       );
     }
 
+    if (statusFilter !== "todos") {
+      filtered = filtered.filter((cita) => cita.estado === statusFilter);
+    }
+
     if (selectedProfesional !== "todos") {
       filtered = filtered.filter(
         (cita) => cita.profesional_id === parseInt(selectedProfesional)
       );
     }
 
+    if (dateRange.from && dateRange.to) {
+      filtered = filtered.filter(
+        (cita) =>
+          new Date(cita.fecha_cita) >= new Date(dateRange.from) &&
+          new Date(cita.fecha_cita) <= new Date(dateRange.to)
+      );
+    }
+
     setFilteredCitas(filtered);
-  }, [searchTerm, selectedProfesional, citas]);
+  };
 
   const handleStatusChange = async (id, newStatus) => {
     try {
@@ -80,13 +88,25 @@ const AdminCitas = () => {
     }
   };
 
+  const formatDate = (dateString) => {
+    if (!dateString) return "N/A";
+    const date = new Date(dateString);
+    return date.toLocaleDateString("es-ES", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+  };
+
   return (
     <div className="admin-citas-container">
-      <h1>Citas Agendadas</h1>
-      <div className="filters">
+      <h1>Administración de Citas</h1>
+      <div className="filters-bar">
         <input
           type="text"
-          placeholder="Buscar por nombre o cédula..."
+          placeholder="Buscar por paciente o cédula..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
         />
@@ -99,22 +119,6 @@ const AdminCitas = () => {
           <option value="confirmada">Confirmada</option>
           <option value="cancelada">Cancelada</option>
         </select>
-        <div className="calendar-filter">
-          <button onClick={() => setShowCalendar(!showCalendar)}>
-            {dateRange
-              ? `${dateRange.from.toLocaleDateString()} - ${dateRange.to.toLocaleDateString()}`
-              : "Seleccionar rango de fechas"}
-          </button>
-          {showCalendar && (
-            <Calendar
-              onDateRangeChange={(range) => {
-                setDateRange(range);
-                setShowCalendar(false);
-              }}
-              title="Seleccionar rango de fechas"
-            />
-          )}
-        </div>
         <select
           value={selectedProfesional}
           onChange={(e) => setSelectedProfesional(e.target.value)}
@@ -126,6 +130,22 @@ const AdminCitas = () => {
             </option>
           ))}
         </select>
+        <div className="date-range">
+          <label>Desde:</label>
+          <input
+            type="date"
+            onChange={(e) =>
+              setDateRange((prev) => ({ ...prev, from: e.target.value }))
+            }
+          />
+          <label>Hasta:</label>
+          <input
+            type="date"
+            onChange={(e) =>
+              setDateRange((prev) => ({ ...prev, to: e.target.value }))
+            }
+          />
+        </div>
       </div>
       {loading ? (
         <p>Cargando citas...</p>
@@ -133,10 +153,9 @@ const AdminCitas = () => {
         <table className="citas-table">
           <thead>
             <tr>
-              <th>Fecha cita</th>
+              <th>Fecha</th>
               <th>Paciente</th>
               <th>Cédula</th>
-              <th>Categoría</th>
               <th>Profesional</th>
               <th>Estado</th>
               <th>Acciones</th>
@@ -145,28 +164,27 @@ const AdminCitas = () => {
           <tbody>
             {filteredCitas.map((cita) => (
               <tr key={cita.id}>
-                <td>{new Date(cita.fecha_cita).toLocaleString("es-ES")}</td>
+                <td>{formatDate(cita.fecha_cita)}</td>
                 <td>{cita.paciente}</td>
                 <td>{cita.cedula}</td>
-                <td>{cita.categoria}</td>
                 <td>{cita.profesional}</td>
                 <td>
-                  <span className={`estado ${cita.estado}`}>
-                    {cita.estado.charAt(0).toUpperCase() + cita.estado.slice(1)}
+                  <span className={`status-badge ${cita.estado}`}>
+                    {cita.estado}
                   </span>
                 </td>
                 <td>
                   <button
-                    className="confirm-btn"
+                    className="btn-confirm"
                     onClick={() => handleStatusChange(cita.id, "confirmada")}
                   >
-                    ✔
+                    Confirmar
                   </button>
                   <button
-                    className="cancel-btn"
+                    className="btn-cancel"
                     onClick={() => handleStatusChange(cita.id, "cancelada")}
                   >
-                    ✖
+                    Cancelar
                   </button>
                 </td>
               </tr>
