@@ -12,15 +12,16 @@
   font-size: 28px;
 }
 
-/* Barra de filtros */
+/* Barra de filtros mejorada */
 .filters-bar {
   display: flex;
   flex-wrap: wrap;
   gap: 15px;
   margin-bottom: 20px;
-  padding: 15px;
+  padding: 20px;
   background-color: #f3f4f6;
-  border-radius: 8px;
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
   align-items: center;
 }
 
@@ -31,29 +32,33 @@
 
 .search-container input {
   width: 100%;
-  padding: 10px 15px;
+  padding: 12px 15px;
   border: 1px solid #d1d5db;
-  border-radius: 6px;
+  border-radius: 8px;
   font-size: 14px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
 }
 
 .filter-container {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
 }
 
 .filter-container label {
-  font-weight: 500;
+  font-weight: 600;
+  color: #4b5563;
   white-space: nowrap;
 }
 
 .filter-container select {
-  padding: 10px 15px;
+  padding: 12px 15px;
   border: 1px solid #d1d5db;
-  border-radius: 6px;
+  border-radius: 8px;
   font-size: 14px;
   background-color: white;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  min-width: 180px;
 }
 
 /* Nuevo selector de fechas tipo input */
@@ -239,19 +244,26 @@
   }
 }
 
-/* Tabla de citas */
+/* Tabla de citas mejorada */
+.table-container {
+  overflow-x: auto;
+  margin-bottom: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
 .citas-table {
   width: 100%;
-  border-collapse: collapse;
+  border-collapse: separate;
+  border-spacing: 0;
   background-color: white;
-  margin-bottom: 20px;
-  border-radius: 8px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+  overflow: hidden;
 }
 
 .citas-table th,
 .citas-table td {
-  padding: 12px 15px;
+  padding: 15px;
   text-align: left;
   border-bottom: 1px solid #e5e7eb;
 }
@@ -260,8 +272,14 @@
   background-color: #f9fafb;
   font-weight: 600;
   color: #374151;
+  padding-top: 18px;
+  padding-bottom: 18px;
   position: sticky;
   top: 0;
+}
+
+.citas-table tr:last-child td {
+  border-bottom: none;
 }
 
 .citas-table tr:hover {
@@ -271,10 +289,11 @@
 /* Estados */
 .status-badge {
   display: inline-block;
-  padding: 4px 8px;
-  border-radius: 4px;
+  padding: 5px 10px;
+  border-radius: 6px;
   font-size: 12px;
-  font-weight: 500;
+  font-weight: 600;
+  text-transform: uppercase;
 }
 
 .pendiente {
@@ -295,7 +314,7 @@
 /* Celdas de acciones */
 .actions-cell {
   display: flex;
-  gap: 5px;
+  gap: 8px;
   justify-content: flex-start;
   align-items: center;
 }
@@ -304,10 +323,10 @@
   background: none;
   border: none;
   cursor: pointer;
-  font-size: 16px;
-  padding: 5px;
-  border-radius: 4px;
-  transition: background-color 0.2s;
+  font-size: 18px;
+  padding: 6px;
+  border-radius: 6px;
+  transition: all 0.2s;
 }
 
 .btn-action:hover {
@@ -325,28 +344,32 @@
 .btn-confirm,
 .btn-cancel {
   border: none;
-  width: 30px;
-  height: 30px;
-  border-radius: 4px;
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 16px;
   color: #fff;
+  transition: all 0.2s;
 }
 
 .btn-confirm {
   background-color: #28a745;
 }
 
+.btn-confirm:hover {
+  background-color: #218838;
+}
+
 .btn-cancel {
   background-color: #dc3545;
 }
 
-.btn-confirm:hover,
 .btn-cancel:hover {
-  opacity: 0.9;
+  background-color: #c82333;
 }
 
 /* Fecha celda */
@@ -356,7 +379,13 @@
   gap: 10px;
 }
 
-.fecha-cell .calendar-icon {
+.empresa-icon {
+  font-size: 18px;
+  color: #1e3a8a;
+  margin-right: 5px;
+}
+
+.calendar-icon {
   font-size: 18px;
   color: #1e3a8a;
 }
@@ -364,6 +393,7 @@
 .fecha-cell .hora {
   font-size: 12px;
   color: #6b7280;
+  margin-top: 3px;
 }
 
 /* Modales */
@@ -524,9 +554,9 @@
 .loading,
 .error-message,
 .no-results {
-  padding: 20px;
+  padding: 25px;
   text-align: center;
-  border-radius: 8px;
+  border-radius: 10px;
   margin: 20px 0;
 }
 

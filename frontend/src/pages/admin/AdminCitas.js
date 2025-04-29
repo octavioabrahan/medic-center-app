@@ -78,8 +78,6 @@ const AdminCitas = () => {
       // Filtrar por estado - Corregido para asegurar compatibilidad
       if (filterStatus !== 'todos') {
         results = results.filter(agendamiento => {
-          // Agregamos log para depuración
-          console.log("Comparando estado:", agendamiento.status, "con filtro:", filterStatus);
           return agendamiento.status && agendamiento.status.toLowerCase() === filterStatus.toLowerCase();
         });
       }
@@ -101,8 +99,11 @@ const AdminCitas = () => {
       
       console.log("Resultados filtrados:", results.length);
       setFilteredAgendamientos(results);
+      
+      // Aplicar los filtros automáticamente a la API
+      fetchAgendamientos();
     }
-  }, [searchTerm, filterStatus, filtroProfesional, dateRange, agendamientos]);
+  }, [searchTerm, filterStatus, filtroProfesional, dateRange]);
 
   // Obtener agendamientos desde la API
   const fetchAgendamientos = async () => {
@@ -216,75 +217,71 @@ const AdminCitas = () => {
     if (filteredAgendamientos.length === 0) return <div className="no-results">No se encontraron citas</div>;
 
     return (
-      <table className="citas-table">
-        <thead>
-          <tr>
-            <th>Fecha cita</th>
-            <th>Paciente</th>
-            <th>Cédula</th>
-            <th>Categoría</th>
-            <th>Profesional</th>
-            <th>Estado</th>
-            <th>Acciones</th>
-          </tr>
-        </thead>
-        <tbody>
-          {filteredAgendamientos.map(agendamiento => {
-            const formatoFecha = formatearFecha(agendamiento.fecha_agendada);
-            
-            return (
-              <tr key={agendamiento.agendamiento_id}>
-                <td className="fecha-cell">
-                  <div className="calendar-icon">📅</div>
-                  <div>
-                    <div>{formatoFecha.fecha}</div>
-                    <div className="hora">{formatoFecha.hora}</div>
-                  </div>
-                </td>
-                <td>{agendamiento.paciente_nombre} {agendamiento.paciente_apellido}</td>
-                <td>{agendamiento.cedula}</td>
-                <td>{agendamiento.tipo_atencion}</td>
-                <td>{agendamiento.profesional_nombre} {agendamiento.profesional_apellido}</td>
-                <td>
-                  <span className={`status-badge ${agendamiento.status ? agendamiento.status.toLowerCase() : ''}`}>
-                    {agendamiento.status || 'Sin estado'}
-                  </span>
-                </td>
-                <td className="actions-cell">
-                  <button 
-                    className="btn-action btn-view" 
-                    onClick={() => mostrarDetalles(agendamiento)}
-                    title="Ver detalles"
-                  >
-                    👁️
-                  </button>
-                  <button 
-                    className="btn-action btn-follow" 
-                    onClick={() => fetchHistorial(agendamiento.agendamiento_id)}
-                    title="Ver historial"
-                  >
-                    📋
-                  </button>
-                  <button
-                    onClick={() => actualizarEstado(agendamiento.agendamiento_id, "confirmada")}
-                    className="btn-confirm"
-                    title="Confirmar"
-                  >
-                    ✓
-                  </button>
-                  <button
-                    onClick={() => actualizarEstado(agendamiento.agendamiento_id, "cancelada")}
-                    className="btn-cancel"
-                    title="Cancelar"
-                  >
-                    ✕
-                  </button>
-                </td>
-              </tr>
-            );
-          })}
-        </tbody>
-      </table>
+      <div className="table-container">
+        <table className="citas-table">
+          <thead>
+            <tr>
+              <th>Fecha cita</th>
+              <th>Paciente</th>
+              <th>Cédula</th>
+              <th>Categoría</th>
+              <th>Profesional</th>
+              <th>Estado</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            {filteredAgendamientos.map(agendamiento => {
+              const formatoFecha = formatearFecha(agendamiento.fecha_agendada);
+              
+              return (
+                <tr key={agendamiento.agendamiento_id}>
+                  <td className="fecha-cell">
+                    {agendamiento.id_empresa && <div className="empresa-icon">💼</div>}
+                    <div className="calendar-icon">📅</div>
+                    <div>
+                      <div>{formatoFecha.fecha}</div>
+                      <div className="hora">{formatoFecha.hora}</div>
+                    </div>
+                  </td>
+                  <td>{agendamiento.paciente_nombre} {agendamiento.paciente_apellido}</td>
+                  <td>{agendamiento.cedula}</td>
+                  <td>{agendamiento.tipo_atencion}</td>
+                  <td>{agendamiento.profesional_nombre} {agendamiento.profesional_apellido}</td>
+                  <td>
+                    <span className={`status-badge ${agendamiento.status ? agendamiento.status.toLowerCase() : ''}`}>
+                      {agendamiento.status || 'Sin estado'}
+                    </span>
+                  </td>
+                  <td className="actions-cell">
+                    <button 
+                      className="btn-action btn-view" 
+                      onClick={() => mostrarDetalles(agendamiento)}
+                      title="Ver detalles"
+                    >
+                      👁️
+                    </button>
+                    <button
+                      onClick={() => actualizarEstado(agendamiento.agendamiento_id, "confirmada")}
+                      className="btn-confirm"
+                      title="Confirmar"
+                    >
+                      ✓
+                    </button>
+                    <button
+                      onClick={() => actualizarEstado(agendamiento.agendamiento_id, "cancelada")}
+                      className="btn-cancel"
+                      title="Cancelar"
+                    >
+                      ✕
+                    </button>
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
     );
   };
 
@@ -357,9 +354,6 @@ const AdminCitas = () => {
             </div>
             
             <div className="action-buttons">
-              <button className="btn-primary" onClick={() => fetchHistorial(currentAgendamiento.agendamiento_id)}>
-                Ver Historial
-              </button>
               <button className="btn-secondary" onClick={() => setShowDetailModal(false)}>
                 Cerrar
               </button>
@@ -503,10 +497,6 @@ const AdminCitas = () => {
             </div>
           )}
         </div>
-        
-        <button className="refresh-btn" onClick={fetchAgendamientos}>
-          Actualizar
-        </button>
       </div>
       
       {renderAgendamientosTable()}
