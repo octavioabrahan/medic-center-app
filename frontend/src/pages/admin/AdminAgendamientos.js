@@ -3,22 +3,21 @@ import React, { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import "./CitasAgendadas.css";
 import { 
-  startOfWeek, endOfWeek, format, startOfDay, endOfDay,
-  startOfToday, endOfToday, startOfMonth, endOfMonth, 
+  startOfWeek, endOfWeek, format, startOfDay, endOfDay 
 } from "date-fns";
 import Calendar from "../../components/common/Calendar";
 
 const TODOS_LOS_ESTADOS = ["pendiente", "confirmada", "cancelada"];
 
-const CitasAgendadas = () => {
+const AdminAgendamientos = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [searchTerm, setSearchTerm] = useState("");
   const [profesionales, setProfesionales] = useState([]);
   const [filtroProfesional, setFiltroProfesional] = useState("todos");
   
   const status = searchParams.get("status")?.trim() || TODOS_LOS_ESTADOS.join(",");
-  const desde = searchParams.get("desde") || null;
-  const hasta = searchParams.get("hasta") || null;
+  const desde = searchParams.get("desde") || format(startOfWeek(new Date()), "yyyy-MM-dd");
+  const hasta = searchParams.get("hasta") || format(endOfWeek(new Date()), "yyyy-MM-dd");
   
   const [dateRange, setDateRange] = useState({
     from: desde ? new Date(desde) : startOfWeek(new Date()),
@@ -27,10 +26,6 @@ const CitasAgendadas = () => {
   const [startDate, setStartDate] = useState(dateRange?.from);
   const [endDate, setEndDate] = useState(dateRange?.to);
   const [showDatePicker, setShowDatePicker] = useState(false);
-
-  const [mostrarHistorial, setMostrarHistorial] = useState(false);
-  const [historial, setHistorial] = useState([]);
-  const [historialDe, setHistorialDe] = useState(null);
 
   const [agendamientos, setAgendamientos] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -90,12 +85,6 @@ const CitasAgendadas = () => {
     setSearchParams(newParams);
   };
 
-  const cerrarHistorial = () => {
-    setMostrarHistorial(false);
-    setHistorial([]);
-    setHistorialDe(null);
-  };
-
   // Filtrar agendamientos según el término de búsqueda y profesional seleccionado
   const agendamientosFiltrados = agendamientos.filter(a => {
     const matchesSearch = searchTerm === "" || 
@@ -143,7 +132,7 @@ const CitasAgendadas = () => {
 
   const formatDateRange = () => {
     if (!startDate || !endDate) return "Seleccionar fechas";
-    return `${format(startDate, "dd/MM/yyyy")} - ${format(endDate, "dd/MM/yyyy")}`;
+    return `${format(startDate, "dd-MM-yyyy")} ${format(endDate, "dd-MM-yyyy")}`;
   };
 
   const formatearFecha = (fechaStr) => {
@@ -163,6 +152,7 @@ const CitasAgendadas = () => {
   // Handle date range change from the Calendar component
   const handleDateRangeChange = (newDateRange) => {
     setDateRange(newDateRange);
+    setShowDatePicker(false);
   };
 
   return (
@@ -295,40 +285,8 @@ const CitasAgendadas = () => {
           </table>
         </div>
       )}
-
-      {/* Modal historial */}
-      {mostrarHistorial && (
-        <div className="historial-modal">
-          <div className="historial-content">
-            <h3>Historial de Agendamiento #{historialDe}</h3>
-            <table className="historial-table">
-              <thead>
-                <tr>
-                  <th>Anterior</th>
-                  <th>Nuevo</th>
-                  <th>Quién</th>
-                  <th>Cuándo</th>
-                </tr>
-              </thead>
-              <tbody>
-                {historial.map((h) => (
-                  <tr key={h.historial_id}>
-                    <td>{h.estado_anterior}</td>
-                    <td>{h.estado_nuevo}</td>
-                    <td>{h.cambiado_por}</td>
-                    <td>{new Date(h.fecha).toLocaleString()}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-            <div className="historial-actions">
-              <button onClick={cerrarHistorial} className="close-btn">Cerrar</button>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 };
 
-export default CitasAgendadas;
+export default AdminAgendamientos;
