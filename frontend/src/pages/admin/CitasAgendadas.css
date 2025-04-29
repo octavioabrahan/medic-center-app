@@ -34,33 +34,25 @@
 
 .search-box {
   position: relative;
-  flex: 1;
-  min-width: 200px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  border: 1px solid #E5E7EB;
-  border-radius: 500px;
-  padding: 6px 12px;
-  background-color: white;
+  flex-grow: 1;
 }
 
 .search-box input {
   width: 100%;
-  border: none;
-  outline: none;
-  padding: 8px 0;
+  padding: 10px 15px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
   font-size: 14px;
 }
 
 .search-button {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
   background: none;
   border: none;
-  color: #666;
   cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
 }
 
 /* Filter group */
@@ -194,7 +186,7 @@
 }
 
 .calendar-icon {
-  font-size: 16px;
+  font-size: 20px;
   color: #6B7280;
 }
 
@@ -312,6 +304,22 @@
   
   .filter-select {
     width: 100%;
+  }
+
+  .citas-filters {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .citas-table th,
+  .citas-table td {
+    font-size: 12px;
+    padding: 8px;
+  }
+
+  .estado-badge {
+    font-size: 11px;
+    padding: 4px 8px;
   }
 }
 
