@@ -17,9 +17,6 @@ const Calendar = ({
   const [calendarMonth, setCalendarMonth] = useState(new Date().getMonth());
   const [calendarYear, setCalendarYear] = useState(new Date().getFullYear());
   
-  // Date selection mode ('start' or 'end')
-  const [datePickerMode, setDatePickerMode] = useState(singleDateMode ? 'single' : 'start');
-  
   // Selected date range
   const [dateRange, setDateRange] = useState(
     initialDateRange || (singleDateMode 
