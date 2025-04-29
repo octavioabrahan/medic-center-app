@@ -24,9 +24,6 @@ const Calendar = ({
   const [calendarMonth, setCalendarMonth] = useState(new Date().getMonth());
   const [calendarYear, setCalendarYear] = useState(new Date().getFullYear());
   
-  // Date selection mode ('start' or 'end')
-  const [datePickerMode, setDatePickerMode] = useState(singleDateMode ? 'single' : 'start');
-  
   // Selected date range
   const [dateRange, setDateRange] = useState(
     initialDateRange || (singleDateMode 
@@ -59,6 +56,26 @@ const Calendar = ({
     if (onDateRangeChange) {
       onDateRangeChange(newRange);
     }
+  };
+
+  // Set today as selected date
+  const handleToday = () => {
+    const todayDate = new Date();
+    setDateRange({ 
+      from: startOfDay(todayDate), 
+      to: endOfDay(todayDate)
+    });
+    
+    if (onDateRangeChange) {
+      onDateRangeChange({ 
+        from: startOfDay(todayDate), 
+        to: endOfDay(todayDate)
+      });
+    }
+
+    // Set calendar view to current month and year
+    setCalendarMonth(todayDate.getMonth());
+    setCalendarYear(todayDate.getFullYear());
   };
 
   // Render the calendar body with all days
@@ -108,7 +125,7 @@ const Calendar = ({
         date >= startOfDay(dateRange.from) && 
         date <= endOfDay(dateRange.to);
       
-      // Check if date is exactly the start or end date
+      // Check if date is exactly the selected date
       const isSelected = dateRange?.from && 
         day === dateRange.from.getDate() && 
         month === dateRange.from.getMonth() && 
@@ -225,6 +242,12 @@ const Calendar = ({
       {showPresets && (
         <div className="date-presets">
           <button 
+            onClick={handleToday}
+            className="preset-button today-button"
+          >
+            Today
+          </button>
+          <button 
             onClick={() => handleDatePreset(7)}
             className="preset-button"
           >
@@ -241,12 +264,6 @@ const Calendar = ({
             className="preset-button"
           >
             Last 30 Days
-          </button>
-          <button 
-            onClick={() => handleDatePreset(90)}
-            className="preset-button"
-          >
-            Last 90 Days
           </button>
         </div>
       )}

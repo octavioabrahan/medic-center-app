@@ -4,36 +4,58 @@
   background-color: white;
   overflow: hidden;
   width: 100%;
-  max-width: 700px;
+  max-width: 750px;
   margin: 0 auto;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  border: 1px solid #dcdfe4;
+  border-radius: 4px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
 }
 
 /* Date presets */
 .date-presets {
   display: flex;
   flex-direction: column;
-  padding: 16px 16px 16px 0;
+  padding: 16px;
   background-color: white;
-  min-width: 120px;
+  min-width: 130px;
   text-align: left;
+  border-right: 1px solid #ebedf0;
 }
 
 .preset-button {
   background-color: transparent;
   border: none;
   padding: 8px 0;
-  margin-bottom: 4px;
+  margin-bottom: 6px;
   cursor: pointer;
   font-size: 14px;
   transition: all 0.1s;
   text-align: left;
-  color: #555;
+  color: #24292e;
   font-weight: normal;
 }
 
+.preset-button.today-button {
+  font-weight: 600;
+  margin-bottom: 16px;
+  color: #24292e;
+  position: relative;
+}
+
+.preset-button.today-button:after {
+  content: '';
+  display: block;
+  width: 100%;
+  height: 1px;
+  background-color: #ebedf0;
+  position: absolute;
+  bottom: -8px;
+  left: 0;
+}
+
 .preset-button:hover {
-  color: #007bff;
+  color: #0366d6;
 }
 
 .preset-button:focus {
@@ -51,7 +73,9 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 12px;
+  margin-bottom: 14px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid #ebedf0;
 }
 
 .month-navigation {
@@ -65,11 +89,12 @@
   font-size: 14px;
   cursor: pointer;
   padding: 4px 8px;
-  color: #555;
+  color: #586069;
+  margin: 0 1px;
 }
 
 .nav-button:hover {
-  color: #007bff;
+  color: #0366d6;
 }
 
 .month-titles {
@@ -79,7 +104,7 @@
   align-items: center;
   text-align: center;
   font-weight: 500;
-  color: #333;
+  color: #24292e;
   font-size: 14px;
 }
 
@@ -91,7 +116,7 @@
 .two-month-container {
   display: flex;
   justify-content: space-between;
-  gap: 20px;
+  gap: 24px;
 }
 
 .month-container {
@@ -108,14 +133,17 @@
 
 .calendar-table th {
   padding: 6px 0;
-  font-weight: normal;
+  font-weight: 500;
   font-size: 12px;
   text-align: center;
-  color: #333;
+  color: #586069;
+  border-bottom: 1px solid #ebedf0;
+  padding-bottom: 10px;
+  margin-bottom: 6px;
 }
 
 .calendar-table td {
-  padding: 0;
+  padding: 3px 0;
   text-align: center;
   height: 30px;
 }
@@ -133,30 +161,43 @@
   transition: all 0.1s;
   font-size: 13px;
   position: relative;
-  color: #333;
+  color: #24292e;
 }
 
 .calendar-day:hover {
-  background-color: #f0f0f0;
+  background-color: #f6f8fa;
 }
 
 /* Special day states */
 .today {
-  color: #333;
+  color: #24292e;
   font-weight: bold;
+  position: relative;
+}
+
+.today:after {
+  content: '';
+  position: absolute;
+  bottom: 2px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background-color: #0366d6;
 }
 
 .selected {
-  background-color: #007bff;
+  background-color: #0366d6;
   color: white !important;
 }
 
 .range-middle {
-  background-color: #e6f2ff;
+  background-color: #f1f8ff;
 }
 
 .outside-month .calendar-day {
-  color: #ccc;
+  color: #c0c4c9;
 }
 
 /* Responsive styles */
@@ -170,16 +211,23 @@
     flex-direction: row;
     justify-content: space-around;
     border-right: none;
-    padding: 8px;
+    border-bottom: 1px solid #ebedf0;
+    padding: 12px;
   }
 
   .preset-button {
-    margin-right: 4px;
+    margin-right: 8px;
     margin-bottom: 0;
     padding: 8px;
+    font-size: 13px;
+  }
+
+  .preset-button.today-button:after {
+    display: none;
   }
 
   .two-month-container {
     flex-direction: column;
+    gap: 16px;
   }
 }
