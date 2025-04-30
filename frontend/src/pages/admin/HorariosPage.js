@@ -164,13 +164,13 @@ function HorariosPage() {
       {activeTab === "profesionales" ? renderHorariosTable() : renderExcepcionesContent()}
       
       {showModal && (
-        <div className="modal-overlay">
-          <div className="modal-content narrow-modal">
-            <div className="modal-header">
+        <div className="horarios-modal-overlay">
+          <div className="horarios-modal-content narrow-modal">
+            <div className="horarios-modal-header">
               <h2>{currentHorario ? "Editar horario" : "Agregar horario de atención"}</h2>
-              <button className="close-btn" onClick={() => setShowModal(false)}>×</button>
+              <button className="horarios-close-btn" onClick={() => setShowModal(false)}>×</button>
             </div>
-            <div className="modal-body">
+            <div className="horarios-modal-body">
               <HorarioForm 
                 horario={currentHorario} 
                 onSuccess={() => {
