@@ -18,7 +18,6 @@ function HorarioForm({ onSuccess }) {
   const [tiposAtencion, setTiposAtencion] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [consultorio, setConsultorio] = useState("");
 
   useEffect(() => {
     async function fetchData() {
@@ -42,12 +41,21 @@ function HorarioForm({ onSuccess }) {
     setForm({ ...form, [name]: value });
   };
 
-  const handleMultipleDays = (e) => {
-    const checkboxes = e.target.querySelectorAll('input[type="checkbox"]');
-    const selectedDays = Array.from(checkboxes)
-      .filter(cb => cb.checked)
-      .map(cb => parseInt(cb.value));
-    setForm({ ...form, dia_semana: selectedDays });
+  const handleDayCheck = (e) => {
+    const { checked, value } = e.target;
+    const dayValue = parseInt(value);
+    
+    if (checked) {
+      setForm({
+        ...form,
+        dia_semana: [...form.dia_semana, dayValue]
+      });
+    } else {
+      setForm({
+        ...form,
+        dia_semana: form.dia_semana.filter(day => day !== dayValue)
+      });
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -106,62 +114,36 @@ function HorarioForm({ onSuccess }) {
 
       <div className="form-group">
         <label htmlFor="profesional_id">Profesional</label>
-        <select 
-          id="profesional_id"
-          name="profesional_id" 
-          value={form.profesional_id} 
-          onChange={handleChange}
-          required
-        >
-          <option value="">Selecciona un profesional</option>
-          {profesionales.map((p) => (
-            <option key={p.profesional_id} value={p.profesional_id}>
-              {p.nombre} {p.apellido}
-            </option>
-          ))}
-        </select>
-      </div>
-
-      <div className="form-group">
-        <label htmlFor="consultorio">Consultorio</label>
-        <input 
-          type="text" 
-          id="consultorio" 
-          name="consultorio" 
-          value={consultorio}
-          onChange={(e) => setConsultorio(e.target.value)}
-          placeholder="Ingrese el número de consultorio"
-        />
-      </div>
-
-      <div className="form-group">
-        <label htmlFor="tipo_atencion_id">Tipo de atención</label>
-        <select 
-          id="tipo_atencion_id"
-          name="tipo_atencion_id" 
-          value={form.tipo_atencion_id}
-          onChange={handleChange}
-          required
-        >
-          <option value="">Selecciona una opción</option>
-          {tiposAtencion.map((t) => (
-            <option key={t.tipo_atencion_id} value={t.tipo_atencion_id}>
-              {t.nombre}
-            </option>
-          ))}
-        </select>
+        <div className="select-wrapper">
+          <select 
+            id="profesional_id"
+            name="profesional_id" 
+            value={form.profesional_id} 
+            onChange={handleChange}
+            required
+          >
+            <option value="">Selecciona un profesional</option>
+            {profesionales.map((p) => (
+              <option key={p.profesional_id} value={p.profesional_id}>
+                {p.nombre} {p.apellido}
+              </option>
+            ))}
+          </select>
+        </div>
       </div>
 
       <div className="form-group">
         <label>Día de la semana</label>
-        <div className="checkbox-group" onChange={handleMultipleDays}>
+        <div className="checkbox-group">
           {diasSemana.map((dia) => (
             <div key={dia.valor} className="checkbox-item">
               <input 
                 type="checkbox" 
                 id={`dia-${dia.valor}`} 
                 name="dia_semana" 
-                value={dia.valor} 
+                value={dia.valor}
+                checked={form.dia_semana.includes(dia.valor)}
+                onChange={handleDayCheck}
               />
               <label htmlFor={`dia-${dia.valor}`}>{dia.nombre}</label>
             </div>
@@ -172,63 +154,144 @@ function HorarioForm({ onSuccess }) {
       <div className="form-row">
         <div className="form-group">
           <label htmlFor="hora_inicio">Hora de inicio</label>
-          <input 
-            type="time" 
-            id="hora_inicio"
-            name="hora_inicio" 
-            value={form.hora_inicio}
-            onChange={handleChange}
-            required
-          />
+          <div className="select-wrapper">
+            <select 
+              id="hora_inicio"
+              name="hora_inicio" 
+              value={form.hora_inicio}
+              onChange={handleChange}
+              required
+            >
+              <option value="">08:00 AM</option>
+              <option value="07:00">07:00 AM</option>
+              <option value="07:30">07:30 AM</option>
+              <option value="08:00">08:00 AM</option>
+              <option value="08:30">08:30 AM</option>
+              <option value="09:00">09:00 AM</option>
+              <option value="09:30">09:30 AM</option>
+              <option value="10:00">10:00 AM</option>
+              <option value="10:30">10:30 AM</option>
+              <option value="11:00">11:00 AM</option>
+              <option value="11:30">11:30 AM</option>
+              <option value="12:00">12:00 PM</option>
+              <option value="12:30">12:30 PM</option>
+              <option value="13:00">01:00 PM</option>
+              <option value="13:30">01:30 PM</option>
+              <option value="14:00">02:00 PM</option>
+              <option value="14:30">02:30 PM</option>
+              <option value="15:00">03:00 PM</option>
+              <option value="15:30">03:30 PM</option>
+              <option value="16:00">04:00 PM</option>
+              <option value="16:30">04:30 PM</option>
+              <option value="17:00">05:00 PM</option>
+              <option value="17:30">05:30 PM</option>
+              <option value="18:00">06:00 PM</option>
+              <option value="18:30">06:30 PM</option>
+              <option value="19:00">07:00 PM</option>
+            </select>
+          </div>
         </div>
 
         <div className="form-group">
           <label htmlFor="hora_termino">Hora de término</label>
-          <input 
-            type="time" 
-            id="hora_termino"
-            name="hora_termino" 
-            value={form.hora_termino}
-            onChange={handleChange}
-            required
-          />
+          <div className="select-wrapper">
+            <select 
+              id="hora_termino"
+              name="hora_termino" 
+              value={form.hora_termino}
+              onChange={handleChange}
+              required
+            >
+              <option value="">12:00 PM</option>
+              <option value="08:00">08:00 AM</option>
+              <option value="08:30">08:30 AM</option>
+              <option value="09:00">09:00 AM</option>
+              <option value="09:30">09:30 AM</option>
+              <option value="10:00">10:00 AM</option>
+              <option value="10:30">10:30 AM</option>
+              <option value="11:00">11:00 AM</option>
+              <option value="11:30">11:30 AM</option>
+              <option value="12:00">12:00 PM</option>
+              <option value="12:30">12:30 PM</option>
+              <option value="13:00">01:00 PM</option>
+              <option value="13:30">01:30 PM</option>
+              <option value="14:00">02:00 PM</option>
+              <option value="14:30">02:30 PM</option>
+              <option value="15:00">03:00 PM</option>
+              <option value="15:30">03:30 PM</option>
+              <option value="16:00">04:00 PM</option>
+              <option value="16:30">04:30 PM</option>
+              <option value="17:00">05:00 PM</option>
+              <option value="17:30">05:30 PM</option>
+              <option value="18:00">06:00 PM</option>
+              <option value="18:30">06:30 PM</option>
+              <option value="19:00">07:00 PM</option>
+              <option value="19:30">07:30 PM</option>
+              <option value="20:00">08:00 PM</option>
+            </select>
+          </div>
         </div>
       </div>
 
       <div className="form-row">
         <div className="form-group">
           <label htmlFor="valido_desde">Desde</label>
-          <input 
-            type="date" 
-            id="valido_desde"
-            name="valido_desde" 
-            value={form.valido_desde}
-            onChange={handleChange}
-          />
+          <div className="select-wrapper">
+            <input 
+              type="text" 
+              id="valido_desde"
+              name="valido_desde" 
+              placeholder="01/04/2025"
+              value={form.valido_desde}
+              onChange={handleChange}
+            />
+          </div>
         </div>
 
         <div className="form-group">
           <label htmlFor="valido_hasta">Hasta</label>
-          <input 
-            type="date" 
-            id="valido_hasta"
-            name="valido_hasta" 
-            value={form.valido_hasta}
-            onChange={handleChange}
-          />
+          <div className="select-wrapper">
+            <input 
+              type="text" 
+              id="valido_hasta"
+              name="valido_hasta"
+              placeholder="30/04/2025" 
+              value={form.valido_hasta}
+              onChange={handleChange}
+            />
+          </div>
         </div>
       </div>
 
       <div className="form-group">
-        <label htmlFor="nro_consulta">Número de consulta</label>
+        <label htmlFor="tipo_atencion_id">Tipo de atención</label>
+        <div className="select-wrapper">
+          <select 
+            id="tipo_atencion_id"
+            name="tipo_atencion_id" 
+            value={form.tipo_atencion_id}
+            onChange={handleChange}
+            required
+          >
+            <option value="">Presencial</option>
+            {tiposAtencion.map((t) => (
+              <option key={t.tipo_atencion_id} value={t.tipo_atencion_id}>
+                {t.nombre}
+              </option>
+            ))}
+          </select>
+        </div>
+      </div>
+
+      <div className="form-group">
+        <label htmlFor="nro_consulta">Consultorio</label>
         <input 
-          type="number" 
+          type="text" 
           id="nro_consulta"
           name="nro_consulta" 
-          min="1"
           value={form.nro_consulta}
           onChange={handleChange} 
-          placeholder="Número de consulta"
+          placeholder="3"
         />
       </div>
 
