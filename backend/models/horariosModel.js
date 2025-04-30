@@ -43,6 +43,20 @@ const HorariosModel = {
     return result.rows;
   },
 
+  listarTodos: async () => {
+    const result = await db.query(`
+      SELECT hm.*, 
+             p.nombre as profesional_nombre, 
+             p.apellido as profesional_apellido,
+             ta.nombre as tipo_atencion
+      FROM horario_medico hm
+      JOIN profesionales p ON hm.profesional_id = p.profesional_id
+      JOIN tipo_atencion ta ON hm.tipo_atencion_id = ta.tipo_atencion_id
+      ORDER BY p.apellido, p.nombre, hm.dia_semana
+    `);
+    return result.rows;
+  },
+
   listarFechasPorProfesional: async (profesional_id) => {
     // 1. Obtener horarios base
     const horariosResult = await db.query(

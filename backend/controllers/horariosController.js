@@ -30,8 +30,17 @@ const HorariosController = {
       console.error(err);
       res.status(500).json({ error: "Error al obtener fechas activas" });
     }
-  }
+  },
   
+  listarTodos: async (req, res) => {
+    try {
+      const horarios = await Model.listarTodos();
+      res.json(horarios);
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({ error: "Error al obtener todos los horarios" });
+    }
+  }
 };
 
 module.exports = HorariosController;

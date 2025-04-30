@@ -18,9 +18,8 @@ function HorariosPage() {
   const fetchHorarios = async () => {
     setLoading(true);
     try {
-      // Como no hay endpoint para listar todos los horarios, simulamos con un array vacío por ahora
-      // En producción, deberías crear un endpoint específico para listar todos los horarios
-      setHorarios([]);
+      const response = await axios.get("/api/horarios");
+      setHorarios(response.data);
     } catch (err) {
       console.error('Error:', err);
       setError('No se pudieron cargar los horarios. Por favor, intenta de nuevo.');
