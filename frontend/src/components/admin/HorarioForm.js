@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import "./HorarioForm.css";
 
-function HorarioForm({ onSuccess }) {
+function HorarioForm({ onSuccess, horario }) {
   const [form, setForm] = useState({
     profesional_id: "",
     dia_semana: [],
@@ -10,8 +10,7 @@ function HorarioForm({ onSuccess }) {
     hora_termino: "",
     valido_desde: "",
     valido_hasta: "",
-    tipo_atencion_id: "",
-    nro_consulta: ""
+    tipo_atencion_id: ""
   });
 
   const [profesionales, setProfesionales] = useState([]);
@@ -35,6 +34,22 @@ function HorarioForm({ onSuccess }) {
     }
     fetchData();
   }, []);
+
+  // Cargar datos cuando se está editando un horario existente
+  useEffect(() => {
+    if (horario) {
+      setForm({
+        profesional_id: horario.profesional_id || "",
+        dia_semana: [horario.dia_semana] || [],
+        hora_inicio: horario.hora_inicio || "",
+        hora_termino: horario.hora_termino || "",
+        valido_desde: horario.valido_desde || "",
+        valido_hasta: horario.valido_hasta || "",
+        tipo_atencion_id: horario.tipo_atencion_id || "",
+        id_horario: horario.id_horario // Añadimos el ID para actualizar el registro correcto
+      });
+    }
+  }, [horario]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -74,7 +89,14 @@ function HorarioForm({ onSuccess }) {
     setError(null);
 
     try {
-      await axios.post("/api/horarios", form);
+      if (form.id_horario) {
+        // Estamos editando un horario existente
+        await axios.put(`/api/horarios/${form.id_horario}`, form);
+      } else {
+        // Estamos creando un nuevo horario
+        await axios.post("/api/horarios", form);
+      }
+
       setForm({
         profesional_id: "",
         dia_semana: [],
@@ -82,12 +104,12 @@ function HorarioForm({ onSuccess }) {
         hora_termino: "",
         valido_desde: "",
         valido_hasta: "",
-        tipo_atencion_id: "",
-        nro_consulta: ""
+        tipo_atencion_id: ""
       });
+      
       if (onSuccess) onSuccess();
     } catch (error) {
-      console.error("Error al crear horario:", error);
+      console.error("Error al guardar horario:", error);
       setError("Error al guardar el horario. Por favor, intenta de nuevo.");
     } finally {
       setLoading(false);
@@ -162,7 +184,7 @@ function HorarioForm({ onSuccess }) {
               onChange={handleChange}
               required
             >
-              <option value="">08:00 AM</option>
+              <option value="">Seleccione</option>
               <option value="07:00">07:00 AM</option>
               <option value="07:30">07:30 AM</option>
               <option value="08:00">08:00 AM</option>
@@ -202,7 +224,7 @@ function HorarioForm({ onSuccess }) {
               onChange={handleChange}
               required
             >
-              <option value="">12:00 PM</option>
+              <option value="">Seleccione</option>
               <option value="08:00">08:00 AM</option>
               <option value="08:30">08:30 AM</option>
               <option value="09:00">09:00 AM</option>
@@ -273,7 +295,7 @@ function HorarioForm({ onSuccess }) {
             onChange={handleChange}
             required
           >
-            <option value="">Presencial</option>
+            <option value="">Seleccione</option>
             {tiposAtencion.map((t) => (
               <option key={t.tipo_atencion_id} value={t.tipo_atencion_id}>
                 {t.nombre}
@@ -281,18 +303,6 @@ function HorarioForm({ onSuccess }) {
             ))}
           </select>
         </div>
-      </div>
-
-      <div className="form-group">
-        <label htmlFor="nro_consulta">Consultorio</label>
-        <input 
-          type="text" 
-          id="nro_consulta"
-          name="nro_consulta" 
-          value={form.nro_consulta}
-          onChange={handleChange} 
-          placeholder="3"
-        />
       </div>
 
       <div className="form-actions">

@@ -9,6 +9,8 @@ function HorariosPage() {
   const [error, setError] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [profesionales, setProfesionales] = useState([]);
+  const [activeTab, setActiveTab] = useState("profesionales");
+  const [currentHorario, setCurrentHorario] = useState(null);
 
   useEffect(() => {
     fetchHorarios();
@@ -42,6 +44,23 @@ function HorariosPage() {
     return dias[horario.dia_semana - 1] || 'No especificado';
   };
 
+  const handleEditHorario = (horario) => {
+    setCurrentHorario(horario);
+    setShowModal(true);
+  };
+
+  const handleDeleteHorario = async (horarioId) => {
+    if (window.confirm('¿Estás seguro de que deseas eliminar este horario?')) {
+      try {
+        await axios.delete(`/api/horarios/${horarioId}`);
+        fetchHorarios();
+      } catch (err) {
+        console.error('Error eliminando horario:', err);
+        alert('Hubo un error al eliminar el horario');
+      }
+    }
+  };
+
   const renderHorariosTable = () => {
     if (loading) return <div className="loading">Cargando horarios...</div>;
     if (error) return <div className="error-message">{error}</div>;
@@ -53,29 +72,37 @@ function HorariosPage() {
           <thead>
             <tr>
               <th>Profesional</th>
+              <th>Tipo de atención</th>
               <th>Días</th>
               <th>Hora de inicio</th>
               <th>Hora de término</th>
-              <th>Tipo de atención</th>
               <th>Consultorio</th>
-              <th>Acciones</th>
+              <th></th>
             </tr>
           </thead>
           <tbody>
-            {horarios.map((horario, index) => (
-              <tr key={index}>
+            {horarios.map((horario) => (
+              <tr key={horario.id_horario}>
                 <td>{horario.profesional_nombre} {horario.profesional_apellido}</td>
-                <td>{formatHorarioSemanal(horario)}</td>
-                <td>{horario.hora_inicio}</td>
-                <td>{horario.hora_termino}</td>
                 <td>{horario.tipo_atencion}</td>
-                <td>{horario.nro_consulta || 'No especificado'}</td>
+                <td>{formatHorarioSemanal(horario)}</td>
+                <td>{horario.hora_inicio?.slice(0, 5) || ""}</td>
+                <td>{horario.hora_termino?.slice(0, 5) || ""}</td>
+                <td>{horario.nro_consulta || '-'}</td>
                 <td className="actions-cell">
-                  <button className="btn-action btn-edit" title="Editar">
-                    ✏️
+                  <button 
+                    className="btn-action btn-edit" 
+                    title="Editar"
+                    onClick={() => handleEditHorario(horario)}
+                  >
+                    <span className="icon-edit">✏️</span>
                   </button>
-                  <button className="btn-action btn-delete" title="Eliminar">
-                    🗑️
+                  <button 
+                    className="btn-action btn-delete" 
+                    title="Eliminar"
+                    onClick={() => handleDeleteHorario(horario.id_horario)}
+                  >
+                    <span className="icon-delete">🗑️</span>
                   </button>
                 </td>
               </tr>
@@ -86,33 +113,71 @@ function HorariosPage() {
     );
   };
 
+  const renderExcepcionesContent = () => {
+    return (
+      <div className="excepciones-container">
+        <p className="empty-state">La administración de excepciones aún no está disponible.</p>
+      </div>
+    );
+  };
+
   return (
     <div className="horarios-container">
       <h1>Horarios de atención</h1>
       
-      <div className="horarios-header">
-        <div className="horarios-filters">
-          {/* Aquí puedes agregar filtros si son necesarios */}
+      <div className="tabs-container">
+        <div className="tabs-header">
+          <button 
+            className={`tab-button ${activeTab === "profesionales" ? "active" : ""}`} 
+            onClick={() => setActiveTab("profesionales")}
+          >
+            Profesionales
+          </button>
+          <button 
+            className={`tab-button ${activeTab === "excepciones" ? "active" : ""}`} 
+            onClick={() => setActiveTab("excepciones")}
+          >
+            Excepciones
+          </button>
         </div>
-        <button className="btn-agregar" onClick={() => setShowModal(true)}>
-          + Agregar horario
+      </div>
+      
+      <div className="horarios-header">
+        <div className="search-container">
+          <input 
+            type="text" 
+            placeholder="Buscar por nombre"
+            className="search-input"
+          />
+          <button className="search-button">
+            <span>🔍</span>
+          </button>
+        </div>
+        <button className="btn-agregar" onClick={() => {
+          setCurrentHorario(null);
+          setShowModal(true);
+        }}>
+          <span className="icon-plus">+</span> Agregar horario
         </button>
       </div>
       
-      {renderHorariosTable()}
+      {activeTab === "profesionales" ? renderHorariosTable() : renderExcepcionesContent()}
       
       {showModal && (
         <div className="modal-overlay">
-          <div className="modal-content">
+          <div className="modal-content narrow-modal">
             <div className="modal-header">
-              <h2>Agregar horario de atención para un profesional</h2>
+              <h2>{currentHorario ? "Editar horario" : "Agregar horario de atención"}</h2>
               <button className="close-btn" onClick={() => setShowModal(false)}>×</button>
             </div>
             <div className="modal-body">
-              <HorarioForm onSuccess={() => {
-                setShowModal(false);
-                fetchHorarios();
-              }} />
+              <HorarioForm 
+                horario={currentHorario} 
+                onSuccess={() => {
+                  setShowModal(false);
+                  fetchHorarios();
+                }}
+              />
             </div>
           </div>
         </div>

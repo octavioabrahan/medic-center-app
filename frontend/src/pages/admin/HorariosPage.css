@@ -9,6 +9,41 @@
   color: #333;
 }
 
+.tabs-container {
+  margin-bottom: 20px;
+}
+
+.tabs-header {
+  display: flex;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.tab-button {
+  padding: 10px 20px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 15px;
+  position: relative;
+  color: #666;
+  font-weight: 500;
+}
+
+.tab-button.active {
+  color: #007bff;
+  font-weight: 600;
+}
+
+.tab-button.active::after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  height: 2px;
+  width: 100%;
+  background-color: #007bff;
+}
+
 .horarios-header {
   display: flex;
   justify-content: space-between;
@@ -16,12 +51,31 @@
   margin-bottom: 20px;
 }
 
-.horarios-filters {
+.search-container {
   display: flex;
-  gap: 10px;
   align-items: center;
-  flex-wrap: wrap;
+  background-color: white;
+  border-radius: 8px;
+  padding: 5px 10px;
+  width: 300px;
+  border: 1px solid #e0e0e0;
+}
+
+.search-input {
+  border: none;
+  outline: none;
   flex: 1;
+  padding: 5px;
+  font-size: 14px;
+}
+
+.search-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 5px;
+  font-size: 14px;
+  color: #666;
 }
 
 .btn-agregar {
@@ -33,13 +87,21 @@
   cursor: pointer;
   font-weight: 500;
   transition: background-color 0.3s;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.icon-plus {
+  font-size: 16px;
+  font-weight: bold;
 }
 
 .btn-agregar:hover {
   background-color: #0069d9;
 }
 
-.loading, .error-message, .no-results {
+.loading, .error-message, .no-results, .empty-state {
   text-align: center;
   padding: 20px;
   background-color: white;
@@ -85,6 +147,7 @@
 
 .actions-cell {
   white-space: nowrap;
+  text-align: right;
 }
 
 .btn-action {
@@ -94,14 +157,17 @@
   font-size: 18px;
   margin: 0 5px;
   padding: 2px;
+  opacity: 0.7;
 }
 
 .btn-edit:hover {
   color: #007bff;
+  opacity: 1;
 }
 
 .btn-delete:hover {
   color: #dc3545;
+  opacity: 1;
 }
 
 .modal-overlay {
@@ -125,6 +191,10 @@
   max-height: 90vh;
   overflow-y: auto;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.narrow-modal {
+  max-width: 480px;
 }
 
 .modal-header {
@@ -151,6 +221,18 @@
 
 .modal-body {
   padding: 20px;
+}
+
+.excepciones-container {
+  background-color: white;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.icon-edit, .icon-delete {
+  display: inline-block;
+  pointer-events: none;
 }
 
 /* Estilos para el formulario dentro del modal */
