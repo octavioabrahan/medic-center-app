@@ -342,22 +342,33 @@ const Calendar = ({
   
   // Month picker component
   const renderMonthPicker = (forYear) => {
-    const months = [];
+    const monthsData = [
+      { value: 0, name: 'Enero' },
+      { value: 1, name: 'Febrero' },
+      { value: 2, name: 'Marzo' },
+      { value: 3, name: 'Abril' },
+      { value: 4, name: 'Mayo' },
+      { value: 5, name: 'Junio' },
+      { value: 6, name: 'Julio' },
+      { value: 7, name: 'Agosto' },
+      { value: 8, name: 'Septiembre' },
+      { value: 9, name: 'Octubre' },
+      { value: 10, name: 'Noviembre' },
+      { value: 11, name: 'Diciembre' }
+    ];
     
-    for (let i = 0; i < 12; i++) {
-      months.push(
-        <div 
-          key={`month-${i}`}
-          className={`month-option ${calendarMonth === i ? 'active' : ''}`}
-          onClick={() => {
-            setCalendarMonth(i);
-            setShowMonthPicker(false);
-          }}
-        >
-          {getFullMonthName(i)}
-        </div>
-      );
-    }
+    const months = monthsData.map(month => (
+      <div 
+        key={`month-${month.value}`}
+        className={`month-option ${calendarMonth === month.value ? 'active' : ''}`}
+        onClick={() => {
+          setCalendarMonth(month.value);
+          setShowMonthPicker(false);
+        }}
+      >
+        {month.name}
+      </div>
+    ));
     
     return (
       <div className="month-year-picker">
@@ -379,12 +390,13 @@ const Calendar = ({
   
   // Year picker component
   const renderYearPicker = () => {
-    const years = [];
     const currentYear = new Date().getFullYear();
-    const startYear = currentYear - 10;
-    const endYear = currentYear + 10;
+    const startYear = currentYear - 5;
+    const years = [];
     
-    for (let year = startYear; year <= endYear; year++) {
+    // Generar exactamente 12 años (similar a los 12 meses)
+    for (let i = 0; i < 12; i++) {
+      const year = startYear + i;
       years.push(
         <div 
           key={`year-${year}`}
