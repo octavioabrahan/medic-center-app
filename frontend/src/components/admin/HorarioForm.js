@@ -179,10 +179,12 @@ function HorarioForm({ onSuccess, horario }) {
         dateRange.from.getTime() !== newDateRange.from.getTime() ||
         dateRange.to.getTime() !== newDateRange.to.getTime()) {
       
-      // Siempre usamos startOfDay para la fecha "from" para mantener consistencia
+      // Usamos startOfDay para la fecha "from" para mantener consistencia
       const fromDate = startOfDay(newDateRange.from);
-      // Usamos endOfDay para la fecha "to" para incluir todo el día
-      const toDate = endOfDay(newDateRange.to);
+      
+      // Para la fecha "to", ya NO usamos endOfDay para evitar que se incremente un día
+      // Ahora usamos también startOfDay para mantener la fecha exacta seleccionada
+      const toDate = startOfDay(newDateRange.to);
       
       const updatedRange = {
         from: fromDate,

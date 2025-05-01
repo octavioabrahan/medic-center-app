@@ -14,7 +14,14 @@ const HorariosController = {
   actualizar: async (req, res) => {
     const { id } = req.params;
     try {
-      await Model.actualizar(id, req.body);
+      // Aseguramos que el ID sea un número entero
+      const horarioId = parseInt(id, 10);
+      
+      if (isNaN(horarioId)) {
+        return res.status(400).json({ error: "ID de horario inválido" });
+      }
+      
+      await Model.actualizar(horarioId, req.body);
       res.json({ mensaje: "Horario actualizado correctamente" });
     } catch (err) {
       console.error(err);
@@ -56,7 +63,14 @@ const HorariosController = {
   eliminar: async (req, res) => {
     const { id } = req.params;
     try {
-      await Model.eliminar(id);
+      // Aseguramos que el ID sea un número entero
+      const horarioId = parseInt(id, 10);
+      
+      if (isNaN(horarioId)) {
+        return res.status(400).json({ error: "ID de horario inválido" });
+      }
+      
+      await Model.eliminar(horarioId);
       res.json({ mensaje: "Horario eliminado correctamente" });
     } catch (err) {
       console.error(err);
