@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { 
   startOfDay, endOfDay,
-  subDays, isBefore, isAfter
+  subDays, isBefore, isAfter, isSameDay
 } from "date-fns";
 import "./Calendar.css";
 
@@ -105,7 +105,7 @@ const Calendar = ({
       days.push(
         <td key={`prev-${i}`} className="outside-month">
           <div 
-            className="calendar-day"
+            className={`calendar-day ${isInSelectedDate(prevDate) ? 'selected' : ''} ${isInSelectedRange(prevDate)}`}
             onClick={() => handleDateSelection(prevDate)}
           >
             {prevDay}
@@ -121,28 +121,7 @@ const Calendar = ({
                      month === today.getMonth() && 
                      year === today.getFullYear();
       
-      // Check if date is within the selected range
-      const isInRange = dateRange?.from && dateRange?.to && 
-        date >= startOfDay(dateRange.from) && 
-        date <= endOfDay(dateRange.to);
-      
-      // Check if date is exactly the selected start or end date
-      const isStart = dateRange?.from && 
-        day === dateRange.from.getDate() && 
-        month === dateRange.from.getMonth() && 
-        year === dateRange.from.getFullYear();
-      
-      const isEnd = dateRange?.to && 
-        dateRange.to.getDate() !== dateRange.from.getDate() &&  // Only mark as end if different from start
-        day === dateRange.to.getDate() && 
-        month === dateRange.to.getMonth() && 
-        year === dateRange.to.getFullYear();
-      
-      let className = "calendar-day";
-      if (isToday) className += " today";
-      if (isStart) className += " selected range-start";
-      else if (isEnd) className += " selected range-end";
-      else if (isInRange) className += " range-middle";
+      const className = `calendar-day ${isToday ? 'today' : ''} ${isInSelectedDate(date) ? 'selected' : ''} ${isInSelectedRange(date)}`;
       
       days.push(
         <td key={`day-${day}`}>
@@ -171,7 +150,7 @@ const Calendar = ({
         days.push(
           <td key={`next-${i}`} className="outside-month">
             <div 
-              className="calendar-day"
+              className={`calendar-day ${isInSelectedDate(nextDate) ? 'selected' : ''} ${isInSelectedRange(nextDate)}`}
               onClick={() => handleDateSelection(nextDate)}
             >
               {i}
@@ -183,6 +162,44 @@ const Calendar = ({
     }
     
     return rows;
+  };
+
+  // Helper function to check if a date is the start or end of the selected range
+  const isInSelectedDate = (date) => {
+    if (!dateRange?.from) return false;
+    
+    if (isSelectingRange && rangeStart && isSameDay(date, rangeStart)) {
+      return true;
+    }
+    
+    if (dateRange.from && isSameDay(date, dateRange.from)) {
+      return true;
+    }
+    
+    if (dateRange.to && !isSameDay(date, dateRange.from) && isSameDay(date, dateRange.to)) {
+      return true;
+    }
+    
+    return false;
+  };
+  
+  // Helper function to check if a date is within the selected range (but not start/end)
+  const isInSelectedRange = (date) => {
+    if (isSelectingRange && rangeStart) {
+      if (isSameDay(date, rangeStart)) return 'range-start';
+      return '';
+    }
+    
+    if (!dateRange?.from || !dateRange?.to) return '';
+    
+    if (isSameDay(date, dateRange.from)) return 'range-start';
+    if (isSameDay(date, dateRange.to)) return 'range-end';
+    
+    if (date > startOfDay(dateRange.from) && date < endOfDay(dateRange.to)) {
+      return 'range-middle';
+    }
+    
+    return '';
   };
   
   // Handle date selection
