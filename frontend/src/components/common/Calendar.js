@@ -102,10 +102,14 @@ const Calendar = ({
       const prevDay = prevMonthLastDay - (firstDayWeekday - i - 1);
       const prevDate = new Date(year, month - 1, prevDay);
       
+      // Determine the classes for this date
+      const isSelected = isInSelectedDate(prevDate);
+      const rangeClass = isInSelectedRange(prevDate);
+      
       days.push(
         <td key={`prev-${i}`} className="outside-month">
           <div 
-            className={`calendar-day ${isInSelectedDate(prevDate) ? 'selected' : ''} ${isInSelectedRange(prevDate)}`}
+            className={`calendar-day ${isSelected ? 'selected' : ''} ${rangeClass}`}
             onClick={() => handleDateSelection(prevDate)}
           >
             {prevDay}
@@ -121,15 +125,17 @@ const Calendar = ({
                      month === today.getMonth() && 
                      year === today.getFullYear();
       
-      const className = `calendar-day ${isToday ? 'today' : ''} ${isInSelectedDate(date) ? 'selected' : ''} ${isInSelectedRange(date)}`;
+      // Determine the classes for this date
+      const isSelected = isInSelectedDate(date);
+      const rangeClass = isInSelectedRange(date);
       
       days.push(
         <td key={`day-${day}`}>
           <div 
-            className={className}
+            className={`calendar-day ${isToday ? 'today' : ''} ${isSelected ? 'selected' : ''} ${rangeClass}`}
             onClick={() => handleDateSelection(date)}
           >
-            <span>{day}</span>
+            {day}
           </div>
         </td>
       );
@@ -147,10 +153,14 @@ const Calendar = ({
       for (let i = 1; i <= remainingCells; i++) {
         const nextDate = new Date(year, month + 1, i);
         
+        // Determine the classes for this date
+        const isSelected = isInSelectedDate(nextDate);
+        const rangeClass = isInSelectedRange(nextDate);
+        
         days.push(
           <td key={`next-${i}`} className="outside-month">
             <div 
-              className={`calendar-day ${isInSelectedDate(nextDate) ? 'selected' : ''} ${isInSelectedRange(nextDate)}`}
+              className={`calendar-day ${isSelected ? 'selected' : ''} ${rangeClass}`}
               onClick={() => handleDateSelection(nextDate)}
             >
               {i}
@@ -166,17 +176,20 @@ const Calendar = ({
 
   // Helper function to check if a date is the start or end of the selected range
   const isInSelectedDate = (date) => {
-    if (!dateRange?.from) return false;
-    
+    // Check if date is the temporary selection during range selection
     if (isSelectingRange && rangeStart && isSameDay(date, rangeStart)) {
       return true;
     }
     
-    if (dateRange.from && isSameDay(date, dateRange.from)) {
+    // Check if date is the start of the confirmed range
+    if (dateRange?.from && isSameDay(date, dateRange.from)) {
       return true;
     }
     
-    if (dateRange.to && !isSameDay(date, dateRange.from) && isSameDay(date, dateRange.to)) {
+    // Check if date is the end of the confirmed range (only if different from start)
+    if (dateRange?.to && dateRange?.from && 
+        !isSameDay(dateRange.from, dateRange.to) && 
+        isSameDay(date, dateRange.to)) {
       return true;
     }
     
@@ -185,16 +198,29 @@ const Calendar = ({
   
   // Helper function to check if a date is within the selected range (but not start/end)
   const isInSelectedRange = (date) => {
+    // If we're in the middle of selecting a range
     if (isSelectingRange && rangeStart) {
-      if (isSameDay(date, rangeStart)) return 'range-start';
+      if (isSameDay(date, rangeStart)) {
+        return 'range-start';
+      }
       return '';
     }
     
-    if (!dateRange?.from || !dateRange?.to) return '';
+    // If we have a complete range selection
+    if (!dateRange?.from || !dateRange?.to) {
+      return '';
+    }
     
-    if (isSameDay(date, dateRange.from)) return 'range-start';
-    if (isSameDay(date, dateRange.to)) return 'range-end';
+    // Handling start and end of range
+    if (isSameDay(date, dateRange.from)) {
+      return dateRange.from.getTime() === dateRange.to.getTime() ? '' : 'range-start';
+    }
     
+    if (isSameDay(date, dateRange.to) && !isSameDay(dateRange.from, dateRange.to)) {
+      return 'range-end';
+    }
+    
+    // Check if the date is in the middle of the range
     if (date > startOfDay(dateRange.from) && date < endOfDay(dateRange.to)) {
       return 'range-middle';
     }
@@ -214,12 +240,12 @@ const Calendar = ({
     } else {
       // Range selection logic
       if (!isSelectingRange || !rangeStart) {
-        // Start range selection
+        // Start range selection - first click
         setRangeStart(date);
         setDateRange({ from: date, to: date });
         setIsSelectingRange(true);
       } else {
-        // Complete range selection
+        // Complete range selection - second click
         let from, to;
         
         // Ensure correct order (from should be earlier than to)
@@ -231,16 +257,16 @@ const Calendar = ({
           to = date;
         }
         
-        setDateRange({ 
+        // Set the date range
+        const newRange = { 
           from: startOfDay(from), 
           to: endOfDay(to) 
-        });
+        };
+        
+        setDateRange(newRange);
         
         if (onDateRangeChange) {
-          onDateRangeChange({ 
-            from: startOfDay(from), 
-            to: endOfDay(to) 
-          });
+          onDateRangeChange(newRange);
         }
         
         // Reset range selection

@@ -248,7 +248,7 @@
   height: 28px;
   margin: 0 auto;
   border-radius: 4px;
-  transition: all 0.1s;
+  transition: background-color 0.1s ease;
   font-size: 13px;
   position: relative;
   color: #24292e;
@@ -278,7 +278,7 @@
 }
 
 .selected {
-  background-color: #0366d6;
+  background-color: #0366d6 !important;
   color: white !important;
   z-index: 1; /* Ensure text stays visible */
 }
@@ -298,14 +298,17 @@
   border-bottom-left-radius: 0;
 }
 
-/* Ensure text is always visible even when selected */
-.selected.range-start, 
-.selected.range-end {
-  position: relative;
-  z-index: 1;
+/* Fix for dates in outside month */
+.outside-month .calendar-day {
+  color: #c0c4c9;
 }
 
-.outside-month .calendar-day {
+.outside-month .calendar-day.selected {
+  color: white !important;
+}
+
+.outside-month .calendar-day.range-middle {
+  background-color: #f1f8ff;
   color: #c0c4c9;
 }
 
