@@ -64,9 +64,22 @@ function HorarioForm({ onSuccess, horario }) {
   // Cargar datos cuando se está editando un horario existente
   useEffect(() => {
     if (horario) {
+      // Si el horario tiene dia_semana como array, usarlo directamente
+      // Si es un valor único, convertirlo a array
+      let diasSemanaArray = [];
+      if (horario.dia_semana) {
+        diasSemanaArray = Array.isArray(horario.dia_semana) 
+          ? horario.dia_semana 
+          : [horario.dia_semana];
+      }
+      // Si tiene días_semana (formato agrupado del frontend), usarlo
+      if (horario.dias_semana) {
+        diasSemanaArray = horario.dias_semana;
+      }
+      
       setForm({
         profesional_id: horario.profesional_id || "",
-        dia_semana: [horario.dia_semana] || [],
+        dia_semana: diasSemanaArray,
         hora_inicio: horario.hora_inicio || "",
         hora_termino: horario.hora_termino || "",
         valido_desde: horario.valido_desde || "",
@@ -217,7 +230,7 @@ function HorarioForm({ onSuccess, horario }) {
       {error && <div className="error-message">{error}</div>}
       
       <div className="form-instructions">
-        <p>Si un profesional atiende varios días a la semana, debes agregar cada día por separado. Ejemplo: si el profesional atiende lunes a las 8:00, miércoles a las 9:00 y viernes a las 10:00, debes crear tres horarios distintos, uno por cada día.</p>
+        <p>Selecciona los días de la semana en los que el profesional atenderá con el mismo horario. Puedes seleccionar múltiples días para crear un horario agrupado.</p>
       </div>
 
       <div className="form-group">

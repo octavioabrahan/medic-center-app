@@ -16,23 +16,25 @@ const HorariosModel = {
       throw new Error("La hora de inicio debe ser menor a la hora de término.");
     }
 
-    for (const dia of dia_semana) {
-      await db.query(
-        `INSERT INTO horario_medico
-        (profesional_id, dia_semana, hora_inicio, hora_termino, valido_desde, valido_hasta, tipo_atencion_id, nro_consulta)
-        VALUES ($1, $2, $3, $4, $5, $6, $7, $8)`,
-        [
-          profesional_id,
-          dia,
-          hora_inicio,
-          hora_termino,
-          valido_desde,
-          valido_hasta,
-          tipo_atencion_id,
-          nro_consulta || 1  // Valor por defecto si no se proporciona
-        ]
-      );
-    }
+    // Asegurarnos de que dia_semana sea un array
+    const diasArray = Array.isArray(dia_semana) ? dia_semana : [dia_semana];
+    
+    // Insertar un único registro con todos los días de la semana
+    await db.query(
+      `INSERT INTO horario_medico
+      (profesional_id, dia_semana, hora_inicio, hora_termino, valido_desde, valido_hasta, tipo_atencion_id, nro_consulta)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8)`,
+      [
+        profesional_id,
+        diasArray, // Ahora pasamos el array completo
+        hora_inicio,
+        hora_termino,
+        valido_desde,
+        valido_hasta,
+        tipo_atencion_id,
+        nro_consulta || 1  // Valor por defecto si no se proporciona
+      ]
+    );
   },
 
   actualizar: async (horario_id, {
@@ -49,6 +51,9 @@ const HorariosModel = {
       throw new Error("La hora de inicio debe ser menor a la hora de término.");
     }
     
+    // Asegurarnos de que dia_semana sea un array
+    const diasArray = Array.isArray(dia_semana) ? dia_semana : [dia_semana];
+    
     // Actualizar el horario existente
     await db.query(
       `UPDATE horario_medico
@@ -63,13 +68,13 @@ const HorariosModel = {
        WHERE horario_id = $9`,
       [
         profesional_id,
-        Array.isArray(dia_semana) ? dia_semana[0] : dia_semana, // Tomar el primer día si es array
+        diasArray, // Pasamos el array completo
         hora_inicio,
         hora_termino,
         valido_desde,
         valido_hasta,
         tipo_atencion_id,
-        nro_consulta || 1,  // Valor por defecto si no se proporciona
+        nro_consulta || 1,
         horario_id
       ]
     );
@@ -145,7 +150,10 @@ const HorariosModel = {
       let fecha = moment(row.valido_desde);
       const hasta = moment(row.valido_hasta);
       while (fecha.isSameOrBefore(hasta)) {
-        if (fecha.isoWeekday() === row.dia_semana) {
+        // Para cada día en el array de día_semana, verificar si la fecha actual corresponde
+        const diasSemana = Array.isArray(row.dia_semana) ? row.dia_semana : [row.dia_semana];
+        
+        if (diasSemana.includes(fecha.isoWeekday())) {
           const fechaStr = fecha.format("YYYY-MM-DD");
           if (!fechasCanceladas.has(fechaStr)) {
             fechasDesdeHorario.push({
