@@ -20,7 +20,8 @@ const AgendamientoEmpresaForm = () => {
   });
 
   const [tieneSeguro] = useState('');
-  const [modoSeleccion, setModoSeleccion] = useState(null);
+  const [modoSeleccion] = useState(null);
+  // Se eliminó setModoSeleccion ya que no se utiliza
   const [servicios, setServicios] = useState([]);
   const [profesionales, setProfesionales] = useState([]);
   const [profesionalServicioMap, setProfesionalServicioMap] = useState({});
@@ -122,6 +123,7 @@ const getTipoAtencionId = (slug) => {
   );
 
   // Filtrar profesionales por servicio seleccionado (si hay uno)
+  // eslint-disable-next-line no-unused-vars
   const profesionalesFiltrados = serviciosSeleccionados
     ? profesionalesPorCategoria.filter(p => {
         // Si tenemos un ID de servicio y un mapa de servicio a profesionales
@@ -135,6 +137,7 @@ const getTipoAtencionId = (slug) => {
     : profesionalesPorCategoria;
 
   // Filtrar servicios por profesional seleccionado (si hay uno)
+  // eslint-disable-next-line no-unused-vars
   const serviciosFiltrados = profesionalSeleccionado
     ? servicios.filter(s => {
         // Si tenemos un ID de profesional y un mapa de profesional a servicios
@@ -146,6 +149,7 @@ const getTipoAtencionId = (slug) => {
     : servicios;
 
   // Manejar cambio de servicio
+  // eslint-disable-next-line no-unused-vars
   const handleServicioChange = (e) => {
     setServiciosSeleccionados(e.target.value);
     // Si el profesional actual no puede realizar este servicio, reseteamos la selección
@@ -160,6 +164,7 @@ const getTipoAtencionId = (slug) => {
   };
 
   // Manejar cambio de profesional
+  // eslint-disable-next-line no-unused-vars
   const handleProfesionalChange = (e) => {
     setProfesionalSeleccionado(e.target.value);
     // Si el servicio actual no puede ser realizado por este profesional, reseteamos la selección

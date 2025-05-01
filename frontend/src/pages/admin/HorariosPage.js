@@ -8,6 +8,7 @@ function HorariosPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [showModal, setShowModal] = useState(false);
+  // eslint-disable-next-line no-unused-vars
   const [profesionales, setProfesionales] = useState([]);
   const [activeTab, setActiveTab] = useState("profesionales");
   const [currentHorario, setCurrentHorario] = useState(null);
