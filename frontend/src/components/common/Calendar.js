@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { 
   startOfDay, endOfDay,
-  subDays, isBefore, isAfter, isSameDay
+  subDays, isBefore, isAfter, isSameDay, isSameMonth
 } from "date-fns";
 import "./Calendar.css";
 
@@ -102,9 +102,10 @@ const Calendar = ({
       const prevDay = prevMonthLastDay - (firstDayWeekday - i - 1);
       const prevDate = new Date(year, month - 1, prevDay);
       
-      // Determine the classes for this date
-      const isSelected = isInSelectedDate(prevDate);
-      const rangeClass = isInSelectedRange(prevDate);
+      // These days don't belong to the current month
+      // They don't get range styling unless the range spans across months
+      const isSelected = isInSelectedDate(prevDate, prevDate.getMonth(), prevDate.getFullYear());
+      const rangeClass = isInSelectedRange(prevDate, prevDate.getMonth(), prevDate.getFullYear());
       
       days.push(
         <td key={`prev-${i}`} className="outside-month">
@@ -125,9 +126,9 @@ const Calendar = ({
                      month === today.getMonth() && 
                      year === today.getFullYear();
       
-      // Determine the classes for this date
-      const isSelected = isInSelectedDate(date);
-      const rangeClass = isInSelectedRange(date);
+      // These days belong to the current month
+      const isSelected = isInSelectedDate(date, month, year);
+      const rangeClass = isInSelectedRange(date, month, year);
       
       days.push(
         <td key={`day-${day}`}>
@@ -153,9 +154,10 @@ const Calendar = ({
       for (let i = 1; i <= remainingCells; i++) {
         const nextDate = new Date(year, month + 1, i);
         
-        // Determine the classes for this date
-        const isSelected = isInSelectedDate(nextDate);
-        const rangeClass = isInSelectedRange(nextDate);
+        // These days don't belong to the current month
+        // They don't get range styling unless the range spans across months
+        const isSelected = isInSelectedDate(nextDate, nextDate.getMonth(), nextDate.getFullYear());
+        const rangeClass = isInSelectedRange(nextDate, nextDate.getMonth(), nextDate.getFullYear());
         
         days.push(
           <td key={`next-${i}`} className="outside-month">
@@ -175,21 +177,24 @@ const Calendar = ({
   };
 
   // Helper function to check if a date is the start or end of the selected range
-  const isInSelectedDate = (date) => {
+  const isInSelectedDate = (date, currentMonth, currentYear) => {
+    // Only treat as selected if it's in its actual month
+    const isActualMonth = date.getMonth() === currentMonth;
+    
     // Check if date is the temporary selection during range selection
-    if (isSelectingRange && rangeStart && isSameDay(date, rangeStart)) {
+    if (isSelectingRange && rangeStart && isSameDay(date, rangeStart) && isActualMonth) {
       return true;
     }
     
     // Check if date is the start of the confirmed range
-    if (dateRange?.from && isSameDay(date, dateRange.from)) {
+    if (dateRange?.from && isSameDay(date, dateRange.from) && isActualMonth) {
       return true;
     }
     
     // Check if date is the end of the confirmed range (only if different from start)
     if (dateRange?.to && dateRange?.from && 
         !isSameDay(dateRange.from, dateRange.to) && 
-        isSameDay(date, dateRange.to)) {
+        isSameDay(date, dateRange.to) && isActualMonth) {
       return true;
     }
     
@@ -197,10 +202,13 @@ const Calendar = ({
   };
   
   // Helper function to check if a date is within the selected range (but not start/end)
-  const isInSelectedRange = (date) => {
+  const isInSelectedRange = (date, currentMonth, currentYear) => {
+    // Only apply range styling if it's in its actual month
+    const isActualMonth = date.getMonth() === currentMonth;
+    
     // If we're in the middle of selecting a range
     if (isSelectingRange && rangeStart) {
-      if (isSameDay(date, rangeStart)) {
+      if (isSameDay(date, rangeStart) && isActualMonth) {
         return 'range-start';
       }
       return '';
@@ -212,11 +220,11 @@ const Calendar = ({
     }
     
     // Handling start and end of range
-    if (isSameDay(date, dateRange.from)) {
+    if (isSameDay(date, dateRange.from) && isActualMonth) {
       return dateRange.from.getTime() === dateRange.to.getTime() ? '' : 'range-start';
     }
     
-    if (isSameDay(date, dateRange.to) && !isSameDay(dateRange.from, dateRange.to)) {
+    if (isSameDay(date, dateRange.to) && isActualMonth && !isSameDay(dateRange.from, dateRange.to)) {
       return 'range-end';
     }
     
@@ -254,7 +262,7 @@ const Calendar = ({
           to = rangeStart;
         } else {
           from = rangeStart;
-          to = date;
+          to = date; // Corregido: era "to: date" con dos puntos
         }
         
         // Set the date range
