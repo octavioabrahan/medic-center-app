@@ -1,6 +1,5 @@
 .horarios-container {
   padding: 20px;
-  background-color: #f5f5f5;
 }
 
 .horarios-container h1 {
@@ -59,20 +58,23 @@
 
 .admin-citas-search input {
   width: 100%;
-  padding: 10px 40px 10px 15px;
-  border: 1px solid #ddd;
-  border-radius: 6px;
-  font-size: 14px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  padding: 8px 12px;
+  padding-right: 35px; /* Espacio para el icono */
+  border: 1px solid #e2e8f0;
+  border-radius: 4px;
+  font-size: 13px;
+  height: 38px; /* Altura fija consistente con AdminCitas */
+  box-sizing: border-box; /* Asegurar que padding no afecte dimensiones */
 }
 
 .admin-citas-search .search-icon {
   position: absolute;
-  right: 15px;
+  right: 10px;
   top: 50%;
   transform: translateY(-50%);
-  color: #666;
-  font-size: 16px;
+  color: #9ca3af;
+  font-size: 14px;
+  pointer-events: none; /* Evitar que el icono interfiera con clicks */
 }
 
 .search-container {
