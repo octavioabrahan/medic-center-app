@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, useCallback } from "react";
 import api from "../../api";
 import "./HorariosPage.css";
 import { format } from "date-fns";
@@ -41,8 +41,8 @@ function ExcepcionesPage() {
   const [daysInMonth, setDaysInMonth] = useState([]);
   
   // Estado para días disponibles del profesional
-  const [diasDisponibles, setDiasDisponibles] = useState([]);
-  const [fechasValidas, setFechasValidas] = useState([]);
+  const [fechasDisponibles, setFechasDisponibles] = useState([]);
+  const [fechasCanceladas, setFechasCanceladas] = useState(new Set());
   
   // Referencias para detección de clics fuera de los selectores
   const mesAgregarRef = useRef(null);
@@ -53,6 +53,20 @@ function ExcepcionesPage() {
   const [showYearSelector, setShowYearSelector] = useState(false);
   const [showMesCancelarSelector, setShowMesCancelarSelector] = useState(false);
   const [showYearCancelarSelector, setShowYearCancelarSelector] = useState(false);
+  
+  // Formatear y parsear fechas
+  const parseFechaLocal = useCallback((fechaStr) => {
+    const [y, m, d] = fechaStr.split('-').map(Number);
+    return new Date(y, m - 1, d); // mes 0-indexed
+  }, []);
+
+  const formatDate = useCallback((input) => {
+    const date = typeof input === 'string' ? parseFechaLocal(input) : input;
+    const y = date.getFullYear();
+    const m = String(date.getMonth() + 1).padStart(2, '0');
+    const d = String(date.getDate()).padStart(2, '0');
+    return `${y}-${m}-${d}`;
+  }, [parseFechaLocal]); 
   
   // Crear calendario para el mes y año seleccionados
   useEffect(() => {
@@ -108,13 +122,12 @@ function ExcepcionesPage() {
     fetchExcepciones();
   }, []);
 
-  // Cargar fechas válidas cuando cambia el profesional seleccionado (para modal Cancelar)
+  // Cargar fechas disponibles cuando cambia el profesional seleccionado o el mes/año
   useEffect(() => {
     if (cancelacion.profesional_id) {
-      cargarFechasValidas(cancelacion.profesional_id);
-      cargarDiasDisponibles(cancelacion.profesional_id);
+      cargarFechasDisponibles(cancelacion.profesional_id);
     }
-  }, [cancelacion.profesional_id]);
+  }, [cancelacion.profesional_id, selectedMonth, selectedYear]); 
   
   // Filtrar excepciones cuando cambia el término de búsqueda
   useEffect(() => {
@@ -180,74 +193,84 @@ function ExcepcionesPage() {
     }
   };
 
-  // Cargar fechas válidas para un profesional específico
-  const cargarFechasValidas = async (profesionalId) => {
+  // Cargar fechas disponibles para un profesional específico
+  const cargarFechasDisponibles = async (profesionalId) => {
     try {
-      const res = await api.get(`/horarios/fechas/${profesionalId}`);
-      setFechasValidas(res.data);
+      // Cargar fechas del servicio de horarios y excepciones
+      const [resHorarios, resExcepciones] = await Promise.all([
+        api.get(`/horarios/fechas/${profesionalId}`),
+        api.get(`/excepciones/profesional/${profesionalId}`)
+      ]);
+
+      const horarios = resHorarios.data;
+      const excepciones = resExcepciones.data;
+
+      // Crear un conjunto de fechas canceladas
+      const canceladas = new Set(
+        excepciones
+          .filter(e => e.estado === 'cancelado')
+          .map(e => formatDate(e.fecha))
+      );
+      
+      setFechasCanceladas(canceladas);
+
+      // Filtrar horarios que no están cancelados
+      const validas = horarios
+        .filter(h => !canceladas.has(formatDate(h.fecha)))
+        .map(h => ({
+          fecha: formatDate(h.fecha),
+          hora_inicio: h.hora_inicio,
+          hora_termino: h.hora_termino,
+          nro_consulta: h.nro_consulta,
+          dateObj: parseFechaLocal(formatDate(h.fecha))
+        }));
+        
+      // Agregar fechas manuales
+      const agregadas = excepciones
+        .filter(e => e.estado === 'manual')
+        .map(e => ({
+          fecha: formatDate(e.fecha),
+          hora_inicio: e.hora_inicio,
+          hora_termino: e.hora_termino,
+          nro_consulta: e.nro_consulta,
+          dateObj: parseFechaLocal(formatDate(e.fecha))
+        }));
+
+      // Combinar todas las fechas disponibles
+      const combinadas = [...validas, ...agregadas];
+      
+      // Filtrar solo las fechas que corresponden al mes y año seleccionados
+      const fechasFiltradas = combinadas.filter(fecha => 
+        fecha.dateObj.getMonth() === selectedMonth && 
+        fecha.dateObj.getFullYear() === selectedYear
+      );
+
+      setFechasDisponibles(fechasFiltradas);
+      
     } catch (err) {
-      console.error("Error al cargar fechas válidas:", err);
+      console.error("Error al cargar fechas disponibles:", err);
       setError("Error al cargar las fechas disponibles");
     }
   };
 
-  // Cargar los días que trabaja el profesional
-  const cargarDiasDisponibles = async (profesionalId) => {
-    try {
-      const res = await api.get(`/horarios/profesional/${profesionalId}`);
-      // Extraer los días de la semana de los horarios del profesional
-      const dias = [];
-      
-      res.data.forEach(horario => {
-        if (Array.isArray(horario.dia_semana)) {
-          horario.dia_semana.forEach(dia => {
-            if (!dias.includes(dia)) {
-              dias.push(dia);
-            }
-          });
-        } else if (horario.dia_semana !== undefined) {
-          const dia = parseInt(horario.dia_semana);
-          if (!dias.includes(dia)) {
-            dias.push(dia);
-          }
-        }
-      });
-      
-      setDiasDisponibles(dias);
-    } catch (err) {
-      console.error("Error al cargar días disponibles:", err);
-    }
-  };
-
-  // Verificar si una fecha está cancelada
-  const yaCancelada = (fecha) => {
-    return excepciones.some(
-      (ex) => ex.fecha.startsWith(fecha) && ex.estado === "cancelado"
-    );
-  };
-
-  // Verificar si un día es seleccionable (es un día que el profesional trabaja)
-  const isDaySelectable = (day, month, year) => {
-    // Si no hay profesional seleccionado, ningún día es seleccionable
-    if (!cancelacion.profesional_id || diasDisponibles.length === 0) {
+  // Verificar si una fecha específica está disponible
+  const isFechaDisponible = useCallback((day, month, year) => {
+    if (!cancelacion.profesional_id || fechasDisponibles.length === 0) {
       return false;
     }
     
-    const date = new Date(year, month, day);
-    const diaSemana = date.getDay(); // 0 = domingo, 1 = lunes, ..., 6 = sábado
-    
-    // Convertir el día de la semana de JavaScript (0-6) al formato que usamos (1-7)
-    // Donde 1 = lunes, ..., 7 = domingo
-    const diaSemanaFormato = diaSemana === 0 ? 7 : diaSemana;
-    
-    return diasDisponibles.includes(diaSemanaFormato);
-  };
-
+    return fechasDisponibles.some(fecha => 
+      fecha.dateObj.getDate() === day &&
+      fecha.dateObj.getMonth() === month &&
+      fecha.dateObj.getFullYear() === year
+    );
+  }, [fechasDisponibles, cancelacion.profesional_id]);
+  
   // Verificar si una fecha específica ya está cancelada
-  const isFechaCancelada = (day, month, year) => {
+  const isFechaCancelada = useCallback((day, month, year) => {
     const fechaFormateada = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
-    return yaCancelada(fechaFormateada);
-  };
+    return fechasCanceladas.has(fechaFormateada);
+  }, [fechasCanceladas]);
 
   // Guardar excepción (día agregado)
   const guardarExcepcion = async (e) => {
@@ -261,13 +284,7 @@ function ExcepcionesPage() {
     
     try {
       // Formatear la fecha seleccionada
-      const fechaSeleccionada = new Date(
-        nuevaExcepcion.fecha.getFullYear(),
-        nuevaExcepcion.fecha.getMonth(),
-        nuevaExcepcion.fecha.getDate()
-      );
-      
-      const fechaFormateada = fechaSeleccionada.toISOString().split('T')[0];
+      const fechaFormateada = formatDate(nuevaExcepcion.fecha);
       
       await api.post("/excepciones", {
         ...nuevaExcepcion,
@@ -294,13 +311,7 @@ function ExcepcionesPage() {
     
     try {
       // Formatear la fecha seleccionada
-      const fechaSeleccionada = new Date(
-        cancelacion.fecha.getFullYear(),
-        cancelacion.fecha.getMonth(),
-        cancelacion.fecha.getDate()
-      );
-      
-      const fechaFormateada = fechaSeleccionada.toISOString().split('T')[0];
+      const fechaFormateada = formatDate(cancelacion.fecha);
       
       await api.post("/excepciones", {
         ...cancelacion,
@@ -308,6 +319,8 @@ function ExcepcionesPage() {
       });
       
       await fetchExcepciones();
+      // Recargar las fechas disponibles después de cancelar un día
+      await cargarFechasDisponibles(cancelacion.profesional_id);
       setShowCancelarModal(false);
       resetCancelacion();
     } catch (err) {
@@ -339,8 +352,8 @@ function ExcepcionesPage() {
     });
     setSelectedMonth(new Date().getMonth());
     setSelectedYear(new Date().getFullYear());
-    setDiasDisponibles([]);
-    setFechasValidas([]);
+    setFechasDisponibles([]);
+    setFechasCanceladas(new Set());
   };
 
   // Selección de día en el calendario
@@ -353,8 +366,8 @@ function ExcepcionesPage() {
         fecha: selectedDate
       });
     } else {
-      // Solo permitir seleccionar días en los que el profesional trabaja
-      if (isDaySelectable(day, month, year) && !isFechaCancelada(day, month, year)) {
+      // Solo permitir seleccionar días disponibles que no están cancelados
+      if (isFechaDisponible(day, month, year) && !isFechaCancelada(day, month, year)) {
         setCancelacion({
           ...cancelacion,
           fecha: selectedDate
@@ -371,13 +384,13 @@ function ExcepcionesPage() {
   
   const getMesNombre = (mes) => meses[mes];
   
-  const handleMesChange = (index, isAgregar = true) => {
+  const handleMesChange = (index) => {
     setSelectedMonth(index);
     setShowMesSelector(false);
     setShowMesCancelarSelector(false);
   };
   
-  const handleYearChange = (year, isAgregar = true) => {
+  const handleYearChange = (year) => {
     setSelectedYear(year);
     setShowYearSelector(false);
     setShowYearCancelarSelector(false);
@@ -442,8 +455,6 @@ function ExcepcionesPage() {
   // Estructura principal del componente
   return (
     <div className="horarios-container">
-      <h1>Excepciones de horario</h1>
-      
       <div className="horarios-header">
         <div className="admin-citas-search">
           <input
@@ -535,7 +546,7 @@ function ExcepcionesPage() {
                             <div 
                               key={mes} 
                               className="dropdown-item"
-                              onClick={() => handleMesChange(index, true)}
+                              onClick={() => handleMesChange(index)}
                             >
                               {mes}
                             </div>
@@ -561,7 +572,7 @@ function ExcepcionesPage() {
                             <div 
                               key={year} 
                               className="dropdown-item"
-                              onClick={() => handleYearChange(year, true)}
+                              onClick={() => handleYearChange(year)}
                             >
                               {year}
                             </div>
@@ -765,7 +776,7 @@ function ExcepcionesPage() {
                             <div 
                               key={mes} 
                               className="dropdown-item"
-                              onClick={() => handleMesChange(index, false)}
+                              onClick={() => handleMesChange(index)}
                             >
                               {mes}
                             </div>
@@ -791,7 +802,7 @@ function ExcepcionesPage() {
                             <div 
                               key={year} 
                               className="dropdown-item"
-                              onClick={() => handleYearChange(year, false)}
+                              onClick={() => handleYearChange(year)}
                             >
                               {year}
                             </div>
@@ -802,7 +813,7 @@ function ExcepcionesPage() {
                   </div>
                 </div>
                 
-                {/* Calendario para cancelar */}
+                {/* Calendario para cancelar - ahora mostrando solo días específicos disponibles */}
                 <div className="calendario-grid">
                   {diasSemana.map((dia, index) => (
                     <div key={`header-cancel-${index}`} className="calendario-header">{dia}</div>
@@ -815,8 +826,8 @@ function ExcepcionesPage() {
                       cancelacion.fecha.getMonth() === day.month && 
                       cancelacion.fecha.getFullYear() === day.year;
                     
-                    const isSelectable = isDaySelectable(day.day, day.month, day.year);
-                    const isCancelled = isFechaCancelada(day.day, day.month, day.year);
+                    const isDisponible = isFechaDisponible(day.day, day.month, day.year);
+                    const isCancelada = isFechaCancelada(day.day, day.month, day.year);
                     
                     return (
                       <div 
@@ -824,14 +835,18 @@ function ExcepcionesPage() {
                         className={`calendario-day 
                           ${!day.isCurrentMonth ? 'other-month' : ''} 
                           ${isSelected ? 'selected' : ''} 
-                          ${isSelectable ? 'selectable' : 'disabled'}
-                          ${isCancelled ? 'cancelled' : ''}
+                          ${isDisponible ? 'disponible' : 'disabled'}
+                          ${isCancelada ? 'cancelled' : ''}
                         `}
                         onClick={() => selectDay(day.day, day.month, day.year, false)}
                         style={{
-                          cursor: isSelectable && !isCancelled ? 'pointer' : 'default',
-                          color: !isSelectable || isCancelled ? '#adb5bd' : day.isCurrentMonth ? 'inherit' : '#adb5bd',
-                          backgroundColor: isSelected ? '#0d47a1' : isCancelled ? '#f8d7da' : isSelectable && day.isCurrentMonth ? '#fff' : 'transparent'
+                          cursor: isDisponible && !isCancelada ? 'pointer' : 'default',
+                          color: !day.isCurrentMonth ? '#adb5bd' : 
+                                 isCancelada ? '#a94442' :
+                                 isDisponible ? '#000' : '#adb5bd',
+                          backgroundColor: isSelected ? '#0d47a1' : 
+                                           isCancelada ? '#f8d7da' : 
+                                           isDisponible ? '#d4edda' : 'transparent'
                         }}
                       >
                         {day.day}
