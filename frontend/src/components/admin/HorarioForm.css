@@ -217,8 +217,8 @@ input[type="checkbox"]:checked::before {
   margin-top: 8px;
   padding: 12px;
   border: 1px solid #e5e7eb;
-  width: 340px; /* Ancho más específico para mejor control */
-  max-width: 100%; /* Limitar el ancho máximo */
+  width: 100%; /* Usar todo el ancho disponible */
+  max-width: 600px; /* Establecer un ancho máximo mayor */
 }
 
 /* Ajustar el tamaño del calendario para que quepa en el modal */
@@ -228,16 +228,17 @@ input[type="checkbox"]:checked::before {
   padding: 0;
 }
 
-/* Ajustar la disposición de los meses */
+/* Ajustar la disposición de los meses para que se muestren en fila */
 .modal-calendar .two-month-container {
-  flex-direction: column; /* Meses uno debajo del otro en el modal */
-  gap: 15px;
+  flex-direction: row; /* Meses uno al lado del otro */
+  gap: 12px;
   width: 100%;
   margin: 0;
+  justify-content: space-between;
 }
 
 .modal-calendar .month-container {
-  width: 100%; /* Ancho completo para cada mes */
+  width: calc(50% - 6px); /* Mitad del ancho menos el margen entre ellos */
   padding: 0;
 }
 
@@ -258,12 +259,13 @@ input[type="checkbox"]:checked::before {
 .modal-calendar .calendar-table td {
   text-align: center;
   padding: 4px 0;
+  font-size: 13px;
 }
 
 /* Ajustar el tamaño de los días para que quepan bien */
 .modal-calendar .calendar-day {
-  width: 30px; /* Tamaño consistente */
-  height: 30px; /* Tamaño consistente */
+  width: 28px; /* Tamaño más pequeño para que quepa en la vista horizontal */
+  height: 28px; /* Tamaño más pequeño para que quepa en la vista horizontal */
   font-size: 12px;
   margin: 0 auto; /* Centrar horizontalmente */
   display: flex;
@@ -305,5 +307,14 @@ input[type="checkbox"]:checked::before {
 
   .modal-calendar .custom-calendar-wrapper {
     transform: scale(0.8);
+  }
+  
+  .modal-calendar .two-month-container {
+    flex-direction: column; /* En móviles, volver a columna */
+  }
+  
+  .modal-calendar .month-container {
+    width: 100%; /* En móviles, ancho completo */
+    margin-bottom: 10px;
   }
 }
