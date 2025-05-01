@@ -465,3 +465,76 @@
   line-height: 1.5;
   margin-bottom: 5px;
 }
+
+/* Estilos para la vista de excepciones */
+.buttons-container {
+  display: flex;
+  gap: 12px;
+}
+
+/* Estilos para el calendario */
+.calendario-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 2px;
+  margin-top: 10px;
+  margin-bottom: 15px;
+}
+
+.calendario-header {
+  text-align: center;
+  font-weight: 500;
+  padding: 8px;
+  color: #333;
+  background-color: #f8f9fa;
+  border-radius: 4px;
+}
+
+.calendario-day {
+  text-align: center;
+  padding: 8px;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background-color 0.2s;
+}
+
+.calendario-day:hover {
+  background-color: #e9ecef;
+}
+
+.calendario-day.other-month {
+  color: #adb5bd;
+}
+
+.calendario-day.selected {
+  background-color: #0d47a1;
+  color: white;
+}
+
+.calendario-day.selected:hover {
+  background-color: #1565c0;
+}
+
+/* Estilos para los dropdowns */
+.dropdown-menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: 1000;
+  width: 100%;
+  max-height: 200px;
+  overflow-y: auto;
+  background-color: white;
+  border: 1px solid #ced4da;
+  border-radius: 4px;
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+}
+
+.dropdown-item {
+  padding: 8px 12px;
+  cursor: pointer;
+}
+
+.dropdown-item:hover {
+  background-color: #f8f9fa;
+}
