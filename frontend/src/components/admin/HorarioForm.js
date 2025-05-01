@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
+import { startOfDay, endOfDay } from "date-fns";
 import Calendar from "../../components/common/Calendar";
 import "./HorarioForm.css";
 
@@ -156,31 +157,45 @@ function HorarioForm({ onSuccess, horario }) {
   };
   
   const formatDateRange = () => {
-    if (!form.valido_desde && !form.valido_hasta) return "";
+    if (!dateRange.from && !dateRange.to) return "";
     
     const formatDate = (date) => {
       if (!date) return "";
-      const d = new Date(date);
-      return d.toLocaleDateString('es-ES', {
+      // Utilizamos directamente el objeto Date del estado dateRange
+      // para asegurar que mostremos exactamente lo que el usuario seleccionó
+      return date.toLocaleDateString('es-ES', {
         day: '2-digit',
         month: '2-digit',
         year: 'numeric'
       });
     };
     
-    return `${formatDate(form.valido_desde)} - ${formatDate(form.valido_hasta)}`;
+    return `${formatDate(dateRange.from)} - ${formatDate(dateRange.to)}`;
   };
   
   const handleDateRangeChange = (newDateRange) => {
     // Evitar actualizaciones infinitas comparando si el rango realmente cambió
-    if (dateRange.from?.toISOString() !== newDateRange.from?.toISOString() ||
-        dateRange.to?.toISOString() !== newDateRange.to?.toISOString()) {
+    if (!dateRange.from || !dateRange.to || 
+        dateRange.from.getTime() !== newDateRange.from.getTime() ||
+        dateRange.to.getTime() !== newDateRange.to.getTime()) {
       
-      setDateRange(newDateRange);
+      // Siempre usamos startOfDay para la fecha "from" para mantener consistencia
+      const fromDate = startOfDay(newDateRange.from);
+      // Usamos endOfDay para la fecha "to" para incluir todo el día
+      const toDate = endOfDay(newDateRange.to);
+      
+      const updatedRange = {
+        from: fromDate,
+        to: toDate
+      };
+      
+      setDateRange(updatedRange);
+      
+      // Para el formulario, enviamos las fechas en formato ISO (YYYY-MM-DD)
       setForm({
         ...form,
-        valido_desde: newDateRange.from ? newDateRange.from.toISOString().split('T')[0] : '',
-        valido_hasta: newDateRange.to ? newDateRange.to.toISOString().split('T')[0] : ''
+        valido_desde: fromDate.toISOString().split('T')[0],
+        valido_hasta: toDate.toISOString().split('T')[0]
       });
     }
   };
