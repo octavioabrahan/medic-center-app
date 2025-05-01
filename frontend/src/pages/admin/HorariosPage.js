@@ -76,7 +76,6 @@ function HorariosPage() {
               <th>Días</th>
               <th>Hora de inicio</th>
               <th>Hora de término</th>
-              <th>Consultorio</th>
               <th></th>
             </tr>
           </thead>
@@ -88,7 +87,6 @@ function HorariosPage() {
                 <td>{formatHorarioSemanal(horario)}</td>
                 <td>{horario.hora_inicio?.slice(0, 5) || ""}</td>
                 <td>{horario.hora_termino?.slice(0, 5) || ""}</td>
-                <td>{horario.nro_consulta || '-'}</td>
                 <td className="actions-cell">
                   <button 
                     className="btn-action btn-edit" 
@@ -143,15 +141,13 @@ function HorariosPage() {
       </div>
       
       <div className="horarios-header">
-        <div className="search-container">
+        <div className="admin-citas-search">
           <input 
             type="text" 
             placeholder="Buscar por nombre"
             className="search-input"
           />
-          <button className="search-button">
-            <span>🔍</span>
-          </button>
+          <span className="search-icon">🔍</span>
         </div>
         <button className="btn-agregar" onClick={() => {
           setCurrentHorario(null);

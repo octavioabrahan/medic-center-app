@@ -351,3 +351,29 @@
 .horarios-modal-body {
   padding: 20px;
 }
+
+.admin-citas-search {
+  position: relative;
+  flex: 1;
+  max-width: 300px;
+}
+
+.admin-citas-search input {
+  width: 100%;
+  padding: 8px 12px;
+  padding-right: 35px; /* Espacio para el icono */
+  border: 1px solid #e2e8f0;
+  border-radius: 4px;
+  font-size: 13px;
+  height: 38px;
+}
+
+.admin-citas-search .search-icon {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #9ca3af;
+  pointer-events: none;
+  font-size: 14px;
+}

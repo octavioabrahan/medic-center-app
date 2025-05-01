@@ -204,3 +204,146 @@ input[type="checkbox"]:checked::before {
 .modal-body {
   padding: 20px 24px 24px;
 }
+
+/* Estilos para el selector de fechas */
+.date-picker-container {
+  position: relative;
+  width: 100%;
+}
+
+.date-input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  background-color: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 4px;
+  height: 38px;
+  padding: 0 8px;
+  cursor: pointer;
+}
+
+.calendar-icon {
+  font-size: 16px;
+  color: #4b5563;
+  margin-right: 5px;
+}
+
+.date-input {
+  flex: 1;
+  border: none;
+  outline: none;
+  padding: 8px 5px;
+  font-size: 13px;
+  background: transparent;
+  cursor: pointer;
+  width: 100%;
+  color: #374151;
+}
+
+/* Selector de fechas modificado para parecer un select */
+.calendar-dropdown {
+  position: absolute;
+  top: 48px; /* Ajustado para posicionarse debajo del input de fecha */
+  right: 0;
+  z-index: 1000;
+  background: white;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+  border-radius: 6px;
+  margin-top: 8px;
+  padding: 12px;
+  border: 1px solid #e5e7eb;
+  width: 300px;
+}
+
+/* Estilos para el contenido del calendario dentro del dropdown */
+.calendar-dropdown .react-datepicker {
+  font-size: 0.8rem;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+.calendar-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 10px;
+  padding-top: 8px;
+  border-top: 1px solid #e5e7eb;
+  gap: 8px;
+}
+
+.calendar-dropdown .btn-cancel, 
+.calendar-dropdown .btn-apply {
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 500;
+  min-width: 80px;
+  text-align: center;
+  border: 1px solid transparent;
+}
+
+.calendar-dropdown .btn-apply {
+  background-color: #0d47a1;
+  color: white;
+  border-color: #0d47a1;
+}
+
+.calendar-dropdown .btn-apply:hover {
+  background-color: #1565c0;
+}
+
+.calendar-dropdown .btn-cancel {
+  background-color: #f8f9fa;
+  color: #495057;
+  border-color: #ced4da;
+}
+
+.calendar-dropdown .btn-cancel:hover {
+  background-color: #e9ecef;
+}
+
+/* Personalizar el DatePicker de React */
+.react-datepicker__month-container {
+  float: left;
+  width: 100%;
+}
+
+.react-datepicker {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif !important;
+  border: none !important;
+}
+
+.react-datepicker__header {
+  background-color: white !important;
+  border-bottom: 1px solid #f0f0f0 !important;
+}
+
+.react-datepicker__current-month {
+  color: #333 !important;
+  font-weight: 600 !important;
+}
+
+.react-datepicker__day-name {
+  color: #666 !important;
+}
+
+.react-datepicker__day {
+  color: #333 !important;
+  border-radius: 50% !important;
+}
+
+.react-datepicker__day:hover {
+  background-color: #f0f9ff !important;
+}
+
+.react-datepicker__day--selected {
+  background-color: #0d47a1 !important;
+  color: white !important;
+}
+
+.react-datepicker__day--keyboard-selected {
+  background-color: rgba(13, 71, 161, 0.1) !important;
+  color: #0d47a1 !important;
+}
