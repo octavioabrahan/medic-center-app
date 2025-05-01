@@ -77,6 +77,19 @@
   pointer-events: none; /* Evitar que el icono interfiera con clicks */
 }
 
+/* Nuevo estilo específico para el input de búsqueda de horarios */
+.horarios-search-input {
+  width: 100%;
+  padding: 8px 12px;
+  padding-right: 35px; /* Espacio para el icono */
+  border: 1px solid #e2e8f0;
+  border-radius: 4px;
+  font-size: 13px;
+  height: 38px !important; /* Forzar altura con !important */
+  box-sizing: border-box;
+  background-color: white;
+}
+
 .search-container {
   display: none; /* Ocultamos el componente de búsqueda anterior */
 }
