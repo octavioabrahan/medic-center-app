@@ -102,15 +102,11 @@ const Calendar = ({
       const prevDay = prevMonthLastDay - (firstDayWeekday - i - 1);
       const prevDate = new Date(year, month - 1, prevDay);
       
-      // These days don't belong to the current month
-      // They don't get range styling unless the range spans across months
-      const isSelected = isInSelectedDate(prevDate, prevDate.getMonth(), prevDate.getFullYear());
-      const rangeClass = isInSelectedRange(prevDate, prevDate.getMonth(), prevDate.getFullYear());
-      
+      // Esta fecha es de un mes anterior, no la marcamos como seleccionada en este mes
       days.push(
         <td key={`prev-${i}`} className="outside-month">
           <div 
-            className={`calendar-day ${isSelected ? 'selected' : ''} ${rangeClass}`}
+            className="calendar-day"
             onClick={() => handleDateSelection(prevDate)}
           >
             {prevDay}
@@ -126,14 +122,32 @@ const Calendar = ({
                      month === today.getMonth() && 
                      year === today.getFullYear();
       
-      // These days belong to the current month
-      const isSelected = isInSelectedDate(date, month, year);
-      const rangeClass = isInSelectedRange(date, month, year);
+      // Check if date is within the selected range
+      const isInRange = dateRange?.from && dateRange?.to && 
+        date >= startOfDay(dateRange.from) && 
+        date <= endOfDay(dateRange.to);
+      
+      // Check if date is exactly the selected start or end date
+      const isStart = dateRange?.from && 
+        day === dateRange.from.getDate() && 
+        month === dateRange.from.getMonth() && 
+        year === dateRange.from.getFullYear();
+      
+      const isEnd = dateRange?.to && 
+        day === dateRange.to.getDate() && 
+        month === dateRange.to.getMonth() && 
+        year === dateRange.to.getFullYear();
+      
+      let className = "calendar-day";
+      if (isToday) className += " today";
+      if (isStart) className += " selected range-start";
+      else if (isEnd) className += " selected range-end";
+      else if (isInRange) className += " range-middle";
       
       days.push(
         <td key={`day-${day}`}>
           <div 
-            className={`calendar-day ${isToday ? 'today' : ''} ${isSelected ? 'selected' : ''} ${rangeClass}`}
+            className={className}
             onClick={() => handleDateSelection(date)}
           >
             {day}
@@ -154,15 +168,11 @@ const Calendar = ({
       for (let i = 1; i <= remainingCells; i++) {
         const nextDate = new Date(year, month + 1, i);
         
-        // These days don't belong to the current month
-        // They don't get range styling unless the range spans across months
-        const isSelected = isInSelectedDate(nextDate, nextDate.getMonth(), nextDate.getFullYear());
-        const rangeClass = isInSelectedRange(nextDate, nextDate.getMonth(), nextDate.getFullYear());
-        
+        // Esta fecha es del mes siguiente, no la marcamos como seleccionada en este mes
         days.push(
           <td key={`next-${i}`} className="outside-month">
             <div 
-              className={`calendar-day ${isSelected ? 'selected' : ''} ${rangeClass}`}
+              className="calendar-day"
               onClick={() => handleDateSelection(nextDate)}
             >
               {i}
