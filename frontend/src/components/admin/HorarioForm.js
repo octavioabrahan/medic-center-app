@@ -172,12 +172,17 @@ function HorarioForm({ onSuccess, horario }) {
   };
   
   const handleDateRangeChange = (newDateRange) => {
-    setDateRange(newDateRange);
-    setForm({
-      ...form,
-      valido_desde: newDateRange.from.toISOString().split('T')[0],
-      valido_hasta: newDateRange.to.toISOString().split('T')[0]
-    });
+    // Evitar actualizaciones infinitas comparando si el rango realmente cambió
+    if (dateRange.from?.toISOString() !== newDateRange.from?.toISOString() ||
+        dateRange.to?.toISOString() !== newDateRange.to?.toISOString()) {
+      
+      setDateRange(newDateRange);
+      setForm({
+        ...form,
+        valido_desde: newDateRange.from ? newDateRange.from.toISOString().split('T')[0] : '',
+        valido_hasta: newDateRange.to ? newDateRange.to.toISOString().split('T')[0] : ''
+      });
+    }
   };
 
   const diasSemana = [

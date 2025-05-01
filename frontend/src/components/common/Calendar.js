@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useCallback } from "react";
 import { 
   startOfDay, endOfDay,
-  subDays, isBefore, isAfter, isSameDay, isSameMonth
+  subDays, isBefore, isAfter, isSameDay
 } from "date-fns";
 import "./Calendar.css";
 
@@ -36,12 +36,12 @@ const Calendar = ({
   // Current date for "today" highlighting
   const today = new Date();
 
-  // Handle date range change
-  useEffect(() => {
-    if (onDateRangeChange && dateRange?.from) {
-      onDateRangeChange(dateRange);
+  // Handle date range change - Memoizado para evitar rerenderizaciones infinitas
+  const memoizedOnDateRangeChange = useCallback((newRange) => {
+    if (onDateRangeChange) {
+      onDateRangeChange(newRange);
     }
-  }, [dateRange, onDateRangeChange]);
+  }, [onDateRangeChange]);
 
   // Handle preset date ranges
   const handleDatePreset = (days) => {
@@ -54,25 +54,19 @@ const Calendar = ({
     };
     
     setDateRange(newRange);
-    if (onDateRangeChange) {
-      onDateRangeChange(newRange);
-    }
+    memoizedOnDateRangeChange(newRange);
   };
 
   // Set today as selected date
   const handleToday = () => {
     const todayDate = new Date();
-    setDateRange({ 
+    const newRange = { 
       from: startOfDay(todayDate), 
       to: endOfDay(todayDate)
-    });
+    };
     
-    if (onDateRangeChange) {
-      onDateRangeChange({ 
-        from: startOfDay(todayDate), 
-        to: endOfDay(todayDate)
-      });
-    }
+    setDateRange(newRange);
+    memoizedOnDateRangeChange(newRange);
 
     // Set calendar view to current month and year
     setCalendarMonth(todayDate.getMonth());
@@ -102,9 +96,8 @@ const Calendar = ({
       const prevDay = prevMonthLastDay - (firstDayWeekday - i - 1);
       const prevDate = new Date(year, month - 1, prevDay);
       
-      // Esta fecha es de un mes anterior, no la marcamos como seleccionada en este mes
       days.push(
-        <td key={`prev-${i}`} className="outside-month">
+        <td key={`prev-${month}-${i}`} className="outside-month">
           <div 
             className="calendar-day"
             onClick={() => handleDateSelection(prevDate)}
@@ -145,7 +138,7 @@ const Calendar = ({
       else if (isInRange) className += " range-middle";
       
       days.push(
-        <td key={`day-${day}`}>
+        <td key={`day-${year}-${month}-${day}`}>
           <div 
             className={className}
             onClick={() => handleDateSelection(date)}
@@ -157,7 +150,7 @@ const Calendar = ({
       
       // If we've reached the end of a week, start a new row
       if (days.length === 7) {
-        rows.push(<tr key={`row-${rows.length}`}>{days}</tr>);
+        rows.push(<tr key={`row-${year}-${month}-${rows.length}`}>{days}</tr>);
         days = [];
       }
     }
@@ -168,9 +161,8 @@ const Calendar = ({
       for (let i = 1; i <= remainingCells; i++) {
         const nextDate = new Date(year, month + 1, i);
         
-        // Esta fecha es del mes siguiente, no la marcamos como seleccionada en este mes
         days.push(
-          <td key={`next-${i}`} className="outside-month">
+          <td key={`next-${year}-${month}-${i}`} className="outside-month">
             <div 
               className="calendar-day"
               onClick={() => handleDateSelection(nextDate)}
@@ -180,81 +172,19 @@ const Calendar = ({
           </td>
         );
       }
-      rows.push(<tr key={`row-${rows.length}`}>{days}</tr>);
+      rows.push(<tr key={`row-${year}-${month}-${rows.length}`}>{days}</tr>);
     }
     
     return rows;
-  };
-
-  // Helper function to check if a date is the start or end of the selected range
-  const isInSelectedDate = (date, currentMonth, currentYear) => {
-    // Only treat as selected if it's in its actual month
-    const isActualMonth = date.getMonth() === currentMonth;
-    
-    // Check if date is the temporary selection during range selection
-    if (isSelectingRange && rangeStart && isSameDay(date, rangeStart) && isActualMonth) {
-      return true;
-    }
-    
-    // Check if date is the start of the confirmed range
-    if (dateRange?.from && isSameDay(date, dateRange.from) && isActualMonth) {
-      return true;
-    }
-    
-    // Check if date is the end of the confirmed range (only if different from start)
-    if (dateRange?.to && dateRange?.from && 
-        !isSameDay(dateRange.from, dateRange.to) && 
-        isSameDay(date, dateRange.to) && isActualMonth) {
-      return true;
-    }
-    
-    return false;
-  };
-  
-  // Helper function to check if a date is within the selected range (but not start/end)
-  const isInSelectedRange = (date, currentMonth, currentYear) => {
-    // Only apply range styling if it's in its actual month
-    const isActualMonth = date.getMonth() === currentMonth;
-    
-    // If we're in the middle of selecting a range
-    if (isSelectingRange && rangeStart) {
-      if (isSameDay(date, rangeStart) && isActualMonth) {
-        return 'range-start';
-      }
-      return '';
-    }
-    
-    // If we have a complete range selection
-    if (!dateRange?.from || !dateRange?.to) {
-      return '';
-    }
-    
-    // Handling start and end of range
-    if (isSameDay(date, dateRange.from) && isActualMonth) {
-      return dateRange.from.getTime() === dateRange.to.getTime() ? '' : 'range-start';
-    }
-    
-    if (isSameDay(date, dateRange.to) && isActualMonth && !isSameDay(dateRange.from, dateRange.to)) {
-      return 'range-end';
-    }
-    
-    // Check if the date is in the middle of the range
-    if (date > startOfDay(dateRange.from) && date < endOfDay(dateRange.to)) {
-      return 'range-middle';
-    }
-    
-    return '';
   };
   
   // Handle date selection
   const handleDateSelection = (date) => {
     if (singleDateMode) {
       // In single date mode, just select this date
-      setDateRange({ from: date, to: date });
-      
-      if (onDateRangeChange) {
-        onDateRangeChange({ from: date, to: date });
-      }
+      const newRange = { from: date, to: date };
+      setDateRange(newRange);
+      memoizedOnDateRangeChange(newRange);
     } else {
       // Range selection logic
       if (!isSelectingRange || !rangeStart) {
@@ -272,7 +202,7 @@ const Calendar = ({
           to = rangeStart;
         } else {
           from = rangeStart;
-          to = date; // Corregido: era "to: date" con dos puntos
+          to = date;
         }
         
         // Set the date range
@@ -282,10 +212,7 @@ const Calendar = ({
         };
         
         setDateRange(newRange);
-        
-        if (onDateRangeChange) {
-          onDateRangeChange(newRange);
-        }
+        memoizedOnDateRangeChange(newRange);
         
         // Reset range selection
         setIsSelectingRange(false);
@@ -357,19 +284,6 @@ const Calendar = ({
       { value: 11, name: 'Dic' }
     ];
     
-    const months = monthsData.map(month => (
-      <div 
-        key={`month-${month.value}`}
-        className={`month-option ${calendarMonth === month.value ? 'active' : ''}`}
-        onClick={() => {
-          setCalendarMonth(month.value);
-          setShowMonthPicker(false);
-        }}
-      >
-        {month.name}
-      </div>
-    ));
-    
     return (
       <div className="month-year-picker">
         <div className="picker-header">
@@ -382,7 +296,18 @@ const Calendar = ({
           </button>
         </div>
         <div className="picker-options month-grid">
-          {months}
+          {monthsData.map(month => (
+            <div 
+              key={`month-picker-${month.value}`}
+              className={`month-option ${calendarMonth === month.value ? 'active' : ''}`}
+              onClick={() => {
+                setCalendarMonth(month.value);
+                setShowMonthPicker(false);
+              }}
+            >
+              {month.name}
+            </div>
+          ))}
         </div>
       </div>
     );
@@ -394,21 +319,13 @@ const Calendar = ({
     const startYear = currentYear - 5;
     const years = [];
     
-    // Generar exactamente 12 años (similar a los 12 meses)
+    // Generar años para seleccionar
     for (let i = 0; i < 12; i++) {
       const year = startYear + i;
-      years.push(
-        <div 
-          key={`year-${year}`}
-          className={`year-option ${calendarYear === year ? 'active' : ''}`}
-          onClick={() => {
-            setCalendarYear(year);
-            setShowYearPicker(false);
-          }}
-        >
-          {year}
-        </div>
-      );
+      years.push({
+        year: year,
+        isActive: calendarYear === year
+      });
     }
     
     return (
@@ -423,7 +340,18 @@ const Calendar = ({
           </button>
         </div>
         <div className="picker-options">
-          {years}
+          {years.map(yearObj => (
+            <div 
+              key={`year-picker-${yearObj.year}`}
+              className={`year-option ${yearObj.isActive ? 'active' : ''}`}
+              onClick={() => {
+                setCalendarYear(yearObj.year);
+                setShowYearPicker(false);
+              }}
+            >
+              {yearObj.year}
+            </div>
+          ))}
         </div>
       </div>
     );

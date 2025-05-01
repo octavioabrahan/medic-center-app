@@ -217,37 +217,77 @@ input[type="checkbox"]:checked::before {
   margin-top: 8px;
   padding: 12px;
   border: 1px solid #e5e7eb;
-  width: 100%; /* Ocupar todo el ancho del contenedor */
-  max-width: 500px; /* Limitar el ancho máximo */
+  width: 340px; /* Ancho más específico para mejor control */
+  max-width: 100%; /* Limitar el ancho máximo */
 }
 
 /* Ajustar el tamaño del calendario para que quepa en el modal */
 .modal-calendar .custom-calendar-wrapper {
-  transform-origin: top left;
-  transform: scale(0.85); /* Reducir ligeramente el tamaño */
   width: 100%;
   margin: 0;
+  padding: 0;
 }
 
 /* Ajustar la disposición de los meses */
 .modal-calendar .two-month-container {
   flex-direction: column; /* Meses uno debajo del otro en el modal */
-  gap: 10px;
+  gap: 15px;
+  width: 100%;
+  margin: 0;
 }
 
 .modal-calendar .month-container {
   width: 100%; /* Ancho completo para cada mes */
+  padding: 0;
+}
+
+/* Ajustar la cabecera de los meses */
+.modal-calendar .month-header {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 10px;
+}
+
+/* Ajustar el tamaño y la alineación de las tablas de calendario */
+.modal-calendar .calendar-table {
+  width: 100%;
+  table-layout: fixed; /* Asegura que todas las columnas tengan el mismo ancho */
+}
+
+.modal-calendar .calendar-table th,
+.modal-calendar .calendar-table td {
+  text-align: center;
+  padding: 4px 0;
 }
 
 /* Ajustar el tamaño de los días para que quepan bien */
 .modal-calendar .calendar-day {
-  width: 25px;
-  height: 25px;
+  width: 30px; /* Tamaño consistente */
+  height: 30px; /* Tamaño consistente */
   font-size: 12px;
+  margin: 0 auto; /* Centrar horizontalmente */
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .modal-calendar .calendar-actions {
-  margin-top: 8px;
+  margin-top: 12px;
+  padding-top: 8px;
+  border-top: 1px solid #e5e7eb;
+  display: flex;
+  justify-content: flex-end;
+}
+
+/* Botón de aceptar */
+.modal-calendar .btn-apply {
+  background-color: #111827;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  font-weight: 500;
+  cursor: pointer;
 }
 
 /* Ajustes para pantallas pequeñas */
@@ -257,7 +297,7 @@ input[type="checkbox"]:checked::before {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    width: 90%;
+    width: 300px; /* Ancho más específico para móviles */
     max-height: 80vh;
     overflow: auto;
     margin-top: 0;
