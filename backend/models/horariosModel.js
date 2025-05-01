@@ -29,10 +29,54 @@ const HorariosModel = {
           valido_desde,
           valido_hasta,
           tipo_atencion_id,
-          nro_consulta
+          nro_consulta || 1  // Valor por defecto si no se proporciona
         ]
       );
     }
+  },
+
+  actualizar: async (id_horario, {
+    profesional_id,
+    dia_semana,
+    hora_inicio,
+    hora_termino,
+    valido_desde,
+    valido_hasta,
+    tipo_atencion_id,
+    nro_consulta
+  }) => {
+    if (hora_inicio >= hora_termino) {
+      throw new Error("La hora de inicio debe ser menor a la hora de término.");
+    }
+    
+    // Actualizar el horario existente
+    await db.query(
+      `UPDATE horario_medico
+       SET profesional_id = $1,
+           dia_semana = $2,
+           hora_inicio = $3,
+           hora_termino = $4,
+           valido_desde = $5,
+           valido_hasta = $6,
+           tipo_atencion_id = $7,
+           nro_consulta = $8
+       WHERE id_horario = $9`,
+      [
+        profesional_id,
+        Array.isArray(dia_semana) ? dia_semana[0] : dia_semana, // Tomar el primer día si es array
+        hora_inicio,
+        hora_termino,
+        valido_desde,
+        valido_hasta,
+        tipo_atencion_id,
+        nro_consulta || 1,  // Valor por defecto si no se proporciona
+        id_horario
+      ]
+    );
+  },
+
+  eliminar: async (id_horario) => {
+    await db.query('DELETE FROM horario_medico WHERE id_horario = $1', [id_horario]);
   },
 
   listarPorProfesional: async (id) => {

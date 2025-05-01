@@ -11,6 +11,17 @@ const HorariosController = {
     }
   },
 
+  actualizar: async (req, res) => {
+    const { id } = req.params;
+    try {
+      await Model.actualizar(id, req.body);
+      res.json({ mensaje: "Horario actualizado correctamente" });
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({ error: "Error al actualizar horario" });
+    }
+  },
+
   listarPorProfesional: async (req, res) => {
     const { id } = req.params;
     try {
@@ -39,6 +50,17 @@ const HorariosController = {
     } catch (err) {
       console.error(err);
       res.status(500).json({ error: "Error al obtener todos los horarios" });
+    }
+  },
+
+  eliminar: async (req, res) => {
+    const { id } = req.params;
+    try {
+      await Model.eliminar(id);
+      res.json({ mensaje: "Horario eliminado correctamente" });
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({ error: "Error al eliminar horario" });
     }
   }
 };
