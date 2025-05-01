@@ -16,6 +16,16 @@ const ExcepcionesModel = {
       [id]
     );
     return result.rows;
+  },
+
+  listarTodos: async () => {
+    const result = await db.query(
+      `SELECT he.*, p.nombre as profesional_nombre, p.apellido as profesional_apellido 
+       FROM horario_excepciones he
+       JOIN profesionales p ON he.profesional_id = p.profesional_id
+       ORDER BY he.fecha DESC`
+    );
+    return result.rows;
   }
 };
 

@@ -19,6 +19,16 @@ const ExcepcionesController = {
       console.error("Error al listar excepciones:", err);
       res.status(500).json({ error: "Error al obtener excepciones" });
     }
+  },
+
+  listarTodos: async (req, res) => {
+    try {
+      const data = await Model.listarTodos();
+      res.json(data);
+    } catch (err) {
+      console.error("Error al listar todas las excepciones:", err);
+      res.status(500).json({ error: "Error al obtener todas las excepciones" });
+    }
   }
 };
 
