@@ -77,11 +77,28 @@ function HorarioForm({ onSuccess, horario }) {
         diasSemanaArray = horario.dias_semana;
       }
       
+      // Asegurarse de que hora_inicio y hora_termino tienen el formato correcto HH:MM
+      let horaInicio = horario.hora_inicio || "";
+      let horaTermino = horario.hora_termino || "";
+      
+      // Si las horas vienen con segundos (HH:MM:SS), eliminar los segundos
+      if (horaInicio && horaInicio.length > 5) {
+        horaInicio = horaInicio.substring(0, 5);
+      }
+      if (horaTermino && horaTermino.length > 5) {
+        horaTermino = horaTermino.substring(0, 5);
+      }
+      
+      console.log("Cargando horario para editar:", {
+        hora_inicio: horaInicio,
+        hora_termino: horaTermino
+      });
+      
       setForm({
         profesional_id: horario.profesional_id || "",
         dia_semana: diasSemanaArray,
-        hora_inicio: horario.hora_inicio || "",
-        hora_termino: horario.hora_termino || "",
+        hora_inicio: horaInicio,
+        hora_termino: horaTermino,
         valido_desde: horario.valido_desde || "",
         valido_hasta: horario.valido_hasta || "",
         tipo_atencion_id: horario.tipo_atencion_id || "",

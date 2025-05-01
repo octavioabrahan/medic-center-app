@@ -120,6 +120,8 @@ function HorariosPage() {
               <th>Días</th>
               <th>Hora de inicio</th>
               <th>Hora de término</th>
+              <th>Fecha inicio</th>
+              <th>Fecha término</th>
               <th></th>
             </tr>
           </thead>
@@ -131,6 +133,8 @@ function HorariosPage() {
                 <td>{formatHorarioSemanal(horario)}</td>
                 <td>{horario.hora_inicio?.slice(0, 5) || ""}</td>
                 <td>{horario.hora_termino?.slice(0, 5) || ""}</td>
+                <td>{horario.valido_desde ? new Date(horario.valido_desde).toLocaleDateString() : "N/A"}</td>
+                <td>{horario.valido_hasta ? new Date(horario.valido_hasta).toLocaleDateString() : "N/A"}</td>
                 <td className="actions-cell">
                   <button 
                     className="btn-action btn-edit" 
