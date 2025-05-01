@@ -72,7 +72,7 @@ function HorarioForm({ onSuccess, horario }) {
         valido_desde: horario.valido_desde || "",
         valido_hasta: horario.valido_hasta || "",
         tipo_atencion_id: horario.tipo_atencion_id || "",
-        id_horario: horario.id_horario // Añadimos el ID para actualizar el registro correcto
+        horario_id: horario.horario_id // Usamos horario_id, que es el nombre correcto en la BD
       });
       
       // Inicializar el rango de fechas si tenemos fechas en el horario
@@ -129,9 +129,9 @@ function HorarioForm({ onSuccess, horario }) {
     setError(null);
 
     try {
-      if (form.id_horario) {
+      if (form.horario_id) {
         // Estamos editando un horario existente
-        await axios.put(`/api/horarios/${form.id_horario}`, form);
+        await axios.put(`/api/horarios/${form.horario_id}`, form);
       } else {
         // Estamos creando un nuevo horario
         await axios.post("/api/horarios", form);

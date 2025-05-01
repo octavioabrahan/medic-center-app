@@ -35,7 +35,7 @@ const HorariosModel = {
     }
   },
 
-  actualizar: async (id_horario, {
+  actualizar: async (horario_id, {
     profesional_id,
     dia_semana,
     hora_inicio,
@@ -60,7 +60,7 @@ const HorariosModel = {
            valido_hasta = $6,
            tipo_atencion_id = $7,
            nro_consulta = $8
-       WHERE id_horario = $9`,
+       WHERE horario_id = $9`,
       [
         profesional_id,
         Array.isArray(dia_semana) ? dia_semana[0] : dia_semana, // Tomar el primer día si es array
@@ -70,13 +70,13 @@ const HorariosModel = {
         valido_hasta,
         tipo_atencion_id,
         nro_consulta || 1,  // Valor por defecto si no se proporciona
-        id_horario
+        horario_id
       ]
     );
   },
 
-  eliminar: async (id_horario) => {
-    await db.query('DELETE FROM horario_medico WHERE id_horario = $1', [id_horario]);
+  eliminar: async (horario_id) => {
+    await db.query('DELETE FROM horario_medico WHERE horario_id = $1', [horario_id]);
   },
 
   listarPorProfesional: async (id) => {
