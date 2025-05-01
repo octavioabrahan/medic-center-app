@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { 
   startOfDay, endOfDay,
-  subDays
+  subDays, isBefore, isAfter
 } from "date-fns";
 import "./Calendar.css";
 
@@ -24,6 +24,14 @@ const Calendar = ({
       : { from: new Date(), to: new Date() }
     )
   );
+  
+  // State for the month/year picker
+  const [showMonthPicker, setShowMonthPicker] = useState(false);
+  const [showYearPicker, setShowYearPicker] = useState(false);
+  
+  // State for range selection
+  const [isSelectingRange, setIsSelectingRange] = useState(false);
+  const [rangeStart, setRangeStart] = useState(null);
   
   // Current date for "today" highlighting
   const today = new Date();
@@ -118,15 +126,21 @@ const Calendar = ({
         date >= startOfDay(dateRange.from) && 
         date <= endOfDay(dateRange.to);
       
-      // Check if date is exactly the selected date
-      const isSelected = dateRange?.from && 
+      // Check if date is exactly the selected start or end date
+      const isStart = dateRange?.from && 
         day === dateRange.from.getDate() && 
         month === dateRange.from.getMonth() && 
         year === dateRange.from.getFullYear();
       
+      const isEnd = dateRange?.to && 
+        day === dateRange.to.getDate() && 
+        month === dateRange.to.getMonth() && 
+        year === dateRange.to.getFullYear();
+      
       let className = "calendar-day";
       if (isToday) className += " today";
-      if (isSelected) className += " selected";
+      if (isStart) className += " selected range-start";
+      else if (isEnd) className += " selected range-end";
       else if (isInRange) className += " range-middle";
       
       days.push(
@@ -180,12 +194,40 @@ const Calendar = ({
         onDateRangeChange({ from: date, to: date });
       }
     } else {
-      // For range selection, we'll use a simpler approach than before
-      // Just select the date and update the range
-      setDateRange({ from: date, to: date });
-      
-      if (onDateRangeChange) {
-        onDateRangeChange({ from: date, to: date });
+      // Range selection logic
+      if (!isSelectingRange || !rangeStart) {
+        // Start range selection
+        setRangeStart(date);
+        setDateRange({ from: date, to: date });
+        setIsSelectingRange(true);
+      } else {
+        // Complete range selection
+        let from, to;
+        
+        // Ensure correct order (from should be earlier than to)
+        if (isBefore(date, rangeStart)) {
+          from = date;
+          to = rangeStart;
+        } else {
+          from = rangeStart;
+          to = date;
+        }
+        
+        setDateRange({ 
+          from: startOfDay(from), 
+          to: endOfDay(to) 
+        });
+        
+        if (onDateRangeChange) {
+          onDateRangeChange({ 
+            from: startOfDay(from), 
+            to: endOfDay(to) 
+          });
+        }
+        
+        // Reset range selection
+        setIsSelectingRange(false);
+        setRangeStart(null);
       }
     }
   };
@@ -229,6 +271,89 @@ const Calendar = ({
     const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
     return monthNames[month];
   };
+  
+  // Get full month name
+  const getFullMonthName = (month) => {
+    const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+    return monthNames[month];
+  };
+  
+  // Month picker component
+  const renderMonthPicker = (forYear) => {
+    const months = [];
+    
+    for (let i = 0; i < 12; i++) {
+      months.push(
+        <div 
+          key={`month-${i}`}
+          className={`month-option ${calendarMonth === i ? 'active' : ''}`}
+          onClick={() => {
+            setCalendarMonth(i);
+            setShowMonthPicker(false);
+          }}
+        >
+          {getFullMonthName(i)}
+        </div>
+      );
+    }
+    
+    return (
+      <div className="month-year-picker">
+        <div className="picker-header">
+          <span>Select Month</span>
+          <button 
+            className="close-picker"
+            onClick={() => setShowMonthPicker(false)}
+          >
+            ×
+          </button>
+        </div>
+        <div className="picker-options">
+          {months}
+        </div>
+      </div>
+    );
+  };
+  
+  // Year picker component
+  const renderYearPicker = () => {
+    const years = [];
+    const currentYear = new Date().getFullYear();
+    const startYear = currentYear - 10;
+    const endYear = currentYear + 10;
+    
+    for (let year = startYear; year <= endYear; year++) {
+      years.push(
+        <div 
+          key={`year-${year}`}
+          className={`year-option ${calendarYear === year ? 'active' : ''}`}
+          onClick={() => {
+            setCalendarYear(year);
+            setShowYearPicker(false);
+          }}
+        >
+          {year}
+        </div>
+      );
+    }
+    
+    return (
+      <div className="month-year-picker year-picker">
+        <div className="picker-header">
+          <span>Select Year</span>
+          <button 
+            className="close-picker"
+            onClick={() => setShowYearPicker(false)}
+          >
+            ×
+          </button>
+        </div>
+        <div className="picker-options">
+          {years}
+        </div>
+      </div>
+    );
+  };
 
   return (
     <div className="custom-calendar-wrapper">
@@ -269,8 +394,45 @@ const Calendar = ({
           </div>
           
           <div className="month-titles">
-            <div className="month-title">{getShortMonthName(calendarMonth)} {calendarYear}</div>
-            <div className="month-title">{getShortMonthName(nextMonth.month)} {nextMonth.year}</div>
+            <div className="month-title">
+              <span 
+                className="month-selector" 
+                onClick={() => setShowMonthPicker(true)}
+              >
+                {getShortMonthName(calendarMonth)}
+              </span>{' '}
+              <span 
+                className="year-selector" 
+                onClick={() => setShowYearPicker(true)}
+              >
+                {calendarYear}
+              </span>
+              
+              {showMonthPicker && renderMonthPicker(calendarYear)}
+              {showYearPicker && renderYearPicker()}
+            </div>
+            <div className="month-title">
+              <span 
+                className="month-selector" 
+                onClick={() => {
+                  setCalendarMonth(nextMonth.month);
+                  setCalendarYear(nextMonth.year);
+                  setShowMonthPicker(true);
+                }}
+              >
+                {getShortMonthName(nextMonth.month)}
+              </span>{' '}
+              <span 
+                className="year-selector" 
+                onClick={() => {
+                  setCalendarMonth(nextMonth.month);
+                  setCalendarYear(nextMonth.year);
+                  setShowYearPicker(true);
+                }}
+              >
+                {nextMonth.year}
+              </span>
+            </div>
           </div>
           
           <div className="month-navigation">
