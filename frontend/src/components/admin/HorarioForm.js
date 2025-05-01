@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
-import { startOfDay, endOfDay } from "date-fns";
+import { startOfDay } from "date-fns";
 import Calendar from "../../components/common/Calendar";
 import "./HorarioForm.css";
 
@@ -12,7 +12,8 @@ function HorarioForm({ onSuccess, horario }) {
     hora_termino: "",
     valido_desde: "",
     valido_hasta: "",
-    tipo_atencion_id: ""
+    tipo_atencion_id: "",
+    nro_consulta: "1"
   });
 
   const [profesionales, setProfesionales] = useState([]);
@@ -85,6 +86,7 @@ function HorarioForm({ onSuccess, horario }) {
         valido_desde: horario.valido_desde || "",
         valido_hasta: horario.valido_hasta || "",
         tipo_atencion_id: horario.tipo_atencion_id || "",
+        nro_consulta: horario.nro_consulta || "1",
         horario_id: horario.horario_id // Usamos horario_id, que es el nombre correcto en la BD
       });
       
@@ -100,7 +102,21 @@ function HorarioForm({ onSuccess, horario }) {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
+    
+    if ((name === 'hora_inicio' || name === 'hora_termino') && error) {
+      // Limpiar el error relacionado con las horas al cambiar cualquiera de ellas
+      setError(null);
+    }
+    
     setForm({ ...form, [name]: value });
+    
+    // Validación inmediata de horas al cambiar cualquiera de ellas
+    if (name === 'hora_inicio' && form.hora_termino && value >= form.hora_termino) {
+      setError("La hora de inicio debe ser anterior a la hora de término");
+    }
+    else if (name === 'hora_termino' && form.hora_inicio && form.hora_inicio >= value) {
+      setError("La hora de término debe ser posterior a la hora de inicio");
+    }
   };
 
   const handleDayCheck = (e) => {
@@ -157,7 +173,8 @@ function HorarioForm({ onSuccess, horario }) {
         hora_termino: "",
         valido_desde: "",
         valido_hasta: "",
-        tipo_atencion_id: ""
+        tipo_atencion_id: "",
+        nro_consulta: "1"
       });
       
       if (onSuccess) onSuccess();
@@ -174,8 +191,6 @@ function HorarioForm({ onSuccess, horario }) {
     
     const formatDate = (date) => {
       if (!date) return "";
-      // Utilizamos directamente el objeto Date del estado dateRange
-      // para asegurar que mostremos exactamente lo que el usuario seleccionó
       return date.toLocaleDateString('es-ES', {
         day: '2-digit',
         month: '2-digit',
@@ -192,11 +207,8 @@ function HorarioForm({ onSuccess, horario }) {
         dateRange.from.getTime() !== newDateRange.from.getTime() ||
         dateRange.to.getTime() !== newDateRange.to.getTime()) {
       
-      // Usamos startOfDay para la fecha "from" para mantener consistencia
+      // Usamos startOfDay para ambas fechas para mantener consistencia
       const fromDate = startOfDay(newDateRange.from);
-      
-      // Para la fecha "to", ya NO usamos endOfDay para evitar que se incremente un día
-      // Ahora usamos también startOfDay para mantener la fecha exacta seleccionada
       const toDate = startOfDay(newDateRange.to);
       
       const updatedRange = {
@@ -228,10 +240,6 @@ function HorarioForm({ onSuccess, horario }) {
   return (
     <form onSubmit={handleSubmit} className="horario-form">
       {error && <div className="error-message">{error}</div>}
-      
-      <div className="form-instructions">
-        <p>Selecciona los días de la semana en los que el profesional atenderá con el mismo horario. Puedes seleccionar múltiples días para crear un horario agrupado.</p>
-      </div>
 
       <div className="form-group">
         <label htmlFor="profesional_id">Profesional</label>
@@ -408,6 +416,20 @@ function HorarioForm({ onSuccess, horario }) {
             ))}
           </select>
         </div>
+      </div>
+
+      <div className="form-group">
+        <label htmlFor="nro_consulta">Consultorio</label>
+        <input 
+          type="number" 
+          id="nro_consulta"
+          name="nro_consulta" 
+          placeholder="Número de consultorio"
+          value={form.nro_consulta}
+          onChange={handleChange}
+          required
+          min="1"
+        />
       </div>
 
       <div className="form-actions">

@@ -1,7 +1,7 @@
 .horario-form {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 8px; /* Reducido a 8px para mayor compacidad */
   padding: 0;
   font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }
@@ -9,17 +9,18 @@
 .form-instructions {
   background-color: #f8f9fa;
   border-left: 4px solid #0d6efd;
-  padding: 12px;
+  padding: 8px; /* Reducido a 8px */
   color: #666;
   font-size: 14px;
   line-height: 1.5;
-  margin-bottom: 5px;
+  margin-bottom: 3px;
 }
 
 .form-group {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 3px; /* Reducido a 3px para acercar el label al input */
+  margin-bottom: 3px; /* Reducido a 3px */
 }
 
 .form-group label {
@@ -45,10 +46,10 @@
 
 .form-group select,
 .form-group input {
-  padding: 12px 15px;
+  padding: 10px 12px; /* Reducido el padding para hacer controles más compactos */
   border: 1px solid #D1D5DB;
   border-radius: 6px;
-  font-size: 16px;
+  font-size: 15px; /* Reducido tamaño de fuente */
   width: 100%;
   appearance: none;
   background-color: white;
@@ -78,14 +79,14 @@
 .checkbox-group {
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  margin-top: 6px;
+  gap: 8px; /* Reducido para acercar los checkboxes */
+  margin-top: 4px;
 }
 
 .checkbox-item {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
   min-width: 100px;
 }
 
@@ -104,7 +105,7 @@
 
 .form-row {
   display: flex;
-  gap: 20px;
+  gap: 15px; /* Reducido espacio entre horas */
 }
 
 .form-row .form-group {
@@ -115,7 +116,7 @@
   display: flex;
   justify-content: flex-end;
   gap: 12px;
-  margin-top: 10px;
+  margin-top: 8px; /* Reducido margen */
 }
 
 .btn-cancelar, .btn-guardar {
