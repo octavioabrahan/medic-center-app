@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
+import Calendar from "../../components/common/Calendar";
 import "./HorarioForm.css";
 
 function HorarioForm({ onSuccess, horario }) {
@@ -17,6 +18,39 @@ function HorarioForm({ onSuccess, horario }) {
   const [tiposAtencion, setTiposAtencion] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  
+  // Estados para calendarios
+  const [showDesdePicker, setShowDesdePicker] = useState(false);
+  const [showHastaPicker, setShowHastaPicker] = useState(false);
+  const desdeDatePickerRef = useRef(null);
+  const hastaDatePickerRef = useRef(null);
+  
+  const [desdeDateRange, setDesdeDateRange] = useState({
+    from: form.valido_desde ? new Date(form.valido_desde) : new Date(),
+    to: form.valido_desde ? new Date(form.valido_desde) : new Date()
+  });
+  
+  const [hastaDateRange, setHastaDateRange] = useState({
+    from: form.valido_hasta ? new Date(form.valido_hasta) : new Date(),
+    to: form.valido_hasta ? new Date(form.valido_hasta) : new Date()
+  });
+
+  // Detectar clics fuera del selector de fechas para cerrarlo
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (showDesdePicker && desdeDatePickerRef.current && !desdeDatePickerRef.current.contains(event.target)) {
+        setShowDesdePicker(false);
+      }
+      if (showHastaPicker && hastaDatePickerRef.current && !hastaDatePickerRef.current.contains(event.target)) {
+        setShowHastaPicker(false);
+      }
+    }
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [showDesdePicker, showHastaPicker]);
 
   useEffect(() => {
     async function fetchData() {
@@ -48,6 +82,20 @@ function HorarioForm({ onSuccess, horario }) {
         tipo_atencion_id: horario.tipo_atencion_id || "",
         id_horario: horario.id_horario // Añadimos el ID para actualizar el registro correcto
       });
+      
+      if (horario.valido_desde) {
+        setDesdeDateRange({
+          from: new Date(horario.valido_desde),
+          to: new Date(horario.valido_desde)
+        });
+      }
+      
+      if (horario.valido_hasta) {
+        setHastaDateRange({
+          from: new Date(horario.valido_hasta),
+          to: new Date(horario.valido_hasta)
+        });
+      }
     }
   }, [horario]);
 
@@ -85,6 +133,22 @@ function HorarioForm({ onSuccess, horario }) {
       return;
     }
 
+    // Validar que la hora de inicio no sea después que la hora de término
+    if (form.hora_inicio >= form.hora_termino) {
+      setError("La hora de inicio no puede ser igual o posterior a la hora de término");
+      return;
+    }
+    
+    // Validar que la fecha "desde" no sea después que "hasta"
+    if (form.valido_desde && form.valido_hasta) {
+      const desde = new Date(form.valido_desde);
+      const hasta = new Date(form.valido_hasta);
+      if (desde > hasta) {
+        setError("La fecha 'desde' no puede ser posterior a la fecha 'hasta'");
+        return;
+      }
+    }
+
     setLoading(true);
     setError(null);
 
@@ -114,6 +178,32 @@ function HorarioForm({ onSuccess, horario }) {
     } finally {
       setLoading(false);
     }
+  };
+  
+  const formatDate = (date) => {
+    if (!date) return "";
+    const d = new Date(date);
+    return d.toLocaleDateString('es-ES', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric'
+    });
+  };
+  
+  const handleDesdeCalendarChange = (dateRange) => {
+    setDesdeDateRange(dateRange);
+    setForm({
+      ...form,
+      valido_desde: dateRange.from.toISOString().split('T')[0]
+    });
+  };
+  
+  const handleHastaCalendarChange = (dateRange) => {
+    setHastaDateRange(dateRange);
+    setForm({
+      ...form,
+      valido_hasta: dateRange.from.toISOString().split('T')[0]
+    });
   };
 
   const diasSemana = [
@@ -256,7 +346,7 @@ function HorarioForm({ onSuccess, horario }) {
       </div>
 
       <div className="form-row">
-        <div className="form-group">
+        <div className="form-group" ref={desdeDatePickerRef}>
           <label htmlFor="valido_desde">Desde</label>
           <div className="select-wrapper">
             <input 
@@ -264,13 +354,34 @@ function HorarioForm({ onSuccess, horario }) {
               id="valido_desde"
               name="valido_desde" 
               placeholder="01/04/2025"
-              value={form.valido_desde}
-              onChange={handleChange}
+              value={form.valido_desde ? formatDate(form.valido_desde) : ""}
+              onClick={() => setShowDesdePicker(!showDesdePicker)}
+              readOnly
             />
+            {showDesdePicker && (
+              <div className="calendar-dropdown">
+                <Calendar
+                  initialDateRange={desdeDateRange}
+                  onDateRangeChange={handleDesdeCalendarChange}
+                  onClose={() => setShowDesdePicker(false)}
+                  showPresets={false}
+                  singleDateMode={true}
+                />
+                <div className="calendar-actions">
+                  <button 
+                    type="button"
+                    className="btn-apply"
+                    onClick={() => setShowDesdePicker(false)}
+                  >
+                    Aceptar
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
         </div>
 
-        <div className="form-group">
+        <div className="form-group" ref={hastaDatePickerRef}>
           <label htmlFor="valido_hasta">Hasta</label>
           <div className="select-wrapper">
             <input 
@@ -278,9 +389,30 @@ function HorarioForm({ onSuccess, horario }) {
               id="valido_hasta"
               name="valido_hasta"
               placeholder="30/04/2025" 
-              value={form.valido_hasta}
-              onChange={handleChange}
+              value={form.valido_hasta ? formatDate(form.valido_hasta) : ""}
+              onClick={() => setShowHastaPicker(!showHastaPicker)}
+              readOnly
             />
+            {showHastaPicker && (
+              <div className="calendar-dropdown">
+                <Calendar
+                  initialDateRange={hastaDateRange}
+                  onDateRangeChange={handleHastaCalendarChange}
+                  onClose={() => setShowHastaPicker(false)}
+                  showPresets={false}
+                  singleDateMode={true}
+                />
+                <div className="calendar-actions">
+                  <button 
+                    type="button"
+                    className="btn-apply"
+                    onClick={() => setShowHastaPicker(false)}
+                  >
+                    Aceptar
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </div>

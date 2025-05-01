@@ -5,6 +5,7 @@ import "./HorariosPage.css";
 
 function HorariosPage() {
   const [horarios, setHorarios] = useState([]);
+  const [filteredHorarios, setFilteredHorarios] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [showModal, setShowModal] = useState(false);
@@ -12,17 +13,35 @@ function HorariosPage() {
   const [profesionales, setProfesionales] = useState([]);
   const [activeTab, setActiveTab] = useState("profesionales");
   const [currentHorario, setCurrentHorario] = useState(null);
+  const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
     fetchHorarios();
     fetchProfesionales();
   }, []);
+  
+  // Filtrar horarios cuando cambia el término de búsqueda
+  useEffect(() => {
+    if (horarios.length > 0) {
+      if (searchTerm.trim() === "") {
+        setFilteredHorarios(horarios);
+      } else {
+        const term = searchTerm.toLowerCase();
+        const filtered = horarios.filter(horario => 
+          `${horario.profesional_nombre} ${horario.profesional_apellido}`.toLowerCase().includes(term) ||
+          horario.tipo_atencion.toLowerCase().includes(term)
+        );
+        setFilteredHorarios(filtered);
+      }
+    }
+  }, [searchTerm, horarios]);
 
   const fetchHorarios = async () => {
     setLoading(true);
     try {
       const response = await axios.get("/api/horarios");
       setHorarios(response.data);
+      setFilteredHorarios(response.data);
     } catch (err) {
       console.error('Error:', err);
       setError('No se pudieron cargar los horarios. Por favor, intenta de nuevo.');
@@ -65,7 +84,7 @@ function HorariosPage() {
   const renderHorariosTable = () => {
     if (loading) return <div className="loading">Cargando horarios...</div>;
     if (error) return <div className="error-message">{error}</div>;
-    if (horarios.length === 0) return <div className="no-results">No se encontraron horarios configurados</div>;
+    if (filteredHorarios.length === 0) return <div className="no-results">No se encontraron horarios configurados</div>;
 
     return (
       <div className="table-container">
@@ -77,19 +96,17 @@ function HorariosPage() {
               <th>Días</th>
               <th>Hora de inicio</th>
               <th>Hora de término</th>
-              <th>Consultorio</th>
               <th></th>
             </tr>
           </thead>
           <tbody>
-            {horarios.map((horario) => (
+            {filteredHorarios.map((horario) => (
               <tr key={horario.id_horario}>
                 <td>{horario.profesional_nombre} {horario.profesional_apellido}</td>
                 <td>{horario.tipo_atencion}</td>
                 <td>{formatHorarioSemanal(horario)}</td>
                 <td>{horario.hora_inicio?.slice(0, 5) || ""}</td>
                 <td>{horario.hora_termino?.slice(0, 5) || ""}</td>
-                <td>{horario.nro_consulta || '-'}</td>
                 <td className="actions-cell">
                   <button 
                     className="btn-action btn-edit" 
@@ -144,15 +161,14 @@ function HorariosPage() {
       </div>
       
       <div className="horarios-header">
-        <div className="search-container">
-          <input 
-            type="text" 
-            placeholder="Buscar por nombre"
-            className="search-input"
+        <div className="admin-citas-search">
+          <input
+            type="text"
+            placeholder="Buscar por nombre de profesional..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
           />
-          <button className="search-button">
-            <span>🔍</span>
-          </button>
+          <span className="search-icon">🔍</span>
         </div>
         <button className="btn-agregar" onClick={() => {
           setCurrentHorario(null);
