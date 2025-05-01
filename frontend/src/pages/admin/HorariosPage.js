@@ -195,7 +195,17 @@ function HorariosPage() {
             placeholder="Buscar por nombre de profesional..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="horarios-search-input" /* Agregando la clase específica */
+            style={{
+              width: '100%',
+              padding: '8px 12px',
+              paddingRight: '35px',
+              border: '1px solid #e2e8f0',
+              borderRadius: '4px',
+              fontSize: '13px',
+              height: '38px',
+              boxSizing: 'border-box',
+              backgroundColor: 'white'
+            }}
           />
           <span className="search-icon">🔍</span>
         </div>
