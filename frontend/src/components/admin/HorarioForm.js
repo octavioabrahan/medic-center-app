@@ -19,30 +19,21 @@ function HorarioForm({ onSuccess, horario }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   
-  // Estados para calendarios
-  const [showDesdePicker, setShowDesdePicker] = useState(false);
-  const [showHastaPicker, setShowHastaPicker] = useState(false);
-  const desdeDatePickerRef = useRef(null);
-  const hastaDatePickerRef = useRef(null);
+  // Estados para el calendario de rango
+  const [showDateRangePicker, setShowDateRangePicker] = useState(false);
+  const dateRangePickerRef = useRef(null);
   
-  const [desdeDateRange, setDesdeDateRange] = useState({
+  // Estado para el rango de fechas
+  const [dateRange, setDateRange] = useState({
     from: form.valido_desde ? new Date(form.valido_desde) : new Date(),
-    to: form.valido_desde ? new Date(form.valido_desde) : new Date()
-  });
-  
-  const [hastaDateRange, setHastaDateRange] = useState({
-    from: form.valido_hasta ? new Date(form.valido_hasta) : new Date(),
     to: form.valido_hasta ? new Date(form.valido_hasta) : new Date()
   });
 
   // Detectar clics fuera del selector de fechas para cerrarlo
   useEffect(() => {
     function handleClickOutside(event) {
-      if (showDesdePicker && desdeDatePickerRef.current && !desdeDatePickerRef.current.contains(event.target)) {
-        setShowDesdePicker(false);
-      }
-      if (showHastaPicker && hastaDatePickerRef.current && !hastaDatePickerRef.current.contains(event.target)) {
-        setShowHastaPicker(false);
+      if (showDateRangePicker && dateRangePickerRef.current && !dateRangePickerRef.current.contains(event.target)) {
+        setShowDateRangePicker(false);
       }
     }
 
@@ -50,7 +41,7 @@ function HorarioForm({ onSuccess, horario }) {
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, [showDesdePicker, showHastaPicker]);
+  }, [showDateRangePicker]);
 
   useEffect(() => {
     async function fetchData() {
@@ -83,17 +74,11 @@ function HorarioForm({ onSuccess, horario }) {
         id_horario: horario.id_horario // Añadimos el ID para actualizar el registro correcto
       });
       
-      if (horario.valido_desde) {
-        setDesdeDateRange({
-          from: new Date(horario.valido_desde),
-          to: new Date(horario.valido_desde)
-        });
-      }
-      
-      if (horario.valido_hasta) {
-        setHastaDateRange({
-          from: new Date(horario.valido_hasta),
-          to: new Date(horario.valido_hasta)
+      // Inicializar el rango de fechas si tenemos fechas en el horario
+      if (horario.valido_desde || horario.valido_hasta) {
+        setDateRange({
+          from: horario.valido_desde ? new Date(horario.valido_desde) : new Date(),
+          to: horario.valido_hasta ? new Date(horario.valido_hasta) : new Date()
         });
       }
     }
@@ -138,16 +123,6 @@ function HorarioForm({ onSuccess, horario }) {
       setError("La hora de inicio no puede ser igual o posterior a la hora de término");
       return;
     }
-    
-    // Validar que la fecha "desde" no sea después que "hasta"
-    if (form.valido_desde && form.valido_hasta) {
-      const desde = new Date(form.valido_desde);
-      const hasta = new Date(form.valido_hasta);
-      if (desde > hasta) {
-        setError("La fecha 'desde' no puede ser posterior a la fecha 'hasta'");
-        return;
-      }
-    }
 
     setLoading(true);
     setError(null);
@@ -180,29 +155,28 @@ function HorarioForm({ onSuccess, horario }) {
     }
   };
   
-  const formatDate = (date) => {
-    if (!date) return "";
-    const d = new Date(date);
-    return d.toLocaleDateString('es-ES', {
-      day: '2-digit',
-      month: '2-digit',
-      year: 'numeric'
-    });
+  const formatDateRange = () => {
+    if (!form.valido_desde && !form.valido_hasta) return "";
+    
+    const formatDate = (date) => {
+      if (!date) return "";
+      const d = new Date(date);
+      return d.toLocaleDateString('es-ES', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric'
+      });
+    };
+    
+    return `${formatDate(form.valido_desde)} - ${formatDate(form.valido_hasta)}`;
   };
   
-  const handleDesdeCalendarChange = (dateRange) => {
-    setDesdeDateRange(dateRange);
+  const handleDateRangeChange = (newDateRange) => {
+    setDateRange(newDateRange);
     setForm({
       ...form,
-      valido_desde: dateRange.from.toISOString().split('T')[0]
-    });
-  };
-  
-  const handleHastaCalendarChange = (dateRange) => {
-    setHastaDateRange(dateRange);
-    setForm({
-      ...form,
-      valido_hasta: dateRange.from.toISOString().split('T')[0]
+      valido_desde: newDateRange.from.toISOString().split('T')[0],
+      valido_hasta: newDateRange.to.toISOString().split('T')[0]
     });
   };
 
@@ -345,75 +319,39 @@ function HorarioForm({ onSuccess, horario }) {
         </div>
       </div>
 
-      <div className="form-row">
-        <div className="form-group" ref={desdeDatePickerRef}>
-          <label htmlFor="valido_desde">Desde</label>
-          <div className="select-wrapper">
-            <input 
-              type="text" 
-              id="valido_desde"
-              name="valido_desde" 
-              placeholder="01/04/2025"
-              value={form.valido_desde ? formatDate(form.valido_desde) : ""}
-              onClick={() => setShowDesdePicker(!showDesdePicker)}
-              readOnly
-            />
-            {showDesdePicker && (
-              <div className="calendar-dropdown">
-                <Calendar
-                  initialDateRange={desdeDateRange}
-                  onDateRangeChange={handleDesdeCalendarChange}
-                  onClose={() => setShowDesdePicker(false)}
-                  showPresets={false}
-                  singleDateMode={true}
-                />
-                <div className="calendar-actions">
-                  <button 
-                    type="button"
-                    className="btn-apply"
-                    onClick={() => setShowDesdePicker(false)}
-                  >
-                    Aceptar
-                  </button>
-                </div>
+      {/* Reemplazar los dos selectores de fecha por uno solo de rango */}
+      <div className="form-group" ref={dateRangePickerRef}>
+        <label htmlFor="rango_validez">Validez del horario</label>
+        <div className="select-wrapper">
+          <input 
+            type="text" 
+            id="rango_validez"
+            name="rango_validez" 
+            placeholder="Seleccione rango de fechas"
+            value={formatDateRange()}
+            onClick={() => setShowDateRangePicker(!showDateRangePicker)}
+            readOnly
+          />
+          {showDateRangePicker && (
+            <div className="calendar-dropdown modal-calendar">
+              <Calendar
+                initialDateRange={dateRange}
+                onDateRangeChange={handleDateRangeChange}
+                onClose={() => setShowDateRangePicker(false)}
+                showPresets={false}
+                singleDateMode={false}
+              />
+              <div className="calendar-actions">
+                <button 
+                  type="button"
+                  className="btn-apply"
+                  onClick={() => setShowDateRangePicker(false)}
+                >
+                  Aceptar
+                </button>
               </div>
-            )}
-          </div>
-        </div>
-
-        <div className="form-group" ref={hastaDatePickerRef}>
-          <label htmlFor="valido_hasta">Hasta</label>
-          <div className="select-wrapper">
-            <input 
-              type="text" 
-              id="valido_hasta"
-              name="valido_hasta"
-              placeholder="30/04/2025" 
-              value={form.valido_hasta ? formatDate(form.valido_hasta) : ""}
-              onClick={() => setShowHastaPicker(!showHastaPicker)}
-              readOnly
-            />
-            {showHastaPicker && (
-              <div className="calendar-dropdown">
-                <Calendar
-                  initialDateRange={hastaDateRange}
-                  onDateRangeChange={handleHastaCalendarChange}
-                  onClose={() => setShowHastaPicker(false)}
-                  showPresets={false}
-                  singleDateMode={true}
-                />
-                <div className="calendar-actions">
-                  <button 
-                    type="button"
-                    className="btn-apply"
-                    onClick={() => setShowHastaPicker(false)}
-                  >
-                    Aceptar
-                  </button>
-                </div>
-              </div>
-            )}
-          </div>
+            </div>
+          )}
         </div>
       </div>
 

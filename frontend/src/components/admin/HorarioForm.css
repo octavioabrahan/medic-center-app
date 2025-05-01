@@ -204,3 +204,66 @@ input[type="checkbox"]:checked::before {
 .modal-body {
   padding: 20px 24px 24px;
 }
+
+/* Estilos para el calendario en modal */
+.calendar-dropdown.modal-calendar {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: 9999;
+  background: white;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+  border-radius: 6px;
+  margin-top: 8px;
+  padding: 12px;
+  border: 1px solid #e5e7eb;
+  width: 100%; /* Ocupar todo el ancho del contenedor */
+  max-width: 500px; /* Limitar el ancho máximo */
+}
+
+/* Ajustar el tamaño del calendario para que quepa en el modal */
+.modal-calendar .custom-calendar-wrapper {
+  transform-origin: top left;
+  transform: scale(0.85); /* Reducir ligeramente el tamaño */
+  width: 100%;
+  margin: 0;
+}
+
+/* Ajustar la disposición de los meses */
+.modal-calendar .two-month-container {
+  flex-direction: column; /* Meses uno debajo del otro en el modal */
+  gap: 10px;
+}
+
+.modal-calendar .month-container {
+  width: 100%; /* Ancho completo para cada mes */
+}
+
+/* Ajustar el tamaño de los días para que quepan bien */
+.modal-calendar .calendar-day {
+  width: 25px;
+  height: 25px;
+  font-size: 12px;
+}
+
+.modal-calendar .calendar-actions {
+  margin-top: 8px;
+}
+
+/* Ajustes para pantallas pequeñas */
+@media (max-width: 576px) {
+  .calendar-dropdown.modal-calendar {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 90%;
+    max-height: 80vh;
+    overflow: auto;
+    margin-top: 0;
+  }
+
+  .modal-calendar .custom-calendar-wrapper {
+    transform: scale(0.8);
+  }
+}
