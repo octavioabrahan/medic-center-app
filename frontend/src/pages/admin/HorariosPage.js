@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import HorarioForm from "../../components/admin/HorarioForm";
+import ExcepcionesPage from "./ExcepcionesPage";
 import "./HorariosPage.css";
 
 function HorariosPage() {
@@ -159,11 +160,40 @@ function HorariosPage() {
     );
   };
 
-  const renderExcepcionesContent = () => {
+  const renderProfesionalesContent = () => {
     return (
-      <div className="excepciones-container">
-        <p className="empty-state">La administración de excepciones aún no está disponible.</p>
-      </div>
+      <>
+        <div className="horarios-header">
+          <div className="admin-citas-search">
+            <input
+              type="text"
+              placeholder="Buscar por nombre de profesional..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              style={{
+                width: '100%',
+                padding: '8px 12px',
+                paddingRight: '35px',
+                border: '1px solid #e2e8f0',
+                borderRadius: '4px',
+                fontSize: '13px',
+                height: '38px',
+                boxSizing: 'border-box',
+                backgroundColor: 'white'
+              }}
+            />
+            <span className="search-icon">🔍</span>
+          </div>
+          <button className="btn-agregar" onClick={() => {
+            setCurrentHorario(null);
+            setShowModal(true);
+          }}>
+            <span className="icon-plus">+</span> Agregar horario
+          </button>
+        </div>
+        
+        {renderHorariosTable()}
+      </>
     );
   };
 
@@ -188,36 +218,7 @@ function HorariosPage() {
         </div>
       </div>
       
-      <div className="horarios-header">
-        <div className="admin-citas-search">
-          <input
-            type="text"
-            placeholder="Buscar por nombre de profesional..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            style={{
-              width: '100%',
-              padding: '8px 12px',
-              paddingRight: '35px',
-              border: '1px solid #e2e8f0',
-              borderRadius: '4px',
-              fontSize: '13px',
-              height: '38px',
-              boxSizing: 'border-box',
-              backgroundColor: 'white'
-            }}
-          />
-          <span className="search-icon">🔍</span>
-        </div>
-        <button className="btn-agregar" onClick={() => {
-          setCurrentHorario(null);
-          setShowModal(true);
-        }}>
-          <span className="icon-plus">+</span> Agregar horario
-        </button>
-      </div>
-      
-      {activeTab === "profesionales" ? renderHorariosTable() : renderExcepcionesContent()}
+      {activeTab === "profesionales" ? renderProfesionalesContent() : <ExcepcionesPage />}
       
       {showModal && (
         <div className="horarios-modal-overlay">
