@@ -54,6 +54,9 @@
 
 .filter-container {
   flex: 1;
+  position: relative; /* Añadir posición relativa */
+  display: flex; /* Asegurar que se expande correctamente */
+  flex-direction: column; /* Mantener los elementos en columna */
 }
 
 .filter-container label {
@@ -111,9 +114,9 @@
 /* Selector de fechas modificado para parecer un select */
 .calendar-dropdown {
   position: absolute;
-  top: 100%; /* Cambiar de 48px a 100% para posicionarse justo debajo del input */
-  left: 0; /* Cambiar de right:0 a left:0 para alinearse con el borde izquierdo */
-  z-index: 1000;
+  top: 100%; /* Mantener posición relativa al contenedor */
+  left: 0; /* Alineado con el borde izquierdo */
+  z-index: 9999; /* Aumentar significativamente el z-index para asegurar que esté sobre todos los elementos */
   background: white;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
   border-radius: 6px;
@@ -122,8 +125,6 @@
   border: 1px solid #e5e7eb;
   width: 560px; /* Mantener un tamaño razonable */
   max-width: 95vw; /* Responsive */
-  /* Asegurar que el calendario no se salga de la pantalla */
-  transform: translateX(0);
 }
 
 /* Para evitar que el calendario se salga de la pantalla por la derecha */
