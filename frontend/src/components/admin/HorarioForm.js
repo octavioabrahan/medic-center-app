@@ -12,8 +12,7 @@ function HorarioForm({ onSuccess, horario }) {
     hora_termino: "",
     valido_desde: "",
     valido_hasta: "",
-    tipo_atencion_id: "",
-    nro_consulta: "1"
+    tipo_atencion_id: ""
   });
 
   const [profesionales, setProfesionales] = useState([]);
@@ -86,7 +85,6 @@ function HorarioForm({ onSuccess, horario }) {
         valido_desde: horario.valido_desde || "",
         valido_hasta: horario.valido_hasta || "",
         tipo_atencion_id: horario.tipo_atencion_id || "",
-        nro_consulta: horario.nro_consulta || "1",
         horario_id: horario.horario_id // Usamos horario_id, que es el nombre correcto en la BD
       });
       
@@ -173,8 +171,7 @@ function HorarioForm({ onSuccess, horario }) {
         hora_termino: "",
         valido_desde: "",
         valido_hasta: "",
-        tipo_atencion_id: "",
-        nro_consulta: "1"
+        tipo_atencion_id: ""
       });
       
       if (onSuccess) onSuccess();
@@ -416,20 +413,6 @@ function HorarioForm({ onSuccess, horario }) {
             ))}
           </select>
         </div>
-      </div>
-
-      <div className="form-group">
-        <label htmlFor="nro_consulta">Consultorio</label>
-        <input 
-          type="number" 
-          id="nro_consulta"
-          name="nro_consulta" 
-          placeholder="Número de consultorio"
-          value={form.nro_consulta}
-          onChange={handleChange}
-          required
-          min="1"
-        />
       </div>
 
       <div className="form-actions">

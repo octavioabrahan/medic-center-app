@@ -1,7 +1,7 @@
 .horario-form {
   display: flex;
   flex-direction: column;
-  gap: 8px; /* Reducido a 8px para mayor compacidad */
+  gap: 12px; /* Aumentado a 12px para mejor separación entre grupos */
   padding: 0;
   font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }
@@ -9,18 +9,18 @@
 .form-instructions {
   background-color: #f8f9fa;
   border-left: 4px solid #0d6efd;
-  padding: 8px; /* Reducido a 8px */
+  padding: 8px;
   color: #666;
   font-size: 14px;
   line-height: 1.5;
-  margin-bottom: 3px;
+  margin-bottom: 5px;
 }
 
 .form-group {
   display: flex;
   flex-direction: column;
-  gap: 3px; /* Reducido a 3px para acercar el label al input */
-  margin-bottom: 3px; /* Reducido a 3px */
+  gap: 4px; /* Aumentado a 4px para mejor separación entre label e input */
+  margin-bottom: 0; /* Quitamos el margin-bottom ya que usamos gap en el padre */
 }
 
 .form-group label {
@@ -37,7 +37,7 @@
   content: "▼";
   font-size: 12px;
   position: absolute;
-  right: 15px;
+  right: 12px;
   top: 50%;
   transform: translateY(-50%);
   color: #666;
@@ -46,14 +46,16 @@
 
 .form-group select,
 .form-group input {
-  padding: 10px 12px; /* Reducido el padding para hacer controles más compactos */
+  padding: 8px 12px; /* Reducido a 8px vertical para controles más compactos */
   border: 1px solid #D1D5DB;
   border-radius: 6px;
-  font-size: 15px; /* Reducido tamaño de fuente */
+  font-size: 14px; /* Tamaño de fuente ajustado para consistencia */
   width: 100%;
+  height: 38px; /* Altura fija para todos los controles */
   appearance: none;
   background-color: white;
   color: #333;
+  box-sizing: border-box; /* Asegura que padding no afecte dimensiones */
 }
 
 .form-group input:focus,
@@ -79,8 +81,8 @@
 .checkbox-group {
   display: flex;
   flex-direction: column;
-  gap: 8px; /* Reducido para acercar los checkboxes */
-  margin-top: 4px;
+  gap: 6px; /* Ajustado para mejor espaciado entre checkboxes */
+  margin-top: 2px;
 }
 
 .checkbox-item {
@@ -105,7 +107,7 @@
 
 .form-row {
   display: flex;
-  gap: 15px; /* Reducido espacio entre horas */
+  gap: 12px; /* Consistente con el gap principal */
 }
 
 .form-row .form-group {
@@ -116,17 +118,18 @@
   display: flex;
   justify-content: flex-end;
   gap: 12px;
-  margin-top: 8px; /* Reducido margen */
+  margin-top: 12px; /* Aumentado para separación clara del formulario */
 }
 
 .btn-cancelar, .btn-guardar {
-  padding: 10px 20px;
+  padding: 8px 16px; /* Reducido para botones más compactos */
   border-radius: 6px;
-  font-size: 16px;
+  font-size: 14px; /* Tamaño consistente */
   font-weight: 500;
   cursor: pointer;
   transition: all 0.2s;
   border: none;
+  height: 36px; /* Altura fija para botones */
 }
 
 .btn-cancelar {
@@ -215,11 +218,11 @@ input[type="checkbox"]:checked::before {
   background: white;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
   border-radius: 6px;
-  margin-top: 8px;
+  margin-top: 4px;
   padding: 12px;
   border: 1px solid #e5e7eb;
-  width: 100%; /* Usar todo el ancho disponible */
-  max-width: 600px; /* Establecer un ancho máximo mayor */
+  width: 100%;
+  max-width: 580px; /* Ajustado para mejor presentación */
 }
 
 /* Ajustar el tamaño del calendario para que quepa en el modal */
