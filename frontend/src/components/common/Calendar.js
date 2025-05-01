@@ -362,7 +362,7 @@ const Calendar = ({
     return (
       <div className="month-year-picker">
         <div className="picker-header">
-          <span>Select Month</span>
+          <span>Seleccionar Mes</span>
           <button 
             className="close-picker"
             onClick={() => setShowMonthPicker(false)}
@@ -402,7 +402,7 @@ const Calendar = ({
     return (
       <div className="month-year-picker year-picker">
         <div className="picker-header">
-          <span>Select Year</span>
+          <span>Seleccionar Año</span>
           <button 
             className="close-picker"
             onClick={() => setShowYearPicker(false)}
