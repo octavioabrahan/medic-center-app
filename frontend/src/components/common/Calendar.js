@@ -133,6 +133,7 @@ const Calendar = ({
         year === dateRange.from.getFullYear();
       
       const isEnd = dateRange?.to && 
+        dateRange.to.getDate() !== dateRange.from.getDate() &&  // Only mark as end if different from start
         day === dateRange.to.getDate() && 
         month === dateRange.to.getMonth() && 
         year === dateRange.to.getFullYear();
@@ -149,7 +150,7 @@ const Calendar = ({
             className={className}
             onClick={() => handleDateSelection(date)}
           >
-            {day}
+            <span>{day}</span>
           </div>
         </td>
       );

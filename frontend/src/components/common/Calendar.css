@@ -280,6 +280,7 @@
 .selected {
   background-color: #0366d6;
   color: white !important;
+  z-index: 1; /* Ensure text stays visible */
 }
 
 .range-middle {
@@ -295,6 +296,13 @@
 .range-end {
   border-top-left-radius: 0;
   border-bottom-left-radius: 0;
+}
+
+/* Ensure text is always visible even when selected */
+.selected.range-start, 
+.selected.range-end {
+  position: relative;
+  z-index: 1;
 }
 
 .outside-month .calendar-day {
