@@ -1,9 +1,5 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
-import { format } from 'date-fns';
-import { es } from 'date-fns/locale';
 import "./HorarioForm.css";
 
 function HorarioForm({ onSuccess, horario }) {
@@ -21,10 +17,6 @@ function HorarioForm({ onSuccess, horario }) {
   const [tiposAtencion, setTiposAtencion] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [showCalendarDesde, setShowCalendarDesde] = useState(false);
-  const [showCalendarHasta, setShowCalendarHasta] = useState(false);
-  const [fechaDesde, setFechaDesde] = useState(null);
-  const [fechaHasta, setFechaHasta] = useState(null);
 
   useEffect(() => {
     async function fetchData() {
@@ -46,20 +38,6 @@ function HorarioForm({ onSuccess, horario }) {
   // Cargar datos cuando se está editando un horario existente
   useEffect(() => {
     if (horario) {
-      // Convertir las fechas de string a objetos Date si existen
-      let fechaDesdeObj = null;
-      let fechaHastaObj = null;
-      
-      if (horario.valido_desde) {
-        fechaDesdeObj = new Date(horario.valido_desde);
-        setFechaDesde(fechaDesdeObj);
-      }
-      
-      if (horario.valido_hasta) {
-        fechaHastaObj = new Date(horario.valido_hasta);
-        setFechaHasta(fechaHastaObj);
-      }
-      
       setForm({
         profesional_id: horario.profesional_id || "",
         dia_semana: [horario.dia_semana] || [],
@@ -75,27 +53,6 @@ function HorarioForm({ onSuccess, horario }) {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    
-    // Validación especial para hora_termino
-    if (name === "hora_termino" && form.hora_inicio && value) {
-      if (value <= form.hora_inicio) {
-        setError("La hora de término debe ser posterior a la hora de inicio");
-        return;
-      } else {
-        setError(null); // Limpiar mensaje de error si la validación es correcta
-      }
-    }
-
-    // Validación especial para hora_inicio
-    if (name === "hora_inicio" && form.hora_termino && value) {
-      if (value >= form.hora_termino) {
-        setError("La hora de inicio debe ser anterior a la hora de término");
-        return;
-      } else {
-        setError(null); // Limpiar mensaje de error si la validación es correcta
-      }
-    }
-    
     setForm({ ...form, [name]: value });
   };
 
@@ -116,42 +73,6 @@ function HorarioForm({ onSuccess, horario }) {
     }
   };
 
-  const handleFechaDesdeChange = (fecha) => {
-    setFechaDesde(fecha);
-    
-    // Validar que la fecha desde no sea posterior a la fecha hasta
-    if (fechaHasta && fecha > fechaHasta) {
-      setError("La fecha desde no puede ser posterior a la fecha hasta");
-      return;
-    }
-    
-    // Actualizar el formulario con el formato adecuado para el backend
-    setForm({
-      ...form,
-      valido_desde: fecha ? format(fecha, 'yyyy-MM-dd') : ""
-    });
-    
-    setShowCalendarDesde(false);
-  };
-
-  const handleFechaHastaChange = (fecha) => {
-    setFechaHasta(fecha);
-    
-    // Validar que la fecha hasta no sea anterior a la fecha desde
-    if (fechaDesde && fecha < fechaDesde) {
-      setError("La fecha hasta no puede ser anterior a la fecha desde");
-      return;
-    }
-    
-    // Actualizar el formulario con el formato adecuado para el backend
-    setForm({
-      ...form,
-      valido_hasta: fecha ? format(fecha, 'yyyy-MM-dd') : ""
-    });
-    
-    setShowCalendarHasta(false);
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (form.dia_semana.length === 0) {
@@ -161,18 +82,6 @@ function HorarioForm({ onSuccess, horario }) {
 
     if (!form.profesional_id || !form.hora_inicio || !form.hora_termino || !form.tipo_atencion_id) {
       setError("Por favor complete todos los campos obligatorios");
-      return;
-    }
-
-    // Validar que la hora de término sea posterior a la de inicio
-    if (form.hora_inicio >= form.hora_termino) {
-      setError("La hora de término debe ser posterior a la hora de inicio");
-      return;
-    }
-    
-    // Validar que las fechas sean coherentes
-    if (form.valido_desde && form.valido_hasta && form.valido_desde > form.valido_hasta) {
-      setError("La fecha desde no puede ser posterior a la fecha hasta");
       return;
     }
 
@@ -197,8 +106,6 @@ function HorarioForm({ onSuccess, horario }) {
         valido_hasta: "",
         tipo_atencion_id: ""
       });
-      setFechaDesde(null);
-      setFechaHasta(null);
       
       if (onSuccess) onSuccess();
     } catch (error) {
@@ -218,11 +125,6 @@ function HorarioForm({ onSuccess, horario }) {
     { valor: 6, nombre: "Sábado" },
     { valor: 7, nombre: "Domingo" }
   ];
-
-  const formatFechaDisplay = (fecha) => {
-    if (!fecha) return '';
-    return format(new Date(fecha), 'dd/MM/yyyy', { locale: es });
-  };
 
   return (
     <form onSubmit={handleSubmit} className="horario-form">
@@ -356,97 +258,29 @@ function HorarioForm({ onSuccess, horario }) {
       <div className="form-row">
         <div className="form-group">
           <label htmlFor="valido_desde">Desde</label>
-          <div className="date-picker-container">
-            <div 
-              className="date-input-wrapper" 
-              onClick={() => setShowCalendarDesde(!showCalendarDesde)}
-            >
-              <span className="calendar-icon">📅</span>
-              <input 
-                type="text" 
-                id="valido_desde"
-                name="valido_desde" 
-                className="date-input"
-                placeholder="01/04/2023"
-                value={fechaDesde ? formatFechaDisplay(fechaDesde) : ""}
-                readOnly
-              />
-            </div>
-            {showCalendarDesde && (
-              <div className="calendar-dropdown">
-                <DatePicker
-                  selected={fechaDesde}
-                  onChange={handleFechaDesdeChange}
-                  locale={es}
-                  inline
-                  dateFormat="dd/MM/yyyy"
-                />
-                <div className="calendar-actions">
-                  <button 
-                    type="button"
-                    className="btn-cancel" 
-                    onClick={() => setShowCalendarDesde(false)}
-                  >
-                    Cancelar
-                  </button>
-                  <button
-                    type="button" 
-                    className="btn-apply"
-                    onClick={() => setShowCalendarDesde(false)}
-                  >
-                    Aplicar
-                  </button>
-                </div>
-              </div>
-            )}
+          <div className="select-wrapper">
+            <input 
+              type="text" 
+              id="valido_desde"
+              name="valido_desde" 
+              placeholder="01/04/2025"
+              value={form.valido_desde}
+              onChange={handleChange}
+            />
           </div>
         </div>
 
         <div className="form-group">
           <label htmlFor="valido_hasta">Hasta</label>
-          <div className="date-picker-container">
-            <div 
-              className="date-input-wrapper" 
-              onClick={() => setShowCalendarHasta(!showCalendarHasta)}
-            >
-              <span className="calendar-icon">📅</span>
-              <input 
-                type="text" 
-                id="valido_hasta"
-                name="valido_hasta" 
-                className="date-input"
-                placeholder="30/04/2025"
-                value={fechaHasta ? formatFechaDisplay(fechaHasta) : ""}
-                readOnly
-              />
-            </div>
-            {showCalendarHasta && (
-              <div className="calendar-dropdown">
-                <DatePicker
-                  selected={fechaHasta}
-                  onChange={handleFechaHastaChange}
-                  locale={es}
-                  inline
-                  dateFormat="dd/MM/yyyy"
-                />
-                <div className="calendar-actions">
-                  <button 
-                    type="button"
-                    className="btn-cancel" 
-                    onClick={() => setShowCalendarHasta(false)}
-                  >
-                    Cancelar
-                  </button>
-                  <button 
-                    type="button"
-                    className="btn-apply"
-                    onClick={() => setShowCalendarHasta(false)}
-                  >
-                    Aplicar
-                  </button>
-                </div>
-              </div>
-            )}
+          <div className="select-wrapper">
+            <input 
+              type="text" 
+              id="valido_hasta"
+              name="valido_hasta"
+              placeholder="30/04/2025" 
+              value={form.valido_hasta}
+              onChange={handleChange}
+            />
           </div>
         </div>
       </div>
