@@ -88,6 +88,9 @@ const AdminCitas = () => {
     } catch (err) {
       console.error('Error:', err);
       setError('No se pudieron cargar los agendamientos. Por favor, intenta de nuevo.');
+      // Asegurarse de limpiar los datos cuando hay un error
+      setAgendamientos([]);
+      setFilteredAgendamientos([]);
     } finally {
       setLoading(false);
     }
@@ -112,7 +115,11 @@ const AdminCitas = () => {
 
   // Aplicar filtros cuando cambian los criterios
   const applyFilters = (data = agendamientos) => {
-    if (!data || data.length === 0) return;
+    // Si no hay datos, establecer una lista vacía y retornar
+    if (!data || data.length === 0) {
+      setFilteredAgendamientos([]);
+      return;
+    }
     
     console.log("Aplicando filtros a", data.length, "registros");
     let results = [...data];
@@ -138,14 +145,6 @@ const AdminCitas = () => {
       results = results.filter(agendamiento => 
         agendamiento.profesional_id === filtroProfesional
       );
-    }
-    
-    // Filtrar por rango de fechas
-    if (dateRange.from && dateRange.to) {
-      results = results.filter(agendamiento => {
-        const fechaAgendada = new Date(agendamiento.fecha_agendada);
-        return fechaAgendada >= dateRange.from && fechaAgendada <= dateRange.to;
-      });
     }
     
     console.log("Resultados filtrados:", results.length);

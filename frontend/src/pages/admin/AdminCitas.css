@@ -27,11 +27,6 @@
   justify-content: space-between;
 }
 
-/* Eliminar la definición anterior de .filters-bar que podría estar causando conflictos */
-.filters-bar {
-  /* Esta clase ya no se usa en este componente */
-}
-
 .admin-citas-search {
   position: relative;
   flex: 1;
@@ -55,11 +50,6 @@
   color: #9ca3af;
   pointer-events: none;
   font-size: 14px;
-}
-
-/* Eliminar la definición anterior de .search-container que podría estar causando conflictos */
-.search-container {
-  /* Esta clase ya no se usa en este componente */
 }
 
 .filter-container {
@@ -121,8 +111,8 @@
 /* Selector de fechas modificado para parecer un select */
 .calendar-dropdown {
   position: absolute;
-  top: 48px; /* Ajustado para posicionarse debajo del input de fecha */
-  right: 0;
+  top: 100%; /* Cambiar de 48px a 100% para posicionarse justo debajo del input */
+  left: 0; /* Cambiar de right:0 a left:0 para alinearse con el borde izquierdo */
   z-index: 1000;
   background: white;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
@@ -130,10 +120,18 @@
   margin-top: 8px;
   padding: 12px;
   border: 1px solid #e5e7eb;
-  width: 560px; /* Reducido a un tamaño más compacto */
+  width: 560px; /* Mantener un tamaño razonable */
   max-width: 95vw; /* Responsive */
   /* Asegurar que el calendario no se salga de la pantalla */
   transform: translateX(0);
+}
+
+/* Para evitar que el calendario se salga de la pantalla por la derecha */
+@media (min-width: 768px) {
+  .filter-container:last-child .calendar-dropdown {
+    left: auto;
+    right: 0;
+  }
 }
 
 /* Selector de fechas modificado para parecer un select */
