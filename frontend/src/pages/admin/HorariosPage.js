@@ -36,12 +36,37 @@ function HorariosPage() {
     }
   }, [searchTerm, horarios]);
 
+  // Modificamos fetchHorarios para agrupar los horarios
   const fetchHorarios = async () => {
     setLoading(true);
     try {
       const response = await axios.get("/api/horarios");
-      setHorarios(response.data);
-      setFilteredHorarios(response.data);
+      const rawHorarios = response.data;
+      
+      // Agrupar horarios por profesional, horario y tipo de atención
+      const horarioGroups = {};
+      
+      rawHorarios.forEach(horario => {
+        // Crear una clave única para agrupar horarios similares
+        const key = `${horario.profesional_id}_${horario.hora_inicio}_${horario.hora_termino}_${horario.tipo_atencion_id}_${horario.valido_desde}_${horario.valido_hasta}`;
+        
+        if (!horarioGroups[key]) {
+          // Creamos un nuevo grupo si no existe
+          horarioGroups[key] = {
+            ...horario,
+            dias_semana: [horario.dia_semana], // Array de días
+          };
+        } else {
+          // Añadimos el día al grupo existente
+          horarioGroups[key].dias_semana.push(horario.dia_semana);
+        }
+      });
+      
+      // Convertir el objeto de grupos a un array
+      const groupedHorarios = Object.values(horarioGroups);
+      
+      setHorarios(groupedHorarios);
+      setFilteredHorarios(groupedHorarios);
     } catch (err) {
       console.error('Error:', err);
       setError('No se pudieron cargar los horarios. Por favor, intenta de nuevo.');
@@ -60,8 +85,22 @@ function HorariosPage() {
   };
 
   const formatHorarioSemanal = (horario) => {
-    const dias = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'];
-    return dias[horario.dia_semana - 1] || 'No especificado';
+    const diasNombres = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'];
+    
+    // Si el horario tiene múltiples días (agrupados), los formateamos
+    if (horario.dias_semana && horario.dias_semana.length > 0) {
+      // Ordenamos los días de la semana (1=Lunes, 7=Domingo)
+      const diasOrdenados = [...horario.dias_semana].sort((a, b) => a - b);
+      
+      // Convertimos los números a nombres de días
+      const nombresOrdenados = diasOrdenados.map(dia => diasNombres[dia - 1]);
+      
+      // Unimos los nombres con comas
+      return nombresOrdenados.join(', ');
+    } 
+    
+    // Para compatibilidad con registros antiguos o no agrupados
+    return diasNombres[horario.dia_semana - 1] || 'No especificado';
   };
 
   const handleEditHorario = (horario) => {
@@ -101,7 +140,7 @@ function HorariosPage() {
           </thead>
           <tbody>
             {filteredHorarios.map((horario) => (
-              <tr key={horario.id_horario}>
+              <tr key={horario.horario_id}>
                 <td>{horario.profesional_nombre} {horario.profesional_apellido}</td>
                 <td>{horario.tipo_atencion}</td>
                 <td>{formatHorarioSemanal(horario)}</td>
@@ -118,7 +157,7 @@ function HorariosPage() {
                   <button 
                     className="btn-action btn-delete" 
                     title="Eliminar"
-                    onClick={() => handleDeleteHorario(horario.id_horario)}
+                    onClick={() => handleDeleteHorario(horario.horario_id)}
                   >
                     <span className="icon-delete">🗑️</span>
                   </button>
