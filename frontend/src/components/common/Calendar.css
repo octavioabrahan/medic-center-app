@@ -182,21 +182,26 @@
 .picker-options {
   max-height: 225px;
   overflow-y: auto;
+  overflow-x: hidden;
   padding: 8px;
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(3, 1fr);
   gap: 5px;
 }
 
+.month-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+}
+
 .month-option, .year-option {
-  padding: 8px;
+  padding: 8px 2px;
   margin: 2px;
   cursor: pointer;
   transition: background-color 0.2s;
   border-radius: 4px;
   text-align: center;
   font-size: 14px;
-  white-space: nowrap;
 }
 
 .month-option:hover, .year-option:hover {
