@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
 import axios from 'axios';
 import './ProfesionalesAdmin.css';
 
@@ -270,7 +269,7 @@ function ProfesionalesAdmin() {
 
     return (
       <div className="modal-overlay">
-        <div className="modal-content">
+        <div className="modal-content-profesionales">
           <div className="modal-header">
             <h2>Crear especialidad</h2>
             <button className="close-btn" onClick={() => setShowAddEspecialidadModal(false)}>×</button>
@@ -308,7 +307,7 @@ function ProfesionalesAdmin() {
 
     return (
       <div className="modal-overlay">
-        <div className="modal-content">
+        <div className="modal-content-profesionales">
           <div className="modal-header">
             <h2>Agregar nuevo profesional</h2>
             <button className="close-btn" onClick={() => setShowAddProfesionalModal(false)}>×</button>
@@ -382,7 +381,7 @@ function ProfesionalesAdmin() {
               
               <div className="form-group servicio-group">
                 <label>Servicio</label>
-                <div className="checkbox-group">
+                <div className="profesionales-checkbox-group">
                   <div className="checkbox-item">
                     <input 
                       type="checkbox"
@@ -453,7 +452,7 @@ function ProfesionalesAdmin() {
 
     return (
       <div className="modal-overlay">
-        <div className="modal-content">
+        <div className="modal-content-profesionales">
           <div className="modal-header">
             <h2>Editar profesional</h2>
             <button className="close-btn" onClick={() => setShowEditProfesionalModal(false)}>×</button>
@@ -542,7 +541,7 @@ function ProfesionalesAdmin() {
                 <h3>Servicios que ofrece el profesional</h3>
                 <div className="servicios-container">
                   {servicios.length > 0 ? (
-                    <div className="checkbox-group">
+                    <div className="profesionales-checkbox-group">
                       {servicios.map(servicio => (
                         <div key={servicio.id_servicio} className="checkbox-item">
                           <input
@@ -617,13 +616,6 @@ function ProfesionalesAdmin() {
                   >
                     ✏️
                   </button>
-                  <Link 
-                    to={`/admin/profesionales/${profesional.profesional_id}/editar-servicios`} 
-                    className="btn-action btn-servicios"
-                    title="Editar servicios"
-                  >
-                    🛠️
-                  </Link>
                   <button className="btn-action btn-delete" title="Eliminar profesional">
                     🗑️
                   </button>
@@ -638,13 +630,31 @@ function ProfesionalesAdmin() {
 
   return (
     <div className="profesionales-admin">
-      <h1>Gestión de Profesionales</h1>
+      <div className="profesionales-header">
+        <h1>Gestión de Profesionales</h1>
+        <div className="profesionales-header-actions">
+          <button 
+            className="btn-crear-especialidad" 
+            onClick={() => setShowAddEspecialidadModal(true)}
+          >
+            Crear especialidad
+          </button>
+          
+          <button 
+            className="btn-agregar-profesional" 
+            onClick={() => setShowAddProfesionalModal(true)}
+          >
+            <span className="icon-plus">+</span>
+            Agregar nuevo profesional
+          </button>
+        </div>
+      </div>
       
-      <div className="filters-bar">
-        <div className="search-container">
+      <div className="profesionales-filters-bar">
+        <div className="profesionales-search-container">
           <input
             type="text"
-            placeholder="Buscar por nombre"
+            placeholder="Buscar por nombre o cédula"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
@@ -668,47 +678,30 @@ function ProfesionalesAdmin() {
           </select>
         </div>
         
-        <div className="sort-container">
+        <div className="profesionales-sort-container">
           <button 
-            className={`sort-btn ${ordenamiento === 'reciente' ? 'active' : ''}`}
+            className={`profesionales-sort-btn ${ordenamiento === 'reciente' ? 'active' : ''}`}
             onClick={() => setOrdenamiento('reciente')}
           >
             Más reciente
           </button>
           <button 
-            className={`sort-btn ${ordenamiento === 'antiguo' ? 'active' : ''}`}
+            className={`profesionales-sort-btn ${ordenamiento === 'antiguo' ? 'active' : ''}`}
             onClick={() => setOrdenamiento('antiguo')}
           >
             Más antiguo
           </button>
           <button 
-            className={`sort-btn icon-btn ${ordenamiento === 'az' ? 'active' : ''}`}
+            className={`profesionales-sort-btn icon-btn ${ordenamiento === 'az' ? 'active' : ''}`}
             onClick={() => setOrdenamiento('az')}
           >
             <span className="check-icon">✓</span> A → Z
           </button>
           <button 
-            className={`sort-btn icon-btn ${ordenamiento === 'za' ? 'active' : ''}`}
+            className={`profesionales-sort-btn icon-btn ${ordenamiento === 'za' ? 'active' : ''}`}
             onClick={() => setOrdenamiento('za')}
           >
             Z → A
-          </button>
-        </div>
-        
-        <div className="actions-container">
-          <button 
-            className="btn-crear-especialidad" 
-            onClick={() => setShowAddEspecialidadModal(true)}
-          >
-            Crear especialidad
-          </button>
-          
-          <button 
-            className="btn-agregar-profesional" 
-            onClick={() => setShowAddProfesionalModal(true)}
-          >
-            <span className="icon-plus">+</span>
-            Agregar nuevo profesional
           </button>
         </div>
       </div>
