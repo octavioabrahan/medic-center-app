@@ -17,11 +17,37 @@ const ProfesionalesController = {
 
   listar: async (req, res) => {
     try {
-      const profesionales = await Model.listar();
+      const soloActivos = req.query.soloActivos !== 'false';
+      const profesionales = await Model.listar(soloActivos);
       res.json(profesionales);
     } catch (err) {
       console.error(err);
       res.status(500).json({ error: "Error al obtener profesionales" });
+    }
+  },
+
+  cambiarEstado: async (req, res) => {
+    try {
+      const { id } = req.params;
+      const { activo } = req.body;
+      
+      if (typeof activo !== 'boolean') {
+        return res.status(400).json({ error: "El parámetro 'activo' debe ser un valor booleano" });
+      }
+      
+      const profesional = await Model.cambiarEstado(id, activo);
+      
+      if (!profesional) {
+        return res.status(404).json({ error: "Profesional no encontrado" });
+      }
+      
+      res.json({ 
+        mensaje: `Profesional ${activo ? 'activado' : 'archivado'} correctamente`,
+        profesional
+      });
+    } catch (err) {
+      console.error("Error al cambiar estado del profesional:", err);
+      res.status(500).json({ error: "Error al cambiar estado del profesional" });
     }
   },
 

@@ -204,6 +204,36 @@
   background-color: #f9fafb;
 }
 
+/* Profesionales inactivos */
+.profesional-inactivo {
+  background-color: #f9fafb;
+  color: #9ca3af;
+}
+
+.profesional-inactivo:hover {
+  background-color: #f3f4f6;
+}
+
+/* Status badges */
+.status-badge {
+  display: inline-block;
+  padding: 4px 8px;
+  font-size: 12px;
+  font-weight: 500;
+  border-radius: 9999px;
+  text-transform: uppercase;
+}
+
+.status-activo {
+  background-color: #d1fae5;
+  color: #047857;
+}
+
+.status-inactivo {
+  background-color: #fecaca;
+  color: #b91c1c;
+}
+
 /* Celdas de acciones */
 .actions-cell {
   display: flex;
@@ -228,6 +258,10 @@
 
 .btn-edit {
   color: #3b82f6;
+}
+
+.btn-activate {
+  color: #10b981;
 }
 
 .btn-servicios {
@@ -455,6 +489,23 @@
 
 .btn-guardar:hover {
   background-color: #1c355d;
+}
+
+.btn-archivar {
+  padding: 10px 16px;
+  background-color: #ef4444;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  margin-left: auto;
+}
+
+.btn-archivar:hover {
+  background-color: #dc2626;
 }
 
 .no-servicios {

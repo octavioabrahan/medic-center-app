@@ -12,11 +12,13 @@ function ProfesionalesAdmin() {
   const [filteredProfesionales, setFilteredProfesionales] = useState([]);
   const [especialidadFiltro, setEspecialidadFiltro] = useState('');
   const [ordenamiento, setOrdenamiento] = useState('reciente'); // 'reciente', 'antiguo', 'az', 'za'
+  const [mostrarInactivos, setMostrarInactivos] = useState(false);
 
   // Estados para modales
   const [showAddEspecialidadModal, setShowAddEspecialidadModal] = useState(false);
   const [showAddProfesionalModal, setShowAddProfesionalModal] = useState(false);
   const [showEditProfesionalModal, setShowEditProfesionalModal] = useState(false);
+  const [showConfirmArchiveModal, setShowConfirmArchiveModal] = useState(false);
   const [nuevaEspecialidad, setNuevaEspecialidad] = useState({ nombre: '' });
   const [currentProfesional, setCurrentProfesional] = useState(null);
 
@@ -41,7 +43,7 @@ function ProfesionalesAdmin() {
       setLoading(true);
       try {
         const [profesionalesRes, especialidadesRes] = await Promise.all([
-          axios.get('/api/profesionales'),
+          axios.get(`/api/profesionales?soloActivos=${!mostrarInactivos}`),
           axios.get('/api/especialidades')
         ]);
         
@@ -57,7 +59,7 @@ function ProfesionalesAdmin() {
     };
 
     fetchData();
-  }, []);
+  }, [mostrarInactivos]);
 
   // Aplicar filtros y ordenamiento a la lista de profesionales
   useEffect(() => {
@@ -139,6 +141,40 @@ function ProfesionalesAdmin() {
     }
   }, [showEditProfesionalModal, currentProfesional]);
 
+  // Cambiar estado activo/inactivo del profesional
+  const cambiarEstadoProfesional = async (profesionalId, activo) => {
+    try {
+      await axios.put(`/api/profesionales/estado/${profesionalId}`, { activo });
+      
+      // Actualizar la lista de profesionales
+      const response = await axios.get(`/api/profesionales?soloActivos=${!mostrarInactivos}`);
+      setProfesionales(response.data);
+      setFilteredProfesionales(response.data);
+      
+      // Si estamos en el modal de edición, cerrarlo
+      if (showEditProfesionalModal) {
+        setShowEditProfesionalModal(false);
+      }
+      
+      // Si estamos en el modal de confirmación, cerrarlo
+      if (showConfirmArchiveModal) {
+        setShowConfirmArchiveModal(false);
+      }
+      
+      setCurrentProfesional(null);
+      
+    } catch (err) {
+      console.error('Error al cambiar el estado del profesional:', err);
+      alert('Error al cambiar el estado del profesional. Por favor, intenta de nuevo.');
+    }
+  };
+
+  // Mostrar modal de confirmación para archivar
+  const confirmarArchivarProfesional = () => {
+    setShowConfirmArchiveModal(true);
+    setShowEditProfesionalModal(false);
+  };
+
   // Crear nueva especialidad
   const handleCreateEspecialidad = async (e) => {
     e.preventDefault();
@@ -183,7 +219,7 @@ function ProfesionalesAdmin() {
       });
 
       // Actualizar la lista de profesionales
-      const updatedProfesionales = await axios.get('/api/profesionales');
+      const updatedProfesionales = await axios.get(`/api/profesionales?soloActivos=${!mostrarInactivos}`);
       setProfesionales(updatedProfesionales.data);
       setFilteredProfesionales(updatedProfesionales.data);
       
@@ -248,7 +284,7 @@ function ProfesionalesAdmin() {
       });
 
       // Actualizar la lista de profesionales
-      const updatedProfesionales = await axios.get('/api/profesionales');
+      const updatedProfesionales = await axios.get(`/api/profesionales?soloActivos=${!mostrarInactivos}`);
       setProfesionales(updatedProfesionales.data);
       setFilteredProfesionales(updatedProfesionales.data);
       
@@ -295,6 +331,49 @@ function ProfesionalesAdmin() {
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  // Modal para confirmar archivar profesional
+  const renderConfirmArchiveModal = () => {
+    if (!showConfirmArchiveModal || !currentProfesional) return null;
+
+    return (
+      <div className="modal-overlay">
+        <div className="modal-content-confirm">
+          <div className="modal-header">
+            <h2>Confirmar acción</h2>
+            <button className="close-btn" onClick={() => setShowConfirmArchiveModal(false)}>×</button>
+          </div>
+          <div className="modal-body">
+            <p className="confirm-message">
+              ¿Está seguro que desea archivar al profesional <strong>{currentProfesional.nombre} {currentProfesional.apellido}</strong>?
+              <br />
+              <small>El profesional no podrá recibir nuevas citas pero se mantendrán sus registros históricos.</small>
+            </p>
+            
+            <div className="form-actions">
+              <button 
+                type="button" 
+                className="btn-cancelar" 
+                onClick={() => {
+                  setShowConfirmArchiveModal(false);
+                  setShowEditProfesionalModal(true);
+                }}
+              >
+                Cancelar
+              </button>
+              <button 
+                type="button" 
+                className="btn-archivar"
+                onClick={() => cambiarEstadoProfesional(currentProfesional.profesional_id, false)}
+              >
+                Confirmar archivo
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -513,8 +592,8 @@ function ProfesionalesAdmin() {
                     <input
                       id="edit-correo"
                       type="email"
-                      value={currentProfesional.correo || ''}
-                      onChange={(e) => setCurrentProfesional({...currentProfesional, correo: e.target.value})}
+                      value={currentProfesional.email || ''}
+                      onChange={(e) => setCurrentProfesional({...currentProfesional, email: e.target.value})}
                     />
                   </div>
                 </div>
@@ -577,6 +656,13 @@ function ProfesionalesAdmin() {
                 <button type="submit" className="btn-guardar">
                   Guardar cambios
                 </button>
+                <button 
+                  type="button" 
+                  className="btn-archivar"
+                  onClick={confirmarArchivarProfesional}
+                >
+                  Archivar
+                </button>
               </div>
             </form>
           </div>
@@ -599,26 +685,42 @@ function ProfesionalesAdmin() {
               <th>Cédula</th>
               <th>Profesional</th>
               <th>Especialidad</th>
+              <th>Estado</th>
               <th>Acciones</th>
             </tr>
           </thead>
           <tbody>
             {filteredProfesionales.map(profesional => (
-              <tr key={profesional.profesional_id}>
+              <tr 
+                key={profesional.profesional_id}
+                className={profesional.is_active === false ? 'profesional-inactivo' : ''}
+              >
                 <td>{profesional.cedula}</td>
                 <td>{profesional.nombre} {profesional.apellido}</td>
                 <td>{profesional.nombre_especialidad}</td>
+                <td>
+                  <span className={`status-badge ${profesional.is_active ? 'status-activo' : 'status-inactivo'}`}>
+                    {profesional.is_active ? 'Activo' : 'Archivado'}
+                  </span>
+                </td>
                 <td className="actions-cell">
-                  <button 
-                    className="btn-action btn-edit" 
-                    title="Editar profesional"
-                    onClick={() => handleEditProfesional(profesional)}
-                  >
-                    ✏️
-                  </button>
-                  <button className="btn-action btn-delete" title="Eliminar profesional">
-                    🗑️
-                  </button>
+                  {profesional.is_active ? (
+                    <button 
+                      className="btn-action btn-edit" 
+                      title="Editar profesional"
+                      onClick={() => handleEditProfesional(profesional)}
+                    >
+                      ✏️
+                    </button>
+                  ) : (
+                    <button 
+                      className="btn-action btn-activate" 
+                      title="Activar profesional"
+                      onClick={() => cambiarEstadoProfesional(profesional.profesional_id, true)}
+                    >
+                      ↩️
+                    </button>
+                  )}
                 </td>
               </tr>
             ))}
@@ -677,6 +779,17 @@ function ProfesionalesAdmin() {
             ))}
           </select>
         </div>
+
+        <div className="ver-inactivos-container">
+          <label className="ver-inactivos-label">
+            <input 
+              type="checkbox"
+              checked={mostrarInactivos}
+              onChange={() => setMostrarInactivos(!mostrarInactivos)}
+            />
+            Mostrar profesionales archivados
+          </label>
+        </div>
         
         <div className="profesionales-sort-container">
           <button 
@@ -710,6 +823,7 @@ function ProfesionalesAdmin() {
       {renderAddEspecialidadModal()}
       {renderAddProfesionalModal()}
       {renderEditProfesionalModal()}
+      {renderConfirmArchiveModal()}
       
       <div className="profesional-agregado-message" style={{display: 'none'}}>
         <div className="message-content">

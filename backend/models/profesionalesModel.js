@@ -3,22 +3,28 @@ const db = require('./db');
 const ProfesionalesModel = {
   crear: async ({ cedula, nombre, apellido, especialidad_id }) => {
     const result = await db.query(
-      `INSERT INTO profesionales (profesional_id, cedula, nombre, apellido, especialidad_id)
-       VALUES (gen_random_uuid(), $1, $2, $3, $4)
+      `INSERT INTO profesionales (profesional_id, cedula, nombre, apellido, especialidad_id, is_active)
+       VALUES (gen_random_uuid(), $1, $2, $3, $4, true)
        RETURNING profesional_id`,
       [cedula, nombre, apellido, especialidad_id]
     );
     return result.rows[0].profesional_id;
   },
   
-  listar: async () => {
+  listar: async (onlyActive = true) => {
+    const filter = onlyActive ? "WHERE p.is_active = true" : "";
     const result = await db.query(`
       SELECT 
         p.profesional_id,
         p.cedula,
         p.nombre,
         p.apellido,
+        p.telefono,
+        p.email,
+        p.is_active,
+        p.id_rol,
         e.nombre AS nombre_especialidad,
+        e.especialidad_id,
         r.nombre_rol AS nombre_rol,
         ARRAY_REMOVE(ARRAY_AGG(DISTINCT s.nombre_servicio), NULL) AS servicios,
         ARRAY_REMOVE(ARRAY_AGG(DISTINCT c.nombre_categoria), NULL) AS categorias
@@ -29,12 +35,20 @@ const ProfesionalesModel = {
       LEFT JOIN servicio s ON ps.id_servicio = s.id_servicio
       LEFT JOIN profesional_categoria pc ON p.profesional_id = pc.profesional_id
       LEFT JOIN categoria c ON pc.id_categoria = c.id_categoria
-      GROUP BY p.profesional_id, p.cedula, p.nombre, p.apellido, e.nombre, r.nombre_rol
+      ${filter}
+      GROUP BY p.profesional_id, p.cedula, p.nombre, p.apellido, p.telefono, p.email, p.is_active, p.id_rol, e.nombre, e.especialidad_id, r.nombre_rol
       ORDER BY p.nombre, p.apellido
     `);
     return result.rows;
-  }
+  },
   
+  cambiarEstado: async (profesionalId, estado) => {
+    const result = await db.query(
+      `UPDATE profesionales SET is_active = $1 WHERE profesional_id = $2 RETURNING *`,
+      [estado, profesionalId]
+    );
+    return result.rows[0];
+  }
 };
 
 module.exports = ProfesionalesModel;
