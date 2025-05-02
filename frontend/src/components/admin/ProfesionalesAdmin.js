@@ -32,6 +32,10 @@ function ProfesionalesAdmin() {
     servicios: []
   });
 
+  // Estado para servicios y categorías
+  const [servicios, setServicios] = useState([]);
+  const [serviciosSeleccionados, setServiciosSeleccionados] = useState([]);
+
   // Fetch de profesionales y especialidades al cargar el componente
   useEffect(() => {
     const fetchData = async () => {
@@ -103,6 +107,38 @@ function ProfesionalesAdmin() {
       setFilteredProfesionales(results);
     }
   }, [searchTerm, profesionales, especialidadFiltro, ordenamiento]);
+
+  // Fetch de servicios para los modales
+  useEffect(() => {
+    if (showAddProfesionalModal || showEditProfesionalModal) {
+      const fetchServicios = async () => {
+        try {
+          const response = await axios.get('/api/servicios');
+          setServicios(response.data);
+        } catch (err) {
+          console.error('Error al cargar servicios:', err);
+        }
+      };
+      
+      fetchServicios();
+    }
+  }, [showAddProfesionalModal, showEditProfesionalModal]);
+
+  // Cargar servicios del profesional cuando se edita
+  useEffect(() => {
+    if (showEditProfesionalModal && currentProfesional?.profesional_id) {
+      const fetchProfesionalServicios = async () => {
+        try {
+          const response = await axios.get(`/api/profesionales/relaciones/${currentProfesional.profesional_id}`);
+          setServiciosSeleccionados(response.data.servicios || []);
+        } catch (err) {
+          console.error('Error al cargar servicios del profesional:', err);
+        }
+      };
+      
+      fetchProfesionalServicios();
+    }
+  }, [showEditProfesionalModal, currentProfesional]);
 
   // Crear nueva especialidad
   const handleCreateEspecialidad = async (e) => {
@@ -197,13 +233,19 @@ function ProfesionalesAdmin() {
     }
 
     try {
-      // Implementar lógica de actualización aquí usando el ID del profesional
+      // 1. Actualizar datos básicos del profesional
       await axios.put(`/api/profesionales/${currentProfesional.profesional_id}`, {
         nombre: currentProfesional.nombre,
         apellido: currentProfesional.apellido,
         especialidad_id: currentProfesional.especialidad_id,
         telefono: currentProfesional.telefono,
         correo: currentProfesional.correo
+      });
+
+      // 2. Actualizar servicios del profesional
+      await axios.post("/api/profesionales/asignar-servicios", {
+        profesional_id: currentProfesional.profesional_id,
+        servicios: serviciosSeleccionados
       });
 
       // Actualizar la lista de profesionales
@@ -214,6 +256,7 @@ function ProfesionalesAdmin() {
       // Cerrar modal
       setShowEditProfesionalModal(false);
       setCurrentProfesional(null);
+      setServiciosSeleccionados([]);
       
     } catch (err) {
       console.error('Error al actualizar profesional:', err);
@@ -417,70 +460,115 @@ function ProfesionalesAdmin() {
           </div>
           <div className="modal-body">
             <form onSubmit={handleUpdateProfesional}>
-              <div className="form-group">
-                <label htmlFor="edit-cedula">Cédula</label>
-                <input
-                  id="edit-cedula"
-                  type="text"
-                  value={currentProfesional.cedula || ''}
-                  onChange={(e) => setCurrentProfesional({...currentProfesional, cedula: e.target.value})}
-                  disabled
-                />
-                <small className="form-text text-muted">La cédula no se puede modificar.</small>
+              <div className="detail-section">
+                <h3>Información personal</h3>
+                <div className="form-group">
+                  <label htmlFor="edit-cedula">Cédula</label>
+                  <input
+                    id="edit-cedula"
+                    type="text"
+                    value={currentProfesional.cedula || ''}
+                    onChange={(e) => setCurrentProfesional({...currentProfesional, cedula: e.target.value})}
+                    disabled
+                  />
+                  <small className="form-text text-muted">La cédula no se puede modificar.</small>
+                </div>
+
+                <div className="form-row">
+                  <div className="form-group">
+                    <label htmlFor="edit-nombre">Nombre</label>
+                    <input
+                      id="edit-nombre"
+                      type="text"
+                      value={currentProfesional.nombre || ''}
+                      onChange={(e) => setCurrentProfesional({...currentProfesional, nombre: e.target.value})}
+                      required
+                    />
+                  </div>
+                  
+                  <div className="form-group">
+                    <label htmlFor="edit-apellido">Apellido</label>
+                    <input
+                      id="edit-apellido"
+                      type="text"
+                      value={currentProfesional.apellido || ''}
+                      onChange={(e) => setCurrentProfesional({...currentProfesional, apellido: e.target.value})}
+                      required
+                    />
+                  </div>
+                </div>
+
+                <div className="form-row">
+                  <div className="form-group">
+                    <label htmlFor="edit-telefono">Teléfono</label>
+                    <input
+                      id="edit-telefono"
+                      type="text"
+                      value={currentProfesional.telefono || ''}
+                      onChange={(e) => setCurrentProfesional({...currentProfesional, telefono: e.target.value})}
+                    />
+                  </div>
+                  
+                  <div className="form-group">
+                    <label htmlFor="edit-correo">Correo electrónico</label>
+                    <input
+                      id="edit-correo"
+                      type="email"
+                      value={currentProfesional.correo || ''}
+                      onChange={(e) => setCurrentProfesional({...currentProfesional, correo: e.target.value})}
+                    />
+                  </div>
+                </div>
+
+                <div className="form-group">
+                  <label htmlFor="edit-especialidad">Especialidad</label>
+                  <select
+                    id="edit-especialidad"
+                    value={currentProfesional.especialidad_id || ''}
+                    onChange={(e) => setCurrentProfesional({...currentProfesional, especialidad_id: e.target.value})}
+                    required
+                  >
+                    <option value="">Selecciona una especialidad</option>
+                    {especialidades.map((esp) => (
+                      <option key={esp.especialidad_id} value={esp.especialidad_id}>
+                        {esp.nombre}
+                      </option>
+                    ))}
+                  </select>
+                </div>
               </div>
-              <div className="form-group">
-                <label htmlFor="edit-nombre">Nombre</label>
-                <input
-                  id="edit-nombre"
-                  type="text"
-                  value={currentProfesional.nombre || ''}
-                  onChange={(e) => setCurrentProfesional({...currentProfesional, nombre: e.target.value})}
-                  required
-                />
-              </div>
-              <div className="form-group">
-                <label htmlFor="edit-apellido">Apellido</label>
-                <input
-                  id="edit-apellido"
-                  type="text"
-                  value={currentProfesional.apellido || ''}
-                  onChange={(e) => setCurrentProfesional({...currentProfesional, apellido: e.target.value})}
-                  required
-                />
-              </div>
-              <div className="form-group">
-                <label htmlFor="edit-telefono">Teléfono</label>
-                <input
-                  id="edit-telefono"
-                  type="text"
-                  value={currentProfesional.telefono || ''}
-                  onChange={(e) => setCurrentProfesional({...currentProfesional, telefono: e.target.value})}
-                />
-              </div>
-              <div className="form-group">
-                <label htmlFor="edit-correo">Correo electrónico</label>
-                <input
-                  id="edit-correo"
-                  type="email"
-                  value={currentProfesional.correo || ''}
-                  onChange={(e) => setCurrentProfesional({...currentProfesional, correo: e.target.value})}
-                />
-              </div>
-              <div className="form-group">
-                <label htmlFor="edit-especialidad">Especialidad</label>
-                <select
-                  id="edit-especialidad"
-                  value={currentProfesional.especialidad_id || ''}
-                  onChange={(e) => setCurrentProfesional({...currentProfesional, especialidad_id: e.target.value})}
-                  required
-                >
-                  <option value="">Selecciona una especialidad</option>
-                  {especialidades.map((esp) => (
-                    <option key={esp.especialidad_id} value={esp.especialidad_id}>
-                      {esp.nombre}
-                    </option>
-                  ))}
-                </select>
+              
+              <div className="detail-section">
+                <h3>Servicios que ofrece el profesional</h3>
+                <div className="servicios-container">
+                  {servicios.length > 0 ? (
+                    <div className="checkbox-group">
+                      {servicios.map(servicio => (
+                        <div key={servicio.id_servicio} className="checkbox-item">
+                          <input
+                            type="checkbox"
+                            id={`servicio-${servicio.id_servicio}`}
+                            checked={serviciosSeleccionados.includes(servicio.id_servicio)}
+                            onChange={(e) => {
+                              if (e.target.checked) {
+                                setServiciosSeleccionados([...serviciosSeleccionados, servicio.id_servicio]);
+                              } else {
+                                setServiciosSeleccionados(
+                                  serviciosSeleccionados.filter(id => id !== servicio.id_servicio)
+                                );
+                              }
+                            }}
+                          />
+                          <label htmlFor={`servicio-${servicio.id_servicio}`}>
+                            {servicio.nombre_servicio}
+                          </label>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="no-servicios">No hay servicios disponibles</div>
+                  )}
+                </div>
               </div>
               
               <div className="form-actions">
@@ -565,7 +653,7 @@ function ProfesionalesAdmin() {
           </button>
         </div>
         
-        <div className="filter-container">
+        <div className="profesionales-filter-container">
           <select 
             value={especialidadFiltro}
             onChange={(e) => setEspecialidadFiltro(e.target.value)}
