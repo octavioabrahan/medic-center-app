@@ -11,12 +11,15 @@ function ProfesionalesAdmin() {
   const [error, setError] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [filteredProfesionales, setFilteredProfesionales] = useState([]);
-  const [ordenAscendente, setOrdenAscendente] = useState(true);
+  const [especialidadFiltro, setEspecialidadFiltro] = useState('');
+  const [ordenamiento, setOrdenamiento] = useState('reciente'); // 'reciente', 'antiguo', 'az', 'za'
 
   // Estados para modales
   const [showAddEspecialidadModal, setShowAddEspecialidadModal] = useState(false);
   const [showAddProfesionalModal, setShowAddProfesionalModal] = useState(false);
+  const [showEditProfesionalModal, setShowEditProfesionalModal] = useState(false);
   const [nuevaEspecialidad, setNuevaEspecialidad] = useState({ nombre: '' });
+  const [currentProfesional, setCurrentProfesional] = useState(null);
 
   // Estado para el nuevo profesional
   const [nuevoProfesional, setNuevoProfesional] = useState({
@@ -53,16 +56,53 @@ function ProfesionalesAdmin() {
     fetchData();
   }, []);
 
-  // Filtrar profesionales cuando cambia el término de búsqueda
+  // Aplicar filtros y ordenamiento a la lista de profesionales
   useEffect(() => {
     if (profesionales.length > 0) {
-      const results = profesionales.filter(profesional =>
-        `${profesional.nombre} ${profesional.apellido}`.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        profesional.cedula?.toLowerCase().includes(searchTerm.toLowerCase())
-      );
+      let results = [...profesionales];
+      
+      // Filtrar por término de búsqueda
+      if (searchTerm) {
+        results = results.filter(profesional =>
+          `${profesional.nombre} ${profesional.apellido}`.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          profesional.cedula?.toLowerCase().includes(searchTerm.toLowerCase())
+        );
+      }
+      
+      // Filtrar por especialidad
+      if (especialidadFiltro) {
+        results = results.filter(
+          profesional => profesional.nombre_especialidad === especialidadFiltro
+        );
+      }
+      
+      // Aplicar ordenamiento
+      switch (ordenamiento) {
+        case 'reciente':
+          // Asumiendo que hay una propiedad de fecha de creación o ID incremental
+          // Si no hay fecha de creación, mantenemos el orden actual
+          break;
+        case 'antiguo':
+          // Invertimos el orden de "reciente"
+          results = [...results].reverse();
+          break;
+        case 'az':
+          results = [...results].sort((a, b) => 
+            `${a.nombre} ${a.apellido}`.localeCompare(`${b.nombre} ${b.apellido}`)
+          );
+          break;
+        case 'za':
+          results = [...results].sort((a, b) => 
+            `${b.nombre} ${b.apellido}`.localeCompare(`${a.nombre} ${a.apellido}`)
+          );
+          break;
+        default:
+          break;
+      }
+      
       setFilteredProfesionales(results);
     }
-  }, [searchTerm, profesionales]);
+  }, [searchTerm, profesionales, especialidadFiltro, ordenamiento]);
 
   // Crear nueva especialidad
   const handleCreateEspecialidad = async (e) => {
@@ -123,6 +163,15 @@ function ProfesionalesAdmin() {
         especialidad_id: '',
         servicios: []
       });
+
+      // Mostrar mensaje de éxito
+      const messageElement = document.querySelector('.profesional-agregado-message');
+      if (messageElement) {
+        messageElement.style.display = 'block';
+        setTimeout(() => {
+          messageElement.style.display = 'none';
+        }, 3000);
+      }
       
     } catch (err) {
       console.error('Error al crear profesional:', err);
@@ -130,10 +179,46 @@ function ProfesionalesAdmin() {
     }
   };
 
-  // Función para cambiar el orden de la lista
-  const toggleOrden = () => {
-    setOrdenAscendente(!ordenAscendente);
-    setFilteredProfesionales([...filteredProfesionales].reverse());
+  // Editar profesional
+  const handleEditProfesional = (profesional) => {
+    setCurrentProfesional(profesional);
+    setShowEditProfesionalModal(true);
+  };
+
+  // Guardar edición de profesional
+  const handleUpdateProfesional = async (e) => {
+    e.preventDefault();
+    
+    if (!currentProfesional.nombre || 
+        !currentProfesional.apellido || 
+        !currentProfesional.especialidad_id) {
+      alert('Los campos Nombre, Apellido y Especialidad son obligatorios');
+      return;
+    }
+
+    try {
+      // Implementar lógica de actualización aquí usando el ID del profesional
+      await axios.put(`/api/profesionales/${currentProfesional.profesional_id}`, {
+        nombre: currentProfesional.nombre,
+        apellido: currentProfesional.apellido,
+        especialidad_id: currentProfesional.especialidad_id,
+        telefono: currentProfesional.telefono,
+        correo: currentProfesional.correo
+      });
+
+      // Actualizar la lista de profesionales
+      const updatedProfesionales = await axios.get('/api/profesionales');
+      setProfesionales(updatedProfesionales.data);
+      setFilteredProfesionales(updatedProfesionales.data);
+      
+      // Cerrar modal
+      setShowEditProfesionalModal(false);
+      setCurrentProfesional(null);
+      
+    } catch (err) {
+      console.error('Error al actualizar profesional:', err);
+      alert('Error al actualizar el profesional. Por favor, intenta de nuevo.');
+    }
   };
 
   // Modal para añadir especialidad
@@ -255,7 +340,6 @@ function ProfesionalesAdmin() {
               <div className="form-group servicio-group">
                 <label>Servicio</label>
                 <div className="checkbox-group">
-                  {/* Aquí puedes agregar checkboxes para servicios si los tienes disponibles */}
                   <div className="checkbox-item">
                     <input 
                       type="checkbox"
@@ -320,6 +404,100 @@ function ProfesionalesAdmin() {
     );
   };
 
+  // Modal para editar profesional
+  const renderEditProfesionalModal = () => {
+    if (!showEditProfesionalModal || !currentProfesional) return null;
+
+    return (
+      <div className="modal-overlay">
+        <div className="modal-content">
+          <div className="modal-header">
+            <h2>Editar profesional</h2>
+            <button className="close-btn" onClick={() => setShowEditProfesionalModal(false)}>×</button>
+          </div>
+          <div className="modal-body">
+            <form onSubmit={handleUpdateProfesional}>
+              <div className="form-group">
+                <label htmlFor="edit-cedula">Cédula</label>
+                <input
+                  id="edit-cedula"
+                  type="text"
+                  value={currentProfesional.cedula || ''}
+                  onChange={(e) => setCurrentProfesional({...currentProfesional, cedula: e.target.value})}
+                  disabled
+                />
+                <small className="form-text text-muted">La cédula no se puede modificar.</small>
+              </div>
+              <div className="form-group">
+                <label htmlFor="edit-nombre">Nombre</label>
+                <input
+                  id="edit-nombre"
+                  type="text"
+                  value={currentProfesional.nombre || ''}
+                  onChange={(e) => setCurrentProfesional({...currentProfesional, nombre: e.target.value})}
+                  required
+                />
+              </div>
+              <div className="form-group">
+                <label htmlFor="edit-apellido">Apellido</label>
+                <input
+                  id="edit-apellido"
+                  type="text"
+                  value={currentProfesional.apellido || ''}
+                  onChange={(e) => setCurrentProfesional({...currentProfesional, apellido: e.target.value})}
+                  required
+                />
+              </div>
+              <div className="form-group">
+                <label htmlFor="edit-telefono">Teléfono</label>
+                <input
+                  id="edit-telefono"
+                  type="text"
+                  value={currentProfesional.telefono || ''}
+                  onChange={(e) => setCurrentProfesional({...currentProfesional, telefono: e.target.value})}
+                />
+              </div>
+              <div className="form-group">
+                <label htmlFor="edit-correo">Correo electrónico</label>
+                <input
+                  id="edit-correo"
+                  type="email"
+                  value={currentProfesional.correo || ''}
+                  onChange={(e) => setCurrentProfesional({...currentProfesional, correo: e.target.value})}
+                />
+              </div>
+              <div className="form-group">
+                <label htmlFor="edit-especialidad">Especialidad</label>
+                <select
+                  id="edit-especialidad"
+                  value={currentProfesional.especialidad_id || ''}
+                  onChange={(e) => setCurrentProfesional({...currentProfesional, especialidad_id: e.target.value})}
+                  required
+                >
+                  <option value="">Selecciona una especialidad</option>
+                  {especialidades.map((esp) => (
+                    <option key={esp.especialidad_id} value={esp.especialidad_id}>
+                      {esp.nombre}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              
+              <div className="form-actions">
+                <button type="button" className="btn-cancelar" onClick={() => setShowEditProfesionalModal(false)}>
+                  Cancelar
+                </button>
+                <button type="submit" className="btn-guardar">
+                  Guardar cambios
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
   // Renderizar tabla de profesionales
   const renderProfesionalesTable = () => {
     if (loading) return <div className="loading">Cargando profesionales...</div>;
@@ -334,7 +512,6 @@ function ProfesionalesAdmin() {
               <th>Cédula</th>
               <th>Profesional</th>
               <th>Especialidad</th>
-              <th>Categoría</th>
               <th>Acciones</th>
             </tr>
           </thead>
@@ -344,9 +521,12 @@ function ProfesionalesAdmin() {
                 <td>{profesional.cedula}</td>
                 <td>{profesional.nombre} {profesional.apellido}</td>
                 <td>{profesional.nombre_especialidad}</td>
-                <td>{profesional.categorias?.join(', ') || 'Consulta, Estudio'}</td>
                 <td className="actions-cell">
-                  <button className="btn-action btn-edit" title="Editar profesional">
+                  <button 
+                    className="btn-action btn-edit" 
+                    title="Editar profesional"
+                    onClick={() => handleEditProfesional(profesional)}
+                  >
                     ✏️
                   </button>
                   <Link 
@@ -376,19 +556,54 @@ function ProfesionalesAdmin() {
         <div className="search-container">
           <input
             type="text"
-            placeholder="Buscar por nombre o cédula..."
+            placeholder="Buscar por nombre"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
+          <button className="search-button">
+            <i className="search-icon">🔍</i>
+          </button>
         </div>
         
-        <div className="order-container">
-          <button 
-            className="order-btn"
-            onClick={toggleOrden}
-            title={ordenAscendente ? "Ordenar Z-A" : "Ordenar A-Z"}
+        <div className="filter-container">
+          <select 
+            value={especialidadFiltro}
+            onChange={(e) => setEspecialidadFiltro(e.target.value)}
+            className="especialidad-filter"
           >
-            {ordenAscendente ? "A → Z" : "Z → A"}
+            <option value="">Todas las especialidades</option>
+            {especialidades.map(esp => (
+              <option key={esp.especialidad_id} value={esp.nombre}>
+                {esp.nombre}
+              </option>
+            ))}
+          </select>
+        </div>
+        
+        <div className="sort-container">
+          <button 
+            className={`sort-btn ${ordenamiento === 'reciente' ? 'active' : ''}`}
+            onClick={() => setOrdenamiento('reciente')}
+          >
+            Más reciente
+          </button>
+          <button 
+            className={`sort-btn ${ordenamiento === 'antiguo' ? 'active' : ''}`}
+            onClick={() => setOrdenamiento('antiguo')}
+          >
+            Más antiguo
+          </button>
+          <button 
+            className={`sort-btn icon-btn ${ordenamiento === 'az' ? 'active' : ''}`}
+            onClick={() => setOrdenamiento('az')}
+          >
+            <span className="check-icon">✓</span> A → Z
+          </button>
+          <button 
+            className={`sort-btn icon-btn ${ordenamiento === 'za' ? 'active' : ''}`}
+            onClick={() => setOrdenamiento('za')}
+          >
+            Z → A
           </button>
         </div>
         
@@ -413,6 +628,7 @@ function ProfesionalesAdmin() {
       {renderProfesionalesTable()}
       {renderAddEspecialidadModal()}
       {renderAddProfesionalModal()}
+      {renderEditProfesionalModal()}
       
       <div className="profesional-agregado-message" style={{display: 'none'}}>
         <div className="message-content">
