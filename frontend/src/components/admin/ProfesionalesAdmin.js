@@ -12,7 +12,6 @@ function ProfesionalesAdmin() {
   const [filteredProfesionales, setFilteredProfesionales] = useState([]);
   const [especialidadFiltro, setEspecialidadFiltro] = useState('');
   const [ordenamiento, setOrdenamiento] = useState('reciente'); // 'reciente', 'antiguo', 'az', 'za'
-  const [mostrarInactivos, setMostrarInactivos] = useState(false);
 
   // Estados para modales
   const [showAddEspecialidadModal, setShowAddEspecialidadModal] = useState(false);
@@ -43,7 +42,8 @@ function ProfesionalesAdmin() {
       setLoading(true);
       try {
         const [profesionalesRes, especialidadesRes] = await Promise.all([
-          axios.get(`/api/profesionales?soloActivos=${!mostrarInactivos}`),
+          // Siempre obtenemos todos los profesionales (activos e inactivos)
+          axios.get(`/api/profesionales?soloActivos=false`),
           axios.get('/api/especialidades')
         ]);
         
@@ -59,7 +59,7 @@ function ProfesionalesAdmin() {
     };
 
     fetchData();
-  }, [mostrarInactivos]);
+  }, []);
 
   // Aplicar filtros y ordenamiento a la lista de profesionales
   useEffect(() => {
@@ -146,8 +146,8 @@ function ProfesionalesAdmin() {
     try {
       await axios.put(`/api/profesionales/estado/${profesionalId}`, { activo });
       
-      // Actualizar la lista de profesionales
-      const response = await axios.get(`/api/profesionales?soloActivos=${!mostrarInactivos}`);
+      // Actualizar la lista de profesionales (siempre mostrando todos)
+      const response = await axios.get(`/api/profesionales?soloActivos=false`);
       setProfesionales(response.data);
       setFilteredProfesionales(response.data);
       
@@ -218,8 +218,8 @@ function ProfesionalesAdmin() {
         correo: nuevoProfesional.correo
       });
 
-      // Actualizar la lista de profesionales
-      const updatedProfesionales = await axios.get(`/api/profesionales?soloActivos=${!mostrarInactivos}`);
+      // Actualizar la lista de profesionales (siempre mostrando todos)
+      const updatedProfesionales = await axios.get(`/api/profesionales?soloActivos=false`);
       setProfesionales(updatedProfesionales.data);
       setFilteredProfesionales(updatedProfesionales.data);
       
@@ -283,8 +283,8 @@ function ProfesionalesAdmin() {
         servicios: serviciosSeleccionados
       });
 
-      // Actualizar la lista de profesionales
-      const updatedProfesionales = await axios.get(`/api/profesionales?soloActivos=${!mostrarInactivos}`);
+      // Actualizar la lista de profesionales (siempre mostrando todos)
+      const updatedProfesionales = await axios.get(`/api/profesionales?soloActivos=false`);
       setProfesionales(updatedProfesionales.data);
       setFilteredProfesionales(updatedProfesionales.data);
       
@@ -779,17 +779,6 @@ function ProfesionalesAdmin() {
             ))}
           </select>
         </div>
-
-        <div className="ver-inactivos-container">
-          <label className="ver-inactivos-label">
-            <input 
-              type="checkbox"
-              checked={mostrarInactivos}
-              onChange={() => setMostrarInactivos(!mostrarInactivos)}
-            />
-            Mostrar profesionales archivados
-          </label>
-        </div>
         
         <div className="profesionales-sort-container">
           <button 
@@ -805,13 +794,13 @@ function ProfesionalesAdmin() {
             Más antiguo
           </button>
           <button 
-            className={`profesionales-sort-btn icon-btn ${ordenamiento === 'az' ? 'active' : ''}`}
+            className={`profesionales-sort-btn ${ordenamiento === 'az' ? 'active' : ''}`}
             onClick={() => setOrdenamiento('az')}
           >
-            <span className="check-icon">✓</span> A → Z
+            A → Z
           </button>
           <button 
-            className={`profesionales-sort-btn icon-btn ${ordenamiento === 'za' ? 'active' : ''}`}
+            className={`profesionales-sort-btn ${ordenamiento === 'za' ? 'active' : ''}`}
             onClick={() => setOrdenamiento('za')}
           >
             Z → A

@@ -1,12 +1,12 @@
 const db = require('./db');
 
 const ProfesionalesModel = {
-  crear: async ({ cedula, nombre, apellido, especialidad_id }) => {
+  crear: async ({ cedula, nombre, apellido, especialidad_id, telefono, correo }) => {
     const result = await db.query(
-      `INSERT INTO profesionales (profesional_id, cedula, nombre, apellido, especialidad_id, is_active)
-       VALUES (gen_random_uuid(), $1, $2, $3, $4, true)
+      `INSERT INTO profesionales (profesional_id, cedula, nombre, apellido, especialidad_id, telefono, email, is_active)
+       VALUES (gen_random_uuid(), $1, $2, $3, $4, $5, $6, true)
        RETURNING profesional_id`,
-      [cedula, nombre, apellido, especialidad_id]
+      [cedula, nombre, apellido, especialidad_id, telefono, correo]
     );
     return result.rows[0].profesional_id;
   },
