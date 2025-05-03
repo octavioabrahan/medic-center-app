@@ -202,10 +202,6 @@
   color: #3b82f6;
 }
 
-.btn-archive {
-  color: #f59e0b;
-}
-
 /* Modal overlay y contenido */
 .modal-overlay {
   position: fixed;
@@ -277,15 +273,26 @@
   font-size: 14px;
 }
 
-/* Checkbox group */
-.checkbox-group {
+/* Checkbox container para estilos compactos */
+.checkbox-container {
+  margin-bottom: 16px;
+}
+
+.compact-checkbox {
   display: flex;
   align-items: center;
   gap: 8px;
+  width: fit-content;
 }
 
-.checkbox-group label {
-  margin-bottom: 0;
+.compact-checkbox input[type="checkbox"] {
+  margin: 0;
+}
+
+.compact-checkbox label {
+  margin: 0;
+  font-size: 14px;
+  color: #4b5563;
   cursor: pointer;
 }
 
@@ -344,6 +351,7 @@
 }
 
 .btn-archive {
+  margin-right: auto;  /* Empuja este botón al lado izquierdo */
   background-color: #f59e0b;
   color: white;
 }

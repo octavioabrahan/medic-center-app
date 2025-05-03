@@ -98,10 +98,11 @@ const ServiciosPage = () => {
     setShowModal(true);
   };
 
-  // Confirmar archivado de servicio
-  const handleConfirmarArchivar = (servicio) => {
-    setCurrentServicio(servicio);
-    setShowConfirmArchivarModal(true);
+  // Confirmar archivado de servicio desde el modal de edición
+  const handleConfirmarArchivar = () => {
+    if (!currentServicio) return;
+    setShowModal(false);  // Cerrar modal de edición
+    setShowConfirmArchivarModal(true);  // Abrir modal de confirmación
   };
 
   // Guardar servicio (crear nuevo o actualizar existente)
@@ -217,15 +218,6 @@ const ServiciosPage = () => {
                   >
                     ✏️
                   </button>
-                  {servicio.is_active && (
-                    <button
-                      className="btn-action btn-archive"
-                      onClick={() => handleConfirmarArchivar(servicio)}
-                      title="Archivar"
-                    >
-                      📁
-                    </button>
-                  )}
                 </td>
               </tr>
             ))}
@@ -239,11 +231,14 @@ const ServiciosPage = () => {
   const renderModal = () => {
     if (!showModal) return null;
 
+    const isEditing = currentServicio !== null;
+    const isActive = isEditing && currentServicio.is_active;
+
     return (
       <div className="modal-overlay">
         <div className="modal-content servicio-modal">
           <div className="modal-header">
-            <h2>{currentServicio ? "Editar servicio" : "Agregar servicio"}</h2>
+            <h2>{isEditing ? "Editar servicio" : "Agregar servicio"}</h2>
             <button className="close-btn" onClick={() => setShowModal(false)}>×</button>
           </div>
           <div className="modal-body">
@@ -273,20 +268,31 @@ const ServiciosPage = () => {
                 />
               </div>
               
-              <div className="form-group checkbox-group">
-                <input
-                  type="checkbox"
-                  id="is_recomended"
-                  name="is_recomended"
-                  checked={nuevoServicio.is_recomended}
-                  onChange={handleChange}
-                />
-                <label htmlFor="is_recomended">
-                  Recomendado para la primera consulta
-                </label>
+              <div className="form-group checkbox-container">
+                <div className="compact-checkbox">
+                  <input
+                    type="checkbox"
+                    id="is_recomended"
+                    name="is_recomended"
+                    checked={nuevoServicio.is_recomended}
+                    onChange={handleChange}
+                  />
+                  <label htmlFor="is_recomended">
+                    Recomendado para la primera consulta
+                  </label>
+                </div>
               </div>
               
               <div className="action-buttons">
+                {isEditing && isActive && (
+                  <button
+                    type="button"
+                    className="btn-archive"
+                    onClick={handleConfirmarArchivar}
+                  >
+                    Archivar
+                  </button>
+                )}
                 <button 
                   type="button" 
                   className="btn-secondary"
