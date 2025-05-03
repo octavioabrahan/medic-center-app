@@ -30,8 +30,8 @@ const AdminSidebar = () => {
           Profesionales
         </NavLink>
         
-        <NavLink to="/admin/categorias-servicios" className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}>
-          Categorías y servicios
+        <NavLink to="/admin/servicios" className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}>
+          Servicios
         </NavLink>
         
         <div className="nav-section-title">Cotizador</div>
