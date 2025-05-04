@@ -4,7 +4,7 @@ const ServiciosController = {
   listar: async (req, res) => {
     try {
       const result = await db.query(
-        "SELECT id_servicio, nombre_servicio, price_usd, is_recomended, is_active FROM servicio ORDER BY nombre_servicio"
+        "SELECT id_servicio, nombre_servicio, price_usd, is_recommended, is_active FROM servicio ORDER BY nombre_servicio"
       );
       res.json(result.rows);
     } catch (err) {
@@ -17,7 +17,7 @@ const ServiciosController = {
     const { id } = req.params;
     try {
       const result = await db.query(
-        "SELECT id_servicio, nombre_servicio, price_usd, is_recomended, is_active FROM servicio WHERE id_servicio = $1",
+        "SELECT id_servicio, nombre_servicio, price_usd, is_recommended, is_active FROM servicio WHERE id_servicio = $1",
         [id]
       );
       
@@ -33,12 +33,12 @@ const ServiciosController = {
   },
 
   crear: async (req, res) => {
-    const { nombre_servicio, price_usd, recomendado_primera_consulta } = req.body;
+    const { nombre_servicio, price_usd, is_recommended } = req.body;
     
     try {
       const result = await db.query(
-        "INSERT INTO servicio (nombre_servicio, price_usd, is_recomended, is_active) VALUES ($1, $2, $3, true) RETURNING *",
-        [nombre_servicio, price_usd, recomendado_primera_consulta || false]
+        "INSERT INTO servicio (nombre_servicio, price_usd, is_recommended, is_active) VALUES ($1, $2, $3, true) RETURNING *",
+        [nombre_servicio, price_usd, is_recommended || false]
       );
       
       res.status(201).json(result.rows[0]);
@@ -50,7 +50,7 @@ const ServiciosController = {
 
   actualizar: async (req, res) => {
     const { id } = req.params;
-    const { nombre_servicio, price_usd, recomendado_primera_consulta } = req.body;
+    const { nombre_servicio, price_usd, is_recommended } = req.body;
     
     try {
       // Verificar que el servicio exista
@@ -67,10 +67,10 @@ const ServiciosController = {
         `UPDATE servicio 
          SET nombre_servicio = $1, 
              price_usd = $2, 
-             is_recomended = $3
+             is_recommended = $3
          WHERE id_servicio = $4 
          RETURNING *`,
-        [nombre_servicio, price_usd, recomendado_primera_consulta || false, id]
+        [nombre_servicio, price_usd, is_recommended || false, id]
       );
       
       res.json(result.rows[0]);

@@ -22,7 +22,7 @@ const ServiciosPage = () => {
   const [nuevoServicio, setNuevoServicio] = useState({
     nombre_servicio: "",
     price_usd: "",
-    is_recomended: false
+    is_recommended: false
   });
 
   // Cargar servicios al montar el componente
@@ -82,7 +82,7 @@ const ServiciosPage = () => {
     setNuevoServicio({
       nombre_servicio: "",
       price_usd: "",
-      is_recomended: false
+      is_recommended: false
     });
     setShowModal(true);
   };
@@ -93,7 +93,7 @@ const ServiciosPage = () => {
     setNuevoServicio({
       nombre_servicio: servicio.nombre_servicio,
       price_usd: servicio.price_usd,
-      is_recomended: servicio.is_recomended || false
+      is_recommended: servicio.is_recommended || false
     });
     setShowModal(true);
   };
@@ -136,7 +136,7 @@ const ServiciosPage = () => {
       setNuevoServicio({
         nombre_servicio: "",
         price_usd: "",
-        is_recomended: false
+        is_recommended: false
       });
       
     } catch (err) {
@@ -199,7 +199,7 @@ const ServiciosPage = () => {
                 <td>{servicio.nombre_servicio}</td>
                 <td>${parseFloat(servicio.price_usd).toFixed(2)}</td>
                 <td>
-                  {servicio.is_recomended ? (
+                  {servicio.is_recommended ? (
                     <span className="badge recomendado">Sí</span>
                   ) : (
                     <span className="badge no-recomendado">No</span>
@@ -272,12 +272,12 @@ const ServiciosPage = () => {
                 <div className="compact-checkbox">
                   <input
                     type="checkbox"
-                    id="is_recomended"
-                    name="is_recomended"
-                    checked={nuevoServicio.is_recomended}
+                    id="is_recommended"
+                    name="is_recommended"
+                    checked={nuevoServicio.is_recommended}
                     onChange={handleChange}
                   />
-                  <label htmlFor="is_recomended">
+                  <label htmlFor="is_recommended">
                     Recomendado para la primera consulta
                   </label>
                 </div>
