@@ -20,6 +20,7 @@ import AgendamientoEmpresaForm from "./components/public/AgendamientoEmpresaForm
 import AgendamientoIndex from './components/public/AgendamientoIndex';
 import CotizacionesAdmin from './components/admin/CotizacionesAdmin';
 import AdminLayout from './components/admin/AdminLayout';
+import AdminExamenes from './pages/admin/AdminExamenes';
 
 function App() {
   return (
@@ -48,6 +49,7 @@ function App() {
           <Route path="convenios" element={<AdminConvenios />} />
           <Route path="cotizaciones" element={<CotizacionesAdmin />} />
           <Route path="servicios" element={<ServiciosPage />} />
+          <Route path="examenes" element={<AdminExamenes />} />
           {/* Añadir más rutas de administración según sea necesario */}
         </Route>
         
