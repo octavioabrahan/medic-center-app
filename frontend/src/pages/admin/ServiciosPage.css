@@ -229,6 +229,11 @@
   color: #3b82f6;
 }
 
+.btn-activate {
+  color: #10b981;
+  font-size: 16px;
+}
+
 /* Modal overlay y contenido */
 .modal-overlay {
   position: fixed;

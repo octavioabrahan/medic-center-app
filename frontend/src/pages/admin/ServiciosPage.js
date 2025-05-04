@@ -188,6 +188,29 @@ const ServiciosPage = () => {
     }
   };
 
+  // Activar servicio archivado
+  const activarServicio = async (servicio) => {
+    setLoading(true);
+    try {
+      await axios.put(`/api/servicios/${servicio.id_servicio}/desarchivar`);
+      
+      // Actualizar en la lista local
+      setServicios(prev => 
+        prev.map(serv => 
+          serv.id_servicio === servicio.id_servicio 
+            ? {...serv, is_active: true} 
+            : serv
+        )
+      );
+      
+    } catch (err) {
+      console.error('Error:', err);
+      setError('Error al activar el servicio.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   // Función para cambiar el orden alfabético
   const toggleSortOrder = (order) => {
     setSortOrder(order);
@@ -229,13 +252,23 @@ const ServiciosPage = () => {
                   </span>
                 </td>
                 <td className="actions-cell">
-                  <button 
-                    className="btn-action btn-edit" 
-                    onClick={() => handleEditarServicio(servicio)}
-                    title="Editar"
-                  >
-                    ✏️
-                  </button>
+                  {servicio.is_active ? (
+                    <button 
+                      className="btn-action btn-edit" 
+                      onClick={() => handleEditarServicio(servicio)}
+                      title="Editar"
+                    >
+                      ✏️
+                    </button>
+                  ) : (
+                    <button 
+                      className="btn-action btn-activate" 
+                      onClick={() => activarServicio(servicio)}
+                      title="Activar servicio"
+                    >
+                      ↩️
+                    </button>
+                  )}
                 </td>
               </tr>
             ))}
