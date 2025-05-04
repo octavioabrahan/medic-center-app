@@ -15,6 +15,7 @@ import ProfesionalAsignarServicios from './pages/admin/ProfesionalAsignarServici
 import AdminCitas from './pages/admin/AdminCitas';
 import ServiciosPage from './pages/admin/ServiciosPage';
 import AdminEmpresas from "./pages/admin/AdminEmpresas";
+import AdminConvenios from "./pages/admin/AdminConvenios";
 import AgendamientoEmpresaForm from "./components/public/AgendamientoEmpresaForm";
 import AgendamientoIndex from './components/public/AgendamientoIndex';
 import CotizacionesAdmin from './components/admin/CotizacionesAdmin';
@@ -44,6 +45,7 @@ function App() {
           <Route path="excepciones" element={<ExcepcionesPage />} />
           <Route path="citas" element={<AdminCitas />} />
           <Route path="empresas" element={<AdminEmpresas />} />
+          <Route path="convenios" element={<AdminConvenios />} />
           <Route path="cotizaciones" element={<CotizacionesAdmin />} />
           <Route path="servicios" element={<ServiciosPage />} />
           {/* Añadir más rutas de administración según sea necesario */}
