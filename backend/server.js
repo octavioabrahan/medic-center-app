@@ -1,5 +1,6 @@
 const express = require('express');
 const cors = require('cors');
+const path = require('path');
 const app = express();
 const port = 3001;
 
@@ -34,6 +35,10 @@ const ArchivoAdjunto = require('./models/archivoAdjunto');
 // Middleware
 app.use(cors());
 app.use(express.json());
+
+// Servir archivos estáticos
+const logosFolderPath = path.join(__dirname, '..', 'frontend', 'src', 'components', 'logos_empresas');
+app.use('/components/logos_empresas', express.static(logosFolderPath));
 
 //app.use('/api/exams', examRoutes);
 //app.use('/api/appointments', appointmentRoutes);

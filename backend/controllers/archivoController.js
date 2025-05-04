@@ -4,18 +4,24 @@ const multer = require('multer');
 const { v4: uuidv4 } = require('uuid');
 const ArchivoAdjunto = require('../models/archivoAdjunto');
 
-// Configuración del directorio de uploads
+// Configuración de los directorios de uploads
 const UPLOAD_DIR = path.join(__dirname, '..', 'uploads', 'agendamientos');
+const LOGOS_DIR = path.join(__dirname, '..', '..', 'frontend', 'src', 'components', 'logos_empresas');
 
-// Asegurar que el directorio existe
+// Asegurar que los directorios existen
 if (!fs.existsSync(UPLOAD_DIR)) {
   fs.mkdirSync(UPLOAD_DIR, { recursive: true });
+}
+if (!fs.existsSync(LOGOS_DIR)) {
+  fs.mkdirSync(LOGOS_DIR, { recursive: true });
 }
 
 // Configuración de Multer para el almacenamiento
 const storage = multer.diskStorage({
   destination: function(req, file, cb) {
-    cb(null, UPLOAD_DIR);
+    // Determinar si es un logo o un adjunto normal
+    const isLogo = req.query.tipo === 'logo';
+    cb(null, isLogo ? LOGOS_DIR : UPLOAD_DIR);
   },
   filename: function(req, file, cb) {
     const fileExtension = path.extname(file.originalname);
@@ -26,13 +32,24 @@ const storage = multer.diskStorage({
 
 // Filtro para tipos de archivos permitidos
 const fileFilter = (req, file, cb) => {
-  // Aceptar PDF, JPG/JPEG, PNG, GIF, SVG para los logos
-  const allowedTypes = ['application/pdf', 'image/jpeg', 'image/png', 'image/gif', 'image/svg+xml'];
+  const isLogo = req.query.tipo === 'logo';
   
-  if (allowedTypes.includes(file.mimetype)) {
-    cb(null, true);
+  if (isLogo) {
+    // Filtros más estrictos para logos
+    const allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/svg+xml'];
+    if (allowedTypes.includes(file.mimetype)) {
+      cb(null, true);
+    } else {
+      cb(new Error('Tipo de archivo no permitido para logos. Solo se aceptan JPG, PNG, GIF y SVG.'), false);
+    }
   } else {
-    cb(new Error('Tipo de archivo no permitido. Solo se aceptan PDF, JPG, PNG, GIF y SVG.'), false);
+    // Para otros tipos de archivos adjuntos
+    const allowedTypes = ['application/pdf', 'image/jpeg', 'image/png', 'image/gif', 'image/svg+xml'];
+    if (allowedTypes.includes(file.mimetype)) {
+      cb(null, true);
+    } else {
+      cb(new Error('Tipo de archivo no permitido. Solo se aceptan PDF, JPG, PNG, GIF y SVG.'), false);
+    }
   }
 };
 
@@ -52,27 +69,48 @@ const subirArchivo = async (req, res) => {
       return res.status(400).json({ error: 'No se proporcionó ningún archivo' });
     }
 
-    // Crear registro en la base de datos
-    const archivoInfo = await ArchivoAdjunto.crearArchivo(
-      req.file.originalname,
-      req.file.path,
-      req.file.mimetype,
-      req.file.size,
-      30 // días de expiración
-    );
+    // Determinar si es un logo o un adjunto normal
+    const isLogo = req.query.tipo === 'logo';
 
-    // Generar la URL para acceder al archivo
-    const baseUrl = `${req.protocol}://${req.get('host')}`;
-    const fileUrl = `${baseUrl}/api/archivos/${archivoInfo.id}`;
+    if (isLogo) {
+      // Para logos, simplemente devolver la ruta relativa
+      const fileName = path.basename(req.file.path);
+      const logoPath = `/components/logos_empresas/${fileName}`;
+      
+      res.status(201).json({
+        message: 'Logo subido exitosamente',
+        archivo: {
+          id: null, // No necesitamos ID para los logos
+          url: logoPath,
+          nombre_original: req.file.originalname,
+          tipo_archivo: req.file.mimetype,
+          tamaño: req.file.size
+        }
+      });
+    } else {
+      // Para archivos normales, manejar como antes
+      // Crear registro en la base de datos
+      const archivoInfo = await ArchivoAdjunto.crearArchivo(
+        req.file.originalname,
+        req.file.path,
+        req.file.mimetype,
+        req.file.size,
+        30 // días de expiración
+      );
 
-    // Incluir la URL en la respuesta
-    res.status(201).json({
-      message: 'Archivo subido exitosamente',
-      archivo: {
-        ...archivoInfo,
-        url: fileUrl
-      }
-    });
+      // Generar la URL para acceder al archivo
+      const baseUrl = `${req.protocol}://${req.get('host')}`;
+      const fileUrl = `${baseUrl}/api/archivos/${archivoInfo.id}`;
+
+      // Incluir la URL en la respuesta
+      res.status(201).json({
+        message: 'Archivo subido exitosamente',
+        archivo: {
+          ...archivoInfo,
+          url: fileUrl
+        }
+      });
+    }
   } catch (error) {
     console.error('Error al subir archivo:', error);
     

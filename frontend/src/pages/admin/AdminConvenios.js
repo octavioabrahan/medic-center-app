@@ -71,8 +71,9 @@ const LogoUploader = ({ onLogoUploaded, initialLogo }) => {
     formData.append('archivo', selectedFile);
 
     try {
-      console.log('Iniciando carga de archivo...');
-      const response = await axios.post('/api/archivos/upload', formData, {
+      console.log('Iniciando carga de logo...');
+      // Añadir parámetro tipo=logo a la URL para indicar que es un logo
+      const response = await axios.post('/api/archivos/upload?tipo=logo', formData, {
         headers: {
           'Content-Type': 'multipart/form-data'
         },
@@ -87,19 +88,19 @@ const LogoUploader = ({ onLogoUploaded, initialLogo }) => {
       console.log('Respuesta del servidor:', response.data);
       
       if (!response.data || !response.data.archivo || !response.data.archivo.url) {
-        throw new Error('Formato de respuesta inválido: No se recibió la URL del archivo');
+        throw new Error('Formato de respuesta inválido: No se recibió la ruta del archivo');
       }
       
-      const fileUrl = response.data.archivo.url;
-      console.log('URL del archivo recibida:', fileUrl);
+      const logoPath = response.data.archivo.url;
+      console.log('Ruta del logo recibida:', logoPath);
       
-      // Notificar al componente padre con la URL del archivo
+      // Notificar al componente padre con la ruta del archivo
       if (onLogoUploaded) {
-        onLogoUploaded(fileUrl);
+        onLogoUploaded(logoPath);
       }
       
-      // Actualizar vista previa con la URL real del servidor
-      setPreviewUrl(fileUrl);
+      // Actualizar vista previa con la ruta real del servidor
+      setPreviewUrl(logoPath);
 
       // Limpiar selección después de la subida exitosa
       setSelectedFile(null);
