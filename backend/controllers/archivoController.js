@@ -26,13 +26,13 @@ const storage = multer.diskStorage({
 
 // Filtro para tipos de archivos permitidos
 const fileFilter = (req, file, cb) => {
-  // Aceptar solo PDF, JPG/JPEG, PNG
-  const allowedTypes = ['application/pdf', 'image/jpeg', 'image/png'];
+  // Aceptar PDF, JPG/JPEG, PNG, GIF, SVG para los logos
+  const allowedTypes = ['application/pdf', 'image/jpeg', 'image/png', 'image/gif', 'image/svg+xml'];
   
   if (allowedTypes.includes(file.mimetype)) {
     cb(null, true);
   } else {
-    cb(new Error('Tipo de archivo no permitido. Solo se aceptan PDF, JPG y PNG.'), false);
+    cb(new Error('Tipo de archivo no permitido. Solo se aceptan PDF, JPG, PNG, GIF y SVG.'), false);
   }
 };
 
@@ -61,9 +61,17 @@ const subirArchivo = async (req, res) => {
       30 // días de expiración
     );
 
+    // Generar la URL para acceder al archivo
+    const baseUrl = `${req.protocol}://${req.get('host')}`;
+    const fileUrl = `${baseUrl}/api/archivos/${archivoInfo.id}`;
+
+    // Incluir la URL en la respuesta
     res.status(201).json({
       message: 'Archivo subido exitosamente',
-      archivo: archivoInfo
+      archivo: {
+        ...archivoInfo,
+        url: fileUrl
+      }
     });
   } catch (error) {
     console.error('Error al subir archivo:', error);

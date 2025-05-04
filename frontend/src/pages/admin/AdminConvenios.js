@@ -15,6 +15,13 @@ const LogoUploader = ({ onLogoUploaded, initialLogo }) => {
   const ALLOWED_FILE_TYPES = ['image/jpeg', 'image/png', 'image/gif', 'image/svg+xml'];
   const ALLOWED_FILE_EXTENSIONS = ['.jpg', '.jpeg', '.png', '.gif', '.svg'];
 
+  // Efecto para manejar la URL inicial cuando se recibe
+  useEffect(() => {
+    if (initialLogo) {
+      setPreviewUrl(initialLogo);
+    }
+  }, [initialLogo]);
+
   const handleFileChange = (event) => {
     const file = event.target.files[0];
     setError('');
@@ -64,6 +71,7 @@ const LogoUploader = ({ onLogoUploaded, initialLogo }) => {
     formData.append('archivo', selectedFile);
 
     try {
+      console.log('Iniciando carga de archivo...');
       const response = await axios.post('/api/archivos/upload', formData, {
         headers: {
           'Content-Type': 'multipart/form-data'
@@ -76,24 +84,42 @@ const LogoUploader = ({ onLogoUploaded, initialLogo }) => {
         }
       });
 
-      const { archivo } = response.data;
+      console.log('Respuesta del servidor:', response.data);
       
-      // Notificar al componente padre
-      if (onLogoUploaded) {
-        onLogoUploaded(archivo.url);
+      if (!response.data || !response.data.archivo || !response.data.archivo.url) {
+        throw new Error('Formato de respuesta inválido: No se recibió la URL del archivo');
       }
       
-      // Actualizar vista previa
-      setPreviewUrl(archivo.url);
+      const fileUrl = response.data.archivo.url;
+      console.log('URL del archivo recibida:', fileUrl);
+      
+      // Notificar al componente padre con la URL del archivo
+      if (onLogoUploaded) {
+        onLogoUploaded(fileUrl);
+      }
+      
+      // Actualizar vista previa con la URL real del servidor
+      setPreviewUrl(fileUrl);
 
       // Limpiar selección después de la subida exitosa
       setSelectedFile(null);
       if (fileInputRef.current) {
         fileInputRef.current.value = '';
       }
+      
+      // Mostrar mensaje de éxito temporal
+      setError('');
     } catch (error) {
-      console.error('Error al subir imagen:', error);
-      setError(error.response?.data?.error || 'Error al subir la imagen. Inténtalo de nuevo.');
+      console.error('Error detallado al subir imagen:', error);
+      let errorMessage = 'Error al subir la imagen. Inténtalo de nuevo.';
+      
+      if (error.response) {
+        console.error('Respuesta del servidor:', error.response.data);
+        errorMessage = error.response.data?.error || errorMessage;
+      }
+      
+      setError(errorMessage);
+      setPreviewUrl(''); // Limpiar la vista previa en caso de error
     } finally {
       setLoading(false);
     }
