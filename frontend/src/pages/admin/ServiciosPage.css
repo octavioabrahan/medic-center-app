@@ -53,6 +53,33 @@
   font-size: 14px;
 }
 
+/* Filtros de ordenamiento */
+.sort-filters {
+  display: flex;
+  gap: 8px;
+}
+
+.sort-btn {
+  padding: 6px 12px;
+  border: 1px solid #e2e8f0;
+  border-radius: 20px;
+  font-size: 13px;
+  background-color: white;
+  color: #4b5563;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.sort-btn:hover {
+  background-color: #f9fafb;
+}
+
+.sort-btn.active {
+  background-color: #0d47a1;
+  color: white;
+  border-color: #0d47a1;
+}
+
 /* Checkbox para mostrar archivados */
 .filter-checkbox {
   display: flex;
@@ -412,6 +439,12 @@
   
   .servicios-search {
     width: 100%;
+  }
+  
+  .sort-filters {
+    order: 1;
+    align-self: center;
+    margin-bottom: 8px;
   }
   
   .filter-checkbox {

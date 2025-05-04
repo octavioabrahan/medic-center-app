@@ -12,6 +12,7 @@ const ServiciosPage = () => {
   // Estado para filtros
   const [searchTerm, setSearchTerm] = useState("");
   const [mostrarArchivados, setMostrarArchivados] = useState(false);
+  const [sortOrder, setSortOrder] = useState("asc"); // 'asc' o 'desc' para ordenar alfabéticamente
 
   // Estados para modales
   const [showModal, setShowModal] = useState(false);
@@ -30,7 +31,7 @@ const ServiciosPage = () => {
     fetchServicios();
   }, []);
 
-  // Filtrar servicios cuando cambia el término de búsqueda o el filtro de archivados
+  // Filtrar y ordenar servicios cuando cambian los criterios
   useEffect(() => {
     if (servicios.length > 0) {
       let results = [...servicios];
@@ -48,9 +49,21 @@ const ServiciosPage = () => {
         results = results.filter(servicio => servicio.is_active);
       }
       
+      // Ordenar alfabéticamente
+      results.sort((a, b) => {
+        const nameA = a.nombre_servicio.toLowerCase();
+        const nameB = b.nombre_servicio.toLowerCase();
+        
+        if (sortOrder === "asc") {
+          return nameA.localeCompare(nameB);
+        } else {
+          return nameB.localeCompare(nameA);
+        }
+      });
+      
       setFilteredServicios(results);
     }
-  }, [searchTerm, mostrarArchivados, servicios]);
+  }, [searchTerm, mostrarArchivados, servicios, sortOrder]);
 
   // Obtener servicios desde la API
   const fetchServicios = async () => {
@@ -173,6 +186,11 @@ const ServiciosPage = () => {
     } finally {
       setLoading(false);
     }
+  };
+
+  // Función para cambiar el orden alfabético
+  const toggleSortOrder = (order) => {
+    setSortOrder(order);
   };
 
   // Renderizar tabla de servicios
@@ -383,6 +401,23 @@ const ServiciosPage = () => {
           <span className="search-icon">🔍</span>
         </div>
         
+        <div className="sort-filters">
+          <button 
+            className={`sort-btn ${sortOrder === "asc" ? "active" : ""}`}
+            onClick={() => toggleSortOrder("asc")}
+            title="Ordenar de A a Z"
+          >
+            A → Z
+          </button>
+          <button 
+            className={`sort-btn ${sortOrder === "desc" ? "active" : ""}`}
+            onClick={() => toggleSortOrder("desc")}
+            title="Ordenar de Z a A"
+          >
+            Z → A
+          </button>
+        </div>
+
         <div className="filter-checkbox">
           <input
             type="checkbox"
