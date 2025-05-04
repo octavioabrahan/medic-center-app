@@ -12,7 +12,7 @@ const AdminExamenes = () => {
 
   // Estados para filtros
   const [searchTerm, setSearchTerm] = useState("");
-  const [mostrarArchivados, setMostrarArchivados] = useState(false);
+  const [mostrarInactivos, setMostrarInactivos] = useState(false);
 
   // Estados para modales
   const [showAddModal, setShowAddModal] = useState(false);
@@ -30,7 +30,7 @@ const AdminExamenes = () => {
     tiempo_entrega: "",
     informacion: "",
     tipo: "examen",
-    archivado: false
+    is_active: true
   });
 
   // Obtener tasa de cambio
@@ -112,9 +112,9 @@ const AdminExamenes = () => {
       );
     }
 
-    // Filtrar por archivados
-    if (!mostrarArchivados) {
-      results = results.filter(examen => !examen.archivado);
+    // Filtrar por estado activo/inactivo
+    if (!mostrarInactivos) {
+      results = results.filter(examen => examen.is_active);
     }
 
     // Ordenar por nombre
@@ -126,7 +126,7 @@ const AdminExamenes = () => {
   // Reaccionar a cambios en los filtros
   useEffect(() => {
     applyFilters();
-  }, [searchTerm, mostrarArchivados]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [searchTerm, mostrarInactivos]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Manejar cambios en el formulario
   const handleFormChange = (e) => {
@@ -160,7 +160,7 @@ const AdminExamenes = () => {
       tiempo_entrega: "",
       informacion: "",
       tipo: "examen",
-      archivado: false
+      is_active: true
     });
     setShowAddModal(true);
   };
@@ -175,7 +175,7 @@ const AdminExamenes = () => {
       tiempo_entrega: examen.tiempo_entrega || "",
       informacion: examen.informacion || "",
       tipo: examen.tipo || "examen",
-      archivado: examen.archivado || false
+      is_active: examen.is_active
     });
     setShowEditModal(true);
   };
@@ -223,9 +223,9 @@ const AdminExamenes = () => {
     }
   };
 
-  // Cambiar el estado de archivo de un examen
-  const toggleArchivado = async (examen) => {
-    const newStatus = !examen.archivado;
+  // Cambiar el estado activo de un examen
+  const toggleActivo = async (examen) => {
+    const newStatus = !examen.is_active;
     try {
       // Agregar usuario al header para auditoría
       const headers = {
@@ -234,7 +234,7 @@ const AdminExamenes = () => {
       
       const response = await axios.put(`/api/exams/${examen.codigo}`, {
         ...examen,
-        archivado: newStatus
+        is_active: newStatus
       }, { headers });
       
       const updatedExamenes = examenes.map(item => 
@@ -244,7 +244,7 @@ const AdminExamenes = () => {
       applyFilters(updatedExamenes);
     } catch (err) {
       console.error('Error:', err);
-      alert(`Error al ${newStatus ? 'archivar' : 'desarchivar'} el examen`);
+      alert(`Error al ${newStatus ? 'activar' : 'desactivar'} el examen`);
     }
   };
 
@@ -273,8 +273,8 @@ const AdminExamenes = () => {
                 <td>{examen.codigo}</td>
                 <td>
                   {examen.nombre_examen}
-                  {examen.archivado && (
-                    <span className="archivado">Archivado</span>
+                  {!examen.is_active && (
+                    <span className="inactivo">Inactivo</span>
                   )}
                 </td>
                 <td>$ {parseFloat(examen.preciousd).toFixed(2)}</td>
@@ -299,10 +299,10 @@ const AdminExamenes = () => {
                   </button>
                   <button
                     className="btn-action btn-archive"
-                    onClick={() => toggleArchivado(examen)}
-                    title={examen.archivado ? "Desarchivar" : "Archivar"}
+                    onClick={() => toggleActivo(examen)}
+                    title={examen.is_active ? "Desactivar" : "Activar"}
                   >
-                    {examen.archivado ? "🔄" : "📁"}
+                    {examen.is_active ? "📁" : "🔄"}
                   </button>
                 </td>
               </tr>
@@ -525,11 +525,11 @@ const AdminExamenes = () => {
                 <label>
                   <input
                     type="checkbox"
-                    name="archivado"
-                    checked={formData.archivado}
+                    name="is_active"
+                    checked={formData.is_active}
                     onChange={handleFormChange}
                   />
-                  Archivar este examen
+                  Examen activo
                 </label>
               </div>
             </div>
@@ -563,8 +563,8 @@ const AdminExamenes = () => {
               <p><strong>Código:</strong> {currentExamen.codigo}</p>
               <p><strong>Nombre:</strong> {currentExamen.nombre_examen}</p>
               <p><strong>Estado actual:</strong> 
-                <span className={currentExamen.archivado ? "status-archivado" : "status-activo"}>
-                  {currentExamen.archivado ? "Archivado" : "Activo"}
+                <span className={currentExamen.is_active ? "status-activo" : "status-inactivo"}>
+                  {currentExamen.is_active ? "Activo" : "Inactivo"}
                 </span>
               </p>
             </div>
@@ -583,8 +583,8 @@ const AdminExamenes = () => {
                     </div>
                     <div className="timeline-content">
                       <div>
-                        <span className={`change-badge ${cambio.is_active_nuevo ? 'status-activo' : 'status-archivado'}`}>
-                          {cambio.is_active_anterior ? 'Activo' : 'Archivado'} ➔ {cambio.is_active_nuevo ? 'Activo' : 'Archivado'}
+                        <span className={`change-badge ${cambio.is_active_nuevo ? 'status-activo' : 'status-inactivo'}`}>
+                          {cambio.is_active_anterior ? 'Activo' : 'Inactivo'} ➔ {cambio.is_active_nuevo ? 'Activo' : 'Inactivo'}
                         </span>
                       </div>
                       <div className="timeline-footer">
@@ -625,11 +625,11 @@ const AdminExamenes = () => {
         <div className="checkbox-filter">
           <input
             type="checkbox"
-            id="mostrarArchivados"
-            checked={mostrarArchivados}
-            onChange={() => setMostrarArchivados(!mostrarArchivados)}
+            id="mostrarInactivos"
+            checked={mostrarInactivos}
+            onChange={() => setMostrarInactivos(!mostrarInactivos)}
           />
-          <label htmlFor="mostrarArchivados">Mostrar archivados</label>
+          <label htmlFor="mostrarInactivos">Mostrar inactivos</label>
         </div>
         
         <div className="admin-examenes-actions">

@@ -41,6 +41,7 @@ const obtenerPorCodigo = async (req, res) => {
 const crear = async (req, res) => {
   const { codigo, nombre_examen, preciousd, tiempo_entrega, informacion, tipo } = req.body;
   const usuario = req.headers['x-usuario'] || 'sistema'; // Obtener usuario del header o usar 'sistema' por defecto
+  const is_active = req.body.is_active !== undefined ? req.body.is_active : true; // Por defecto los exámenes están activos
   
   if (!codigo || !nombre_examen || !preciousd) {
     return res.status(400).json({ error: 'Código, nombre y precio son obligatorios' });
@@ -53,14 +54,14 @@ const crear = async (req, res) => {
     
     // Insertar el examen
     const result = await client.query(
-      'INSERT INTO examenes (codigo, nombre_examen, preciousd, tiempo_entrega, informacion, tipo) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *',
-      [codigo, nombre_examen, preciousd, tiempo_entrega, informacion, tipo]
+      'INSERT INTO examenes (codigo, nombre_examen, preciousd, tiempo_entrega, informacion, tipo, is_active) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *',
+      [codigo, nombre_examen, preciousd, tiempo_entrega, informacion, tipo, is_active]
     );
     
     // Registrar en el historial
     await client.query(
       'INSERT INTO examen_historial (codigo_examen, is_active_anterior, is_active_nuevo, cambiado_por) VALUES ($1, $2, $3, $4)',
-      [codigo, false, true, usuario]
+      [codigo, false, is_active, usuario]
     );
     
     await client.query('COMMIT');
@@ -82,7 +83,7 @@ const crear = async (req, res) => {
  */
 const actualizar = async (req, res) => {
   const { codigo } = req.params;
-  const { nombre_examen, preciousd, tiempo_entrega, informacion, tipo, archivado } = req.body;
+  const { nombre_examen, preciousd, tiempo_entrega, informacion, tipo, is_active } = req.body;
   const usuario = req.headers['x-usuario'] || 'sistema'; // Obtener usuario del header o usar 'sistema' por defecto
   
   if (!nombre_examen || !preciousd) {
@@ -95,23 +96,23 @@ const actualizar = async (req, res) => {
     await client.query('BEGIN');
     
     // Obtener el estado anterior del examen
-    const prevStateResult = await client.query('SELECT archivado FROM examenes WHERE codigo = $1', [codigo]);
+    const prevStateResult = await client.query('SELECT is_active FROM examenes WHERE codigo = $1', [codigo]);
     
     if (prevStateResult.rows.length === 0) {
       await client.query('ROLLBACK');
       return res.status(404).json({ error: 'Examen no encontrado' });
     }
     
-    const isActiveAnterior = !prevStateResult.rows[0].archivado;
-    const isActiveNuevo = !archivado;
+    const isActiveAnterior = prevStateResult.rows[0].is_active;
+    const isActiveNuevo = is_active !== undefined ? is_active : isActiveAnterior;
     
     // Actualizar el examen
     const result = await client.query(
-      'UPDATE examenes SET nombre_examen = $1, preciousd = $2, tiempo_entrega = $3, informacion = $4, tipo = $5, archivado = $6, updated_at = NOW() WHERE codigo = $7 RETURNING *',
-      [nombre_examen, preciousd, tiempo_entrega, informacion, tipo, archivado, codigo]
+      'UPDATE examenes SET nombre_examen = $1, preciousd = $2, tiempo_entrega = $3, informacion = $4, tipo = $5, is_active = $6, updated_at = NOW() WHERE codigo = $7 RETURNING *',
+      [nombre_examen, preciousd, tiempo_entrega, informacion, tipo, isActiveNuevo, codigo]
     );
     
-    // Registrar en el historial solo si cambió el estado de archivado
+    // Registrar en el historial solo si cambió el estado de is_active
     if (isActiveAnterior !== isActiveNuevo) {
       await client.query(
         'INSERT INTO examen_historial (codigo_examen, is_active_anterior, is_active_nuevo, cambiado_por) VALUES ($1, $2, $3, $4)',
@@ -158,7 +159,7 @@ const eliminar = async (req, res) => {
     // Registrar en el historial
     await client.query(
       'INSERT INTO examen_historial (codigo_examen, is_active_anterior, is_active_nuevo, cambiado_por) VALUES ($1, $2, $3, $4)',
-      [codigo, !examen.archivado, false, usuario]
+      [codigo, examen.is_active, false, usuario]
     );
     
     // Eliminar el examen
