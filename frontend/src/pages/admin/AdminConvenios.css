@@ -47,6 +47,29 @@
   background-color: white;
 }
 
+/* Estilos específicos para el campo RIF */
+.rif-input-group {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.rif-base {
+  flex: 3;
+}
+
+.rif-separator {
+  color: #6b7280;
+  font-weight: 600;
+}
+
+.rif-verificador {
+  flex: 1;
+  max-width: 60px;
+  text-align: center;
+  background-color: #f3f4f6;
+}
+
 .form-text {
   display: block;
   margin-top: 5px;
@@ -92,28 +115,126 @@
   background-color: #1e40af;
 }
 
+/* Botones de ordenamiento */
+.sort-buttons {
+  display: flex;
+  gap: 5px;
+}
+
+.sort-btn {
+  background-color: #f3f4f6;
+  border: 1px solid #e5e7eb;
+  padding: 5px 10px;
+  border-radius: 4px;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.sort-btn:hover {
+  background-color: #e5e7eb;
+}
+
+.sort-btn.active {
+  background-color: #1e3a8a;
+  color: white;
+  border-color: #1e3a8a;
+}
+
 /* Botones de acciones específicos para archivo/activar */
+.btn-action {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  padding: 4px;
+  border-radius: 4px;
+  transition: all 0.2s;
+}
+
+.btn-action:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+.btn-edit {
+  color: #3b82f6;
+}
+
 .btn-archive {
-  color: #6b7280;
+  color: #ef4444;
+  border: 1px solid #ef4444;
+  padding: 5px 10px;
+  border-radius: 4px;
+  background-color: white;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.btn-archive:hover {
+  background-color: #fee2e2;
 }
 
 .btn-activate {
   color: #10b981;
 }
 
-/* Responsive styles for the add button */
+/* Botones de acción principales */
+.btn-primary, 
+.btn-secondary {
+  padding: 10px 15px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.btn-primary {
+  background-color: #1e3a8a;
+  color: white;
+}
+
+.btn-primary:hover {
+  background-color: #1e40af;
+}
+
+.btn-secondary {
+  background-color: #e5e7eb;
+  color: #374151;
+}
+
+.btn-secondary:hover {
+  background-color: #d1d5db;
+}
+
+/* Action buttons container */
+.action-buttons {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+  justify-content: flex-end;
+}
+
+/* Responsive styles */
 @media (max-width: 768px) {
   .btn-add {
     width: 100%;
     margin-top: 10px;
   }
-}
-
-/* Make sure all modal content is properly styled for mobile */
-@media (max-width: 600px) {
-  .modal-content {
-    width: 95%;
-    max-height: 95vh;
+  
+  .admin-citas-filters {
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .sort-buttons {
+    flex-wrap: wrap;
+    justify-content: space-between;
+  }
+  
+  .sort-btn {
+    flex: 1;
+    min-width: calc(50% - 5px);
+    text-align: center;
   }
   
   .action-buttons {
@@ -122,6 +243,13 @@
   
   .action-buttons button {
     width: 100%;
-    margin-bottom: 8px;
+  }
+}
+
+/* Make sure all modal content is properly styled for mobile */
+@media (max-width: 600px) {
+  .modal-content {
+    width: 95%;
+    max-height: 95vh;
   }
 }

@@ -12,12 +12,15 @@ const AdminConvenios = () => {
   // Estados para el formulario de agregar nueva empresa
   const [nombre, setNombre] = useState("");
   const [rif, setRif] = useState("");
+  const [rifBase, setRifBase] = useState(""); // Para la parte base del RIF (sin dígito verificador)
+  const [digitoVerificador, setDigitoVerificador] = useState(""); // Para el dígito verificador calculado
   const [formError, setFormError] = useState(null);
   const [formSuccess, setFormSuccess] = useState(null);
   
   // Estados para búsqueda y filtros
   const [searchTerm, setSearchTerm] = useState("");
   const [showArchived, setShowArchived] = useState(false);
+  const [ordenamiento, setOrdenamiento] = useState('az'); // 'az', 'za', 'reciente', 'antiguo'
   
   // Estados para modal y edición
   const [showAddModal, setShowAddModal] = useState(false);
@@ -25,6 +28,40 @@ const AdminConvenios = () => {
   const [showArchiveModal, setShowArchiveModal] = useState(false);
   const [currentEmpresa, setCurrentEmpresa] = useState(null);
   const [editMode, setEditMode] = useState(false);
+
+  // Función para calcular el dígito verificador del RIF
+  const calcularDigitoVerificador = (rifInput) => {
+    // Limpiar el RIF
+    const rifLimpio = rifInput.toUpperCase().replace(/[^A-Z0-9]/g, '');
+    
+    // Verificar que el RIF tenga el formato correcto
+    if (!/^[VJEGP][0-9]{8}$/.test(rifLimpio)) return "";
+
+    const letras = { V: 1, E: 2, J: 3, P: 4, G: 5 };
+    const letra = rifLimpio.charAt(0);
+    const numeros = rifLimpio.substr(1).split('').map(Number);
+
+    const coeficientes = [3, 2, 7, 6, 5, 4, 3, 2];
+    let suma = letras[letra] * 4;
+
+    for (let i = 0; i < 8; i++) {
+      suma += numeros[i] * coeficientes[i];
+    }
+
+    const resto = suma % 11;
+    const digito = resto > 1 ? 11 - resto : 0;
+
+    return digito.toString();
+  };
+
+  // Actualizar RIF cuando cambia la parte base
+  useEffect(() => {
+    if (rifBase) {
+      const dv = calcularDigitoVerificador(rifBase);
+      setDigitoVerificador(dv);
+      setRif(rifBase + dv);
+    }
+  }, [rifBase]);
 
   // Función para validar el RIF
   const validarRIF = (rif) => {
@@ -96,6 +133,34 @@ const AdminConvenios = () => {
       results = results.filter(empresa => empresa.activa);
     }
     
+    // Aplicar ordenamiento
+    switch (ordenamiento) {
+      case 'az':
+        results = [...results].sort((a, b) => 
+          a.nombre_empresa.localeCompare(b.nombre_empresa)
+        );
+        break;
+      case 'za':
+        results = [...results].sort((a, b) => 
+          b.nombre_empresa.localeCompare(a.nombre_empresa)
+        );
+        break;
+      case 'reciente':
+        // Asumimos que los IDs más altos son los más recientes
+        results = [...results].sort((a, b) => 
+          b.id_empresa - a.id_empresa
+        );
+        break;
+      case 'antiguo':
+        // Asumimos que los IDs más bajos son los más antiguos
+        results = [...results].sort((a, b) => 
+          a.id_empresa - b.id_empresa
+        );
+        break;
+      default:
+        break;
+    }
+    
     setFilteredEmpresas(results);
   };
 
@@ -107,7 +172,21 @@ const AdminConvenios = () => {
   // Aplicar filtros cuando cambian los criterios
   useEffect(() => {
     applyFilters();
-  }, [searchTerm, showArchived]);
+  }, [searchTerm, showArchived, ordenamiento]);
+
+  // Manejar cambios en el campo RIF y calcular dígito verificador
+  const handleRifChange = (e) => {
+    const valor = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
+    
+    if (valor.length <= 9) {
+      setRifBase(valor);
+      // Cuando se modifica la parte base, el dígito verificador se calculará en el useEffect
+    } else {
+      // Si el usuario escribe directamente el RIF completo, separar la base y el dígito
+      setRifBase(valor.substring(0, 9));
+      // El dígito verificador se calculará automáticamente en el useEffect
+    }
+  };
 
   // Manejar envío del formulario para crear nueva empresa
   const handleSubmit = async (e) => {
@@ -136,6 +215,8 @@ const AdminConvenios = () => {
 
       setNombre("");
       setRif("");
+      setRifBase("");
+      setDigitoVerificador("");
       setFormSuccess("Convenio registrado correctamente.");
       cargarEmpresas();
       setShowAddModal(false);
@@ -171,6 +252,7 @@ const AdminConvenios = () => {
       setEditMode(false);
       cargarEmpresas();
       setFormSuccess("Convenio actualizado correctamente.");
+      setShowDetailModal(false);
     } catch (err) {
       setFormError("No se pudo actualizar el convenio.");
     }
@@ -198,11 +280,11 @@ const AdminConvenios = () => {
     }
   };
 
-  // Mostrar detalle de empresa
-  const mostrarDetalle = (empresa) => {
-    setCurrentEmpresa(empresa);
+  // Mostrar modal de edición
+  const handleEditClick = (empresa) => {
+    setCurrentEmpresa({...empresa});
     setShowDetailModal(true);
-    setEditMode(false);
+    setEditMode(true);
   };
 
   // Formulario para agregar empresa
@@ -231,15 +313,26 @@ const AdminConvenios = () => {
               
               <div className="form-group">
                 <label>RIF</label>
-                <input
-                  type="text"
-                  value={rif}
-                  onChange={(e) => setRif(e.target.value)}
-                  className="form-control"
-                  placeholder="J-12345678-9"
-                />
+                <div className="rif-input-group">
+                  <input
+                    type="text"
+                    value={rifBase}
+                    onChange={handleRifChange}
+                    className="form-control rif-base"
+                    placeholder="J12345678"
+                    maxLength={9}
+                  />
+                  <span className="rif-separator">-</span>
+                  <input
+                    type="text"
+                    value={digitoVerificador}
+                    className="form-control rif-verificador"
+                    placeholder="DV"
+                    disabled
+                  />
+                </div>
                 <small className="form-text text-muted">
-                  Formato: J-12345678-9, V-12345678-9, E-12345678-9, P-12345678-9 o G-12345678-9
+                  Formato: J12345678 (El dígito verificador se calcula automáticamente)
                 </small>
               </div>
               
@@ -264,6 +357,21 @@ const AdminConvenios = () => {
   const renderDetailModal = () => {
     if (!showDetailModal || !currentEmpresa) return null;
 
+    const handleCurrentEmpresaRifChange = (e) => {
+      const valor = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
+      
+      if (valor.length <= 9) {
+        // Actualizar RIF base
+        const rifCompleto = valor + calcularDigitoVerificador(valor);
+        setCurrentEmpresa({...currentEmpresa, rif: rifCompleto});
+      } else {
+        // Si escriben el RIF completo, separar base y dígito
+        const base = valor.substring(0, 9);
+        const rifCompleto = base + calcularDigitoVerificador(base);
+        setCurrentEmpresa({...currentEmpresa, rif: rifCompleto});
+      }
+    };
+
     return (
       <div className="modal-overlay">
         <div className="modal-content">
@@ -286,22 +394,38 @@ const AdminConvenios = () => {
                 
                 <div className="form-group">
                   <label>RIF</label>
-                  <input
-                    type="text"
-                    value={currentEmpresa.rif}
-                    onChange={(e) => setCurrentEmpresa({...currentEmpresa, rif: e.target.value})}
-                    className="form-control"
-                  />
+                  <div className="rif-input-group">
+                    <input
+                      type="text"
+                      value={currentEmpresa.rif.substring(0, 9)}
+                      onChange={handleCurrentEmpresaRifChange}
+                      className="form-control rif-base"
+                      maxLength={9}
+                    />
+                    <span className="rif-separator">-</span>
+                    <input
+                      type="text"
+                      value={currentEmpresa.rif.substring(9) || calcularDigitoVerificador(currentEmpresa.rif.substring(0, 9))}
+                      className="form-control rif-verificador"
+                      disabled
+                    />
+                  </div>
                   <small className="form-text text-muted">
-                    Formato: J-12345678-9, V-12345678-9, E-12345678-9, P-12345678-9 o G-12345678-9
+                    Formato: J12345678 (El dígito verificador se calcula automáticamente)
                   </small>
                 </div>
                 
                 {formError && <div className="alert alert-danger">{formError}</div>}
                 
                 <div className="action-buttons">
-                  <button type="button" className="btn-secondary" onClick={() => setEditMode(false)}>
+                  <button type="button" className="btn-secondary" onClick={() => setShowDetailModal(false)}>
                     Cancelar
+                  </button>
+                  <button type="button" className="btn-archive" onClick={() => {
+                    setShowDetailModal(false);
+                    setShowArchiveModal(true);
+                  }}>
+                    Archivar
                   </button>
                   <button type="submit" className="btn-primary">
                     Guardar cambios
@@ -332,18 +456,13 @@ const AdminConvenios = () => {
                 </div>
                 
                 <div className="action-buttons">
+                  <button className="btn-secondary" onClick={() => setShowDetailModal(false)}>
+                    Cerrar
+                  </button>
                   {currentEmpresa.activa && (
-                    <>
-                      <button className="btn-secondary" onClick={() => {
-                        setShowDetailModal(false);
-                        setShowArchiveModal(true);
-                      }}>
-                        Archivar
-                      </button>
-                      <button className="btn-primary" onClick={() => setEditMode(true)}>
-                        Editar
-                      </button>
-                    </>
+                    <button className="btn-primary" onClick={() => setEditMode(true)}>
+                      Editar
+                    </button>
                   )}
                   {!currentEmpresa.activa && (
                     <button className="btn-primary" onClick={() => {
@@ -435,32 +554,21 @@ const AdminConvenios = () => {
                   </span>
                 </td>
                 <td className="actions-cell">
-                  <button 
-                    className="btn-action btn-view" 
-                    onClick={() => mostrarDetalle(empresa)}
-                    title="Ver detalles"
-                  >
-                    👁️
-                  </button>
-                  {empresa.activa && (
+                  {empresa.activa ? (
                     <button
-                      className="btn-action btn-archive"
-                      onClick={() => {
-                        setCurrentEmpresa(empresa);
-                        setShowArchiveModal(true);
-                      }}
-                      title="Archivar"
+                      className="btn-action btn-edit"
+                      onClick={() => handleEditClick(empresa)}
+                      title="Editar"
                     >
-                      📁
+                      ✏️
                     </button>
-                  )}
-                  {!empresa.activa && (
+                  ) : (
                     <button
                       className="btn-action btn-activate"
                       onClick={() => activarEmpresa(empresa.id_empresa)}
                       title="Activar"
                     >
-                      ✓
+                      ↩️
                     </button>
                   )}
                 </td>
@@ -490,6 +598,39 @@ const AdminConvenios = () => {
         </div>
         
         <div className="filter-container">
+          <div className="sort-buttons">
+            <button 
+              className={`sort-btn ${ordenamiento === 'az' ? 'active' : ''}`}
+              onClick={() => setOrdenamiento('az')}
+              title="Ordenar A-Z"
+            >
+              A → Z
+            </button>
+            <button 
+              className={`sort-btn ${ordenamiento === 'za' ? 'active' : ''}`}
+              onClick={() => setOrdenamiento('za')}
+              title="Ordenar Z-A"
+            >
+              Z → A
+            </button>
+            <button 
+              className={`sort-btn ${ordenamiento === 'reciente' ? 'active' : ''}`}
+              onClick={() => setOrdenamiento('reciente')}
+              title="Más recientes primero"
+            >
+              Nuevos
+            </button>
+            <button 
+              className={`sort-btn ${ordenamiento === 'antiguo' ? 'active' : ''}`}
+              onClick={() => setOrdenamiento('antiguo')}
+              title="Más antiguos primero"
+            >
+              Antiguos
+            </button>
+          </div>
+        </div>
+        
+        <div className="filter-container">
           <div className="checkbox-container">
             <input 
               type="checkbox" 
@@ -506,6 +647,8 @@ const AdminConvenios = () => {
           onClick={() => {
             setNombre("");
             setRif("");
+            setRifBase("");
+            setDigitoVerificador("");
             setFormError(null);
             setShowAddModal(true);
           }}
