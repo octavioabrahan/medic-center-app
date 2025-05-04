@@ -106,9 +106,9 @@ const actualizar = async (req, res) => {
     const isActiveAnterior = prevStateResult.rows[0].is_active;
     const isActiveNuevo = is_active !== undefined ? is_active : isActiveAnterior;
     
-    // Actualizar el examen
+    // Actualizar el examen (sin updated_at que no existe en la tabla)
     const result = await client.query(
-      'UPDATE examenes SET nombre_examen = $1, preciousd = $2, tiempo_entrega = $3, informacion = $4, tipo = $5, is_active = $6, updated_at = NOW() WHERE codigo = $7 RETURNING *',
+      'UPDATE examenes SET nombre_examen = $1, preciousd = $2, tiempo_entrega = $3, informacion = $4, tipo = $5, is_active = $6 WHERE codigo = $7 RETURNING *',
       [nombre_examen, preciousd, tiempo_entrega, informacion, tipo, isActiveNuevo, codigo]
     );
     
