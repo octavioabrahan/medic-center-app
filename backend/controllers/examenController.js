@@ -40,23 +40,40 @@ const obtenerPorCodigo = async (req, res) => {
  */
 const crear = async (req, res) => {
   const { codigo, nombre_examen, preciousd, tiempo_entrega, informacion, tipo } = req.body;
+  const usuario = req.headers['x-usuario'] || 'sistema'; // Obtener usuario del header o usar 'sistema' por defecto
   
   if (!codigo || !nombre_examen || !preciousd) {
     return res.status(400).json({ error: 'Código, nombre y precio son obligatorios' });
   }
   
+  const client = await pool.connect();
+  
   try {
-    const result = await pool.query(
+    await client.query('BEGIN');
+    
+    // Insertar el examen
+    const result = await client.query(
       'INSERT INTO examenes (codigo, nombre_examen, preciousd, tiempo_entrega, informacion, tipo) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *',
       [codigo, nombre_examen, preciousd, tiempo_entrega, informacion, tipo]
     );
     
-    logGeneral(`✅ Examen creado: ${nombre_examen} (${codigo})`);
+    // Registrar en el historial
+    await client.query(
+      'INSERT INTO examen_historial (codigo_examen, is_active_anterior, is_active_nuevo, cambiado_por) VALUES ($1, $2, $3, $4)',
+      [codigo, false, true, usuario]
+    );
+    
+    await client.query('COMMIT');
+    
+    logGeneral(`✅ Examen creado: ${nombre_examen} (${codigo}) por ${usuario}`);
     res.status(201).json(result.rows[0]);
   } catch (err) {
+    await client.query('ROLLBACK');
     console.error('Error al crear examen:', err);
     logGeneral(`❌ Error al crear examen: ${err.message}`);
     res.status(500).json({ error: 'Error al crear examen' });
+  } finally {
+    client.release();
   }
 };
 
@@ -65,28 +82,54 @@ const crear = async (req, res) => {
  */
 const actualizar = async (req, res) => {
   const { codigo } = req.params;
-  const { nombre_examen, preciousd, tiempo_entrega, informacion, tipo } = req.body;
+  const { nombre_examen, preciousd, tiempo_entrega, informacion, tipo, archivado } = req.body;
+  const usuario = req.headers['x-usuario'] || 'sistema'; // Obtener usuario del header o usar 'sistema' por defecto
   
   if (!nombre_examen || !preciousd) {
     return res.status(400).json({ error: 'Nombre y precio son obligatorios' });
   }
   
+  const client = await pool.connect();
+  
   try {
-    const result = await pool.query(
-      'UPDATE examenes SET nombre_examen = $1, preciousd = $2, tiempo_entrega = $3, informacion = $4, tipo = $5 WHERE codigo = $6 RETURNING *',
-      [nombre_examen, preciousd, tiempo_entrega, informacion, tipo, codigo]
-    );
+    await client.query('BEGIN');
     
-    if (result.rows.length === 0) {
+    // Obtener el estado anterior del examen
+    const prevStateResult = await client.query('SELECT archivado FROM examenes WHERE codigo = $1', [codigo]);
+    
+    if (prevStateResult.rows.length === 0) {
+      await client.query('ROLLBACK');
       return res.status(404).json({ error: 'Examen no encontrado' });
     }
     
-    logGeneral(`✅ Examen actualizado: ${nombre_examen} (${codigo})`);
+    const isActiveAnterior = !prevStateResult.rows[0].archivado;
+    const isActiveNuevo = !archivado;
+    
+    // Actualizar el examen
+    const result = await client.query(
+      'UPDATE examenes SET nombre_examen = $1, preciousd = $2, tiempo_entrega = $3, informacion = $4, tipo = $5, archivado = $6, updated_at = NOW() WHERE codigo = $7 RETURNING *',
+      [nombre_examen, preciousd, tiempo_entrega, informacion, tipo, archivado, codigo]
+    );
+    
+    // Registrar en el historial solo si cambió el estado de archivado
+    if (isActiveAnterior !== isActiveNuevo) {
+      await client.query(
+        'INSERT INTO examen_historial (codigo_examen, is_active_anterior, is_active_nuevo, cambiado_por) VALUES ($1, $2, $3, $4)',
+        [codigo, isActiveAnterior, isActiveNuevo, usuario]
+      );
+    }
+    
+    await client.query('COMMIT');
+    
+    logGeneral(`✅ Examen actualizado: ${nombre_examen} (${codigo}) por ${usuario}`);
     res.json(result.rows[0]);
   } catch (err) {
+    await client.query('ROLLBACK');
     console.error('Error al actualizar examen:', err);
     logGeneral(`❌ Error al actualizar examen: ${err.message}`);
     res.status(500).json({ error: 'Error al actualizar examen' });
+  } finally {
+    client.release();
   }
 };
 
@@ -95,20 +138,72 @@ const actualizar = async (req, res) => {
  */
 const eliminar = async (req, res) => {
   const { codigo } = req.params;
+  const usuario = req.headers['x-usuario'] || 'sistema'; // Obtener usuario del header o usar 'sistema' por defecto
+  
+  const client = await pool.connect();
   
   try {
-    const result = await pool.query('DELETE FROM examenes WHERE codigo = $1 RETURNING *', [codigo]);
+    await client.query('BEGIN');
     
-    if (result.rows.length === 0) {
+    // Obtener información del examen antes de eliminar
+    const examenResult = await client.query('SELECT * FROM examenes WHERE codigo = $1', [codigo]);
+    
+    if (examenResult.rows.length === 0) {
+      await client.query('ROLLBACK');
       return res.status(404).json({ error: 'Examen no encontrado' });
     }
     
-    logGeneral(`✅ Examen eliminado: ${result.rows[0].nombre_examen} (${codigo})`);
+    const examen = examenResult.rows[0];
+    
+    // Registrar en el historial
+    await client.query(
+      'INSERT INTO examen_historial (codigo_examen, is_active_anterior, is_active_nuevo, cambiado_por) VALUES ($1, $2, $3, $4)',
+      [codigo, !examen.archivado, false, usuario]
+    );
+    
+    // Eliminar el examen
+    const result = await client.query('DELETE FROM examenes WHERE codigo = $1 RETURNING *', [codigo]);
+    
+    await client.query('COMMIT');
+    
+    logGeneral(`✅ Examen eliminado: ${examen.nombre_examen} (${codigo}) por ${usuario}`);
     res.json({ message: 'Examen eliminado correctamente', examen: result.rows[0] });
   } catch (err) {
+    await client.query('ROLLBACK');
     console.error('Error al eliminar examen:', err);
     logGeneral(`❌ Error al eliminar examen: ${err.message}`);
     res.status(500).json({ error: 'Error al eliminar examen' });
+  } finally {
+    client.release();
+  }
+};
+
+/**
+ * Obtiene el historial de cambios de un examen
+ */
+const obtenerHistorial = async (req, res) => {
+  try {
+    const { codigo } = req.params;
+    
+    // Verificar que el examen exista
+    const examenResult = await pool.query('SELECT * FROM examenes WHERE codigo = $1', [codigo]);
+    
+    if (examenResult.rows.length === 0) {
+      return res.status(404).json({ error: 'Examen no encontrado' });
+    }
+    
+    // Obtener el historial de cambios
+    const result = await pool.query(`
+      SELECT * FROM examen_historial 
+      WHERE codigo_examen = $1 
+      ORDER BY fecha_cambio DESC
+    `, [codigo]);
+    
+    res.json(result.rows);
+  } catch (err) {
+    console.error('Error al obtener historial del examen:', err);
+    logGeneral(`❌ Error al obtener historial de examen: ${err.message}`);
+    res.status(500).json({ error: 'Error al obtener historial del examen' });
   }
 };
 
@@ -117,5 +212,6 @@ module.exports = {
   obtenerPorCodigo,
   crear,
   actualizar,
-  eliminar
+  eliminar,
+  obtenerHistorial
 };

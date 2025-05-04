@@ -17,7 +17,10 @@ const AdminExamenes = () => {
   // Estados para modales
   const [showAddModal, setShowAddModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
+  const [showHistorialModal, setShowHistorialModal] = useState(false);
   const [currentExamen, setCurrentExamen] = useState(null);
+  const [historialExamen, setHistorialExamen] = useState([]);
+  const [loadingHistorial, setLoadingHistorial] = useState(false);
 
   // Estado para el formulario
   const [formData, setFormData] = useState({
@@ -62,6 +65,27 @@ const AdminExamenes = () => {
     } finally {
       setLoading(false);
     }
+  };
+
+  // Obtener historial de un examen
+  const fetchExamenHistorial = async (codigo) => {
+    setLoadingHistorial(true);
+    try {
+      const response = await axios.get(`/api/exams/${codigo}/historial`);
+      setHistorialExamen(response.data);
+    } catch (err) {
+      console.error('Error al obtener historial:', err);
+      setHistorialExamen([]);
+    } finally {
+      setLoadingHistorial(false);
+    }
+  };
+
+  // Abrir el modal de historial de un examen
+  const openHistorialModal = (examen) => {
+    setCurrentExamen(examen);
+    fetchExamenHistorial(examen.codigo);
+    setShowHistorialModal(true);
   };
 
   // Cargar datos iniciales al montar el componente
@@ -113,6 +137,19 @@ const AdminExamenes = () => {
     });
   };
 
+  // Formatear fecha
+  const formatDate = (dateString) => {
+    if (!dateString) return 'N/A';
+    try {
+      const date = new Date(dateString);
+      if (isNaN(date.getTime())) return 'Fecha inválida';
+      return date.toLocaleDateString() + ' ' + date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+    } catch (error) {
+      console.error("Error al formatear fecha:", error);
+      return 'Error de formato';
+    }
+  };
+
   // Abrir modal para agregar un nuevo examen
   const openAddModal = () => {
     // Resetear el formulario
@@ -147,7 +184,12 @@ const AdminExamenes = () => {
   const handleAddExamen = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post("/api/exams", formData);
+      // Agregar usuario al header para auditoría
+      const headers = {
+        'X-Usuario': localStorage.getItem('username') || 'admin' // En un sistema real, obtener del sistema de autenticación
+      };
+      
+      const response = await axios.post("/api/exams", formData, { headers });
       setExamenes([...examenes, response.data]);
       applyFilters([...examenes, response.data]);
       setShowAddModal(false);
@@ -162,7 +204,12 @@ const AdminExamenes = () => {
   const handleUpdateExamen = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.put(`/api/exams/${formData.codigo}`, formData);
+      // Agregar usuario al header para auditoría
+      const headers = {
+        'X-Usuario': localStorage.getItem('username') || 'admin' // En un sistema real, obtener del sistema de autenticación
+      };
+      
+      const response = await axios.put(`/api/exams/${formData.codigo}`, formData, { headers });
       const updatedExamenes = examenes.map(examen => 
         examen.codigo === formData.codigo ? response.data : examen
       );
@@ -180,10 +227,16 @@ const AdminExamenes = () => {
   const toggleArchivado = async (examen) => {
     const newStatus = !examen.archivado;
     try {
+      // Agregar usuario al header para auditoría
+      const headers = {
+        'X-Usuario': localStorage.getItem('username') || 'admin' // En un sistema real, obtener del sistema de autenticación
+      };
+      
       const response = await axios.put(`/api/exams/${examen.codigo}`, {
         ...examen,
         archivado: newStatus
-      });
+      }, { headers });
+      
       const updatedExamenes = examenes.map(item => 
         item.codigo === examen.codigo ? response.data : item
       );
@@ -227,13 +280,7 @@ const AdminExamenes = () => {
                 <td>$ {parseFloat(examen.preciousd).toFixed(2)}</td>
                 <td>Bs. F. {calcularPrecioBs(examen.preciousd)}</td>
                 <td>
-                  {examen.updated_at ? new Date(examen.updated_at).toLocaleDateString('es-ES', {
-                    day: '2-digit',
-                    month: '2-digit',
-                    year: 'numeric',
-                    hour: '2-digit',
-                    minute: '2-digit'
-                  }) : 'N/A'}
+                  {examen.updated_at ? formatDate(examen.updated_at) : 'N/A'}
                 </td>
                 <td className="actions-cell">
                   <button 
@@ -242,6 +289,13 @@ const AdminExamenes = () => {
                     title="Editar"
                   >
                     ✎
+                  </button>
+                  <button
+                    className="btn-action btn-history"
+                    onClick={() => openHistorialModal(examen)}
+                    title="Ver historial"
+                  >
+                    🕒
                   </button>
                   <button
                     className="btn-action btn-archive"
@@ -493,6 +547,66 @@ const AdminExamenes = () => {
     );
   };
 
+  // Renderizar modal de historial de un examen
+  const renderHistorialModal = () => {
+    if (!showHistorialModal || !currentExamen) return null;
+
+    return (
+      <div className="modal-overlay">
+        <div className="modal-content historial-modal">
+          <div className="modal-header">
+            <h2>Historial de cambios</h2>
+            <button className="close-btn" onClick={() => setShowHistorialModal(false)}>×</button>
+          </div>
+          <div className="modal-body">
+            <div className="examen-info">
+              <p><strong>Código:</strong> {currentExamen.codigo}</p>
+              <p><strong>Nombre:</strong> {currentExamen.nombre_examen}</p>
+              <p><strong>Estado actual:</strong> 
+                <span className={currentExamen.archivado ? "status-archivado" : "status-activo"}>
+                  {currentExamen.archivado ? "Archivado" : "Activo"}
+                </span>
+              </p>
+            </div>
+            
+            <h3>Registro de cambios</h3>
+            {loadingHistorial ? (
+              <div className="loading">Cargando historial...</div>
+            ) : historialExamen.length === 0 ? (
+              <div className="no-results">No hay registros de cambios para este examen</div>
+            ) : (
+              <div className="timeline">
+                {historialExamen.map((cambio, index) => (
+                  <div className="timeline-item" key={index}>
+                    <div className="timeline-date">
+                      {formatDate(cambio.fecha_cambio)}
+                    </div>
+                    <div className="timeline-content">
+                      <div>
+                        <span className={`change-badge ${cambio.is_active_nuevo ? 'status-activo' : 'status-archivado'}`}>
+                          {cambio.is_active_anterior ? 'Activo' : 'Archivado'} ➔ {cambio.is_active_nuevo ? 'Activo' : 'Archivado'}
+                        </span>
+                      </div>
+                      <div className="timeline-footer">
+                        <span>Modificado por: {cambio.cambiado_por}</span>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+            
+            <div className="modal-footer">
+              <button className="btn-secondary" onClick={() => setShowHistorialModal(false)}>
+                Cerrar
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
   return (
     <div className="admin-examenes-container">
       <h1>Exámenes y servicios</h1>
@@ -528,6 +642,7 @@ const AdminExamenes = () => {
       {renderExamenesTable()}
       {renderAddModal()}
       {renderEditModal()}
+      {renderHistorialModal()}
     </div>
   );
 };

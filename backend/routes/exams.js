@@ -5,6 +5,9 @@ const examenController = require('../controllers/examenController');
 // Obtener todos los exámenes
 router.get('/', examenController.obtenerTodos);
 
+// Obtener historial de un examen por su código
+router.get('/:codigo/historial', examenController.obtenerHistorial);
+
 // Obtener un examen por su código
 router.get('/:codigo', examenController.obtenerPorCodigo);
 
