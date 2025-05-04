@@ -2,6 +2,176 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import "./AdminConvenios.css";
 
+const LogoUploader = ({ onLogoUploaded, initialLogo }) => {
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [previewUrl, setPreviewUrl] = useState(initialLogo || "");
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [progress, setProgress] = useState(0);
+  const fileInputRef = React.useRef(null);
+  
+  // Configuración de límites
+  const MAX_FILE_SIZE = 2 * 1024 * 1024; // 2MB
+  const ALLOWED_FILE_TYPES = ['image/jpeg', 'image/png', 'image/gif', 'image/svg+xml'];
+  const ALLOWED_FILE_EXTENSIONS = ['.jpg', '.jpeg', '.png', '.gif', '.svg'];
+
+  const handleFileChange = (event) => {
+    const file = event.target.files[0];
+    setError('');
+    
+    if (!file) {
+      setSelectedFile(null);
+      return;
+    }
+
+    // Validar tipo de archivo
+    if (!ALLOWED_FILE_TYPES.includes(file.type)) {
+      setError('Formato no permitido. Solo se aceptan JPG, PNG, GIF y SVG.');
+      fileInputRef.current.value = '';
+      setSelectedFile(null);
+      return;
+    }
+
+    // Validar tamaño de archivo
+    if (file.size > MAX_FILE_SIZE) {
+      setError(`El archivo es demasiado grande. El tamaño máximo es ${MAX_FILE_SIZE / (1024 * 1024)}MB.`);
+      fileInputRef.current.value = '';
+      setSelectedFile(null);
+      return;
+    }
+
+    setSelectedFile(file);
+    
+    // Crear una vista previa
+    const fileReader = new FileReader();
+    fileReader.onload = () => {
+      setPreviewUrl(fileReader.result);
+    };
+    fileReader.readAsDataURL(file);
+  };
+
+  const handleUpload = async () => {
+    if (!selectedFile) {
+      setError('Por favor selecciona una imagen.');
+      return;
+    }
+
+    setLoading(true);
+    setProgress(0);
+    setError('');
+
+    const formData = new FormData();
+    formData.append('archivo', selectedFile);
+
+    try {
+      const response = await axios.post('/api/archivos/upload', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        },
+        onUploadProgress: (progressEvent) => {
+          const percentCompleted = Math.round(
+            (progressEvent.loaded * 100) / progressEvent.total
+          );
+          setProgress(percentCompleted);
+        }
+      });
+
+      const { archivo } = response.data;
+      
+      // Notificar al componente padre
+      if (onLogoUploaded) {
+        onLogoUploaded(archivo.url);
+      }
+      
+      // Actualizar vista previa
+      setPreviewUrl(archivo.url);
+
+      // Limpiar selección después de la subida exitosa
+      setSelectedFile(null);
+      if (fileInputRef.current) {
+        fileInputRef.current.value = '';
+      }
+    } catch (error) {
+      console.error('Error al subir imagen:', error);
+      setError(error.response?.data?.error || 'Error al subir la imagen. Inténtalo de nuevo.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleRemoveImage = () => {
+    setSelectedFile(null);
+    setPreviewUrl("");
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
+    
+    // Notificar al componente padre que la imagen fue eliminada
+    if (onLogoUploaded) {
+      onLogoUploaded("");
+    }
+  };
+
+  return (
+    <div className="logo-uploader">
+      <div className="form-group">
+        <label>Logo de la empresa</label>
+        
+        <div className="file-input-container">
+          <input
+            type="file"
+            onChange={handleFileChange}
+            ref={fileInputRef}
+            accept={ALLOWED_FILE_EXTENSIONS.join(',')}
+            disabled={loading}
+            className="file-input"
+          />
+          
+          {selectedFile && !loading && (
+            <button 
+              type="button"
+              onClick={handleUpload}
+              className="upload-button"
+            >
+              Subir imagen
+            </button>
+          )}
+        </div>
+
+        {error && <div className="error-message">{error}</div>}
+        
+        {loading && (
+          <div className="progress-container">
+            <div className="progress-bar" style={{ width: `${progress}%` }}></div>
+            <span className="progress-text">{progress}%</span>
+          </div>
+        )}
+        
+        {previewUrl && (
+          <div className="logo-preview">
+            <img 
+              src={previewUrl} 
+              alt="Logo de la empresa" 
+              style={{ maxWidth: "200px", maxHeight: "100px" }}
+            />
+            <button 
+              type="button" 
+              onClick={handleRemoveImage} 
+              className="remove-button"
+            >
+              Eliminar logo
+            </button>
+          </div>
+        )}
+        
+        <small className="form-text text-muted">
+          Formatos permitidos: JPG, PNG, GIF, SVG. Tamaño máximo: 2MB.
+        </small>
+      </div>
+    </div>
+  );
+};
+
 const AdminConvenios = () => {
   // Estados para los datos
   const [empresas, setEmpresas] = useState([]);
@@ -12,7 +182,7 @@ const AdminConvenios = () => {
   // Estados para el formulario de agregar nueva empresa
   const [nombre, setNombre] = useState("");
   const [rif, setRif] = useState("");
-  const [logoUrl, setLogoUrl] = useState(""); // Nuevo estado para la URL del logo
+  const [logoUrl, setLogoUrl] = useState(""); // Para almacenar la URL del logo
   const [rifBase, setRifBase] = useState(""); // Para la parte base del RIF (sin dígito verificador)
   const [digitoVerificador, setDigitoVerificador] = useState(""); // Para el dígito verificador calculado
   const [formError, setFormError] = useState(null);
@@ -342,19 +512,9 @@ const AdminConvenios = () => {
                 </small>
               </div>
               
-              <div className="form-group">
-                <label>URL del Logo</label>
-                <input
-                  type="text"
-                  value={logoUrl}
-                  onChange={(e) => setLogoUrl(e.target.value)}
-                  className="form-control"
-                  placeholder="https://ejemplo.com/logo.png"
-                />
-                <small className="form-text text-muted">
-                  URL de la imagen del logo (opcional)
-                </small>
-              </div>
+              <LogoUploader 
+                onLogoUploaded={(url) => setLogoUrl(url)}
+              />
               
               {formError && <div className="alert alert-danger">{formError}</div>}
               
@@ -435,19 +595,10 @@ const AdminConvenios = () => {
                   </small>
                 </div>
                 
-                <div className="form-group">
-                  <label>URL del Logo</label>
-                  <input
-                    type="text"
-                    value={currentEmpresa.logo_url || ""}
-                    onChange={(e) => setCurrentEmpresa({...currentEmpresa, logo_url: e.target.value})}
-                    className="form-control"
-                    placeholder="https://ejemplo.com/logo.png"
-                  />
-                  <small className="form-text text-muted">
-                    URL de la imagen del logo (opcional)
-                  </small>
-                </div>
+                <LogoUploader 
+                  onLogoUploaded={(url) => setCurrentEmpresa({...currentEmpresa, logo_url: url})}
+                  initialLogo={currentEmpresa.logo_url}
+                />
                 
                 {formError && <div className="alert alert-danger">{formError}</div>}
                 
