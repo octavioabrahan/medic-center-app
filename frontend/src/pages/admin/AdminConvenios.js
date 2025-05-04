@@ -167,11 +167,13 @@ const AdminConvenios = () => {
   // Cargar datos iniciales
   useEffect(() => {
     cargarEmpresas();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Aplicar filtros cuando cambian los criterios
   useEffect(() => {
     applyFilters();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchTerm, showArchived, ordenamiento]);
 
   // Manejar cambios en el campo RIF y calcular dígito verificador
@@ -208,7 +210,7 @@ const AdminConvenios = () => {
     }
 
     try {
-      const res = await axios.post(`${process.env.REACT_APP_API_URL || ''}/api/empresas`, {
+      await axios.post(`${process.env.REACT_APP_API_URL || ''}/api/empresas`, {
         nombre_empresa: nombre,
         rif: rifLimpio
       });
