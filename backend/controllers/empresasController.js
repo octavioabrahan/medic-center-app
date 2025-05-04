@@ -2,7 +2,7 @@ const model = require("../models/empresasModel");
 
 const EmpresasController = {
   crear: async (req, res) => {
-    const { nombre_empresa, rif } = req.body;
+    const { nombre_empresa, rif, logo_url } = req.body;
 
     if (!nombre_empresa || !rif) {
       return res.status(400).json({ error: "Faltan datos obligatorios." });
@@ -15,7 +15,7 @@ const EmpresasController = {
         return res.status(400).json({ error: "Ya existe una empresa con ese RIF." });
       }
 
-      const empresa = await model.crear({ nombre_empresa, rif });
+      const empresa = await model.crear({ nombre_empresa, rif, logo_url });
       res.status(201).json(empresa);
     } catch (err) {
       console.error("Error al registrar empresa:", err);
@@ -34,9 +34,9 @@ const EmpresasController = {
   },
 
   actualizar: async (req, res) => {
-    const { id_empresa, nombre_empresa, rif } = req.body;
+    const { id_empresa, nombre_empresa, rif, logo_url } = req.body;
     try {
-      await model.actualizar({ id_empresa, nombre_empresa, rif });
+      await model.actualizar({ id_empresa, nombre_empresa, rif, logo_url });
       res.json({ mensaje: "Empresa actualizada" });
     } catch (err) {
       console.error("Error al actualizar empresa:", err);

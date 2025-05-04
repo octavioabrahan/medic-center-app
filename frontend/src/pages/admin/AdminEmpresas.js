@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 const AdminEmpresas = () => {
   const [nombre, setNombre] = useState("");
   const [rif, setRif] = useState("");
+  const [logoUrl, setLogoUrl] = useState("");
   const [mensaje, setMensaje] = useState(null);
   const [error, setError] = useState(null);
   const [empresas, setEmpresas] = useState([]);
@@ -37,7 +38,7 @@ const AdminEmpresas = () => {
       const res = await fetch(`${process.env.REACT_APP_API_URL}/api/empresas`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ nombre_empresa: nombre, rif })
+        body: JSON.stringify({ nombre_empresa: nombre, rif, logo_url: logoUrl })
       });
 
       const data = await res.json();
@@ -48,6 +49,7 @@ const AdminEmpresas = () => {
 
       setNombre("");
       setRif("");
+      setLogoUrl("");
       setMensaje("Empresa registrada correctamente.");
       cargarEmpresas();
     } catch (err) {
@@ -59,7 +61,8 @@ const AdminEmpresas = () => {
     setEditando(empresa.id_empresa);
     setCambios({
       nombre_empresa: empresa.nombre_empresa,
-      rif: empresa.rif
+      rif: empresa.rif,
+      logo_url: empresa.logo_url || ""
     });
   };
 
@@ -71,7 +74,8 @@ const AdminEmpresas = () => {
         body: JSON.stringify({
           id_empresa,
           nombre_empresa: cambios.nombre_empresa,
-          rif: cambios.rif
+          rif: cambios.rif,
+          logo_url: cambios.logo_url
         })
       });
 
@@ -142,6 +146,19 @@ const AdminEmpresas = () => {
           </label>
         </div>
 
+        <div style={{ marginBottom: "1rem" }}>
+          <label>
+            URL del Logo:{" "}
+            <input
+              type="text"
+              value={logoUrl}
+              onChange={(e) => setLogoUrl(e.target.value)}
+              placeholder="https://ejemplo.com/logo.png"
+              style={{ width: "100%" }}
+            />
+          </label>
+        </div>
+
         <button type="submit">Registrar Empresa</button>
       </form>
 
@@ -155,6 +172,7 @@ const AdminEmpresas = () => {
           <tr>
             <th>Nombre</th>
             <th>RIF</th>
+            <th>Logo</th>
             <th>Estado</th>
             <th>Acciones</th>
           </tr>
@@ -186,7 +204,27 @@ const AdminEmpresas = () => {
                   e.rif
                 )}
               </td>
-              <td>{e.activa ? "Activa" : "Desactivada"}</td>
+              <td>
+                {editando === e.id_empresa ? (
+                  <input
+                    value={cambios.logo_url || ""}
+                    onChange={(ev) =>
+                      setCambios({ ...cambios, logo_url: ev.target.value })
+                    }
+                  />
+                ) : (
+                  e.logo_url ? (
+                    <img 
+                      src={e.logo_url} 
+                      alt={`Logo de ${e.nombre_empresa}`} 
+                      style={{ maxWidth: "50px", maxHeight: "50px" }}
+                    />
+                  ) : (
+                    "Sin logo"
+                  )
+                )}
+              </td>
+              <td>{e.is_active ? "Activa" : "Desactivada"}</td>
               <td>
                 {editando === e.id_empresa ? (
                   <>
@@ -198,7 +236,7 @@ const AdminEmpresas = () => {
                 ) : (
                   <>
                     <button onClick={() => iniciarEdicion(e)}>Editar</button>
-                    {e.activa ? (
+                    {e.is_active ? (
                       <button
                         onClick={() => desactivarEmpresa(e.id_empresa)}
                         style={{ marginLeft: "0.5rem" }}

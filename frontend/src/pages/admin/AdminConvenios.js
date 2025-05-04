@@ -12,6 +12,7 @@ const AdminConvenios = () => {
   // Estados para el formulario de agregar nueva empresa
   const [nombre, setNombre] = useState("");
   const [rif, setRif] = useState("");
+  const [logoUrl, setLogoUrl] = useState(""); // Nuevo estado para la URL del logo
   const [rifBase, setRifBase] = useState(""); // Para la parte base del RIF (sin dígito verificador)
   const [digitoVerificador, setDigitoVerificador] = useState(""); // Para el dígito verificador calculado
   const [formError, setFormError] = useState(null);
@@ -130,7 +131,7 @@ const AdminConvenios = () => {
     
     // Filtrar por estado (archivado/activo)
     if (!showArchived) {
-      results = results.filter(empresa => empresa.activa);
+      results = results.filter(empresa => empresa.is_active);
     }
     
     // Aplicar ordenamiento
@@ -212,13 +213,15 @@ const AdminConvenios = () => {
     try {
       await axios.post(`${process.env.REACT_APP_API_URL || ''}/api/empresas`, {
         nombre_empresa: nombre,
-        rif: rifLimpio
+        rif: rifLimpio,
+        logo_url: logoUrl
       });
 
       setNombre("");
       setRif("");
       setRifBase("");
       setDigitoVerificador("");
+      setLogoUrl("");
       setFormSuccess("Convenio registrado correctamente.");
       cargarEmpresas();
       setShowAddModal(false);
@@ -248,7 +251,8 @@ const AdminConvenios = () => {
       await axios.put(`${process.env.REACT_APP_API_URL || ''}/api/empresas`, {
         id_empresa: currentEmpresa.id_empresa,
         nombre_empresa: currentEmpresa.nombre_empresa,
-        rif: rifLimpio
+        rif: rifLimpio,
+        logo_url: currentEmpresa.logo_url
       });
 
       setEditMode(false);
@@ -338,6 +342,20 @@ const AdminConvenios = () => {
                 </small>
               </div>
               
+              <div className="form-group">
+                <label>URL del Logo</label>
+                <input
+                  type="text"
+                  value={logoUrl}
+                  onChange={(e) => setLogoUrl(e.target.value)}
+                  className="form-control"
+                  placeholder="https://ejemplo.com/logo.png"
+                />
+                <small className="form-text text-muted">
+                  URL de la imagen del logo (opcional)
+                </small>
+              </div>
+              
               {formError && <div className="alert alert-danger">{formError}</div>}
               
               <div className="action-buttons">
@@ -417,6 +435,20 @@ const AdminConvenios = () => {
                   </small>
                 </div>
                 
+                <div className="form-group">
+                  <label>URL del Logo</label>
+                  <input
+                    type="text"
+                    value={currentEmpresa.logo_url || ""}
+                    onChange={(e) => setCurrentEmpresa({...currentEmpresa, logo_url: e.target.value})}
+                    className="form-control"
+                    placeholder="https://ejemplo.com/logo.png"
+                  />
+                  <small className="form-text text-muted">
+                    URL de la imagen del logo (opcional)
+                  </small>
+                </div>
+                
                 {formError && <div className="alert alert-danger">{formError}</div>}
                 
                 <div className="action-buttons">
@@ -448,10 +480,22 @@ const AdminConvenios = () => {
                     <div>
                       <strong>RIF:</strong> {formatearRIF(currentEmpresa.rif)}
                     </div>
+                    {currentEmpresa.logo_url && (
+                      <div>
+                        <strong>Logo:</strong>
+                        <div className="logo-preview">
+                          <img 
+                            src={currentEmpresa.logo_url} 
+                            alt={`Logo de ${currentEmpresa.nombre_empresa}`}
+                            style={{ maxWidth: "100px", maxHeight: "100px", marginTop: "8px" }}
+                          />
+                        </div>
+                      </div>
+                    )}
                     <div>
                       <strong>Estado:</strong>
-                      <span className={`status-badge ${currentEmpresa.activa ? 'confirmada' : 'cancelada'}`}>
-                        {currentEmpresa.activa ? 'Activo' : 'Archivado'}
+                      <span className={`status-badge ${currentEmpresa.is_active ? 'confirmada' : 'cancelada'}`}>
+                        {currentEmpresa.is_active ? 'Activo' : 'Archivado'}
                       </span>
                     </div>
                   </div>
@@ -461,12 +505,12 @@ const AdminConvenios = () => {
                   <button className="btn-secondary" onClick={() => setShowDetailModal(false)}>
                     Cerrar
                   </button>
-                  {currentEmpresa.activa && (
+                  {currentEmpresa.is_active && (
                     <button className="btn-primary" onClick={() => setEditMode(true)}>
                       Editar
                     </button>
                   )}
-                  {!currentEmpresa.activa && (
+                  {!currentEmpresa.is_active && (
                     <button className="btn-primary" onClick={() => {
                       activarEmpresa(currentEmpresa.id_empresa);
                       setShowDetailModal(false);
@@ -541,6 +585,7 @@ const AdminConvenios = () => {
             <tr>
               <th>Nombre</th>
               <th>RIF</th>
+              <th>Logo</th>
               <th>Estado</th>
               <th>Acciones</th>
             </tr>
@@ -551,12 +596,23 @@ const AdminConvenios = () => {
                 <td>{empresa.nombre_empresa}</td>
                 <td>{formatearRIF(empresa.rif)}</td>
                 <td>
-                  <span className={`status-badge ${empresa.activa ? 'confirmada' : 'cancelada'}`}>
-                    {empresa.activa ? 'Activo' : 'Archivado'}
+                  {empresa.logo_url ? (
+                    <img 
+                      src={empresa.logo_url}
+                      alt={`Logo de ${empresa.nombre_empresa}`}
+                      style={{ maxWidth: "40px", maxHeight: "40px" }}
+                    />
+                  ) : (
+                    <span className="no-logo">Sin logo</span>
+                  )}
+                </td>
+                <td>
+                  <span className={`status-badge ${empresa.is_active ? 'confirmada' : 'cancelada'}`}>
+                    {empresa.is_active ? 'Activo' : 'Archivado'}
                   </span>
                 </td>
                 <td className="actions-cell">
-                  {empresa.activa ? (
+                  {empresa.is_active ? (
                     <button
                       className="btn-action btn-edit"
                       onClick={() => handleEditClick(empresa)}
@@ -651,6 +707,7 @@ const AdminConvenios = () => {
             setRif("");
             setRifBase("");
             setDigitoVerificador("");
+            setLogoUrl("");
             setFormError(null);
             setShowAddModal(true);
           }}
