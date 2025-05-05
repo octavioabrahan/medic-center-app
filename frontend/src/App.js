@@ -21,6 +21,10 @@ import AgendamientoIndex from './components/public/AgendamientoIndex';
 import CotizacionesAdmin from './components/admin/CotizacionesAdmin';
 import AdminLayout from './components/admin/AdminLayout';
 import AdminExamenes from './pages/admin/AdminExamenes';
+// Importar componentes de autenticación
+import LoginPage from './pages/auth/LoginPage';
+import ProtectedRoute from './components/auth/ProtectedRoute';
+import { auth } from './api';
 
 function App() {
   return (
@@ -34,8 +38,15 @@ function App() {
         <Route path="/agendamiento/convenio" element={<AgendamientoEmpresaForm />} />
         <Route path="/agendamiento" element={<AgendamientoIndex />} />
         
-        {/* Rutas de administración con el nuevo layout */}
-        <Route path="/admin" element={<AdminLayout />}>
+        {/* Ruta de login */}
+        <Route path="/login" element={<LoginPage />} />
+        
+        {/* Rutas de administración con el nuevo layout y protección */}
+        <Route path="/admin" element={
+          <ProtectedRoute>
+            <AdminLayout />
+          </ProtectedRoute>
+        }>
           <Route index element={<AdminDashboard />} />
           <Route path="profesionales" element={<ProfesionalesPage />} />
           <Route path="profesionales/:id/editar-servicios" element={<ProfesionalAsignarServicios />} />
@@ -52,6 +63,13 @@ function App() {
           <Route path="examenes" element={<AdminExamenes />} />
           {/* Añadir más rutas de administración según sea necesario */}
         </Route>
+        
+        {/* Ruta para acceso denegado */}
+        <Route path="/forbidden" element={<div className="error-page">
+          <h1>Acceso Denegado</h1>
+          <p>No tiene los permisos necesarios para acceder a esta página.</p>
+          <button onClick={() => window.history.back()}>Volver</button>
+        </div>} />
         
         {/* Ruta para redirigir 404 */}
         <Route path="*" element={<Navigate to="/" replace />} />
