@@ -42,7 +42,7 @@ const authenticateJWT = (req, res, next) => {
     if (process.env.NODE_ENV !== 'production') {
       logger.logGeneral('Autenticación exitosa', { 
         userId: decoded.id,
-        role: decoded.role
+        roles: decoded.roles
       });
     }
     
@@ -91,8 +91,9 @@ const authorizeRoles = (roles) => {
     const userRoles = Array.isArray(req.user.roles) ? req.user.roles : [req.user.role];
     const allowedRoles = Array.isArray(roles) ? roles : [roles];
 
-    // Verificar si el usuario tiene al menos uno de los roles requeridos
-    const hasAccess = userRoles.some(role => allowedRoles.includes(role));
+    // Verificar si el usuario tiene al menos uno de los roles requeridos o si es superadmin
+    const isSuperAdmin = userRoles.includes('superadmin');
+    const hasAccess = isSuperAdmin || userRoles.some(role => allowedRoles.includes(role));
     
     if (!hasAccess) {
       logger.logSecurity('Intento de acceso con permisos insuficientes', {
@@ -111,7 +112,33 @@ const authorizeRoles = (roles) => {
   };
 };
 
+/**
+ * Middleware para verificar si un usuario es superadmin
+ */
+const requireSuperAdmin = (req, res, next) => {
+  // Verificar que el middleware de autenticación se ejecutó primero
+  if (!req.user) {
+    logger.logError('requireSuperAdmin utilizado sin authenticateJWT previo');
+    return res.status(500).json({ error: 'Error de configuración: autenticación requerida' });
+  }
+
+  const userRoles = Array.isArray(req.user.roles) ? req.user.roles : [req.user.role];
+  
+  if (!userRoles.includes('superadmin')) {
+    logger.logSecurity('Intento de acceso a función de superadmin', {
+      userId: req.user.id,
+      userRoles,
+      path: req.originalUrl,
+      method: req.method
+    });
+    return res.status(403).json({ error: 'Acceso denegado. Se requieren permisos de superadmin.' });
+  }
+
+  next();
+};
+
 module.exports = {
   authenticateJWT,
-  authorizeRoles
+  authorizeRoles,
+  requireSuperAdmin
 };

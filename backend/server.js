@@ -17,6 +17,7 @@ const { preventInjection, preventXSS, securityHeaders } = require('./middleware/
 const { authenticateJWT } = require('./middleware/auth');
 
 // Importación de rutas
+const adminUsersRoutes = require('./routes/adminUsers'); // Nuevas rutas de usuarios administrativos
 const agendamientoRoutes = require('./routes/agendamiento');
 const profesionalesRoutes = require("./routes/profesionales");
 const especialidadesRoutes = require("./routes/especialidades");
@@ -77,13 +78,14 @@ app.get('/', (req, res) => {
   res.json({ message: 'API del Centro Médico funcionando correctamente' });
 });
 
+// Ruta para autenticación - acceso público al login
+app.use('/api/auth', adminUsersRoutes);
+
 // Rutas que requieren protección contra inyección pero no autenticación
 app.use('/api/pacientes', preventInjection);
 // ...otras rutas públicas que necesiten protección contra inyección...
 
 // Aplicar middleware de autenticación a rutas protegidas
-// Descomentar las siguientes líneas cuando el sistema de autenticación esté implementado
-/*
 app.use('/api/agendamiento', authenticateJWT);
 app.use('/api/profesionales', authenticateJWT);
 app.use('/api/especialidades', authenticateJWT);
@@ -103,7 +105,6 @@ app.use('/api/appointments', authenticateJWT);
 app.use('/api/tasa-cambio', authenticateJWT);
 app.use('/api/cotizaciones', authenticateJWT);
 app.use('/api/seguimiento', authenticateJWT);
-*/
 
 // Configuración de rutas API
 app.use('/api/agendamiento', agendamientoRoutes);
