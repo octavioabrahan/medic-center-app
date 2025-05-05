@@ -9,6 +9,7 @@ const AdminExamenes = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [exchangeRate, setExchangeRate] = useState(null);
+  const [lastChangeDate, setLastChangeDate] = useState({});
 
   // Estados para filtros
   const [searchTerm, setSearchTerm] = useState("");
@@ -57,6 +58,10 @@ const AdminExamenes = () => {
       const response = await axios.get("/api/exams");
       setExamenes(response.data);
       applyFilters(response.data);
+      
+      // Obtener el último cambio para cada examen
+      const examenesIds = response.data.map(examen => examen.codigo);
+      await fetchLastChangeDates(examenesIds);
     } catch (err) {
       console.error('Error:', err);
       setError('No se pudieron cargar los exámenes. Por favor, intenta de nuevo.');
@@ -64,6 +69,25 @@ const AdminExamenes = () => {
       setFilteredExamenes([]);
     } finally {
       setLoading(false);
+    }
+  };
+
+  // Obtener la última fecha de cambio de cada examen
+  const fetchLastChangeDates = async (codigos) => {
+    try {
+      const changeDates = {};
+      
+      // Para cada examen, obtener su último cambio
+      for (const codigo of codigos) {
+        const response = await axios.get(`/api/exams/${codigo}/historial`);
+        if (response.data && response.data.length > 0) {
+          changeDates[codigo] = response.data[0].fecha_cambio;
+        }
+      }
+      
+      setLastChangeDate(changeDates);
+    } catch (err) {
+      console.error('Error al obtener fechas de modificación:', err);
     }
   };
 
@@ -194,6 +218,7 @@ const AdminExamenes = () => {
       applyFilters([...examenes, response.data]);
       setShowAddModal(false);
       alert("Examen agregado correctamente");
+      fetchExamenes(); // Refrescar los datos para obtener las fechas actualizadas
     } catch (err) {
       console.error('Error:', err);
       alert("Error al agregar el examen");
@@ -217,6 +242,7 @@ const AdminExamenes = () => {
       applyFilters(updatedExamenes);
       setShowEditModal(false);
       alert("Examen actualizado correctamente");
+      fetchExamenes(); // Refrescar los datos para obtener las fechas actualizadas
     } catch (err) {
       console.error('Error:', err);
       alert("Error al actualizar el examen");
@@ -242,6 +268,10 @@ const AdminExamenes = () => {
       );
       setExamenes(updatedExamenes);
       applyFilters(updatedExamenes);
+      fetchExamenes(); // Refrescar los datos para obtener las fechas actualizadas
+      if (showEditModal) {
+        setShowEditModal(false);
+      }
     } catch (err) {
       console.error('Error:', err);
       alert(`Error al ${newStatus ? 'activar' : 'desactivar'} el examen`);
@@ -280,30 +310,48 @@ const AdminExamenes = () => {
                 <td>$ {parseFloat(examen.preciousd).toFixed(2)}</td>
                 <td>Bs. F. {calcularPrecioBs(examen.preciousd)}</td>
                 <td>
-                  {examen.updated_at ? formatDate(examen.updated_at) : 'N/A'}
+                  {lastChangeDate[examen.codigo] ? formatDate(lastChangeDate[examen.codigo]) : 'N/A'}
                 </td>
                 <td className="actions-cell">
-                  <button 
-                    className="btn-action btn-edit" 
-                    onClick={() => openEditModal(examen)}
-                    title="Editar"
-                  >
-                    ✎
-                  </button>
-                  <button
-                    className="btn-action btn-history"
-                    onClick={() => openHistorialModal(examen)}
-                    title="Ver historial"
-                  >
-                    🕒
-                  </button>
-                  <button
-                    className="btn-action btn-archive"
-                    onClick={() => toggleActivo(examen)}
-                    title={examen.is_active ? "Desactivar" : "Activar"}
-                  >
-                    {examen.is_active ? "📁" : "🔄"}
-                  </button>
+                  {/* Para exámenes activos: mostrar Editar y Ver historial */}
+                  {examen.is_active && (
+                    <>
+                      <button 
+                        className="btn-action btn-edit" 
+                        onClick={() => openEditModal(examen)}
+                        title="Editar"
+                      >
+                        ✎
+                      </button>
+                      <button
+                        className="btn-action btn-history"
+                        onClick={() => openHistorialModal(examen)}
+                        title="Ver historial"
+                      >
+                        🕒
+                      </button>
+                    </>
+                  )}
+                  
+                  {/* Para exámenes inactivos: mostrar solo Activar y Ver historial */}
+                  {!examen.is_active && (
+                    <>
+                      <button
+                        className="btn-action btn-activate"
+                        onClick={() => toggleActivo(examen)}
+                        title="Activar"
+                      >
+                        🔄
+                      </button>
+                      <button
+                        className="btn-action btn-history"
+                        onClick={() => openHistorialModal(examen)}
+                        title="Ver historial"
+                      >
+                        🕒
+                      </button>
+                    </>
+                  )}
                 </td>
               </tr>
             ))}
@@ -520,20 +568,22 @@ const AdminExamenes = () => {
                   <option value="servicio">Servicio</option>
                 </select>
               </div>
-              
-              <div className="form-group">
-                <label>
-                  <input
-                    type="checkbox"
-                    name="is_active"
-                    checked={formData.is_active}
-                    onChange={handleFormChange}
-                  />
-                  Examen activo
-                </label>
-              </div>
             </div>
             <div className="modal-footer">
+              <button 
+                type="button" 
+                className="btn-archive"
+                onClick={() => {
+                  // Crear una copia del examen con is_active = false
+                  const updatedExamen = {
+                    ...currentExamen,
+                    is_active: false
+                  };
+                  toggleActivo(updatedExamen);
+                }}
+              >
+                Archivar
+              </button>
               <button type="button" className="btn-secondary" onClick={() => setShowEditModal(false)}>
                 Cancelar
               </button>
@@ -560,41 +610,45 @@ const AdminExamenes = () => {
           </div>
           <div className="modal-body">
             <div className="examen-info">
-              <p><strong>Código:</strong> {currentExamen.codigo}</p>
-              <p><strong>Nombre:</strong> {currentExamen.nombre_examen}</p>
-              <p><strong>Estado actual:</strong> 
-                <span className={currentExamen.is_active ? "status-activo" : "status-inactivo"}>
+              <div className="examen-header">
+                <div className="examen-title">
+                  <div className="examen-codigo">Código: {currentExamen.codigo}</div>
+                  <div className="examen-nombre">Nombre: {currentExamen.nombre_examen}</div>
+                </div>
+                <div className={`examen-estado ${currentExamen.is_active ? "status-activo" : "status-inactivo"}`}>
                   {currentExamen.is_active ? "Activo" : "Inactivo"}
-                </span>
-              </p>
+                </div>
+              </div>
             </div>
             
-            <h3>Registro de cambios</h3>
-            {loadingHistorial ? (
-              <div className="loading">Cargando historial...</div>
-            ) : historialExamen.length === 0 ? (
-              <div className="no-results">No hay registros de cambios para este examen</div>
-            ) : (
-              <div className="timeline">
-                {historialExamen.map((cambio, index) => (
-                  <div className="timeline-item" key={index}>
-                    <div className="timeline-date">
-                      {formatDate(cambio.fecha_cambio)}
-                    </div>
-                    <div className="timeline-content">
-                      <div>
-                        <span className={`change-badge ${cambio.is_active_nuevo ? 'status-activo' : 'status-inactivo'}`}>
-                          {cambio.is_active_anterior ? 'Activo' : 'Inactivo'} ➔ {cambio.is_active_nuevo ? 'Activo' : 'Inactivo'}
-                        </span>
+            <div className="registro-cambios">
+              <h3>Registro de cambios</h3>
+              {loadingHistorial ? (
+                <div className="loading">Cargando historial...</div>
+              ) : historialExamen.length === 0 ? (
+                <div className="no-results">No hay registros de cambios para este examen</div>
+              ) : (
+                <div className="timeline">
+                  {historialExamen.map((cambio, index) => (
+                    <div className="timeline-item" key={index}>
+                      <div className="timeline-date">
+                        {formatDate(cambio.fecha_cambio)}
                       </div>
-                      <div className="timeline-footer">
-                        <span>Modificado por: {cambio.cambiado_por}</span>
+                      <div className="timeline-content">
+                        <div className="timeline-status-change">
+                          <span className={`status-badge ${cambio.is_active_nuevo ? 'status-activo' : 'status-inactivo'}`}>
+                            {cambio.is_active_anterior ? 'Activo' : 'Inactivo'} → {cambio.is_active_nuevo ? 'Activo' : 'Inactivo'}
+                          </span>
+                        </div>
+                        <div className="timeline-footer">
+                          <span>Modificado por: {cambio.cambiado_por}</span>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                ))}
-              </div>
-            )}
+                  ))}
+                </div>
+              )}
+            </div>
             
             <div className="modal-footer">
               <button className="btn-secondary" onClick={() => setShowHistorialModal(false)}>
