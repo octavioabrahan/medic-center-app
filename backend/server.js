@@ -8,6 +8,8 @@ const { backupAllLogs } = require('./utils/logBackup');
 require('dotenv').config();
 
 const app = express();
+
+app.set('trust proxy', 1);
 const port = process.env.PORT || 3001;
 
 // Importar middleware de seguridad
