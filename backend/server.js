@@ -174,8 +174,8 @@ schedule.scheduleJob('0 2 * * *', async () => {
   }
 });
 
-// Iniciar el servidor de forma segura
-app.listen(port, process.env.NODE_ENV === 'production' ? '127.0.0.1' : '0.0.0.0', () => {
-  logger.logGeneral(`Backend corriendo en http://${process.env.NODE_ENV === 'production' ? 'localhost' : '10.20.20.111'}:${port}`);
+// Iniciar el servidor - configuración simplificada para escuchar en todas las interfaces
+app.listen(port, '0.0.0.0', () => {
+  logger.logGeneral(`Backend corriendo en http://10.20.20.111:${port}`);
 });
 
