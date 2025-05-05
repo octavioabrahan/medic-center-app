@@ -39,12 +39,20 @@ api.interceptors.response.use(
 // Funciones de autenticación
 const auth = {
   login: async (email, password) => {
-    const response = await api.post("/auth/login", { email, password });
-    if (response.data.token) {
-      localStorage.setItem("authToken", response.data.token);
-      localStorage.setItem("user", JSON.stringify(response.data.usuario));
+    try {
+      console.log("Intentando login con:", { email }); // Debugging
+      const response = await api.post("/auth/login", { email, password });
+      console.log("Respuesta login:", response.data); // Debugging
+      
+      if (response.data.token) {
+        localStorage.setItem("authToken", response.data.token);
+        localStorage.setItem("user", JSON.stringify(response.data.usuario));
+      }
+      return response.data;
+    } catch (error) {
+      console.error("Error en login:", error.response || error); // Debugging mejorado
+      throw error;
     }
-    return response.data;
   },
   
   logout: () => {

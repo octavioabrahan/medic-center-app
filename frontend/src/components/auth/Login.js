@@ -15,7 +15,7 @@ function Login() {
 
     try {
       await auth.login(email, password);
-      // Redireccionar al dashboard o la página principal
+      // Redireccionar al dashboard administrativo
       window.location.href = "/admin";
     } catch (err) {
       console.error("Error de login:", err);
