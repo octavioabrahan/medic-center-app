@@ -7,12 +7,16 @@
  * Uso: node scripts/reset_admin_password.js
  */
 
+// Cargar variables de entorno primero
+require('dotenv').config();
+
 const bcrypt = require('bcrypt');
 const db = require('../models/db'); // Usar la misma conexión que usa toda la aplicación
-require('dotenv').config({ path: '../.env' });
 
 async function resetAdminPassword() {
   try {
+    console.log('Iniciando proceso de reseteo de contraseña para el usuario admin...');
+    
     // Email del usuario admin que queremos actualizar
     const email = 'admin@clinica.com';
     
