@@ -366,15 +366,15 @@ const AdminExamenes = () => {
     if (!showAddModal) return null;
 
     return (
-      <div className="modal-overlay">
-        <div className="modal-content">
-          <div className="modal-header">
+      <div className="examenes-modal-overlay">
+        <div className="examenes-modal-content">
+          <div className="examenes-modal-header">
             <h2>Agrega un nuevo item para cotizar</h2>
-            <button className="close-btn" onClick={() => setShowAddModal(false)}>×</button>
+            <button className="examenes-close-btn" onClick={() => setShowAddModal(false)}>×</button>
           </div>
           <form onSubmit={handleAddExamen}>
-            <div className="modal-body">
-              <div className="form-group">
+            <div className="examenes-modal-body">
+              <div className="examenes-form-group">
                 <label htmlFor="codigo">Código</label>
                 <input
                   type="text"
@@ -386,7 +386,7 @@ const AdminExamenes = () => {
                 />
               </div>
               
-              <div className="form-group">
+              <div className="examenes-form-group">
                 <label htmlFor="nombre_examen">Nombre</label>
                 <input
                   type="text"
@@ -398,7 +398,7 @@ const AdminExamenes = () => {
                 />
               </div>
               
-              <div className="form-group">
+              <div className="examenes-form-group">
                 <label htmlFor="preciousd">Precio en USD</label>
                 <input
                   type="number"
@@ -412,7 +412,7 @@ const AdminExamenes = () => {
                 />
               </div>
               
-              <div className="form-group">
+              <div className="examenes-form-group">
                 <label htmlFor="preciobs">Precio en Bs. F.</label>
                 <input
                   type="text"
@@ -421,10 +421,10 @@ const AdminExamenes = () => {
                   value={calcularPrecioBs(formData.preciousd)}
                   readOnly
                 />
-                <p className="helper-text">Este precio se calcula en base al precio ingresado en USD. No se mostrará en el cotizador</p>
+                <p className="examenes-helper-text">Este precio se calcula en base al precio ingresado en USD. No se mostrará en el cotizador</p>
               </div>
               
-              <div className="form-group">
+              <div className="examenes-form-group">
                 <label htmlFor="tiempo_entrega">Tiempo de entrega</label>
                 <input
                   type="text"
@@ -435,7 +435,7 @@ const AdminExamenes = () => {
                 />
               </div>
               
-              <div className="form-group">
+              <div className="examenes-form-group">
                 <label htmlFor="informacion">Indicaciones</label>
                 <textarea
                   id="informacion"
@@ -445,7 +445,7 @@ const AdminExamenes = () => {
                 />
               </div>
               
-              <div className="form-group">
+              <div className="examenes-form-group">
                 <label htmlFor="tipo">Tipo</label>
                 <select
                   id="tipo"
@@ -458,11 +458,11 @@ const AdminExamenes = () => {
                 </select>
               </div>
             </div>
-            <div className="modal-footer">
-              <button type="button" className="btn-secondary" onClick={() => setShowAddModal(false)}>
+            <div className="examenes-modal-footer">
+              <button type="button" className="examenes-btn-secondary" onClick={() => setShowAddModal(false)}>
                 Cancelar
               </button>
-              <button type="submit" className="btn-primary">
+              <button type="submit" className="examenes-btn-primary">
                 Agregar
               </button>
             </div>
@@ -477,15 +477,15 @@ const AdminExamenes = () => {
     if (!showEditModal || !currentExamen) return null;
 
     return (
-      <div className="modal-overlay">
-        <div className="modal-content">
-          <div className="modal-header">
+      <div className="examenes-modal-overlay">
+        <div className="examenes-modal-content">
+          <div className="examenes-modal-header">
             <h2>Editar examen</h2>
-            <button className="close-btn" onClick={() => setShowEditModal(false)}>×</button>
+            <button className="examenes-close-btn" onClick={() => setShowEditModal(false)}>×</button>
           </div>
           <form onSubmit={handleUpdateExamen}>
-            <div className="modal-body">
-              <div className="form-group">
+            <div className="examenes-modal-body">
+              <div className="examenes-form-group">
                 <label htmlFor="edit-codigo">Código</label>
                 <input
                   type="text"
@@ -494,10 +494,10 @@ const AdminExamenes = () => {
                   value={formData.codigo}
                   readOnly
                 />
-                <p className="helper-text">El código no se puede editar</p>
+                <p className="examenes-helper-text">El código no se puede editar</p>
               </div>
               
-              <div className="form-group">
+              <div className="examenes-form-group">
                 <label htmlFor="edit-nombre_examen">Nombre</label>
                 <input
                   type="text"
@@ -509,7 +509,7 @@ const AdminExamenes = () => {
                 />
               </div>
               
-              <div className="form-group">
+              <div className="examenes-form-group">
                 <label htmlFor="edit-preciousd">Precio en USD</label>
                 <input
                   type="number"
@@ -523,7 +523,7 @@ const AdminExamenes = () => {
                 />
               </div>
               
-              <div className="form-group">
+              <div className="examenes-form-group">
                 <label htmlFor="edit-preciobs">Precio en Bs. F.</label>
                 <input
                   type="text"
@@ -532,10 +532,10 @@ const AdminExamenes = () => {
                   value={calcularPrecioBs(formData.preciousd)}
                   readOnly
                 />
-                <p className="helper-text">Este precio se calcula en base al precio ingresado en USD. No se mostrará en el cotizador</p>
+                <p className="examenes-helper-text">Este precio se calcula en base al precio ingresado en USD. No se mostrará en el cotizador</p>
               </div>
               
-              <div className="form-group">
+              <div className="examenes-form-group">
                 <label htmlFor="edit-tiempo_entrega">Tiempo de entrega</label>
                 <input
                   type="text"
@@ -546,7 +546,7 @@ const AdminExamenes = () => {
                 />
               </div>
               
-              <div className="form-group">
+              <div className="examenes-form-group">
                 <label htmlFor="edit-informacion">Indicaciones</label>
                 <textarea
                   id="edit-informacion"
@@ -556,7 +556,7 @@ const AdminExamenes = () => {
                 />
               </div>
               
-              <div className="form-group">
+              <div className="examenes-form-group">
                 <label htmlFor="edit-tipo">Tipo</label>
                 <select
                   id="edit-tipo"
@@ -569,10 +569,10 @@ const AdminExamenes = () => {
                 </select>
               </div>
             </div>
-            <div className="modal-footer">
+            <div className="examenes-modal-footer">
               <button 
                 type="button" 
-                className="btn-archive"
+                className="examenes-btn-archive"
                 onClick={() => {
                   // Crear una copia del examen con is_active = false
                   const updatedExamen = {
@@ -584,10 +584,10 @@ const AdminExamenes = () => {
               >
                 Archivar
               </button>
-              <button type="button" className="btn-secondary" onClick={() => setShowEditModal(false)}>
+              <button type="button" className="examenes-btn-secondary" onClick={() => setShowEditModal(false)}>
                 Cancelar
               </button>
-              <button type="submit" className="btn-primary">
+              <button type="submit" className="examenes-btn-primary">
                 Guardar
               </button>
             </div>
@@ -602,59 +602,121 @@ const AdminExamenes = () => {
     if (!showHistorialModal || !currentExamen) return null;
 
     return (
-      <div className="modal-overlay">
-        <div className="modal-content historial-modal">
-          <div className="modal-header">
+      <div className="examenes-modal-overlay">
+        <div className="examenes-modal-content examenes-historial-modal">
+          <div className="examenes-modal-header">
             <h2>Historial de cambios</h2>
-            <button className="close-btn" onClick={() => setShowHistorialModal(false)}>×</button>
+            <button className="examenes-close-btn" onClick={() => setShowHistorialModal(false)}>×</button>
           </div>
-          <div className="modal-body">
-            <div className="examen-info">
-              <div className="examen-header">
-                <div className="examen-title">
-                  <div className="examen-codigo">Código: {currentExamen.codigo}</div>
-                  <div className="examen-nombre">Nombre: {currentExamen.nombre_examen}</div>
+          <div className="examenes-modal-body">
+            <div className="examenes-info">
+              <div className="examenes-header">
+                <div className="examenes-title">
+                  <div className="examenes-codigo">Código: {currentExamen.codigo}</div>
+                  <div className="examenes-nombre">Nombre: {currentExamen.nombre_examen}</div>
                 </div>
-                <div className={`examen-estado ${currentExamen.is_active ? "status-activo" : "status-inactivo"}`}>
+                <div className={`examenes-estado ${currentExamen.is_active ? "examenes-status-activo" : "examenes-status-inactivo"}`}>
                   {currentExamen.is_active ? "Activo" : "Inactivo"}
                 </div>
               </div>
             </div>
             
-            <div className="registro-cambios">
+            <div className="examenes-registro-cambios">
               <h3>Registro de cambios</h3>
               {loadingHistorial ? (
-                <div className="loading">Cargando historial...</div>
+                <div className="examenes-loading">Cargando historial...</div>
               ) : historialExamen.length === 0 ? (
-                <div className="no-results">No hay registros de cambios para este examen</div>
+                <div className="examenes-no-results">No hay registros de cambios para este examen</div>
               ) : (
-                <div className="timeline">
-                  {historialExamen.map((cambio, index) => (
-                    <div className="timeline-item" key={index}>
-                      <div className="timeline-date">
-                        {formatDate(cambio.fecha_cambio)}
-                      </div>
-                      <div className="timeline-content">
-                        <div className="timeline-status-change">
-                          <span className={`status-badge ${cambio.is_active_nuevo ? 'status-activo' : 'status-inactivo'}`}>
-                            {cambio.is_active_anterior ? 'Activo' : 'Inactivo'} → {cambio.is_active_nuevo ? 'Activo' : 'Inactivo'}
-                          </span>
+                <div className="examenes-timeline">
+                  {historialExamen.map((registro, index) => {
+                    // Determinar el registro previo para comparación
+                    const prevRegistro = index < historialExamen.length - 1 ? historialExamen[index + 1] : null;
+                    
+                    return (
+                      <div className="examenes-cambio" key={index}>
+                        <div className="examenes-cambio-fecha">
+                          {formatDate(registro.fecha_cambio)}
                         </div>
-                        <div className="timeline-footer">
-                          <span>Modificado por: {cambio.cambiado_por}</span>
+                        <div className="examenes-cambio-usuario">
+                          Usuario: {registro.usuario || 'Sistema'}
+                        </div>
+                        <div className="examenes-cambio-detalles">
+                          {/* Mostrar siempre el precio y estado actual */}
+                          <div className="examenes-cambio-campo">
+                            <strong>Precio USD:</strong> 
+                            {parseFloat(registro.preciousd).toFixed(2)}
+                          </div>
+                          <div className="examenes-cambio-campo">
+                            <strong>Estado:</strong> 
+                            {registro.is_active ? 'Activo' : 'Inactivo'}
+                          </div>
+                          
+                          {/* Mostrar nombre del examen si cambió */}
+                          {prevRegistro && prevRegistro.nombre_examen !== registro.nombre_examen && (
+                            <div className="examenes-cambio-campo">
+                              <strong>Nombre:</strong> 
+                              <span className="nuevo-valor">{registro.nombre_examen}</span>
+                              <span className="valor-anterior"> (Anterior: {prevRegistro.nombre_examen})</span>
+                            </div>
+                          )}
+                          
+                          {/* Mostrar tiempo de entrega si cambió */}
+                          {prevRegistro && prevRegistro.tiempo_entrega !== registro.tiempo_entrega && (
+                            <div className="examenes-cambio-campo">
+                              <strong>Tiempo de entrega:</strong> 
+                              <span className="nuevo-valor">{registro.tiempo_entrega || 'No especificado'}</span>
+                              <span className="valor-anterior"> (Anterior: {prevRegistro.tiempo_entrega || 'No especificado'})</span>
+                            </div>
+                          )}
+                          
+                          {/* Mostrar información si cambió */}
+                          {prevRegistro && prevRegistro.informacion !== registro.informacion && (
+                            <div className="examenes-cambio-campo">
+                              <strong>Indicaciones:</strong> 
+                              <span className="nuevo-valor">{registro.informacion || 'No especificado'}</span>
+                              <span className="valor-anterior"> (Anterior: {prevRegistro.informacion || 'No especificado'})</span>
+                            </div>
+                          )}
+                          
+                          {/* Mostrar tipo si cambió */}
+                          {prevRegistro && prevRegistro.tipo !== registro.tipo && (
+                            <div className="examenes-cambio-campo">
+                              <strong>Tipo:</strong> 
+                              <span className="nuevo-valor">{registro.tipo || 'No especificado'}</span>
+                              <span className="valor-anterior"> (Anterior: {prevRegistro.tipo || 'No especificado'})</span>
+                            </div>
+                          )}
+                          
+                          {/* Para el primer registro (el más reciente) o si no hay registros previos, mostrar todos los campos */}
+                          {(!prevRegistro && index === 0) && (
+                            <>
+                              <div className="examenes-cambio-campo">
+                                <strong>Nombre:</strong> {registro.nombre_examen}
+                              </div>
+                              <div className="examenes-cambio-campo">
+                                <strong>Tiempo de entrega:</strong> {registro.tiempo_entrega || 'No especificado'}
+                              </div>
+                              <div className="examenes-cambio-campo">
+                                <strong>Indicaciones:</strong> {registro.informacion || 'No especificado'}
+                              </div>
+                              <div className="examenes-cambio-campo">
+                                <strong>Tipo:</strong> {registro.tipo || 'No especificado'}
+                              </div>
+                            </>
+                          )}
                         </div>
                       </div>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
               )}
             </div>
-            
-            <div className="modal-footer">
-              <button className="btn-secondary" onClick={() => setShowHistorialModal(false)}>
-                Cerrar
-              </button>
-            </div>
+          </div>
+          <div className="examenes-modal-footer">
+            <button className="examenes-btn-secondary" onClick={() => setShowHistorialModal(false)}>
+              Cerrar
+            </button>
           </div>
         </div>
       </div>
