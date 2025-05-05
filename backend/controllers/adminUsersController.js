@@ -66,18 +66,33 @@ const AdminUsersController = {
    */
   login: async (req, res) => {
     try {
+      console.log("=== INICIO DE PETICIÓN DE LOGIN ===");
+      console.log("Body recibido:", req.body);
       const { email, password } = req.body;
+      
+      console.log("Datos de login:", { email, passwordLength: password ? password.length : 0 });
       
       // Obtener usuario por email
       const usuario = await AdminUsersModel.obtenerPorEmail(email);
       
+      console.log("¿Usuario encontrado?:", !!usuario);
+      
       // Si no existe el usuario o está desactivado
       if (!usuario) {
+        console.log("Usuario no existe en la base de datos");
         logger.logSecurity('Intento de inicio de sesión con usuario inexistente', { email, ip: req.ip });
         return res.status(401).json({ error: "Credenciales inválidas" });
       }
       
+      console.log("Estado del usuario:", { 
+        id: usuario.id,
+        isActive: usuario.is_active,
+        failedAttempts: usuario.failed_login_attempts,
+        lockedUntil: usuario.locked_until
+      });
+      
       if (!usuario.is_active) {
+        console.log("Cuenta desactivada");
         logger.logSecurity('Intento de inicio de sesión con cuenta desactivada', { 
           userId: usuario.id, email, ip: req.ip 
         });
@@ -86,6 +101,7 @@ const AdminUsersController = {
       
       // Verificar si la cuenta está bloqueada
       if (usuario.locked_until && new Date(usuario.locked_until) > new Date()) {
+        console.log("Cuenta bloqueada hasta:", usuario.locked_until);
         logger.logSecurity('Intento de inicio de sesión con cuenta bloqueada', { 
           userId: usuario.id, email, ip: req.ip 
         });
@@ -96,32 +112,47 @@ const AdminUsersController = {
       }
 
       // Verificar contraseña
-      const passwordMatch = await bcrypt.compare(password, usuario.password_hash);
+      console.log("Verificando contraseña...");
+      console.log("Hash almacenado:", usuario.password_hash);
       
-      if (!passwordMatch) {
-        // Registrar intento fallido
-        const intento = await AdminUsersModel.registrarIntentoFallido(email);
+      // Intentar verificar la contraseña con bcrypt
+      try {
+        const passwordMatch = await bcrypt.compare(password, usuario.password_hash);
+        console.log("Resultado de verificación:", passwordMatch);
         
-        logger.logSecurity('Intento de inicio de sesión fallido', {
-          userId: usuario.id, 
-          email, 
-          ip: req.ip,
-          attemptCount: intento.failed_login_attempts
-        });
-        
-        if (intento.failed_login_attempts >= 5) {
-          return res.status(401).json({
-            error: "Cuenta bloqueada temporalmente por múltiples intentos fallidos",
-            lockExpiry: intento.locked_until
+        if (!passwordMatch) {
+          console.log("Contraseña incorrecta");
+          // Registrar intento fallido
+          const intento = await AdminUsersModel.registrarIntentoFallido(email);
+          
+          logger.logSecurity('Intento de inicio de sesión fallido', {
+            userId: usuario.id, 
+            email, 
+            ip: req.ip,
+            attemptCount: intento.failed_login_attempts
           });
+          
+          if (intento.failed_login_attempts >= 5) {
+            return res.status(401).json({
+              error: "Cuenta bloqueada temporalmente por múltiples intentos fallidos",
+              lockExpiry: intento.locked_until
+            });
+          }
+          
+          return res.status(401).json({ error: "Credenciales inválidas" });
         }
-        
-        return res.status(401).json({ error: "Credenciales inválidas" });
+      } catch (bcryptError) {
+        console.error("Error en bcrypt.compare:", bcryptError);
+        return res.status(500).json({ error: "Error al verificar credenciales" });
       }
+      
+      console.log("Autenticación exitosa, obteniendo roles...");
       
       // Obtener los roles del usuario
       const roles = await AdminUserRolesModel.rolesDeUsuario(usuario.id);
       const roleNames = roles.map(r => r.nombre_rol);
+      
+      console.log("Roles:", roleNames);
       
       // Registrar inicio de sesión exitoso
       await AdminUsersModel.registrarLoginExitoso(usuario.id);
@@ -138,6 +169,7 @@ const AdminUsersController = {
         { expiresIn: TOKEN_EXPIRY }
       );
       
+      console.log("Token generado correctamente");
       logger.logSecurity('Inicio de sesión exitoso', {
         userId: usuario.id,
         email: usuario.email,
@@ -145,6 +177,7 @@ const AdminUsersController = {
         ip: req.ip
       });
       
+      console.log("Enviando respuesta al cliente");
       res.json({
         token,
         usuario: {
@@ -155,9 +188,11 @@ const AdminUsersController = {
           roles: roleNames
         }
       });
+      console.log("=== FIN DE PETICIÓN DE LOGIN ===");
     } catch (err) {
+      console.error("ERROR CRÍTICO en login:", err);
       logger.logError('Error en inicio de sesión', err);
-      res.status(500).json({ error: "Error al iniciar sesión" });
+      res.status(500).json({ error: "Error al iniciar sesión", details: err.message });
     }
   },
 

@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { auth } from "../../api";
+import axios from "axios";
 import "./Auth.css";
 
 function Login() {
@@ -14,9 +15,34 @@ function Login() {
     setLoading(true);
 
     try {
-      await auth.login(email, password);
-      // Redireccionar al dashboard administrativo
-      window.location.href = "/admin";
+      // Primera intentamos con la función auth.login normal
+      try {
+        console.log("Intentando con auth.login:", { email });
+        await auth.login(email, password);
+        window.location.href = "/admin";
+        return;
+      } catch (error) {
+        console.log("Primer método falló, intentando directo con axios");
+      }
+
+      // Si falla, intentamos con axios directamente
+      console.log("Intentando login directo:", { email });
+      const response = await axios.post("/api/auth/login", { 
+        email, 
+        password 
+      }, {
+        headers: {
+          'Content-Type': 'application/json',
+        }
+      });
+      
+      console.log("Respuesta login directo:", response.data);
+      
+      if (response.data.token) {
+        localStorage.setItem("authToken", response.data.token);
+        localStorage.setItem("user", JSON.stringify(response.data.usuario));
+        window.location.href = "/admin";
+      }
     } catch (err) {
       console.error("Error de login:", err);
       if (err.response && err.response.data) {
