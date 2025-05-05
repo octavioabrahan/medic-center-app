@@ -125,6 +125,7 @@ app.use('/api/archivos', archivoRoutes);
 app.use('/api/exams', examRoutes);
 app.use('/api/appointments', appointmentRoutes);
 app.use('/api/tasa-cambio', exchangeRateRoutes);
+app.use('/api/exchange-rate', exchangeRateRoutes); // Añadir ruta adicional compatible con el frontend
 app.use('/api/cotizaciones', quotesRoutes);
 app.use('/api/seguimiento', seguimientoRoutes);
 
