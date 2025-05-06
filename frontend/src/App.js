@@ -25,7 +25,7 @@ import AdministracionPage from './pages/admin/AdministracionPage'; // Nueva pág
 // Importar componentes de autenticación
 import LoginPage from './pages/auth/LoginPage';
 import ProtectedRoute from './components/auth/ProtectedRoute';
-import { auth } from './api';
+// Eliminamos la importación no utilizada de 'auth'
 
 function App() {
   return (

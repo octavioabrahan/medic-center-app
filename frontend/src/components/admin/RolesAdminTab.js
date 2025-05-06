@@ -9,10 +9,31 @@ function RolesAdminTab() {
   const [showModal, setShowModal] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [currentRole, setCurrentRole] = useState(null);
+  
+  // Estado del formulario
+  const [formData, setFormData] = useState({
+    nombre_rol: "",
+    descripcion: ""
+  });
 
   useEffect(() => {
     fetchRoles();
   }, []);
+  
+  // Actualizar el formulario cuando cambia el rol seleccionado
+  useEffect(() => {
+    if (currentRole) {
+      setFormData({
+        nombre_rol: currentRole.nombre_rol || "",
+        descripcion: currentRole.descripcion || ""
+      });
+    } else {
+      setFormData({
+        nombre_rol: "",
+        descripcion: ""
+      });
+    }
+  }, [currentRole]);
 
   // Filtrar roles cuando cambia el término de búsqueda
   useEffect(() => {
@@ -61,14 +82,14 @@ function RolesAdminTab() {
     }
   };
 
-  const handleSaveRole = async (roleData) => {
+  const handleSaveRole = async () => {
     try {
       if (currentRole) {
         // Actualizar rol existente
-        await axios.put(`/api/roles/${currentRole.id_rol}`, roleData);
+        await axios.put(`/api/roles/${currentRole.id_rol}`, formData);
       } else {
         // Crear nuevo rol
-        await axios.post("/api/roles", roleData);
+        await axios.post("/api/roles", formData);
       }
       setShowModal(false);
       fetchRoles();
@@ -78,30 +99,20 @@ function RolesAdminTab() {
     }
   };
 
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({
+      ...formData,
+      [name]: value
+    });
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    handleSaveRole();
+  };
+
   const renderRoleForm = () => {
-    const initialData = currentRole ? {
-      nombre_rol: currentRole.nombre_rol,
-      descripcion: currentRole.descripcion || "",
-    } : {
-      nombre_rol: "",
-      descripcion: "",
-    };
-
-    const [formData, setFormData] = useState(initialData);
-
-    const handleChange = (e) => {
-      const { name, value } = e.target;
-      setFormData({
-        ...formData,
-        [name]: value
-      });
-    };
-
-    const handleSubmit = (e) => {
-      e.preventDefault();
-      handleSaveRole(formData);
-    };
-
     return (
       <form onSubmit={handleSubmit} className="role-form">
         <div className="form-group">

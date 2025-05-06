@@ -11,11 +11,43 @@ function UsuariosAdminTab() {
   const [searchTerm, setSearchTerm] = useState("");
   const [currentUser, setCurrentUser] = useState(null);
   const [availableRoles, setAvailableRoles] = useState([]);
+  
+  // Estado del formulario
+  const [formData, setFormData] = useState({
+    email: "",
+    name: "",
+    last_name: "",
+    password: "",
+    roles: [],
+    is_active: true
+  });
 
   useEffect(() => {
     fetchUsuarios();
     fetchRoles();
   }, []);
+  
+  // Efecto para reiniciar el formulario cuando cambia currentUser
+  useEffect(() => {
+    if (currentUser) {
+      setFormData({
+        email: currentUser.email || "",
+        name: currentUser.name || "",
+        last_name: currentUser.last_name || "",
+        roles: currentUser.roles?.map(r => typeof r === 'object' ? r.id_rol : r) || [],
+        is_active: currentUser.is_active !== false
+      });
+    } else {
+      setFormData({
+        email: "",
+        name: "",
+        last_name: "",
+        password: "",
+        roles: [],
+        is_active: true
+      });
+    }
+  }, [currentUser]);
 
   // Filtrar usuarios cuando cambia el término de búsqueda
   useEffect(() => {
@@ -73,14 +105,14 @@ function UsuariosAdminTab() {
     }
   };
 
-  const handleSaveUser = async (userData) => {
+  const handleSaveUser = async () => {
     try {
       if (currentUser) {
         // Actualizar usuario existente
-        await axios.put(`/api/auth/${currentUser.id}`, userData);
+        await axios.put(`/api/auth/${currentUser.id}`, formData);
       } else {
         // Crear nuevo usuario
-        await axios.post("/api/auth", userData);
+        await axios.post("/api/auth", formData);
       }
       setShowModal(false);
       fetchUsuarios();
@@ -90,55 +122,38 @@ function UsuariosAdminTab() {
     }
   };
 
-  const renderUserForm = () => {
-    const initialData = currentUser ? {
-      email: currentUser.email,
-      name: currentUser.name,
-      last_name: currentUser.last_name,
-      roles: currentUser.roles?.map(r => typeof r === 'object' ? r.id_rol : r) || [],
-      is_active: currentUser.is_active !== false
-    } : {
-      email: "",
-      name: "",
-      last_name: "",
-      password: "",
-      roles: [],
-      is_active: true
-    };
+  const handleChange = (e) => {
+    const { name, value, checked, type } = e.target;
+    setFormData({
+      ...formData,
+      [name]: type === 'checkbox' ? checked : value
+    });
+  };
 
-    const [formData, setFormData] = useState(initialData);
-
-    const handleChange = (e) => {
-      const { name, value, checked, type } = e.target;
+  const handleRoleChange = (roleId) => {
+    const currentRoles = [...formData.roles];
+    
+    if (currentRoles.includes(roleId)) {
+      // Eliminar el rol si ya está seleccionado
       setFormData({
         ...formData,
-        [name]: type === 'checkbox' ? checked : value
+        roles: currentRoles.filter(id => id !== roleId)
       });
-    };
+    } else {
+      // Añadir el rol si no está seleccionado
+      setFormData({
+        ...formData,
+        roles: [...currentRoles, roleId]
+      });
+    }
+  };
 
-    const handleRoleChange = (roleId) => {
-      const currentRoles = [...formData.roles];
-      
-      if (currentRoles.includes(roleId)) {
-        // Eliminar el rol si ya está seleccionado
-        setFormData({
-          ...formData,
-          roles: currentRoles.filter(id => id !== roleId)
-        });
-      } else {
-        // Añadir el rol si no está seleccionado
-        setFormData({
-          ...formData,
-          roles: [...currentRoles, roleId]
-        });
-      }
-    };
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    handleSaveUser();
+  };
 
-    const handleSubmit = (e) => {
-      e.preventDefault();
-      handleSaveUser(formData);
-    };
-
+  const renderUserForm = () => {
     return (
       <form onSubmit={handleSubmit} className="user-form">
         <div className="form-group">
