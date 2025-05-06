@@ -14,11 +14,12 @@ const AdminUsersController = {
    */
   registro: async (req, res) => {
     try {
-      const { email, password, name, last_name, role_id } = req.body;
+      const { email, password, name, last_name, roles } = req.body;
       
-      // Verificar que se haya especificado un rol
-      if (!role_id) {
-        return res.status(400).json({ error: "Debe asignar un rol al usuario" });
+      // Verificar que se haya especificado al menos un rol
+      // Ahora aceptamos el campo 'roles' que viene del frontend
+      if (!roles || !Array.isArray(roles) || roles.length === 0) {
+        return res.status(400).json({ error: "Debe asignar al menos un rol al usuario" });
       }
       
       // Verificar si el usuario ya existe
@@ -46,28 +47,26 @@ const AdminUsersController = {
           email, password, name, last_name 
         });
         
-        // Asignar rol
-        try {
-          await AdminUserRolesModel.asignarConCliente(client, {
-            user_id: usuario.id,
-            id_rol: role_id,
-            created_by: req.user ? req.user.email : 'sistema'
-          });
-        } catch (rolError) {
-          // Si falla la asignación de rol, hacer rollback y devolver error
-          await client.query('ROLLBACK');
-          logger.logError('Error al asignar rol al usuario', rolError);
-          return res.status(400).json({ 
-            error: "Error al asignar rol al usuario. Verifique que el ID del rol sea válido." 
-          });
+        // Asignar todos los roles seleccionados
+        for (const roleId of roles) {
+          try {
+            await AdminUserRolesModel.asignarConCliente(client, {
+              user_id: usuario.id,
+              id_rol: roleId,
+              created_by: req.user ? req.user.email : 'sistema'
+            });
+          } catch (rolError) {
+            // Si falla la asignación de rol, seguimos con los demás
+            logger.logError(`Error al asignar el rol ${roleId} al usuario`, rolError);
+          }
         }
         
         await client.query('COMMIT');
         
-        logger.logSecurity('Usuario administrativo creado con rol', {
+        logger.logSecurity('Usuario administrativo creado con roles', {
           userId: usuario.id,
           email: usuario.email,
-          roleId: role_id,
+          roles: roles,
           createdBy: req.user ? req.user.email : 'sistema'
         });
         
@@ -78,7 +77,7 @@ const AdminUsersController = {
             email: usuario.email,
             name: usuario.name,
             last_name: usuario.last_name,
-            role_id: role_id
+            roles: roles
           }
         });
       } catch (err) {
