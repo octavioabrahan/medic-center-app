@@ -11,15 +11,18 @@ function UsuariosAdminTab() {
   const [currentUser, setCurrentUser] = useState(null);
   const [availableRoles, setAvailableRoles] = useState([]);
   
-  // Estado del formulario
-  const [formData, setFormData] = useState({
+  // Inicializar formData con valores por defecto para evitar problemas de input controlado/no controlado
+  const defaultFormData = {
     email: "",
     name: "",
     last_name: "",
     password: "",
-    roles: [],
+    roles: [], // Asegurarnos de inicializar siempre como array
     is_active: true
-  });
+  };
+  
+  // Estado del formulario
+  const [formData, setFormData] = useState(defaultFormData);
 
   useEffect(() => {
     fetchUsuarios();
@@ -29,22 +32,22 @@ function UsuariosAdminTab() {
   // Efecto para reiniciar el formulario cuando cambia currentUser
   useEffect(() => {
     if (currentUser) {
+      // Asegurarse de que todos los campos tengan valores definidos
+      const userRoles = Array.isArray(currentUser.roles) 
+        ? currentUser.roles.map(r => typeof r === 'object' ? r.id_rol : r) 
+        : [];
+        
       setFormData({
         email: currentUser.email || "",
         name: currentUser.name || "",
         last_name: currentUser.last_name || "",
-        roles: currentUser.roles?.map(r => typeof r === 'object' ? r.id_rol : r) || [],
+        // No incluir password al editar un usuario existente
+        roles: userRoles,
         is_active: currentUser.is_active !== false
       });
     } else {
-      setFormData({
-        email: "",
-        name: "",
-        last_name: "",
-        password: "",
-        roles: [],
-        is_active: true
-      });
+      // Usar valores por defecto para un nuevo usuario
+      setFormData({...defaultFormData});
     }
   }, [currentUser]);
 
@@ -130,7 +133,7 @@ function UsuariosAdminTab() {
   };
 
   const handleRoleChange = (roleId) => {
-    const currentRoles = [...formData.roles];
+    const currentRoles = Array.isArray(formData.roles) ? [...formData.roles] : [];
     
     if (currentRoles.includes(roleId)) {
       // Eliminar el rol si ya está seleccionado
@@ -214,7 +217,7 @@ function UsuariosAdminTab() {
                 <input
                   type="checkbox"
                   id={`role-${role.id_rol}`}
-                  checked={formData.roles.includes(role.id_rol)}
+                  checked={Array.isArray(formData.roles) && formData.roles.includes(role.id_rol)}
                   onChange={() => handleRoleChange(role.id_rol)}
                 />
                 <label htmlFor={`role-${role.id_rol}`}>{role.nombre_rol}</label>
