@@ -21,7 +21,8 @@ const AdminSidebar = () => {
   useEffect(() => {
     const fetchAllowedScreens = async () => {
       try {
-        const response = await api.get('/role-screen-permissions/user-screens');
+        // Usamos la ruta correcta del backend: /role-screen-permissions/usuario
+        const response = await api.get('/role-screen-permissions/usuario');
         setAllowedScreens(response.data);
       } catch (error) {
         console.error('Error al cargar pantallas permitidas:', error);

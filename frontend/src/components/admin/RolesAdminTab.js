@@ -178,12 +178,14 @@ function RolesAdminTab() {
   };
 
   const handleScreenPermissionChange = (screenId, checked) => {
-    // Actualizar el estado de pantallas
-    setScreens(screens.map(screen => 
-      screen.id_screen === screenId 
-        ? { ...screen, can_view: checked }
-        : screen
-    ));
+    // Actualizar el estado de pantallas con la nueva selección
+    setScreens(prevScreens => 
+      prevScreens.map(screen => 
+        screen.id_screen === screenId 
+          ? { ...screen, can_view: checked }
+          : screen
+      )
+    );
   };
 
   const handleSubmit = (e) => {
@@ -262,7 +264,6 @@ function RolesAdminTab() {
                 />
                 <span className="screen-name">{screen.name}</span>
               </label>
-              <span className="screen-description">{screen.description}</span>
             </div>
           ))}
         </div>
