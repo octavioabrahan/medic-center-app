@@ -14,54 +14,71 @@ const AdminUsersController = {
    */
   registro: async (req, res) => {
     try {
+      console.log("=== INICIO DE REGISTRO DE USUARIO ===");
+      console.log("Headers:", req.headers);
+      console.log("Usuario autenticado:", req.user);
+      console.log("Body recibido:", req.body);
+      
       const { email, password, name, last_name, roles } = req.body;
       
       // Verificar que se haya especificado al menos un rol
       // Ahora aceptamos el campo 'roles' que viene del frontend
       if (!roles || !Array.isArray(roles) || roles.length === 0) {
+        console.log("Error: No se especificaron roles");
         return res.status(400).json({ error: "Debe asignar al menos un rol al usuario" });
       }
       
       // Verificar si el usuario ya existe
       const existingUser = await AdminUsersModel.obtenerPorEmail(email);
       if (existingUser) {
+        console.log("Error: El correo ya está registrado");
         return res.status(409).json({ error: "El correo electrónico ya está registrado" });
       }
       
       // Validar complejidad de la contraseña
       if (!validatePassword(password)) {
+        console.log("Error: La contraseña no cumple los requisitos");
         return res.status(400).json({ 
           error: "La contraseña debe tener al menos 8 caracteres, una mayúscula, una minúscula, un número y un carácter especial" 
         });
       }
 
+      console.log("Iniciando transacción para crear usuario");
       // Usar transacción para garantizar que se creen tanto el usuario como su rol
       const db = require("../models/db");
       const client = await db.getClient();
       
       try {
         await client.query('BEGIN');
+        console.log("Transacción iniciada");
         
         // Crear el usuario
+        console.log("Creando usuario en la base de datos");
         const usuario = await AdminUsersModel.crearConCliente(client, { 
           email, password, name, last_name 
         });
+        console.log("Usuario creado:", usuario);
         
         // Asignar todos los roles seleccionados
         for (const roleId of roles) {
           try {
+            console.log(`Asignando rol ${roleId} al usuario ${usuario.id}`);
             await AdminUserRolesModel.asignarConCliente(client, {
               user_id: usuario.id,
               id_rol: roleId,
               created_by: req.user ? req.user.email : 'sistema'
             });
+            console.log(`Rol ${roleId} asignado correctamente`);
           } catch (rolError) {
             // Si falla la asignación de rol, seguimos con los demás
+            console.error(`Error al asignar rol ${roleId}:`, rolError);
             logger.logError(`Error al asignar el rol ${roleId} al usuario`, rolError);
           }
         }
         
+        console.log("Confirmando transacción");
         await client.query('COMMIT');
+        console.log("Transacción confirmada exitosamente");
         
         logger.logSecurity('Usuario administrativo creado con roles', {
           userId: usuario.id,
@@ -70,6 +87,7 @@ const AdminUsersController = {
           createdBy: req.user ? req.user.email : 'sistema'
         });
         
+        console.log("Enviando respuesta al cliente");
         res.status(201).json({
           mensaje: "Usuario creado exitosamente",
           usuario: {
@@ -80,13 +98,16 @@ const AdminUsersController = {
             roles: roles
           }
         });
+        console.log("=== FIN DE REGISTRO DE USUARIO ===");
       } catch (err) {
+        console.error("Error durante la transacción:", err);
         await client.query('ROLLBACK');
         throw err;
       } finally {
         client.release();
       }
     } catch (err) {
+      console.error("ERROR CRÍTICO en registro:", err);
       logger.logError('Error al registrar usuario administrativo', err);
       res.status(500).json({ error: "Error al registrar usuario" });
     }

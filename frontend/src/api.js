@@ -69,11 +69,11 @@ const auth = {
     return !!localStorage.getItem("authToken");
   },
   
+  // Volvemos a la implementación original que sabemos que funcionaba
   register: async (userData) => {
-    // Corrección: ruta explícita para la creación de usuarios
     console.log("Registrando usuario con datos:", userData); // Debugging
     try {
-      const response = await api.post("/auth/registro", userData);
+      const response = await api.post("/auth", userData);
       console.log("Respuesta registro:", response.data); // Debugging
       return response;
     } catch (error) {
