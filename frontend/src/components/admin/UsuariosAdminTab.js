@@ -249,18 +249,60 @@ function UsuariosAdminTab() {
 
       <div className="form-group">
         <label>Roles *</label>
-        <div className="admin-roles-selector">
+        <div style={{ marginTop: '10px' }}>
           {availableRoles.map(role => (
-            <div key={role.id_rol} className="admin-role-option">
-              <input
-                type="radio"
-                id={`role-${role.id_rol}`}
-                name="user-role"
-                checked={formData.roles?.includes(role.id_rol) || false}
-                onChange={() => handleRoleChange(role.id_rol)}
-                className="admin-role-radio"
-              />
-              <label htmlFor={`role-${role.id_rol}`} className="admin-role-label">
+            <div key={role.id_rol} style={{ 
+              display: 'flex',
+              alignItems: 'center',
+              marginBottom: '10px'
+            }}>
+              <div style={{
+                position: 'relative',
+                display: 'inline-block',
+                width: '18px',
+                height: '18px',
+                marginRight: '10px'
+              }}>
+                <input
+                  type="radio"
+                  id={`role-${role.id_rol}`}
+                  name="user-role"
+                  checked={formData.roles?.includes(role.id_rol) || false}
+                  onChange={() => handleRoleChange(role.id_rol)}
+                  style={{
+                    position: 'absolute',
+                    opacity: '0',
+                    cursor: 'pointer',
+                    height: '0',
+                    width: '0'
+                  }}
+                />
+                <span style={{
+                  position: 'absolute',
+                  top: '0',
+                  left: '0',
+                  height: '18px',
+                  width: '18px',
+                  backgroundColor: 'white',
+                  border: '2px solid #4a5568',
+                  borderRadius: '50%',
+                  display: 'block',
+                  boxSizing: 'border-box'
+                }}></span>
+                {formData.roles?.includes(role.id_rol) && (
+                  <span style={{
+                    position: 'absolute',
+                    top: '4px',
+                    left: '4px',
+                    width: '10px',
+                    height: '10px',
+                    borderRadius: '50%',
+                    backgroundColor: '#3182ce',
+                    display: 'block'
+                  }}></span>
+                )}
+              </div>
+              <label htmlFor={`role-${role.id_rol}`} style={{ cursor: 'pointer' }}>
                 {role.nombre_rol}
               </label>
             </div>
