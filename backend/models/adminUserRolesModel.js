@@ -22,6 +22,26 @@ const AdminUserRolesModel = {
   },
 
   /**
+   * Asigna un rol a un usuario administrativo usando un cliente de transacción
+   */
+  asignarConCliente: async (client, { user_id, id_rol, created_by }) => {
+    const query = `
+      INSERT INTO admin_user_roles (user_id, id_rol, created_by)
+      VALUES ($1, $2, $3)
+      RETURNING id, user_id, id_rol
+    `;
+    const result = await client.query(query, [user_id, id_rol, created_by]);
+    
+    // Registrar la acción en el historial
+    await client.query(
+      'INSERT INTO admin_role_changes (user_id, id_rol, action, created_by) VALUES ($1, $2, $3, $4)',
+      [user_id, id_rol, 'ADD', created_by]
+    );
+    
+    return result.rows[0];
+  },
+
+  /**
    * Elimina un rol de un usuario administrativo
    */
   eliminar: async ({ user_id, id_rol, created_by }) => {

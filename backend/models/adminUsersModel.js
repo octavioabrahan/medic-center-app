@@ -20,6 +20,23 @@ const AdminUsersModel = {
   },
 
   /**
+   * Crea un nuevo usuario administrativo usando un cliente de transacción
+   */
+  crearConCliente: async (client, { email, password, name, last_name }) => {
+    // Hash de la contraseña
+    const saltRounds = 10;
+    const password_hash = await bcrypt.hash(password, saltRounds);
+    
+    const query = `
+      INSERT INTO admin_users (email, password_hash, name, last_name)
+      VALUES ($1, $2, $3, $4)
+      RETURNING id, email, name, last_name
+    `;
+    const result = await client.query(query, [email, password_hash, name, last_name]);
+    return result.rows[0];
+  },
+
+  /**
    * Obtiene un usuario por su correo electrónico
    */
   obtenerPorEmail: async (email) => {

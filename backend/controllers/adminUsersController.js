@@ -14,7 +14,12 @@ const AdminUsersController = {
    */
   registro: async (req, res) => {
     try {
-      const { email, password, name, last_name } = req.body;
+      const { email, password, name, last_name, role_id } = req.body;
+      
+      // Verificar que se haya especificado un rol
+      if (!role_id) {
+        return res.status(400).json({ error: "Debe asignar un rol al usuario" });
+      }
       
       // Verificar si el usuario ya existe
       const existingUser = await AdminUsersModel.obtenerPorEmail(email);
@@ -29,32 +34,59 @@ const AdminUsersController = {
         });
       }
 
-      const usuario = await AdminUsersModel.crear({ email, password, name, last_name });
+      // Usar transacción para garantizar que se creen tanto el usuario como su rol
+      const db = require("../models/db");
+      const client = await db.getClient();
       
-      // Asignar rol por defecto si está especificado
-      if (req.body.role_id) {
-        await AdminUserRolesModel.asignar({
-          user_id: usuario.id,
-          id_rol: req.body.role_id,
-          created_by: req.user ? req.user.email : 'sistema'
+      try {
+        await client.query('BEGIN');
+        
+        // Crear el usuario
+        const usuario = await AdminUsersModel.crearConCliente(client, { 
+          email, password, name, last_name 
         });
-      }
-      
-      logger.logSecurity('Usuario administrativo creado', {
-        userId: usuario.id,
-        email: usuario.email,
-        createdBy: req.user ? req.user.email : 'sistema'
-      });
-      
-      res.status(201).json({
-        mensaje: "Usuario creado exitosamente",
-        usuario: {
-          id: usuario.id,
-          email: usuario.email,
-          name: usuario.name,
-          last_name: usuario.last_name
+        
+        // Asignar rol
+        try {
+          await AdminUserRolesModel.asignarConCliente(client, {
+            user_id: usuario.id,
+            id_rol: role_id,
+            created_by: req.user ? req.user.email : 'sistema'
+          });
+        } catch (rolError) {
+          // Si falla la asignación de rol, hacer rollback y devolver error
+          await client.query('ROLLBACK');
+          logger.logError('Error al asignar rol al usuario', rolError);
+          return res.status(400).json({ 
+            error: "Error al asignar rol al usuario. Verifique que el ID del rol sea válido." 
+          });
         }
-      });
+        
+        await client.query('COMMIT');
+        
+        logger.logSecurity('Usuario administrativo creado con rol', {
+          userId: usuario.id,
+          email: usuario.email,
+          roleId: role_id,
+          createdBy: req.user ? req.user.email : 'sistema'
+        });
+        
+        res.status(201).json({
+          mensaje: "Usuario creado exitosamente",
+          usuario: {
+            id: usuario.id,
+            email: usuario.email,
+            name: usuario.name,
+            last_name: usuario.last_name,
+            role_id: role_id
+          }
+        });
+      } catch (err) {
+        await client.query('ROLLBACK');
+        throw err;
+      } finally {
+        client.release();
+      }
     } catch (err) {
       logger.logError('Error al registrar usuario administrativo', err);
       res.status(500).json({ error: "Error al registrar usuario" });
