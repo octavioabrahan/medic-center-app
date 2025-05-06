@@ -251,13 +251,17 @@ function UsuariosAdminTab() {
         <div className="roles-checkboxes">
           {availableRoles.map(role => (
             <div key={role.id_rol} className="role-checkbox">
-              <input
-                type="radio"
-                id={`role-${role.id_rol}`}
-                checked={formData.roles?.includes(role.id_rol) || false}
-                onChange={() => handleRoleChange(role.id_rol)}
-              />
-              <label htmlFor={`role-${role.id_rol}`}>{role.nombre_rol}</label>
+              <label className="role-radio-label">
+                <input
+                  type="radio"
+                  id={`role-${role.id_rol}`}
+                  name="user-role" // Agregar name para agrupar los radio buttons
+                  checked={formData.roles?.includes(role.id_rol) || false}
+                  onChange={() => handleRoleChange(role.id_rol)}
+                  className="role-radio-input"
+                />
+                <span className="role-name">{role.nombre_rol}</span>
+              </label>
             </div>
           ))}
         </div>

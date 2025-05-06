@@ -85,39 +85,46 @@ function RolesAdminTab() {
   const fetchScreens = async () => {
     setLoadingScreens(true);
     try {
-      const response = await api.get("/screens");
-      // Combinar con los permisos existentes
+      // Primero obtenemos todas las pantallas disponibles
+      const screensResponse = await api.get("/screens");
+      const allScreens = screensResponse.data;
+      
+      // Si hay un rol seleccionado, obtenemos sus permisos actuales
       if (currentRole && currentRole.id_rol) {
         try {
           const permissionsResponse = await api.get(`/role-screen-permissions/rol/${currentRole.id_rol}`);
           const rolePermissions = permissionsResponse.data;
           
-          // Crear un mapa de permisos por id_screen
+          // Creamos un mapa de permisos por id_screen para rápida referencia
           const permissionsMap = {};
           rolePermissions.forEach(perm => {
-            permissionsMap[perm.id_screen] = perm.can_view;
+            permissionsMap[perm.id_screen] = perm.can_view || false;
           });
           
-          // Aplicar los permisos al listado de pantallas
-          const screensWithPermissions = response.data.map(screen => ({
+          // Combinamos las pantallas con sus permisos
+          const screensWithPermissions = allScreens.map(screen => ({
             ...screen,
             can_view: permissionsMap[screen.id_screen] || false
           }));
           
           setScreens(screensWithPermissions);
+          setRoleScreens(rolePermissions);
         } catch (error) {
-          // Si no hay permisos, simplemente usar las pantallas sin permisos
-          setScreens(response.data.map(screen => ({
+          console.error('Error al cargar permisos existentes:', error);
+          // Si hay un error, inicializamos con todas las pantallas sin permisos
+          setScreens(allScreens.map(screen => ({
             ...screen,
             can_view: false
           })));
+          setRoleScreens([]);
         }
       } else {
-        // Si no hay rol seleccionado, inicializar todas las pantallas sin permisos
-        setScreens(response.data.map(screen => ({
+        // Si no hay rol seleccionado, todas las pantallas inician sin permisos
+        setScreens(allScreens.map(screen => ({
           ...screen,
           can_view: false
         })));
+        setRoleScreens([]);
       }
     } catch (err) {
       console.error('Error al cargar pantallas:', err);
@@ -179,22 +186,29 @@ function RolesAdminTab() {
 
   const handleSavePermissions = async () => {
     if (!currentRole || !currentRole.id_rol) {
-      alert('Por favor, guarda el rol primero antes de asignar permisos de pantallas.');
+      alert('Por favor, guarde el rol primero antes de asignar permisos de pantallas.');
       return;
     }
 
     try {
+      // Preparar los datos para enviar al servidor
       const permissionsData = {
         id_rol: currentRole.id_rol,
         pantallas: screens.map(screen => ({
           id_screen: screen.id_screen,
           can_view: screen.can_view || false
         })),
-        created_by: 'admin' // Idealmente usar el usuario actual
+        created_by: 'admin' // Idealmente usar el usuario actual del sistema
       };
 
+      // Enviar los permisos al servidor
       await api.post('/role-screen-permissions', permissionsData);
+      
+      // Mostrar confirmación y actualizar estado local
       alert('Permisos de pantallas actualizados correctamente');
+      
+      // Refrescar los permisos actualizados
+      fetchRoleScreens(currentRole.id_rol);
     } catch (err) {
       console.error('Error guardando permisos:', err);
       alert('Error al guardar los permisos de pantallas');
@@ -268,17 +282,6 @@ function RolesAdminTab() {
       return <div className="loading">Cargando pantallas...</div>;
     }
 
-    const assignedScreensMap = {};
-    roleScreens.forEach(item => {
-      assignedScreensMap[item.id_screen] = { can_view: item.can_view };
-    });
-
-    // Combinar y actualizar las pantallas con sus permisos asignados
-    const screensWithPermissions = screens.map(screen => ({
-      ...screen,
-      can_view: assignedScreensMap[screen.id_screen]?.can_view || false
-    }));
-
     return (
       <div className="screen-permissions-form">
         <p className="permissions-info">
@@ -286,12 +289,12 @@ function RolesAdminTab() {
         </p>
 
         <div className="screens-list">
-          {screensWithPermissions.map(screen => (
+          {screens.map(screen => (
             <div key={screen.id_screen} className="screen-item">
               <label className="screen-label">
                 <input
                   type="checkbox"
-                  checked={screen.can_view}
+                  checked={screen.can_view || false}
                   onChange={(e) => handleScreenPermissionChange(screen.id_screen, e.target.checked)}
                 />
                 <span className="screen-name">{screen.name}</span>
@@ -299,6 +302,12 @@ function RolesAdminTab() {
             </div>
           ))}
         </div>
+
+        {screens.length === 0 && 
+          <div className="no-screens-message">
+            No hay pantallas disponibles para asignar permisos.
+          </div>
+        }
 
         <div className="form-buttons">
           <button type="button" onClick={() => setActiveTab('info')} className="btn-cancel">
