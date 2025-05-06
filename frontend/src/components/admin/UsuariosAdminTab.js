@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import api, { auth } from "../../api";
+import "./AdminComponents.css"; // Importamos los nuevos estilos específicos
 
 // Componente principal para la administración de usuarios
 function UsuariosAdminTab() {
@@ -248,19 +249,19 @@ function UsuariosAdminTab() {
 
       <div className="form-group">
         <label>Roles *</label>
-        <div className="roles-checkboxes">
+        <div className="admin-roles-selector">
           {availableRoles.map(role => (
-            <div key={role.id_rol} className="role-checkbox">
-              <label className="role-radio-label">
-                <input
-                  type="radio"
-                  id={`role-${role.id_rol}`}
-                  name="user-role" // Agregar name para agrupar los radio buttons
-                  checked={formData.roles?.includes(role.id_rol) || false}
-                  onChange={() => handleRoleChange(role.id_rol)}
-                  className="role-radio-input"
-                />
-                <span className="role-name">{role.nombre_rol}</span>
+            <div key={role.id_rol} className="admin-role-option">
+              <input
+                type="radio"
+                id={`role-${role.id_rol}`}
+                name="user-role"
+                checked={formData.roles?.includes(role.id_rol) || false}
+                onChange={() => handleRoleChange(role.id_rol)}
+                className="admin-role-radio"
+              />
+              <label htmlFor={`role-${role.id_rol}`} className="admin-role-label">
+                {role.nombre_rol}
               </label>
             </div>
           ))}

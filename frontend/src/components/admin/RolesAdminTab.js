@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import api from "../../api"; // Cambiamos axios por nuestra instancia api configurada
+import "./AdminComponents.css"; // Importamos los nuevos estilos específicos
 
 function RolesAdminTab() {
   const [roles, setRoles] = useState([]);
@@ -290,14 +291,15 @@ function RolesAdminTab() {
 
         <div className="screens-list">
           {screens.map(screen => (
-            <div key={screen.id_screen} className="screen-item">
+            <div key={screen.id_screen} className="admin-screen-item">
               <label className="screen-label">
                 <input
                   type="checkbox"
                   checked={screen.can_view || false}
                   onChange={(e) => handleScreenPermissionChange(screen.id_screen, e.target.checked)}
+                  className="admin-screen-checkbox"
                 />
-                <span className="screen-name">{screen.name}</span>
+                <span className="admin-screen-label">{screen.name}</span>
               </label>
             </div>
           ))}
