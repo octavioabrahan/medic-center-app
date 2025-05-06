@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
+import api from "../../api"; // Cambiamos axios por nuestra instancia api configurada
 
 function RolesAdminTab() {
   const [roles, setRoles] = useState([]);
@@ -54,7 +54,7 @@ function RolesAdminTab() {
   const fetchRoles = async () => {
     setLoading(true);
     try {
-      const response = await axios.get("/api/roles");
+      const response = await api.get("/roles"); // Usamos api en lugar de axios
       setRoles(response.data);
       setFilteredRoles(response.data);
     } catch (err) {
@@ -73,7 +73,7 @@ function RolesAdminTab() {
   const handleDeleteRole = async (roleId) => {
     if (window.confirm('¿Estás seguro de que deseas eliminar este rol? Esta acción podría afectar a los usuarios que lo tienen asignado.')) {
       try {
-        await axios.delete(`/api/roles/${roleId}`);
+        await api.delete(`/roles/${roleId}`); // Usamos api en lugar de axios
         fetchRoles();
       } catch (err) {
         console.error('Error eliminando rol:', err);
@@ -86,10 +86,10 @@ function RolesAdminTab() {
     try {
       if (currentRole) {
         // Actualizar rol existente
-        await axios.put(`/api/roles/${currentRole.id_rol}`, formData);
+        await api.put(`/roles/${currentRole.id_rol}`, formData); // Usamos api en lugar de axios
       } else {
         // Crear nuevo rol
-        await axios.post("/api/roles", formData);
+        await api.post("/roles", formData); // Usamos api en lugar de axios
       }
       setShowModal(false);
       fetchRoles();

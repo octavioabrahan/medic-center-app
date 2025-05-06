@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
-import { auth } from "../../api";
+import api, { auth } from "../../api"; // Cambiamos axios por nuestra instancia api configurada
 
 function UsuariosAdminTab() {
   const [usuarios, setUsuarios] = useState([]);
@@ -68,7 +67,7 @@ function UsuariosAdminTab() {
   const fetchUsuarios = async () => {
     setLoading(true);
     try {
-      const response = await axios.get("/api/auth");
+      const response = await api.get("/auth"); // Usamos api en lugar de axios
       setUsuarios(response.data);
       setFilteredUsuarios(response.data);
     } catch (err) {
@@ -81,7 +80,7 @@ function UsuariosAdminTab() {
 
   const fetchRoles = async () => {
     try {
-      const response = await axios.get("/api/roles");
+      const response = await api.get("/roles"); // Usamos api en lugar de axios
       setAvailableRoles(response.data);
     } catch (err) {
       console.error('Error cargando roles:', err);
@@ -96,7 +95,7 @@ function UsuariosAdminTab() {
   const handleDeleteUser = async (userId) => {
     if (window.confirm('¿Estás seguro de que deseas eliminar este usuario? Esta acción no se puede deshacer.')) {
       try {
-        await axios.delete(`/api/auth/${userId}`);
+        await api.delete(`/auth/${userId}`); // Usamos api en lugar de axios
         fetchUsuarios();
       } catch (err) {
         console.error('Error eliminando usuario:', err);
@@ -109,10 +108,10 @@ function UsuariosAdminTab() {
     try {
       if (currentUser) {
         // Actualizar usuario existente
-        await axios.put(`/api/auth/${currentUser.id}`, formData);
+        await api.put(`/auth/${currentUser.id}`, formData); // Usamos api en lugar de axios
       } else {
         // Crear nuevo usuario
-        await axios.post("/api/auth", formData);
+        await api.post("/auth", formData); // Usamos api en lugar de axios
       }
       setShowModal(false);
       fetchUsuarios();
