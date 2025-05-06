@@ -9,6 +9,10 @@ function RolesAdminTab() {
   const [showModal, setShowModal] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [currentRole, setCurrentRole] = useState(null);
+  const [activeTab, setActiveTab] = useState('info'); // 'info' o 'pantallas'
+  const [screens, setScreens] = useState([]);
+  const [roleScreens, setRoleScreens] = useState([]);
+  const [loadingScreens, setLoadingScreens] = useState(false);
   
   // Estado del formulario
   const [formData, setFormData] = useState({
@@ -27,13 +31,25 @@ function RolesAdminTab() {
         nombre_rol: currentRole.nombre_rol || "",
         descripcion: currentRole.descripcion || ""
       });
+      // Si estamos editando un rol, cargar sus pantallas asignadas
+      if (currentRole.id_rol) {
+        fetchRoleScreens(currentRole.id_rol);
+      }
     } else {
       setFormData({
         nombre_rol: "",
         descripcion: ""
       });
+      setRoleScreens([]);
     }
   }, [currentRole]);
+
+  // Cargar todas las pantallas disponibles
+  useEffect(() => {
+    if (showModal && activeTab === 'pantallas') {
+      fetchScreens();
+    }
+  }, [showModal, activeTab]);
 
   // Filtrar roles cuando cambia el término de búsqueda
   useEffect(() => {
@@ -65,8 +81,38 @@ function RolesAdminTab() {
     }
   };
 
+  // Cargar todas las pantallas disponibles en el sistema
+  const fetchScreens = async () => {
+    setLoadingScreens(true);
+    try {
+      const response = await api.get("/screens");
+      setScreens(response.data);
+    } catch (err) {
+      console.error('Error al cargar pantallas:', err);
+      alert('Error al cargar las pantallas disponibles');
+    } finally {
+      setLoadingScreens(false);
+    }
+  };
+
+  // Cargar los permisos de pantalla asignados a un rol específico
+  const fetchRoleScreens = async (roleId) => {
+    setLoadingScreens(true);
+    try {
+      const response = await api.get(`/role-screen-permissions/rol/${roleId}`);
+      setRoleScreens(response.data);
+    } catch (err) {
+      console.error('Error al cargar permisos de pantallas:', err);
+      // Si no hay permisos asignados, simplemente inicializamos vacío
+      setRoleScreens([]);
+    } finally {
+      setLoadingScreens(false);
+    }
+  };
+
   const handleEditRole = (role) => {
     setCurrentRole(role);
+    setActiveTab('info'); // Mostrar la pestaña de información por defecto
     setShowModal(true);
   };
 
@@ -99,12 +145,45 @@ function RolesAdminTab() {
     }
   };
 
+  const handleSavePermissions = async () => {
+    if (!currentRole || !currentRole.id_rol) {
+      alert('Por favor, guarda el rol primero antes de asignar permisos de pantallas.');
+      return;
+    }
+
+    try {
+      const permissionsData = {
+        id_rol: currentRole.id_rol,
+        pantallas: screens.map(screen => ({
+          id_screen: screen.id_screen,
+          can_view: screen.can_view || false
+        })),
+        created_by: 'admin' // Idealmente usar el usuario actual
+      };
+
+      await api.post('/role-screen-permissions', permissionsData);
+      alert('Permisos de pantallas actualizados correctamente');
+    } catch (err) {
+      console.error('Error guardando permisos:', err);
+      alert('Error al guardar los permisos de pantallas');
+    }
+  };
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({
       ...formData,
       [name]: value
     });
+  };
+
+  const handleScreenPermissionChange = (screenId, checked) => {
+    // Actualizar el estado de pantallas
+    setScreens(screens.map(screen => 
+      screen.id_screen === screenId 
+        ? { ...screen, can_view: checked }
+        : screen
+    ));
   };
 
   const handleSubmit = (e) => {
@@ -147,6 +226,56 @@ function RolesAdminTab() {
           </button>
         </div>
       </form>
+    );
+  };
+
+  const renderScreenPermissionsForm = () => {
+    if (loadingScreens) {
+      return <div className="loading">Cargando pantallas...</div>;
+    }
+
+    const assignedScreensMap = {};
+    roleScreens.forEach(item => {
+      assignedScreensMap[item.id_screen] = { can_view: item.can_view };
+    });
+
+    // Combinar y actualizar las pantallas con sus permisos asignados
+    const screensWithPermissions = screens.map(screen => ({
+      ...screen,
+      can_view: assignedScreensMap[screen.id_screen]?.can_view || false
+    }));
+
+    return (
+      <div className="screen-permissions-form">
+        <p className="permissions-info">
+          Seleccione las pantallas a las que este rol tendrá acceso:
+        </p>
+
+        <div className="screens-list">
+          {screensWithPermissions.map(screen => (
+            <div key={screen.id_screen} className="screen-item">
+              <label className="screen-label">
+                <input
+                  type="checkbox"
+                  checked={screen.can_view}
+                  onChange={(e) => handleScreenPermissionChange(screen.id_screen, e.target.checked)}
+                />
+                <span className="screen-name">{screen.name}</span>
+              </label>
+              <span className="screen-description">{screen.description}</span>
+            </div>
+          ))}
+        </div>
+
+        <div className="form-buttons">
+          <button type="button" onClick={() => setActiveTab('info')} className="btn-cancel">
+            Volver
+          </button>
+          <button type="button" onClick={handleSavePermissions} className="btn-save">
+            Guardar Permisos
+          </button>
+        </div>
+      </div>
     );
   };
 
@@ -229,8 +358,24 @@ function RolesAdminTab() {
               <h2>{currentRole ? "Editar rol" : "Agregar rol"}</h2>
               <button className="admin-close-btn" onClick={() => setShowModal(false)}>×</button>
             </div>
+            <div className="admin-modal-tabs">
+              <button
+                className={`tab-button ${activeTab === 'info' ? 'active' : ''}`}
+                onClick={() => setActiveTab('info')}
+              >
+                Información
+              </button>
+              {currentRole && currentRole.id_rol && (
+                <button
+                  className={`tab-button ${activeTab === 'pantallas' ? 'active' : ''}`}
+                  onClick={() => setActiveTab('pantallas')}
+                >
+                  Permisos de Pantallas
+                </button>
+              )}
+            </div>
             <div className="admin-modal-body">
-              {renderRoleForm()}
+              {activeTab === 'info' ? renderRoleForm() : renderScreenPermissionsForm()}
             </div>
           </div>
         </div>
