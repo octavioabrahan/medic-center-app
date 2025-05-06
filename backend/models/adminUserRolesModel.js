@@ -12,11 +12,7 @@ const AdminUserRolesModel = {
     `;
     const result = await db.query(query, [user_id, id_rol, created_by]);
     
-    // Registrar la acción en el historial
-    await db.query(
-      'INSERT INTO admin_role_changes (user_id, id_rol, action, created_by) VALUES ($1, $2, $3, $4)',
-      [user_id, id_rol, 'ADD', created_by]
-    );
+    // Nota: Se ha eliminado la inserción en admin_role_changes ya que la tabla no existe
     
     return result.rows[0];
   },
@@ -32,11 +28,7 @@ const AdminUserRolesModel = {
     `;
     const result = await client.query(query, [user_id, id_rol, created_by]);
     
-    // Registrar la acción en el historial
-    await client.query(
-      'INSERT INTO admin_role_changes (user_id, id_rol, action, created_by) VALUES ($1, $2, $3, $4)',
-      [user_id, id_rol, 'ADD', created_by]
-    );
+    // Nota: Se ha eliminado la inserción en admin_role_changes ya que la tabla no existe
     
     return result.rows[0];
   },
@@ -51,11 +43,7 @@ const AdminUserRolesModel = {
     `;
     await db.query(query, [user_id, id_rol]);
     
-    // Registrar la acción en el historial
-    await db.query(
-      'INSERT INTO admin_role_changes (user_id, id_rol, action, created_by) VALUES ($1, $2, $3, $4)',
-      [user_id, id_rol, 'REMOVE', created_by]
-    );
+    // Nota: Se ha eliminado la inserción en admin_role_changes ya que la tabla no existe
   },
 
   /**
