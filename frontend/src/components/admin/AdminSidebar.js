@@ -1,10 +1,25 @@
 // frontend/src/components/admin/AdminSidebar.js
 import React from 'react';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 import './AdminSidebar.css';
 import logo from '../../assets/logo.svg'; // Asegúrate de que la ruta sea correcta
+import { auth } from '../../api';
 
 const AdminSidebar = () => {
+  const navigate = useNavigate();
+  const currentUser = auth.getCurrentUser();
+  
+  // Determinar si el usuario tiene roles administrativos
+  const isAdmin = currentUser?.roles?.some(role => 
+    ['admin', 'superadmin'].includes(role)
+  );
+
+  // Función para manejar el cierre de sesión
+  const handleLogout = () => {
+    auth.logout();
+    navigate('/login');
+  };
+
   return (
     <div className="admin-sidebar">
       <div className="sidebar-header">
@@ -47,10 +62,25 @@ const AdminSidebar = () => {
         <NavLink to="/admin/examenes" className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}>
           Exámenes y servicios
         </NavLink>
+        
+        {/* Sección de Administración - Solo visible para administradores */}
+        {isAdmin && (
+          <>
+            <div className="nav-section-title">Administrar</div>
+            
+            <NavLink to="/admin/administracion" className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}>
+              Configuración
+            </NavLink>
+          </>
+        )}
       </nav>
       
       <div className="sidebar-footer">
-        <button className="logout-button">
+        <div className="user-info">
+          <span className="user-name">{currentUser?.name || 'Usuario'}</span>
+          <span className="user-role">{currentUser?.roles?.join(', ') || 'Sin rol'}</span>
+        </div>
+        <button className="logout-button" onClick={handleLogout}>
           <span className="logout-icon">↩</span> Cerrar sesión
         </button>
       </div>

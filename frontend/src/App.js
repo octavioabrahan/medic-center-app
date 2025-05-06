@@ -21,6 +21,7 @@ import AgendamientoIndex from './components/public/AgendamientoIndex';
 import CotizacionesAdmin from './components/admin/CotizacionesAdmin';
 import AdminLayout from './components/admin/AdminLayout';
 import AdminExamenes from './pages/admin/AdminExamenes';
+import AdministracionPage from './pages/admin/AdministracionPage'; // Nueva página de administración
 // Importar componentes de autenticación
 import LoginPage from './pages/auth/LoginPage';
 import ProtectedRoute from './components/auth/ProtectedRoute';
@@ -61,7 +62,12 @@ function App() {
           <Route path="cotizaciones" element={<CotizacionesAdmin />} />
           <Route path="servicios" element={<ServiciosPage />} />
           <Route path="examenes" element={<AdminExamenes />} />
-          {/* Añadir más rutas de administración según sea necesario */}
+          {/* Nueva ruta para la página de administración */}
+          <Route path="administracion" element={
+            <ProtectedRoute requiredRoles={['admin', 'superadmin']}>
+              <AdministracionPage />
+            </ProtectedRoute>
+          } />
         </Route>
         
         {/* Ruta para acceso denegado */}
