@@ -33,6 +33,9 @@ const serviciosRoutes = require("./routes/servicios");
 const empresasRoutes = require("./routes/empresas");
 const profesionalServicioRoutes = require("./routes/profesionalServicio");
 const archivoRoutes = require('./routes/archivoRoutes');
+// Nuevas rutas para gestión de pantallas y permisos
+const screensRoutes = require('./routes/screens');
+const roleScreenPermissionsRoutes = require('./routes/roleScreenPermissions');
 //Cotizador_V2
 const examRoutes = require('./routes/exams');
 const appointmentRoutes = require('./routes/appointments');
@@ -133,6 +136,9 @@ app.use('/api/tasa-cambio', exchangeRateRoutes);
 app.use('/api/exchange-rate', exchangeRateRoutes); // Añadir ruta adicional compatible con el frontend
 app.use('/api/cotizaciones', quotesRoutes);
 app.use('/api/seguimiento', seguimientoRoutes);
+// Nuevas rutas para gestión de pantallas y permisos
+app.use('/api/screens', screensRoutes);
+app.use('/api/role-screen-permissions', roleScreenPermissionsRoutes);
 
 // Manejo de errores mejorado
 app.use((err, req, res, next) => {
