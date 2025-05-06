@@ -7,7 +7,7 @@ const { authenticateJWT, authorizeRoles } = require("../middleware/auth");
 router.post("/login", controller.login);
 
 // Rutas protegidas
-router.post("/", authenticateJWT, authorizeRoles(['superadmin']), controller.registro);
+router.post("/", authenticateJWT, authorizeRoles(['superadmin', 'admin']), controller.registro);
 router.get("/perfil", authenticateJWT, controller.perfil);
 router.get("/", authenticateJWT, authorizeRoles(['superadmin', 'admin']), controller.listar);
 router.put("/:id", authenticateJWT, authorizeRoles(['superadmin', 'admin']), controller.actualizar);

@@ -150,20 +150,39 @@ function UsuariosAdminTab() {
     }
 
     try {
+      console.log("Datos que se envían al servidor:", JSON.stringify(formData, null, 2));
+      
       if (currentUser) {
         // Actualizar usuario existente
-        await api.put(`/auth/${currentUser.id}`, formData);
+        console.log(`Actualizando usuario ${currentUser.id}...`);
+        const response = await api.put(`/auth/${currentUser.id}`, formData);
+        console.log("Respuesta del servidor (actualización):", response.data);
       } else {
         // Crear nuevo usuario
-        await api.post("/auth", formData);
+        console.log("Creando nuevo usuario...");
+        const response = await api.post("/auth", formData);
+        console.log("Respuesta del servidor (creación):", response.data);
       }
       
       // Cerrar modal y refrescar la lista
       setShowModal(false);
       fetchUsuarios();
     } catch (err) {
-      console.error('Error al guardar usuario:', err);
-      alert(`Error: ${err.response?.data?.error || 'No se pudo guardar el usuario'}`);
+      console.error('Error detallado al guardar usuario:', {
+        message: err.message,
+        response: err.response?.data,
+        status: err.response?.status,
+        statusText: err.response?.statusText,
+        formData: formData
+      });
+      
+      // Mostrar un mensaje más informativo basado en el error
+      const errorMessage = err.response?.data?.error || 
+                          (err.response?.status === 409 ? 'El correo ya está registrado' : 
+                           err.response?.status === 400 ? 'Datos inválidos' : 
+                           'Error desconocido al guardar el usuario');
+      
+      alert(`Error: ${errorMessage}. Por favor revise los datos e intente nuevamente.`);
     }
   };
 
