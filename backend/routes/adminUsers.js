@@ -6,6 +6,9 @@ const { authenticateJWT, authorizeRoles } = require("../middleware/auth");
 // Rutas públicas
 router.post("/login", controller.login);
 
+// Ruta específica para registro - coincide con la nueva función del frontend
+router.post("/registro", authenticateJWT, authorizeRoles(['superadmin', 'admin']), controller.registro);
+
 // Rutas protegidas
 router.post("/", authenticateJWT, authorizeRoles(['superadmin', 'admin']), controller.registro);
 router.get("/perfil", authenticateJWT, controller.perfil);

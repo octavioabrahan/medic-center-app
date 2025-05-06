@@ -70,7 +70,16 @@ const auth = {
   },
   
   register: async (userData) => {
-    return await api.post("/auth", userData);
+    // Corrección: ruta explícita para la creación de usuarios
+    console.log("Registrando usuario con datos:", userData); // Debugging
+    try {
+      const response = await api.post("/auth/registro", userData);
+      console.log("Respuesta registro:", response.data); // Debugging
+      return response;
+    } catch (error) {
+      console.error("Error en registro:", error.response?.data || error);
+      throw error;
+    }
   },
   
   getProfile: async () => {
