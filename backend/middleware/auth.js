@@ -1,13 +1,12 @@
 const jwt = require('jsonwebtoken');
 const logger = require('../utils/logger');
-const AdminUserRolesModel = require('../models/adminUserRolesModel');
 require('dotenv').config();
 
 /**
  * Middleware para validar tokens JWT
  * Verifica que el token sea válido y no haya expirado
  */
-const authenticateJWT = async (req, res, next) => {
+const authenticateJWT = (req, res, next) => {
   // Obtener el token del encabezado de autorización
   const authHeader = req.headers.authorization;
   
@@ -39,26 +38,11 @@ const authenticateJWT = async (req, res, next) => {
     // Agregar la información del usuario al objeto de solicitud para uso posterior
     req.user = decoded;
     
-    // NUEVO: Verificar que el usuario tenga al menos un rol asignado
-    const roles = await AdminUserRolesModel.rolesDeUsuario(decoded.id);
-    if (!roles || roles.length === 0) {
-      logger.logSecurity('Intento de acceso de usuario sin roles asignados', {
-        userId: decoded.id,
-        email: decoded.email,
-        ip: req.ip,
-        path: req.originalUrl
-      });
-      return res.status(403).json({ error: 'Acceso denegado. El usuario no tiene roles asignados.' });
-    }
-    
-    // Actualizar los roles en el objeto de usuario con los obtenidos de la base de datos
-    req.user.roles = roles.map(role => role.nombre_rol);
-    
     // Registrar acceso exitoso en modo debug
     if (process.env.NODE_ENV !== 'production') {
       logger.logGeneral('Autenticación exitosa', { 
         userId: decoded.id,
-        roles: req.user.roles
+        roles: decoded.roles
       });
     }
     
