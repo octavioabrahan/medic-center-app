@@ -267,10 +267,36 @@ function RolesAdminTab() {
         </div>
 
         <div className="form-buttons">
-          <button type="button" onClick={() => setShowModal(false)} className="btn-cancel">
+          <button 
+            type="button" 
+            onClick={() => setShowModal(false)} 
+            className="btn-cancel"
+            style={{
+              padding: '8px 16px',
+              backgroundColor: '#e2e8f0',
+              color: '#4a5568',
+              border: 'none',
+              borderRadius: '4px',
+              fontSize: '14px',
+              cursor: 'pointer',
+              marginRight: '8px'
+            }}
+          >
             Cancelar
           </button>
-          <button type="submit" className="btn-save">
+          <button 
+            type="submit" 
+            className="btn-save"
+            style={{
+              padding: '8px 16px',
+              backgroundColor: '#3182ce',
+              color: 'white',
+              border: 'none',
+              borderRadius: '4px',
+              fontSize: '14px',
+              cursor: 'pointer'
+            }}
+          >
             {currentRole ? 'Actualizar' : 'Crear'} Rol
           </button>
         </div>
@@ -291,16 +317,79 @@ function RolesAdminTab() {
 
         <div className="screens-list">
           {screens.map(screen => (
-            <div key={screen.id_screen} className="admin-screen-item">
-              <label className="screen-label">
-                <input
-                  type="checkbox"
-                  checked={screen.can_view || false}
-                  onChange={(e) => handleScreenPermissionChange(screen.id_screen, e.target.checked)}
-                  className="admin-screen-checkbox"
-                />
-                <span className="admin-screen-label">{screen.name}</span>
-              </label>
+            <div key={screen.id_screen} className="admin-screen-item" style={{ padding: '8px 0', borderBottom: '1px solid #f0f0f0' }}>
+              <div style={{ display: 'flex', alignItems: 'center' }}>
+                <div 
+                  onClick={() => handleScreenPermissionChange(screen.id_screen, !screen.can_view)}
+                  style={{
+                    position: 'relative',
+                    display: 'inline-block',
+                    width: '18px',
+                    height: '18px',
+                    marginRight: '10px',
+                    cursor: 'pointer'
+                  }}
+                >
+                  <input
+                    type="checkbox"
+                    id={`screen-${screen.id_screen}`}
+                    checked={screen.can_view || false}
+                    onChange={(e) => handleScreenPermissionChange(screen.id_screen, e.target.checked)}
+                    style={{
+                      position: 'absolute',
+                      opacity: '0',
+                      cursor: 'pointer',
+                      height: '0',
+                      width: '0'
+                    }}
+                  />
+                  <span style={{
+                    position: 'absolute',
+                    top: '0',
+                    left: '0',
+                    height: '18px',
+                    width: '18px',
+                    backgroundColor: 'white',
+                    border: '2px solid #4a5568',
+                    borderRadius: '3px',
+                    display: 'block',
+                    boxSizing: 'border-box'
+                  }}></span>
+                  {screen.can_view && (
+                    <span style={{
+                      position: 'absolute',
+                      top: '2px',
+                      left: '2px',
+                      width: '14px',
+                      height: '14px',
+                      backgroundColor: '#3182ce',
+                      borderRadius: '1px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center'
+                    }}>
+                      <span style={{ 
+                        color: 'white', 
+                        fontSize: '10px', 
+                        fontWeight: 'bold',
+                        lineHeight: '1'
+                      }}>✓</span>
+                    </span>
+                  )}
+                </div>
+                <label 
+                  htmlFor={`screen-${screen.id_screen}`}
+                  onClick={() => handleScreenPermissionChange(screen.id_screen, !screen.can_view)}
+                  style={{ 
+                    cursor: 'pointer',
+                    userSelect: 'none',
+                    display: 'inline-block',
+                    fontSize: '14px'
+                  }}
+                >
+                  {screen.name}
+                </label>
+              </div>
             </div>
           ))}
         </div>
@@ -312,10 +401,37 @@ function RolesAdminTab() {
         }
 
         <div className="form-buttons">
-          <button type="button" onClick={() => setActiveTab('info')} className="btn-cancel">
+          <button 
+            type="button" 
+            onClick={() => setActiveTab('info')} 
+            className="btn-cancel"
+            style={{
+              padding: '8px 16px',
+              backgroundColor: '#e2e8f0',
+              color: '#4a5568',
+              border: 'none',
+              borderRadius: '4px',
+              fontSize: '14px',
+              cursor: 'pointer',
+              marginRight: '8px'
+            }}
+          >
             Volver
           </button>
-          <button type="button" onClick={handleSavePermissions} className="btn-save">
+          <button 
+            type="button" 
+            onClick={handleSavePermissions} 
+            className="btn-save"
+            style={{
+              padding: '8px 16px',
+              backgroundColor: '#3182ce',
+              color: 'white',
+              border: 'none',
+              borderRadius: '4px',
+              fontSize: '14px',
+              cursor: 'pointer'
+            }}
+          >
             Guardar Permisos
           </button>
         </div>

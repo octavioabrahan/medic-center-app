@@ -256,13 +256,17 @@ function UsuariosAdminTab() {
               alignItems: 'center',
               marginBottom: '10px'
             }}>
-              <div style={{
-                position: 'relative',
-                display: 'inline-block',
-                width: '18px',
-                height: '18px',
-                marginRight: '10px'
-              }}>
+              <div 
+                onClick={() => handleRoleChange(role.id_rol)}
+                style={{
+                  position: 'relative',
+                  display: 'inline-block',
+                  width: '18px',
+                  height: '18px',
+                  marginRight: '10px',
+                  cursor: 'pointer'
+                }}
+              >
                 <input
                   type="radio"
                   id={`role-${role.id_rol}`}
@@ -302,7 +306,15 @@ function UsuariosAdminTab() {
                   }}></span>
                 )}
               </div>
-              <label htmlFor={`role-${role.id_rol}`} style={{ cursor: 'pointer' }}>
+              <label 
+                htmlFor={`role-${role.id_rol}`} 
+                onClick={() => handleRoleChange(role.id_rol)}
+                style={{ 
+                  cursor: 'pointer',
+                  userSelect: 'none',
+                  display: 'inline-block'
+                }}
+              >
                 {role.nombre_rol}
               </label>
             </div>
@@ -324,10 +336,36 @@ function UsuariosAdminTab() {
       </div>
 
       <div className="form-buttons">
-        <button type="button" onClick={() => setShowModal(false)} className="btn-cancel">
+        <button 
+          type="button" 
+          onClick={() => setShowModal(false)} 
+          className="btn-cancel"
+          style={{
+            padding: '8px 16px',
+            backgroundColor: '#e2e8f0',
+            color: '#4a5568',
+            border: 'none',
+            borderRadius: '4px',
+            fontSize: '14px',
+            cursor: 'pointer',
+            marginRight: '8px'
+          }}
+        >
           Cancelar
         </button>
-        <button type="submit" className="btn-save">
+        <button 
+          type="submit" 
+          className="btn-save"
+          style={{
+            padding: '8px 16px',
+            backgroundColor: '#3182ce',
+            color: 'white',
+            border: 'none',
+            borderRadius: '4px',
+            fontSize: '14px',
+            cursor: 'pointer'
+          }}
+        >
           {currentUser ? 'Actualizar' : 'Crear'} Usuario
         </button>
       </div>
