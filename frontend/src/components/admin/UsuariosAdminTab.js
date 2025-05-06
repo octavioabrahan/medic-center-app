@@ -112,19 +112,12 @@ function UsuariosAdminTab() {
     }));
   };
 
-  // Manejo de cambios en los roles (checkboxes)
-  const handleRoleToggle = (roleId) => {
-    setFormData(prev => {
-      const currentRoles = [...(prev.roles || [])];
-      
-      // Alternar el rol: añadir o quitar
-      return {
-        ...prev,
-        roles: currentRoles.includes(roleId)
-          ? currentRoles.filter(id => id !== roleId)
-          : [...currentRoles, roleId]
-      };
-    });
+  // Manejo de cambios en los roles (radio buttons en lugar de checkboxes)
+  const handleRoleChange = (roleId) => {
+    setFormData(prev => ({
+      ...prev,
+      roles: [roleId] // Asignar un único rol seleccionado
+    }));
   };
 
   // Función para guardar un usuario (crear o actualizar)
@@ -139,7 +132,7 @@ function UsuariosAdminTab() {
     
     // Validar que al menos un rol esté seleccionado
     if (!formData.roles.length) {
-      alert("Debe seleccionar al menos un rol para el usuario");
+      alert("Debe seleccionar un rol para el usuario");
       return;
     }
     
@@ -259,10 +252,10 @@ function UsuariosAdminTab() {
           {availableRoles.map(role => (
             <div key={role.id_rol} className="role-checkbox">
               <input
-                type="checkbox"
+                type="radio"
                 id={`role-${role.id_rol}`}
                 checked={formData.roles?.includes(role.id_rol) || false}
-                onChange={() => handleRoleToggle(role.id_rol)}
+                onChange={() => handleRoleChange(role.id_rol)}
               />
               <label htmlFor={`role-${role.id_rol}`}>{role.nombre_rol}</label>
             </div>

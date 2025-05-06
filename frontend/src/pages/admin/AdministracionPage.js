@@ -2,9 +2,13 @@ import React, { useState } from "react";
 import "./AdministracionPage.css";
 import UsuariosAdminTab from "../../components/admin/UsuariosAdminTab";
 import RolesAdminTab from "../../components/admin/RolesAdminTab";
+import PantallasAdminTab from "../../components/admin/PantallasAdminTab";
+import { auth } from "../../api";
 
 function AdministracionPage() {
   const [activeTab, setActiveTab] = useState("usuarios");
+  const currentUser = auth.getCurrentUser();
+  const isSuperAdmin = currentUser?.roles?.includes('superadmin');
 
   const renderTabContent = () => {
     switch (activeTab) {
@@ -12,6 +16,8 @@ function AdministracionPage() {
         return <UsuariosAdminTab />;
       case "roles":
         return <RolesAdminTab />;
+      case "pantallas":
+        return isSuperAdmin ? <PantallasAdminTab /> : <div className="access-denied">Acceso denegado</div>;
       default:
         return <div>Seleccione una pestaña</div>;
     }
@@ -35,6 +41,15 @@ function AdministracionPage() {
           >
             Roles
           </button>
+          {/* Solo mostrar la pestaña de Pantallas para superadmin */}
+          {isSuperAdmin && (
+            <button 
+              className={`tab-button ${activeTab === "pantallas" ? "active" : ""}`} 
+              onClick={() => setActiveTab("pantallas")}
+            >
+              Pantallas
+            </button>
+          )}
         </div>
       </div>
       

@@ -86,7 +86,39 @@ function RolesAdminTab() {
     setLoadingScreens(true);
     try {
       const response = await api.get("/screens");
-      setScreens(response.data);
+      // Combinar con los permisos existentes
+      if (currentRole && currentRole.id_rol) {
+        try {
+          const permissionsResponse = await api.get(`/role-screen-permissions/rol/${currentRole.id_rol}`);
+          const rolePermissions = permissionsResponse.data;
+          
+          // Crear un mapa de permisos por id_screen
+          const permissionsMap = {};
+          rolePermissions.forEach(perm => {
+            permissionsMap[perm.id_screen] = perm.can_view;
+          });
+          
+          // Aplicar los permisos al listado de pantallas
+          const screensWithPermissions = response.data.map(screen => ({
+            ...screen,
+            can_view: permissionsMap[screen.id_screen] || false
+          }));
+          
+          setScreens(screensWithPermissions);
+        } catch (error) {
+          // Si no hay permisos, simplemente usar las pantallas sin permisos
+          setScreens(response.data.map(screen => ({
+            ...screen,
+            can_view: false
+          })));
+        }
+      } else {
+        // Si no hay rol seleccionado, inicializar todas las pantallas sin permisos
+        setScreens(response.data.map(screen => ({
+          ...screen,
+          can_view: false
+        })));
+      }
     } catch (err) {
       console.error('Error al cargar pantallas:', err);
       alert('Error al cargar las pantallas disponibles');
