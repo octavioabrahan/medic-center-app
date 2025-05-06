@@ -16,7 +16,7 @@ const checkScreenPermission = (screenPath) => {
 
       // Si es superadmin, siempre darle acceso
       const userRoles = Array.isArray(req.user.roles) ? req.user.roles : [];
-      if (userRoles.includes('superadmin') || userRoles.includes('admin')) {
+      if (userRoles.includes('superadmin')) {
         return next();
       }
 
