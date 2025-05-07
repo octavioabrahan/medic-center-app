@@ -9,8 +9,8 @@ const cache = {
   cacheTime: 5 * 60 * 1000
 };
 
-// Cliente axios con interceptores
-const apiClient = axios.create({
+// Cliente axios con interceptores para caché y reintentos
+export const apiClient = axios.create({
   baseURL: process.env.REACT_APP_API_URL || '',
   headers: {
     'Content-Type': 'application/json'
@@ -87,6 +87,7 @@ apiClient.interceptors.request.use(
   error => Promise.reject(error)
 );
 
+// Cliente axios con interceptores para autenticación - ESTE ES EL IMPORTANTE PARA AUTENTICACIÓN
 const api = axios.create({
   baseURL: "/api", // gracias al proxy en package.json, apunta a localhost:3001
 });
@@ -155,7 +156,6 @@ const auth = {
     return !!localStorage.getItem("authToken");
   },
   
-  // Volvemos a la implementación original que sabemos que funcionaba
   register: async (userData) => {
     console.log("Registrando usuario con datos:", userData); // Debugging
     try {
@@ -181,5 +181,6 @@ const auth = {
   }
 };
 
-export { auth };
-export default apiClient;
+export { auth, api };
+// Exportando api como default para mantener compatibilidad con código existente
+export default api;

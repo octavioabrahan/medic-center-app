@@ -21,8 +21,8 @@ const AdminSidebar = () => {
   useEffect(() => {
     const fetchAllowedScreens = async () => {
       try {
-        // Usamos api en lugar de apiClient para que se incluya el token de autenticación
-        const response = await api.get('/api/role-screen-permissions/usuario');
+        // Usamos la ruta correcta sin duplicar /api/ porque api ya incluye el baseURL="/api"
+        const response = await api.get('/role-screen-permissions/usuario');
         setAllowedScreens(response.data);
       } catch (error) {
         console.error('Error al cargar pantallas permitidas:', error);
