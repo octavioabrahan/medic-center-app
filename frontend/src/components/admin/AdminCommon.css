@@ -541,6 +541,87 @@ body {
   transform: translateY(0);
 }
 
+/* Nuevo botón principal (negro con texto blanco) con mayor especificidad */
+.admin-header .admin-header-buttons .btn-main,
+.admin-page-container .admin-header .btn-main {
+  background-color: var(--btn-primary-new-bg) !important;
+  color: var(--btn-primary-new-text) !important;
+  border: none !important;
+  padding: 8px 16px !important;
+  border-radius: var(--border-radius) !important;
+  font-weight: 500 !important;
+  cursor: pointer !important;
+  font-size: 14px !important;
+  transition: background-color 0.2s, transform 0.1s !important;
+  height: 38px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+.admin-header .admin-header-buttons .btn-main:hover,
+.admin-page-container .admin-header .btn-main:hover {
+  background-color: #1a1a1a !important;
+  transform: translateY(-1px) !important;
+}
+
+/* Botón secundario actualizado (gris con borde) con mayor especificidad */
+.admin-header .admin-header-buttons .btn-alt,
+.admin-page-container .admin-header .btn-alt {
+  background-color: var(--btn-secondary-new-bg) !important;
+  color: var(--btn-secondary-new-text) !important;
+  border: 1px solid var(--btn-secondary-new-border) !important;
+  padding: 8px 16px !important;
+  border-radius: var(--border-radius) !important;
+  font-weight: 500 !important;
+  cursor: pointer !important;
+  font-size: 14px !important;
+  transition: background-color 0.2s, transform 0.1s !important;
+  height: 38px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+.admin-header .admin-header-buttons .btn-alt:hover,
+.admin-page-container .admin-header .btn-alt:hover {
+  background-color: #d1d1d1 !important;
+  transform: translateY(-1px) !important;
+}
+
+/* Botón de agregar con ícono + (versión actualizada) con mayor especificidad */
+.admin-header .admin-header-buttons .btn-add-main,
+.admin-page-container .admin-header .btn-add-main {
+  background-color: var(--btn-primary-new-bg) !important;
+  color: white !important;
+  border: none !important;
+  padding: 8px 16px !important;
+  padding-left: 12px !important;
+  border-radius: var(--border-radius) !important;
+  font-weight: 500 !important;
+  cursor: pointer !important;
+  font-size: 14px !important;
+  transition: background-color 0.2s, transform 0.1s !important;
+  height: 38px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+}
+
+.admin-header .admin-header-buttons .btn-add-main::before,
+.admin-page-container .admin-header .btn-add-main::before {
+  content: "+" !important;
+  margin-right: 8px !important;
+  font-size: 18px !important;
+  font-weight: bold !important;
+  line-height: 1 !important;
+}
+
+.admin-header .admin-header-buttons .btn-add-main:hover,
+.admin-page-container .admin-header .btn-add-main:hover {
+  background-color: #1a1a1a !important;
+  transform: translateY(-1px) !important;
+}
+
 /* ------------- MODALES ESTANDARIZADOS ------------- */
 .modal-overlay {
   position: fixed;

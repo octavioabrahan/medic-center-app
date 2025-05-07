@@ -574,7 +574,14 @@ const AdminExamenes = () => {
 
   return (
     <div className="admin-page-container">
-      <h1 className="admin-page-title">Exámenes y servicios</h1>
+      <div className="admin-header">
+        <h1>Exámenes y servicios</h1>
+        <div className="admin-header-buttons">
+          <button className="btn-add-main" onClick={openAddModal}>
+            Agregar uno nuevo
+          </button>
+        </div>
+      </div>
       
       <AdminFilterBar
         searchTerm={searchTerm}
@@ -584,11 +591,7 @@ const AdminExamenes = () => {
         setShowArchived={setShowArchived}
         sortOrder={sortOrder}
         setSortOrder={setSortOrder}
-      >
-        <button className="btn-add" onClick={openAddModal}>
-          Agregar uno nuevo
-        </button>
-      </AdminFilterBar>
+      />
       
       {loading ? (
         <div className="loading-container">Cargando exámenes...</div>

@@ -16,7 +16,6 @@ import './AdminCommon.css';
  * @param {Function} props.setShowArchived - Función para actualizar el estado de mostrar archivados
  * @param {string} props.sortOrder - Orden de clasificación actual ("az" o "za")
  * @param {Function} props.setSortOrder - Función para actualizar el orden de clasificación
- * @param {JSX.Element} props.children - Elementos adicionales a renderizar en la barra de filtros (botones de acción, etc.)
  */
 const AdminFilterBar = ({ 
   searchTerm = '', 
@@ -29,8 +28,7 @@ const AdminFilterBar = ({
   showArchived = false,
   setShowArchived,
   sortOrder = 'az',
-  setSortOrder,
-  children
+  setSortOrder
 }) => {
   return (
     <div className="admin-filter-bar">
@@ -94,9 +92,6 @@ const AdminFilterBar = ({
           </button>
         </div>
       )}
-      
-      {/* Contenido adicional (botones de acción, etc.) */}
-      {children}
     </div>
   );
 };

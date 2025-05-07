@@ -820,7 +820,25 @@ const AdminConvenios = () => {
 
   return (
     <div className="admin-page-container">
-      <h1 className="admin-page-title">Convenios</h1>
+      <div className="admin-header">
+        <h1>Convenios</h1>
+        <div className="admin-header-buttons">
+          <button 
+            className="btn-add-main" 
+            onClick={() => {
+              setNombre("");
+              setRif("");
+              setRifBase("");
+              setDigitoVerificador("");
+              setLogoUrl("");
+              setFormError(null);
+              setShowAddModal(true);
+            }}
+          >
+            Agregar empresa con convenio
+          </button>
+        </div>
+      </div>
       
       {formSuccess && <div className="success-message">{formSuccess}</div>}
       
@@ -832,22 +850,7 @@ const AdminConvenios = () => {
         setShowArchived={setShowArchived}
         sortOrder={sortOrder}
         setSortOrder={setSortOrder}
-      >
-        <button 
-          className="btn-add" 
-          onClick={() => {
-            setNombre("");
-            setRif("");
-            setRifBase("");
-            setDigitoVerificador("");
-            setLogoUrl("");
-            setFormError(null);
-            setShowAddModal(true);
-          }}
-        >
-          + Agregar empresa con convenio
-        </button>
-      </AdminFilterBar>
+      />
       
       {renderConveniosTable()}
       {renderAddModal()}
