@@ -128,7 +128,7 @@ function ExcepcionesPage() {
     if (cancelacion.profesional_id) {
       cargarFechasDisponibles(cancelacion.profesional_id);
     }
-  }, [cancelacion.profesional_id, selectedMonth, selectedYear]); 
+  }, [cancelacion.profesional_id, selectedMonth, selectedYear, cargarFechasDisponibles]); 
   
   // Filtrar excepciones cuando cambia el término de búsqueda
   useEffect(() => {
@@ -291,7 +291,7 @@ function ExcepcionesPage() {
       // Formatear la fecha seleccionada
       const fechaFormateada = formatDate(nuevaExcepcion.fecha);
       
-      await axios.post("/api/excepciones", {
+      await apiClient.post("/api/excepciones", {
         ...nuevaExcepcion,
         fecha: fechaFormateada
       });
@@ -318,7 +318,7 @@ function ExcepcionesPage() {
       // Formatear la fecha seleccionada
       const fechaFormateada = formatDate(cancelacion.fecha);
       
-      await axios.post("/api/excepciones", {
+      await apiClient.post("/api/excepciones", {
         ...cancelacion,
         fecha: fechaFormateada
       });
