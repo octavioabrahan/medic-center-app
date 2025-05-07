@@ -74,10 +74,11 @@
   background-color: #f9fafb;
 }
 
+/* Uso !important para asegurar que estos estilos tengan precedencia */
 .sort-btn.active {
-  background-color: #0d47a1;
-  color: white;
-  border-color: #0d47a1;
+  background-color: #E6E6E6 !important;
+  color: #333333 !important;
+  border-color: transparent !important;
 }
 
 /* Checkbox para mostrar archivados */

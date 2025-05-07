@@ -858,3 +858,23 @@
   text-align: center;
   color: #666;
 }
+
+/* Botones de ordenamiento en la sección de filtros */
+.sort-btn {
+  padding: 5px 10px;
+  border-radius: 4px;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.sort-btn:hover {
+  background-color: #f9fafb;
+}
+
+/* Uso !important para asegurar que estos estilos tengan precedencia */
+.sort-btn.active {
+  background-color: #E6E6E6 !important;
+  color: #333333 !important;
+  border-color: transparent !important;
+}

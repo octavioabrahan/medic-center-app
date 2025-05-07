@@ -135,10 +135,11 @@
   background-color: #e5e7eb;
 }
 
+/* Uso !important para asegurar que estos estilos tengan precedencia */
 .sort-btn.active {
-  background-color: #1e3a8a;
-  color: white;
-  border-color: #1e3a8a;
+  background-color: #E6E6E6 !important;
+  color: #333333 !important;
+  border-color: transparent !important;
 }
 
 /* Botones de acciones específicos para archivo/activar */
