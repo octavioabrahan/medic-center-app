@@ -37,6 +37,13 @@
   --btn-blue-hover: #255a94;
   --btn-blue-text: #ffffff;
   
+  /* Nuevos colores para botones según diseño actualizado */
+  --btn-primary-new-bg: #2C2C2C;
+  --btn-primary-new-text: #FFFFFF;
+  --btn-secondary-new-bg: #E3E3E3;
+  --btn-secondary-new-border: #767676;
+  --btn-secondary-new-text: #000000;
+  
   /* Estados */
   --success-bg: #e8f5e9;
   --success-color: #4CAF50;
@@ -94,6 +101,26 @@ body {
   height: 3px;
   width: 100px;
   background-color: var(--primary-color);
+}
+
+/* Contenedor para título y botones */
+.admin-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--spacing-lg);
+  flex-wrap: wrap;
+  gap: var(--spacing-md);
+}
+
+.admin-header h1 {
+  margin: 0;
+  flex-grow: 1;
+}
+
+.admin-header-buttons {
+  display: flex;
+  gap: var(--spacing-sm);
 }
 
 /* ------------- PESTAÑAS DE NAVEGACIÓN ------------- */
@@ -426,6 +453,92 @@ body {
 
 .btn-add:hover {
   background-color: var(--btn-primary-hover);
+}
+
+/* Nuevo botón principal (negro con texto blanco) */
+.btn-main {
+  background-color: var(--btn-primary-new-bg);
+  color: var(--btn-primary-new-text);
+  border: none;
+  padding: 8px 16px;
+  border-radius: var(--border-radius);
+  font-weight: 500;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.2s, transform 0.1s;
+  height: 38px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-main:hover {
+  background-color: #1a1a1a;
+  transform: translateY(-1px);
+}
+
+.btn-main:active {
+  transform: translateY(0);
+}
+
+/* Botón secundario actualizado (gris con borde) */
+.btn-alt {
+  background-color: var(--btn-secondary-new-bg);
+  color: var(--btn-secondary-new-text);
+  border: 1px solid var(--btn-secondary-new-border);
+  padding: 8px 16px;
+  border-radius: var(--border-radius);
+  font-weight: 500;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.2s, transform 0.1s;
+  height: 38px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-alt:hover {
+  background-color: #d1d1d1;
+  transform: translateY(-1px);
+}
+
+.btn-alt:active {
+  transform: translateY(0);
+}
+
+/* Botón de agregar con ícono + (versión actualizada) */
+.btn-add-main {
+  background-color: var(--btn-primary-new-bg);
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  padding-left: 12px;
+  border-radius: var(--border-radius);
+  font-weight: 500;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.2s, transform 0.1s;
+  height: 38px;
+  display: inline-flex;
+  align-items: center;
+}
+
+.btn-add-main::before {
+  content: "+";
+  margin-right: 8px;
+  font-size: 18px;
+  font-weight: bold;
+  line-height: 1;
+}
+
+.btn-add-main:hover {
+  background-color: #1a1a1a;
+  transform: translateY(-1px);
+}
+
+.btn-add-main:active {
+  transform: translateY(0);
 }
 
 /* ------------- MODALES ESTANDARIZADOS ------------- */

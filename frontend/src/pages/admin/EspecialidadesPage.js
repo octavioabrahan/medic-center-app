@@ -125,7 +125,14 @@ function EspecialidadesPage() {
 
   return (
     <div className="admin-page-container">
-      <h1 className="admin-page-title">Gestión de Especialidades</h1>
+      <div className="admin-header">
+        <h1>Gestión de Especialidades</h1>
+        <div className="admin-header-buttons">
+          <button className="btn-add-main" onClick={handleCreateEspecialidad}>
+            Agregar especialidad
+          </button>
+        </div>
+      </div>
       
       <AdminFilterBar
         searchTerm={searchTerm}
@@ -135,11 +142,7 @@ function EspecialidadesPage() {
         setShowArchived={setShowArchived}
         sortOrder={sortOrder}
         setSortOrder={setSortOrder}
-      >
-        <button className="btn-add" onClick={handleCreateEspecialidad}>
-          Agregar especialidad
-        </button>
-      </AdminFilterBar>
+      />
       
       {loading ? (
         <div className="loading-container">Cargando especialidades...</div>

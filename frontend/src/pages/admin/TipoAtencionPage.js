@@ -123,9 +123,24 @@ function TipoAtencionPage() {
     }
   };
 
+  const handleExportData = () => {
+    // Función de ejemplo para exportar datos
+    alert('Funcionalidad de exportación (ejemplo)');
+  };
+
   return (
     <div className="admin-page-container">
-      <h1 className="admin-page-title">Gestión de Tipos de Atención</h1>
+      <div className="admin-header">
+        <h1>Gestión de Tipos de Atención</h1>
+        <div className="admin-header-buttons">
+          <button className="btn-alt" onClick={handleExportData}>
+            Exportar datos
+          </button>
+          <button className="btn-add-main" onClick={handleCreateTipo}>
+            Agregar tipo de atención
+          </button>
+        </div>
+      </div>
       
       <AdminFilterBar
         searchTerm={searchTerm}
@@ -135,11 +150,7 @@ function TipoAtencionPage() {
         setShowArchived={setShowArchived}
         sortOrder={sortOrder}
         setSortOrder={setSortOrder}
-      >
-        <button className="btn-add" onClick={handleCreateTipo}>
-          Agregar tipo de atención
-        </button>
-      </AdminFilterBar>
+      />
       
       {loading ? (
         <div className="loading-container">Cargando tipos de atención...</div>

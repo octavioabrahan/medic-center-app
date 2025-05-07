@@ -162,7 +162,14 @@ const AdminEmpresas = () => {
 
   return (
     <div className="admin-page-container">
-      <h1 className="admin-page-title">Gestión de Empresas</h1>
+      <div className="admin-header">
+        <h1>Gestión de Empresas</h1>
+        <div className="admin-header-buttons">
+          <button className="btn-add-main" onClick={handleCreateEmpresa}>
+            Registrar empresa
+          </button>
+        </div>
+      </div>
       
       <AdminFilterBar
         searchTerm={searchTerm}
@@ -172,11 +179,7 @@ const AdminEmpresas = () => {
         setShowArchived={setShowArchived}
         sortOrder={sortOrder}
         setSortOrder={setSortOrder}
-      >
-        <button className="btn-add" onClick={handleCreateEmpresa}>
-          Registrar empresa
-        </button>
-      </AdminFilterBar>
+      />
       
       {mensaje && <div className="success-message">{mensaje}</div>}
       {error && <div className="error-message">{error}</div>}
