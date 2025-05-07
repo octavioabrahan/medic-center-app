@@ -118,20 +118,18 @@ body {
 }
 
 /* ------------- BARRA DE FILTROS ESTANDARIZADA ------------- */
-.admin-filters-bar {
+/* Nueva implementación del filtro unificado */
+.admin-filter-bar {
   display: flex;
   flex-wrap: wrap;
   margin-bottom: var(--spacing-lg);
+  padding: var(--spacing-md);
   gap: var(--spacing-md);
   align-items: center;
-  justify-content: space-between;
-}
-
-.filter-group {
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-md);
-  flex-wrap: wrap;
+  background-color: var(--bg-light);
+  border-radius: var(--border-radius);
+  border: 1px solid var(--border-color);
+  width: 100%;
 }
 
 /* Componente de búsqueda */
@@ -160,12 +158,12 @@ body {
   pointer-events: none;
 }
 
-/* Contenedor de filtros select */
-.admin-filter-container {
+/* Componente dropdown */
+.admin-dropdown {
   min-width: 180px;
 }
 
-.admin-filter-container select {
+.admin-dropdown select {
   width: 100%;
   height: 38px;
   padding: 8px 12px;
@@ -180,35 +178,8 @@ body {
   font-size: 14px;
 }
 
-/* Selector de fechas */
-.admin-date-picker {
-  position: relative;
-  min-width: 230px;
-}
-
-.admin-date-picker .date-input-wrapper {
-  display: flex;
-  align-items: center;
-  height: 38px;
-  padding: 0 12px;
-  border: 1px solid var(--border-color);
-  border-radius: var(--border-radius);
-  background-color: white;
-  cursor: pointer;
-}
-
-.admin-date-picker .calendar-icon {
-  color: var(--text-muted);
-  margin-right: 8px;
-}
-
-.admin-date-picker .date-input {
-  flex: 1;
-  font-size: 14px;
-}
-
 /* Checkbox para mostrar archivados */
-.archived-checkbox {
+.admin-checkbox {
   display: flex;
   align-items: center;
   gap: 8px;
@@ -217,24 +188,28 @@ body {
   font-size: 14px;
   padding: 5px 10px;
   border-radius: var(--border-radius);
+  background-color: white;
+  border: 1px solid var(--border-color);
+  height: 38px;
 }
 
-.archived-checkbox input[type="checkbox"] {
+.admin-checkbox input[type="checkbox"] {
   margin: 0;
   cursor: pointer;
 }
 
 /* Botones de ordenamiento A-Z y Z-A */
-.sort-buttons {
+.admin-sort-buttons {
   display: flex;
   align-items: center;
-  border-radius: var(--border-radius);
+  border-radius: var (--border-radius);
   overflow: hidden;
   border: 1px solid var(--border-color);
+  height: 38px;
 }
 
-.sort-button {
-  background: #f5f5f5;
+.sort-btn {
+  background: white;
   border: none;
   padding: 7px 12px;
   cursor: pointer;
@@ -243,15 +218,26 @@ body {
   justify-content: center;
   font-weight: 500;
   transition: background-color 0.2s;
+  height: 100%;
 }
 
-.sort-button:first-child {
+.sort-btn:first-child {
   border-right: 1px solid var(--border-color);
 }
 
-.sort-button.active {
+.sort-btn.active {
   background-color: var(--primary-color);
   color: white;
+}
+
+/* Clases antiguas para compatibilidad - Se eliminarán posteriormente */
+.admin-filters-bar,
+.filter-group,
+.admin-filter-container,
+.archived-checkbox,
+.sort-buttons,
+.sort-button {
+  /* Las propiedades importantes se han trasladado a las nuevas clases */
 }
 
 /* ------------- TABLAS ESTANDARIZADAS ------------- */
