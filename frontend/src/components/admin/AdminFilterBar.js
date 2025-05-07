@@ -16,6 +16,7 @@ import './AdminCommon.css';
  * @param {Function} props.setShowArchived - Función para actualizar el estado de mostrar archivados
  * @param {string} props.sortOrder - Orden de clasificación actual ("az" o "za")
  * @param {Function} props.setSortOrder - Función para actualizar el orden de clasificación
+ * @param {ReactNode} props.children - Elementos hijos (botones de acción) que se mostrarán en la barra de filtros
  */
 const AdminFilterBar = ({ 
   searchTerm = '', 
@@ -28,70 +29,76 @@ const AdminFilterBar = ({
   showArchived = false,
   setShowArchived,
   sortOrder = 'az',
-  setSortOrder
+  setSortOrder,
+  children // Añadido el parámetro children para renderizar los botones
 }) => {
   return (
     <div className="admin-filter-bar">
-      {/* Componente de búsqueda */}
-      <div className="admin-search">
-        <input
-          type="text"
-          placeholder={searchPlaceholder}
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-        />
-        <span className="search-icon">🔍</span>
+      <div className="filter-section">
+        {/* Componente de búsqueda */}
+        <div className="admin-search">
+          <input
+            type="text"
+            placeholder={searchPlaceholder}
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+          <span className="search-icon">🔍</span>
+        </div>
+        
+        {/* Dropdown de filtro principal si está disponible */}
+        {filterOptions.length > 0 && setFilterValue && (
+          <div className="admin-dropdown">
+            <select 
+              value={filterValue}
+              onChange={(e) => setFilterValue(e.target.value)}
+            >
+              <option value="">{filterLabel}</option>
+              {filterOptions.map((option) => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
+            </select>
+          </div>
+        )}
+        
+        {/* Checkbox para mostrar archivados */}
+        {setShowArchived && (
+          <div className="admin-checkbox">
+            <input
+              type="checkbox"
+              id="showArchivedCheckbox"
+              checked={showArchived}
+              onChange={(e) => setShowArchived(e.target.checked)}
+            />
+            <label htmlFor="showArchivedCheckbox">Mostrar archivados</label>
+          </div>
+        )}
+        
+        {/* Botones de ordenamiento A-Z y Z-A */}
+        {setSortOrder && (
+          <div className="admin-sort-buttons">
+            <button 
+              className={`sort-btn ${sortOrder === 'az' ? 'active' : ''}`}
+              onClick={() => setSortOrder('az')}
+              title="Ordenar de A a Z"
+            >
+              A → Z
+            </button>
+            <button 
+              className={`sort-btn ${sortOrder === 'za' ? 'active' : ''}`}
+              onClick={() => setSortOrder('za')}
+              title="Ordenar de Z a A"
+            >
+              Z → A
+            </button>
+          </div>
+        )}
       </div>
       
-      {/* Dropdown de filtro principal si está disponible */}
-      {filterOptions.length > 0 && setFilterValue && (
-        <div className="admin-dropdown">
-          <select 
-            value={filterValue}
-            onChange={(e) => setFilterValue(e.target.value)}
-          >
-            <option value="">{filterLabel}</option>
-            {filterOptions.map((option) => (
-              <option key={option.value} value={option.value}>
-                {option.label}
-              </option>
-            ))}
-          </select>
-        </div>
-      )}
-      
-      {/* Checkbox para mostrar archivados */}
-      {setShowArchived && (
-        <div className="admin-checkbox">
-          <input
-            type="checkbox"
-            id="showArchivedCheckbox"
-            checked={showArchived}
-            onChange={(e) => setShowArchived(e.target.checked)}
-          />
-          <label htmlFor="showArchivedCheckbox">Mostrar archivados</label>
-        </div>
-      )}
-      
-      {/* Botones de ordenamiento A-Z y Z-A */}
-      {setSortOrder && (
-        <div className="admin-sort-buttons">
-          <button 
-            className={`sort-btn ${sortOrder === 'az' ? 'active' : ''}`}
-            onClick={() => setSortOrder('az')}
-            title="Ordenar de A a Z"
-          >
-            A → Z
-          </button>
-          <button 
-            className={`sort-btn ${sortOrder === 'za' ? 'active' : ''}`}
-            onClick={() => setSortOrder('za')}
-            title="Ordenar de Z a A"
-          >
-            Z → A
-          </button>
-        </div>
-      )}
+      {/* Renderizar los botones de acción (children) */}
+      {children}
     </div>
   );
 };
