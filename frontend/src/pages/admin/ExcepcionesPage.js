@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef, useCallback } from "react";
-import axios from "axios";
+import apiClient, { fetchWithCache } from "../../api"; // Importando nuestro cliente API mejorado
 import "./HorariosPage.css";
 import "../../components/admin/AdminCommon.css"; // Importamos los estilos comunes
 import { format } from "date-fns";
@@ -168,39 +168,29 @@ function ExcepcionesPage() {
     };
   }, []);
 
-  // Fetch de profesionales
+  // Fetch de profesionales con sistema de caché
   const fetchProfesionales = async () => {
     try {
-      const res = await axios.get("/api/profesionales");
-      setProfesionales(res.data);
+      // Usar fetchWithCache en lugar de axios.get
+      const response = await fetchWithCache("/api/profesionales");
+      setProfesionales(response.data);
     } catch (err) {
       console.error("Error cargando profesionales:", err);
-      setError("Error al cargar los profesionales");
-      // Agregar manejo para error 429
-      if (err.response && err.response.status === 429) {
-        console.error('Error: Demasiadas solicitudes. Esperando un momento...');
-        // Esperar 2 segundos y reintentar
-        setTimeout(fetchProfesionales, 2000);
-      }
+      setError("Error al cargar los profesionales. Por favor, recarga la página.");
     }
   };
 
-  // Fetch de excepciones
+  // Fetch de excepciones con sistema de caché
   const fetchExcepciones = async () => {
     setLoading(true);
     try {
-      const res = await axios.get("/api/excepciones");
-      setExcepciones(res.data);
-      setFilteredExcepciones(res.data);
+      // Usar fetchWithCache en lugar de axios.get
+      const response = await fetchWithCache("/api/excepciones");
+      setExcepciones(response.data);
+      setFilteredExcepciones(response.data);
     } catch (err) {
       console.error("Error al cargar excepciones:", err);
-      setError("Error al cargar las excepciones");
-      // Agregar manejo para error 429
-      if (err.response && err.response.status === 429) {
-        console.error('Error: Demasiadas solicitudes. Esperando un momento...');
-        // Esperar 2 segundos y reintentar
-        setTimeout(fetchExcepciones, 2000);
-      }
+      setError("Error al cargar las excepciones. Por favor, recarga la página.");
     } finally {
       setLoading(false);
     }
@@ -209,10 +199,10 @@ function ExcepcionesPage() {
   // Cargar fechas disponibles para un profesional específico
   const cargarFechasDisponibles = async (profesionalId) => {
     try {
-      // Cargar fechas del servicio de horarios y excepciones
+      // Usar Promise.all con fetchWithCache
       const [resHorarios, resExcepciones] = await Promise.all([
-        axios.get(`/api/horarios/fechas/${profesionalId}`),
-        axios.get(`/api/excepciones/profesional/${profesionalId}`)
+        fetchWithCache(`/api/horarios/fechas/${profesionalId}`),
+        fetchWithCache(`/api/excepciones/profesional/${profesionalId}`)
       ]);
 
       const horarios = resHorarios.data;
@@ -262,7 +252,9 @@ function ExcepcionesPage() {
       
     } catch (err) {
       console.error("Error al cargar fechas disponibles:", err);
-      setError("Error al cargar las fechas disponibles");
+      setError("Error al cargar las fechas disponibles.");
+      setFechasDisponibles([]);
+      setFechasCanceladas(new Set());
     }
   };
 
