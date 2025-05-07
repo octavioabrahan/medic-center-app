@@ -671,65 +671,6 @@ function ProfesionalesAdmin() {
     );
   };
 
-  // Renderizar tabla de profesionales
-  const renderProfesionalesTable = () => {
-    if (loading) return <div className="loading">Cargando profesionales...</div>;
-    if (error) return <div className="error-message">{error}</div>;
-    if (filteredProfesionales.length === 0) return <div className="no-results">No se encontraron profesionales</div>;
-
-    return (
-      <div className="admin-table-container">
-        <table className="admin-table">
-          <thead>
-            <tr>
-              <th>Cédula</th>
-              <th>Profesional</th>
-              <th>Especialidad</th>
-              <th>Estado</th>
-              <th>Acciones</th>
-            </tr>
-          </thead>
-          <tbody>
-            {filteredProfesionales.map(profesional => (
-              <tr 
-                key={profesional.profesional_id}
-                className={profesional.is_active === false ? 'profesional-inactivo' : ''}
-              >
-                <td>{profesional.cedula}</td>
-                <td>{profesional.nombre} {profesional.apellido}</td>
-                <td>{profesional.nombre_especialidad}</td>
-                <td>
-                  <span className={`status-badge ${profesional.is_active ? 'status-activo' : 'status-inactivo'}`}>
-                    {profesional.is_active ? 'Activo' : 'Archivado'}
-                  </span>
-                </td>
-                <td className="actions-cell">
-                  {profesional.is_active ? (
-                    <button 
-                      className="btn-action btn-edit" 
-                      title="Editar profesional"
-                      onClick={() => handleEditProfesional(profesional)}
-                    >
-                      ✏️
-                    </button>
-                  ) : (
-                    <button 
-                      className="btn-action btn-activate" 
-                      title="Activar profesional"
-                      onClick={() => cambiarEstadoProfesional(profesional.profesional_id, true)}
-                    >
-                      ↩️
-                    </button>
-                  )}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-    );
-  };
-
   return (
     <div className="admin-page-container">
       <h1 className="admin-page-title">Gestión de Profesionales</h1>
@@ -788,7 +729,7 @@ function ProfesionalesAdmin() {
         
         <div className="actions-container">
           <button 
-            className="btn-secondary" 
+            className="btn-create" 
             onClick={() => setShowAddEspecialidadModal(true)}
           >
             Crear especialidad
@@ -804,7 +745,65 @@ function ProfesionalesAdmin() {
         </div>
       </div>
       
-      {renderProfesionalesTable()}
+      {loading ? (
+        <div className="loading">Cargando profesionales...</div>
+      ) : error ? (
+        <div className="error-message">{error}</div>
+      ) : filteredProfesionales.length === 0 ? (
+        <div className="no-results">No se encontraron profesionales</div>
+      ) : (
+        <div className="admin-table-container">
+          <table className="admin-table">
+            <thead>
+              <tr>
+                <th>Cédula</th>
+                <th>Profesional</th>
+                <th>Especialidad</th>
+                <th>Estado</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              {filteredProfesionales.map(profesional => (
+                <tr 
+                  key={profesional.profesional_id}
+                  className={profesional.is_active === false ? 'profesional-inactivo' : ''}
+                >
+                  <td>{profesional.cedula}</td>
+                  <td>{profesional.nombre} {profesional.apellido}</td>
+                  <td>{profesional.nombre_especialidad}</td>
+                  <td>
+                    <span className={`status-badge ${profesional.is_active ? 'status-activo' : 'status-inactivo'}`}>
+                      {profesional.is_active ? 'Activo' : 'Archivado'}
+                    </span>
+                  </td>
+                  <td className="actions-cell">
+                    {profesional.is_active ? (
+                      <button 
+                        className="btn-action btn-edit" 
+                        title="Editar profesional"
+                        onClick={() => handleEditProfesional(profesional)}
+                      >
+                        ✏️
+                      </button>
+                    ) : (
+                      <button 
+                        className="btn-action btn-activate" 
+                        title="Activar profesional"
+                        onClick={() => cambiarEstadoProfesional(profesional.profesional_id, true)}
+                      >
+                        ↩️
+                      </button>
+                    )}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+
+      {/* Modales - Mantenemos el código original de los modales */}
       {renderAddEspecialidadModal()}
       {renderAddProfesionalModal()}
       {renderEditProfesionalModal()}

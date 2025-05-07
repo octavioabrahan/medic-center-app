@@ -2,14 +2,23 @@
 
 /* ------------- VARIABLES GLOBALES ------------- */
 :root {
-  /* Colores de la marca */
-  --primary-color: #1e3a8a;
-  --primary-hover: #1e40af;
-  --secondary-color: #374151;
+  /* Colores de la marca - actualizados según la imagen */
+  --primary-color: #20377A;
+  --primary-hover: #15285a;
+  --secondary-color: #2C2C2C;
   --bg-color: #FBFBFC;
   --border-color: #e5e7eb;
   --text-color: #333;
   --text-muted: #6b7280;
+  --table-header-bg: #2C2C2C;
+  --table-header-text: #ffffff;
+  --btn-primary-bg: #2C2C2C;
+  --btn-primary-text: #ffffff;
+  --btn-secondary-bg: transparent;
+  --btn-secondary-border: #767676;
+  --btn-secondary-text: #2C2C2C;
+  --btn-create-bg: #767676;
+  --btn-create-text: #ffffff;
   
   /* Estados */
   --success-bg: #e6f7e6;
@@ -44,7 +53,7 @@
 
 /* Títulos de páginas con línea inferior */
 .admin-page-title {
-  color: var(--text-color);
+  color: var(--secondary-color);
   margin-bottom: var(--spacing-xl);
   font-size: 20px;
   font-weight: 600;
@@ -184,9 +193,10 @@
 }
 
 .admin-table th {
-  background-color: #f9fafb;
+  /* Actualizado según la imagen */
+  background-color: var(--table-header-bg);
+  color: var(--table-header-text);
   font-weight: 600;
-  color: var(--secondary-color);
   font-size: 12px;
   text-transform: uppercase;
   letter-spacing: 0.05em;
@@ -281,33 +291,35 @@
   cursor: pointer;
   font-weight: 500;
   font-size: 14px;
+  transition: all 0.2s ease;
 }
 
 .btn-primary {
-  background-color: var(--primary-color);
-  color: white;
+  background-color: var(--btn-primary-bg);
+  color: var(--btn-primary-text);
 }
 
 .btn-primary:hover {
-  background-color: var(--primary-hover);
+  background-color: #222222;
 }
 
 .btn-secondary {
-  background-color: #e5e7eb;
-  color: var(--secondary-color);
+  background-color: var(--btn-secondary-bg);
+  color: var(--btn-secondary-text);
+  border: 1px solid var(--btn-secondary-border);
 }
 
 .btn-secondary:hover {
-  background-color: #d1d5db;
+  background-color: #f0f0f0;
 }
 
-/* Botón de agregar */
+/* Botón de agregar - actualizado según la imagen */
 .btn-add {
   display: flex;
   align-items: center;
   gap: 8px;
   padding: 8px 16px;
-  background-color: var(--primary-color);
+  background-color: var(--secondary-color);
   color: white;
   border: none;
   border-radius: var(--border-radius);
@@ -318,7 +330,25 @@
 }
 
 .btn-add:hover {
-  background-color: var(--primary-hover);
+  background-color: #222222;
+}
+
+/* Botón para crear especialidad - actualizado según la imagen */
+.btn-create {
+  display: inline-flex;
+  align-items: center;
+  padding: 8px 16px;
+  background-color: var(--btn-create-bg);
+  color: var(--btn-create-text);
+  border: none;
+  border-radius: var(--border-radius);
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.btn-create:hover {
+  background-color: #606060;
 }
 
 /* ------------- MODALES ------------- */
@@ -354,9 +384,9 @@
 }
 
 .modal-header h2 {
-  margin: J0;
+  margin: 0;
   font-size: 18px;
-  color: var(--primary-color);
+  color: var(--secondary-color);
 }
 
 .close-btn {
@@ -459,4 +489,31 @@
     width: 100%;
     margin: 5px 0;
   }
+}
+
+/* ------------- COMPONENTES ESPECÍFICOS ------------- */
+/* Estilos específicos para los botones de ordenamiento en la página de profesionales */
+.profesionales-sort-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+.profesionales-sort-btn {
+  padding: 6px 10px;
+  background-color: #f3f4f6;
+  border: 1px solid #e5e7eb;
+  border-radius: var(--border-radius);
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.profesionales-sort-btn.active {
+  background-color: #e5e7eb;
+  font-weight: 500;
+}
+
+.profesionales-sort-btn:hover {
+  background-color: #e5e7eb;
 }
