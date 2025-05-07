@@ -67,109 +67,10 @@ function ExcepcionesPage() {
     const m = String(date.getMonth() + 1).padStart(2, '0');
     const d = String(date.getDate()).padStart(2, '0');
     return `${y}-${m}-${d}`;
-  }, [parseFechaLocal]); 
-  
-  // Crear calendario para el mes y año seleccionados
-  useEffect(() => {
-    const days = [];
-    const date = new Date(selectedYear, selectedMonth, 1);
-    
-    // Obtener el día de la semana del primer día del mes (0 = domingo, 1 = lunes, etc.)
-    let firstDayOfMonth = date.getDay();
-    // Ajustar para que la semana comience en lunes (0 = lunes, 6 = domingo)
-    firstDayOfMonth = firstDayOfMonth === 0 ? 6 : firstDayOfMonth - 1;
-    
-    // Agregar días del mes anterior para completar la primera semana
-    const prevMonthDays = new Date(selectedYear, selectedMonth, 0).getDate();
-    for (let i = firstDayOfMonth - 1; i >= 0; i--) {
-      days.push({
-        day: prevMonthDays - i,
-        month: selectedMonth - 1,
-        year: selectedMonth === 0 ? selectedYear - 1 : selectedYear,
-        isCurrentMonth: false
-      });
-    }
-    
-    // Agregar días del mes actual
-    const daysInCurrentMonth = new Date(selectedYear, selectedMonth + 1, 0).getDate();
-    for (let i = 1; i <= daysInCurrentMonth; i++) {
-      days.push({
-        day: i,
-        month: selectedMonth,
-        year: selectedYear,
-        isCurrentMonth: true
-      });
-    }
-    
-    // Calcular cuántos días necesitamos del mes siguiente
-    const remainingDays = 42 - days.length; // 6 semanas * 7 días = 42
-    
-    // Agregar días del mes siguiente
-    for (let i = 1; i <= remainingDays; i++) {
-      days.push({
-        day: i,
-        month: selectedMonth + 1 === 12 ? 0 : selectedMonth + 1,
-        year: selectedMonth + 1 === 12 ? selectedYear + 1 : selectedYear,
-        isCurrentMonth: false
-      });
-    }
-    
-    setDaysInMonth(days);
-  }, [selectedMonth, selectedYear]);
-
-  // Cargar datos iniciales
-  useEffect(() => {
-    fetchProfesionales();
-    fetchExcepciones();
-  }, []);
-
-  // Cargar fechas disponibles cuando cambia el profesional seleccionado o el mes/año
-  useEffect(() => {
-    if (cancelacion.profesional_id) {
-      cargarFechasDisponibles(cancelacion.profesional_id);
-    }
-  }, [cancelacion.profesional_id, selectedMonth, selectedYear, cargarFechasDisponibles]); 
-  
-  // Filtrar excepciones cuando cambia el término de búsqueda
-  useEffect(() => {
-    if (excepciones.length > 0) {
-      if (searchTerm.trim() === "") {
-        setFilteredExcepciones(excepciones);
-      } else {
-        const term = searchTerm.toLowerCase();
-        const filtered = excepciones.filter(excepcion => 
-          `${excepcion.profesional_nombre} ${excepcion.profesional_apellido}`.toLowerCase().includes(term)
-        );
-        setFilteredExcepciones(filtered);
-      }
-    }
-  }, [searchTerm, excepciones]);
-
-  // Detectar clics fuera de los selectores
-  useEffect(() => {
-    function handleClickOutside(event) {
-      if (mesAgregarRef.current && !mesAgregarRef.current.contains(event.target)) {
-        setShowMesSelector(false);
-      }
-      if (yearAgregarRef.current && !yearAgregarRef.current.contains(event.target)) {
-        setShowYearSelector(false);
-      }
-      if (mesCancelarRef.current && !mesCancelarRef.current.contains(event.target)) {
-        setShowMesCancelarSelector(false);
-      }
-      if (yearCancelarRef.current && !yearCancelarRef.current.contains(event.target)) {
-        setShowYearCancelarSelector(false);
-      }
-    }
-
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, []);
+  }, [parseFechaLocal]);
 
   // Fetch de profesionales con sistema de caché
-  const fetchProfesionales = async () => {
+  const fetchProfesionales = useCallback(async () => {
     try {
       // Usar fetchWithCache en lugar de axios.get
       const response = await fetchWithCache("/api/profesionales");
@@ -178,10 +79,10 @@ function ExcepcionesPage() {
       console.error("Error cargando profesionales:", err);
       setError("Error al cargar los profesionales. Por favor, recarga la página.");
     }
-  };
+  }, []);
 
   // Fetch de excepciones con sistema de caché
-  const fetchExcepciones = async () => {
+  const fetchExcepciones = useCallback(async () => {
     setLoading(true);
     try {
       // Usar fetchWithCache en lugar de axios.get
@@ -194,10 +95,10 @@ function ExcepcionesPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
-  // Cargar fechas disponibles para un profesional específico
-  const cargarFechasDisponibles = async (profesionalId) => {
+  // Cargar fechas disponibles para un profesional específico - Movida antes del useEffect que la utiliza y envuelta en useCallback
+  const cargarFechasDisponibles = useCallback(async (profesionalId) => {
     try {
       // Usar Promise.all con fetchWithCache
       const [resHorarios, resExcepciones] = await Promise.all([
@@ -256,7 +157,106 @@ function ExcepcionesPage() {
       setFechasDisponibles([]);
       setFechasCanceladas(new Set());
     }
-  };
+  }, [formatDate, parseFechaLocal, selectedMonth, selectedYear]);
+  
+  // Crear calendario para el mes y año seleccionados
+  useEffect(() => {
+    const days = [];
+    const date = new Date(selectedYear, selectedMonth, 1);
+    
+    // Obtener el día de la semana del primer día del mes (0 = domingo, 1 = lunes, etc.)
+    let firstDayOfMonth = date.getDay();
+    // Ajustar para que la semana comience en lunes (0 = lunes, 6 = domingo)
+    firstDayOfMonth = firstDayOfMonth === 0 ? 6 : firstDayOfMonth - 1;
+    
+    // Agregar días del mes anterior para completar la primera semana
+    const prevMonthDays = new Date(selectedYear, selectedMonth, 0).getDate();
+    for (let i = firstDayOfMonth - 1; i >= 0; i--) {
+      days.push({
+        day: prevMonthDays - i,
+        month: selectedMonth - 1,
+        year: selectedMonth === 0 ? selectedYear - 1 : selectedYear,
+        isCurrentMonth: false
+      });
+    }
+    
+    // Agregar días del mes actual
+    const daysInCurrentMonth = new Date(selectedYear, selectedMonth + 1, 0).getDate();
+    for (let i = 1; i <= daysInCurrentMonth; i++) {
+      days.push({
+        day: i,
+        month: selectedMonth,
+        year: selectedYear,
+        isCurrentMonth: true
+      });
+    }
+    
+    // Calcular cuántos días necesitamos del mes siguiente
+    const remainingDays = 42 - days.length; // 6 semanas * 7 días = 42
+    
+    // Agregar días del mes siguiente
+    for (let i = 1; i <= remainingDays; i++) {
+      days.push({
+        day: i,
+        month: selectedMonth + 1 === 12 ? 0 : selectedMonth + 1,
+        year: selectedMonth + 1 === 12 ? selectedYear + 1 : selectedYear,
+        isCurrentMonth: false
+      });
+    }
+    
+    setDaysInMonth(days);
+  }, [selectedMonth, selectedYear]);
+
+  // Cargar datos iniciales
+  useEffect(() => {
+    fetchProfesionales();
+    fetchExcepciones();
+  }, [fetchProfesionales, fetchExcepciones]);
+
+  // Cargar fechas disponibles cuando cambia el profesional seleccionado o el mes/año
+  useEffect(() => {
+    if (cancelacion.profesional_id) {
+      cargarFechasDisponibles(cancelacion.profesional_id);
+    }
+  }, [cancelacion.profesional_id, cargarFechasDisponibles]); 
+  
+  // Filtrar excepciones cuando cambia el término de búsqueda
+  useEffect(() => {
+    if (excepciones.length > 0) {
+      if (searchTerm.trim() === "") {
+        setFilteredExcepciones(excepciones);
+      } else {
+        const term = searchTerm.toLowerCase();
+        const filtered = excepciones.filter(excepcion => 
+          `${excepcion.profesional_nombre} ${excepcion.profesional_apellido}`.toLowerCase().includes(term)
+        );
+        setFilteredExcepciones(filtered);
+      }
+    }
+  }, [searchTerm, excepciones]);
+
+  // Detectar clics fuera de los selectores
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (mesAgregarRef.current && !mesAgregarRef.current.contains(event.target)) {
+        setShowMesSelector(false);
+      }
+      if (yearAgregarRef.current && !yearAgregarRef.current.contains(event.target)) {
+        setShowYearSelector(false);
+      }
+      if (mesCancelarRef.current && !mesCancelarRef.current.contains(event.target)) {
+        setShowMesCancelarSelector(false);
+      }
+      if (yearCancelarRef.current && !yearCancelarRef.current.contains(event.target)) {
+        setShowYearCancelarSelector(false);
+      }
+    }
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   // Verificar si una fecha específica está disponible
   const isFechaDisponible = useCallback((day, month, year) => {
