@@ -7,6 +7,7 @@ import {
   startOfToday, endOfToday, startOfMonth, endOfMonth, 
 } from "date-fns";
 import Calendar from "../../components/common/Calendar";
+// No necesitamos importar AdminCommon.css ya que lo importamos en AdminLayout.js
 
 const TODOS_LOS_ESTADOS = ["pendiente", "confirmada", "cancelada"];
 
@@ -166,30 +167,29 @@ const CitasAgendadas = () => {
   };
 
   return (
-    <div className="citas-container">
-      <h2 className="page-title">Citas agendadas</h2>
+    <div className="admin-page-container">
+      <h1 className="admin-page-title">Citas agendadas</h1>
       
-      <div className="citas-filters">
-        <div className="search-box">
+      <div className="admin-filters-bar">
+        <div className="admin-search">
           <input 
             type="text" 
             placeholder="Buscar por nombre o cédula..." 
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
-          <button className="search-button">
+          <span className="search-icon">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M21 21L15 15M17 10C17 13.866 13.866 17 10 17C6.13401 17 3 13.866 3 10C3 6.13401 6.13401 3 10 3C13.866 3 17 6.13401 17 10Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
             </svg>
-          </button>
+          </span>
         </div>
         
-        <div className="filter-group">
+        <div className="admin-filter-container">
           <select 
             name="status"
             value={status || ""}
             onChange={handleFiltro}
-            className="filter-select"
           >
             <option value="">Todos los estados</option>
             {TODOS_LOS_ESTADOS.map((s) => (
@@ -198,33 +198,29 @@ const CitasAgendadas = () => {
               </option>
             ))}
           </select>
-          
-          <div className="date-picker-wrapper">
-            <div className="date-range-inputs">
-              <button 
-                className="date-picker-input" 
-                onClick={toggleDatePicker}
-              >
-                <span className="calendar-icon">📅</span>
-                {formatDateRange()}
-              </button>
-            </div>
-            {showDatePicker && (
-              <div className="admin-calendar-wrapper enhanced">
-                <Calendar
-                  initialDateRange={dateRange}
-                  onDateRangeChange={handleDateRangeChange}
-                  onClose={() => setShowDatePicker(false)}
-                  showPresets={true}
-                />
-              </div>
-            )}
+        </div>
+        
+        <div className="admin-date-picker">
+          <div className="date-input-wrapper" onClick={toggleDatePicker}>
+            <span className="calendar-icon">📅</span>
+            <span className="date-input">{formatDateRange()}</span>
           </div>
-          
+          {showDatePicker && (
+            <div className="admin-calendar-wrapper enhanced">
+              <Calendar
+                initialDateRange={dateRange}
+                onDateRangeChange={handleDateRangeChange}
+                onClose={() => setShowDatePicker(false)}
+                showPresets={true}
+              />
+            </div>
+          )}
+        </div>
+        
+        <div className="admin-filter-container">
           <select 
             value={filtroProfesional} 
             onChange={(e) => setFiltroProfesional(e.target.value)}
-            className="filter-select"
           >
             <option value="todos">Todos los profesionales</option>
             {profesionales.map((prof, index) => (
@@ -235,10 +231,12 @@ const CitasAgendadas = () => {
       </div>
       
       {loading ? (
-        <div className="loading-container">Cargando citas...</div>
+        <div className="loading">Cargando citas...</div>
+      ) : agendamientosFiltrados.length === 0 ? (
+        <div className="no-results">No se encontraron citas con los filtros seleccionados</div>
       ) : (
-        <div className="citas-table-container">
-          <table className="citas-table">
+        <div className="admin-table-container">
+          <table className="admin-table">
             <thead>
               <tr>
                 <th>Fecha cita</th>
@@ -255,7 +253,7 @@ const CitasAgendadas = () => {
                 const formatoFecha = formatearFecha(a.fecha_agendada);
                 
                 return (
-                  <tr key={a.agendamiento_id} className={`cita-row ${a.status}`}>
+                  <tr key={a.agendamiento_id}>
                     <td className="fecha-cell">
                       <div className="calendar-icon">📅</div>
                       <div>
@@ -268,21 +266,21 @@ const CitasAgendadas = () => {
                     <td>{a.tipo_atencion}</td>
                     <td>{a.profesional_nombre} {a.profesional_apellido}</td>
                     <td>
-                      <span className={`estado-badge ${a.status}`}>
-                        {a.status.charAt(0).toUpperCase() + a.status.slice(1)}
+                      <span className={`status-badge status-${a.status}`}>
+                        {a.status}
                       </span>
                     </td>
                     <td className="actions-cell">
                       <button
                         onClick={() => actualizarEstado(a.agendamiento_id, "confirmada")}
-                        className="action-btn confirm-btn"
+                        className="btn-action btn-view"
                         title="Confirmar"
                       >
                         ✓
                       </button>
                       <button
                         onClick={() => actualizarEstado(a.agendamiento_id, "cancelada")}
-                        className="action-btn cancel-btn"
+                        className="btn-action btn-delete"
                         title="Cancelar"
                       >
                         ✕
@@ -298,31 +296,36 @@ const CitasAgendadas = () => {
 
       {/* Modal historial */}
       {mostrarHistorial && (
-        <div className="historial-modal">
-          <div className="historial-content">
-            <h3>Historial de Agendamiento #{historialDe}</h3>
-            <table className="historial-table">
-              <thead>
-                <tr>
-                  <th>Anterior</th>
-                  <th>Nuevo</th>
-                  <th>Quién</th>
-                  <th>Cuándo</th>
-                </tr>
-              </thead>
-              <tbody>
-                {historial.map((h) => (
-                  <tr key={h.historial_id}>
-                    <td>{h.estado_anterior}</td>
-                    <td>{h.estado_nuevo}</td>
-                    <td>{h.cambiado_por}</td>
-                    <td>{new Date(h.fecha).toLocaleString()}</td>
+        <div className="modal-overlay">
+          <div className="modal-content">
+            <div className="modal-header">
+              <h2>Historial de Agendamiento #{historialDe}</h2>
+              <button className="close-btn" onClick={cerrarHistorial}>×</button>
+            </div>
+            <div className="modal-body">
+              <table className="admin-table">
+                <thead>
+                  <tr>
+                    <th>Anterior</th>
+                    <th>Nuevo</th>
+                    <th>Quién</th>
+                    <th>Cuándo</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-            <div className="historial-actions">
-              <button onClick={cerrarHistorial} className="close-btn">Cerrar</button>
+                </thead>
+                <tbody>
+                  {historial.map((h) => (
+                    <tr key={h.historial_id}>
+                      <td>{h.estado_anterior}</td>
+                      <td>{h.estado_nuevo}</td>
+                      <td>{h.cambiado_por}</td>
+                      <td>{new Date(h.fecha).toLocaleString()}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            <div className="modal-footer">
+              <button onClick={cerrarHistorial} className="btn-secondary">Cerrar</button>
             </div>
           </div>
         </div>

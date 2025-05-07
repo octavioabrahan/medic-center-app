@@ -678,8 +678,8 @@ function ProfesionalesAdmin() {
     if (filteredProfesionales.length === 0) return <div className="no-results">No se encontraron profesionales</div>;
 
     return (
-      <div className="table-container">
-        <table className="profesionales-table">
+      <div className="admin-table-container">
+        <table className="admin-table">
           <thead>
             <tr>
               <th>Cédula</th>
@@ -731,45 +731,24 @@ function ProfesionalesAdmin() {
   };
 
   return (
-    <div className="profesionales-admin">
-      <div className="profesionales-header">
-        <h1>Gestión de Profesionales</h1>
-        <div className="profesionales-header-actions">
-          <button 
-            className="btn-crear-especialidad" 
-            onClick={() => setShowAddEspecialidadModal(true)}
-          >
-            Crear especialidad
-          </button>
-          
-          <button 
-            className="btn-agregar-profesional" 
-            onClick={() => setShowAddProfesionalModal(true)}
-          >
-            <span className="icon-plus">+</span>
-            Agregar nuevo profesional
-          </button>
-        </div>
-      </div>
+    <div className="admin-page-container">
+      <h1 className="admin-page-title">Gestión de Profesionales</h1>
       
-      <div className="profesionales-filters-bar">
-        <div className="profesionales-search-container">
+      <div className="admin-filters-bar">
+        <div className="admin-search">
           <input
             type="text"
             placeholder="Buscar por nombre o cédula"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
-          <button className="search-button">
-            <i className="search-icon">🔍</i>
-          </button>
+          <span className="search-icon">🔍</span>
         </div>
         
-        <div className="profesionales-filter-container">
+        <div className="admin-filter-container">
           <select 
             value={especialidadFiltro}
             onChange={(e) => setEspecialidadFiltro(e.target.value)}
-            className="especialidad-filter"
           >
             <option value="">Todas las especialidades</option>
             {especialidades.map(esp => (
@@ -804,6 +783,23 @@ function ProfesionalesAdmin() {
             onClick={() => setOrdenamiento('za')}
           >
             Z → A
+          </button>
+        </div>
+        
+        <div className="actions-container">
+          <button 
+            className="btn-secondary" 
+            onClick={() => setShowAddEspecialidadModal(true)}
+          >
+            Crear especialidad
+          </button>
+          
+          <button 
+            className="btn-add" 
+            onClick={() => setShowAddProfesionalModal(true)}
+          >
+            <span>+</span>
+            Agregar nuevo profesional
           </button>
         </div>
       </div>

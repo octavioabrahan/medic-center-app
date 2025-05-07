@@ -285,8 +285,8 @@ const AdminExamenes = () => {
     if (filteredExamenes.length === 0) return <div className="no-results">No se encontraron exámenes</div>;
 
     return (
-      <div className="table-container">
-        <table className="examenes-table">
+      <div className="admin-table-container">
+        <table className="admin-table">
           <thead>
             <tr>
               <th>Código</th>
@@ -304,7 +304,7 @@ const AdminExamenes = () => {
                 <td>
                   {examen.nombre_examen}
                   {!examen.is_active && (
-                    <span className="inactivo">Inactivo</span>
+                    <span className="status-badge status-inactivo">Inactivo</span>
                   )}
                 </td>
                 <td>$ {parseFloat(examen.preciousd).toFixed(2)}</td>
@@ -324,7 +324,7 @@ const AdminExamenes = () => {
                         ✎
                       </button>
                       <button
-                        className="btn-action btn-history"
+                        className="btn-action btn-view"
                         onClick={() => openHistorialModal(examen)}
                         title="Ver historial"
                       >
@@ -344,7 +344,7 @@ const AdminExamenes = () => {
                         🔄
                       </button>
                       <button
-                        className="btn-action btn-history"
+                        className="btn-action btn-view"
                         onClick={() => openHistorialModal(examen)}
                         title="Ver historial"
                       >
@@ -366,15 +366,15 @@ const AdminExamenes = () => {
     if (!showAddModal) return null;
 
     return (
-      <div className="examenes-modal-overlay">
-        <div className="examenes-modal-content">
-          <div className="examenes-modal-header">
+      <div className="modal-overlay">
+        <div className="modal-content">
+          <div className="modal-header">
             <h2>Agrega un nuevo item para cotizar</h2>
-            <button className="examenes-close-btn" onClick={() => setShowAddModal(false)}>×</button>
+            <button className="close-btn" onClick={() => setShowAddModal(false)}>×</button>
           </div>
           <form onSubmit={handleAddExamen}>
-            <div className="examenes-modal-body">
-              <div className="examenes-form-group">
+            <div className="modal-body">
+              <div className="form-group">
                 <label htmlFor="codigo">Código</label>
                 <input
                   type="text"
@@ -386,7 +386,7 @@ const AdminExamenes = () => {
                 />
               </div>
               
-              <div className="examenes-form-group">
+              <div className="form-group">
                 <label htmlFor="nombre_examen">Nombre</label>
                 <input
                   type="text"
@@ -398,7 +398,7 @@ const AdminExamenes = () => {
                 />
               </div>
               
-              <div className="examenes-form-group">
+              <div className="form-group">
                 <label htmlFor="preciousd">Precio en USD</label>
                 <input
                   type="number"
@@ -412,7 +412,7 @@ const AdminExamenes = () => {
                 />
               </div>
               
-              <div className="examenes-form-group">
+              <div className="form-group">
                 <label htmlFor="preciobs">Precio en Bs. F.</label>
                 <input
                   type="text"
@@ -421,10 +421,10 @@ const AdminExamenes = () => {
                   value={calcularPrecioBs(formData.preciousd)}
                   readOnly
                 />
-                <p className="examenes-helper-text">Este precio se calcula en base al precio ingresado en USD. No se mostrará en el cotizador</p>
+                <div className="helper-text">Este precio se calcula en base al precio ingresado en USD. No se mostrará en el cotizador</div>
               </div>
               
-              <div className="examenes-form-group">
+              <div className="form-group">
                 <label htmlFor="tiempo_entrega">Tiempo de entrega</label>
                 <input
                   type="text"
@@ -435,7 +435,7 @@ const AdminExamenes = () => {
                 />
               </div>
               
-              <div className="examenes-form-group">
+              <div className="form-group">
                 <label htmlFor="informacion">Indicaciones</label>
                 <textarea
                   id="informacion"
@@ -445,7 +445,7 @@ const AdminExamenes = () => {
                 />
               </div>
               
-              <div className="examenes-form-group">
+              <div className="form-group">
                 <label htmlFor="tipo">Tipo</label>
                 <select
                   id="tipo"
@@ -458,11 +458,11 @@ const AdminExamenes = () => {
                 </select>
               </div>
             </div>
-            <div className="examenes-modal-footer">
-              <button type="button" className="examenes-btn-secondary" onClick={() => setShowAddModal(false)}>
+            <div className="modal-footer">
+              <button type="button" className="btn-secondary" onClick={() => setShowAddModal(false)}>
                 Cancelar
               </button>
-              <button type="submit" className="examenes-btn-primary">
+              <button type="submit" className="btn-primary">
                 Agregar
               </button>
             </div>
@@ -477,15 +477,15 @@ const AdminExamenes = () => {
     if (!showEditModal || !currentExamen) return null;
 
     return (
-      <div className="examenes-modal-overlay">
-        <div className="examenes-modal-content">
-          <div className="examenes-modal-header">
+      <div className="modal-overlay">
+        <div className="modal-content">
+          <div className="modal-header">
             <h2>Editar examen</h2>
-            <button className="examenes-close-btn" onClick={() => setShowEditModal(false)}>×</button>
+            <button className="close-btn" onClick={() => setShowEditModal(false)}>×</button>
           </div>
           <form onSubmit={handleUpdateExamen}>
-            <div className="examenes-modal-body">
-              <div className="examenes-form-group">
+            <div className="modal-body">
+              <div className="form-group">
                 <label htmlFor="edit-codigo">Código</label>
                 <input
                   type="text"
@@ -494,10 +494,10 @@ const AdminExamenes = () => {
                   value={formData.codigo}
                   readOnly
                 />
-                <p className="examenes-helper-text">El código no se puede editar</p>
+                <div className="helper-text">El código no se puede editar</div>
               </div>
               
-              <div className="examenes-form-group">
+              <div className="form-group">
                 <label htmlFor="edit-nombre_examen">Nombre</label>
                 <input
                   type="text"
@@ -509,7 +509,7 @@ const AdminExamenes = () => {
                 />
               </div>
               
-              <div className="examenes-form-group">
+              <div className="form-group">
                 <label htmlFor="edit-preciousd">Precio en USD</label>
                 <input
                   type="number"
@@ -523,7 +523,7 @@ const AdminExamenes = () => {
                 />
               </div>
               
-              <div className="examenes-form-group">
+              <div className="form-group">
                 <label htmlFor="edit-preciobs">Precio en Bs. F.</label>
                 <input
                   type="text"
@@ -532,10 +532,10 @@ const AdminExamenes = () => {
                   value={calcularPrecioBs(formData.preciousd)}
                   readOnly
                 />
-                <p className="examenes-helper-text">Este precio se calcula en base al precio ingresado en USD. No se mostrará en el cotizador</p>
+                <div className="helper-text">Este precio se calcula en base al precio ingresado en USD. No se mostrará en el cotizador</div>
               </div>
               
-              <div className="examenes-form-group">
+              <div className="form-group">
                 <label htmlFor="edit-tiempo_entrega">Tiempo de entrega</label>
                 <input
                   type="text"
@@ -546,7 +546,7 @@ const AdminExamenes = () => {
                 />
               </div>
               
-              <div className="examenes-form-group">
+              <div className="form-group">
                 <label htmlFor="edit-informacion">Indicaciones</label>
                 <textarea
                   id="edit-informacion"
@@ -556,7 +556,7 @@ const AdminExamenes = () => {
                 />
               </div>
               
-              <div className="examenes-form-group">
+              <div className="form-group">
                 <label htmlFor="edit-tipo">Tipo</label>
                 <select
                   id="edit-tipo"
@@ -569,10 +569,10 @@ const AdminExamenes = () => {
                 </select>
               </div>
             </div>
-            <div className="examenes-modal-footer">
+            <div className="modal-footer">
               <button 
                 type="button" 
-                className="examenes-btn-archive"
+                className="btn-delete"
                 onClick={() => {
                   // Crear una copia del examen con is_active = false
                   const updatedExamen = {
@@ -584,10 +584,10 @@ const AdminExamenes = () => {
               >
                 Archivar
               </button>
-              <button type="button" className="examenes-btn-secondary" onClick={() => setShowEditModal(false)}>
+              <button type="button" className="btn-secondary" onClick={() => setShowEditModal(false)}>
                 Cancelar
               </button>
-              <button type="submit" className="examenes-btn-primary">
+              <button type="submit" className="btn-primary">
                 Guardar
               </button>
             </div>
@@ -602,20 +602,20 @@ const AdminExamenes = () => {
     if (!showHistorialModal || !currentExamen) return null;
 
     return (
-      <div className="examenes-modal-overlay">
-        <div className="examenes-modal-content examenes-historial-modal">
-          <div className="examenes-modal-header">
+      <div className="modal-overlay">
+        <div className="modal-content">
+          <div className="modal-header">
             <h2>Historial de cambios</h2>
-            <button className="examenes-close-btn" onClick={() => setShowHistorialModal(false)}>×</button>
+            <button className="close-btn" onClick={() => setShowHistorialModal(false)}>×</button>
           </div>
-          <div className="examenes-modal-body">
+          <div className="modal-body">
             <div className="examenes-info">
               <div className="examenes-header">
                 <div className="examenes-title">
                   <div className="examenes-codigo">Código: {currentExamen.codigo}</div>
                   <div className="examenes-nombre">Nombre: {currentExamen.nombre_examen}</div>
                 </div>
-                <div className={`examenes-estado ${currentExamen.is_active ? "examenes-status-activo" : "examenes-status-inactivo"}`}>
+                <div className={`status-badge ${currentExamen.is_active ? "status-activo" : "status-inactivo"}`}>
                   {currentExamen.is_active ? "Activo" : "Inactivo"}
                 </div>
               </div>
@@ -624,9 +624,9 @@ const AdminExamenes = () => {
             <div className="examenes-registro-cambios">
               <h3>Registro de cambios</h3>
               {loadingHistorial ? (
-                <div className="examenes-loading">Cargando historial...</div>
+                <div className="loading">Cargando historial...</div>
               ) : historialExamen.length === 0 ? (
-                <div className="examenes-no-results">No hay registros de cambios para este examen</div>
+                <div className="no-results">No hay registros de cambios para este examen</div>
               ) : (
                 <div className="examenes-timeline">
                   {historialExamen.map((registro, index) => {
@@ -713,8 +713,8 @@ const AdminExamenes = () => {
               )}
             </div>
           </div>
-          <div className="examenes-modal-footer">
-            <button className="examenes-btn-secondary" onClick={() => setShowHistorialModal(false)}>
+          <div className="modal-footer">
+            <button className="btn-secondary" onClick={() => setShowHistorialModal(false)}>
               Cerrar
             </button>
           </div>
@@ -724,11 +724,11 @@ const AdminExamenes = () => {
   };
 
   return (
-    <div className="admin-examenes-container">
-      <h1>Exámenes y servicios</h1>
+    <div className="admin-page-container">
+      <h1 className="admin-page-title">Exámenes y servicios</h1>
       
-      <div className="admin-examenes-filters">
-        <div className="admin-examenes-search">
+      <div className="admin-filters-bar">
+        <div className="admin-search">
           <input
             type="text"
             placeholder="Buscar por nombre o código..."
@@ -748,11 +748,9 @@ const AdminExamenes = () => {
           <label htmlFor="mostrarInactivos">Mostrar inactivos</label>
         </div>
         
-        <div className="admin-examenes-actions">
-          <button className="btn-add" onClick={openAddModal}>
-            + Agregar uno nuevo
-          </button>
-        </div>
+        <button className="btn-add" onClick={openAddModal}>
+          + Agregar uno nuevo
+        </button>
       </div>
       
       {renderExamenesTable()}
