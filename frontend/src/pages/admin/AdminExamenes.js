@@ -38,7 +38,7 @@ const AdminExamenes = () => {
   const fetchExchangeRate = async () => {
     try {
       const response = await axios.get("/api/exchange-rate");
-      setExchangeRate(response.data.rate);
+      setExchangeRate(response.data.tasa); // Cambiado de rate a tasa para coincidir con el backend
     } catch (err) {
       console.error('Error obteniendo tasa de cambio:', err);
       setExchangeRate(18.5); // Valor predeterminado si hay error
@@ -116,7 +116,7 @@ const AdminExamenes = () => {
   useEffect(() => {
     fetchExamenes();
     fetchExchangeRate();
-  }, [fetchExamenes]); // Added fetchExamenes to dependency array
+  }, []); // Quitamos fetchExamenes del array de dependencias para evitar ciclo infinito
 
   // Aplicar filtros cuando cambian los criterios
   const applyFilters = (data = examenes) => {

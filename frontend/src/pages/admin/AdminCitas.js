@@ -73,6 +73,7 @@ const AdminCitas = () => {
   const fetchAgendamientos = async () => {
     setLoading(true);
     try {
+      // Agregar un pequeño retraso para evitar múltiples llamadas
       const params = new URLSearchParams();
       if (dateRange.from) params.append('desde', format(dateRange.from, 'yyyy-MM-dd'));
       if (dateRange.to) params.append('hasta', format(dateRange.to, 'yyyy-MM-dd'));
@@ -87,6 +88,13 @@ const AdminCitas = () => {
       applyFilters(response.data);
       
     } catch (err) {
+      if (err.response && err.response.status === 429) {
+        console.error('Error: Demasiadas solicitudes. Esperando un momento...');
+        // Esperar 2 segundos y reintentar
+        setTimeout(fetchAgendamientos, 2000);
+        return;
+      }
+      
       console.error('Error:', err);
       setError('No se pudieron cargar los agendamientos. Por favor, intenta de nuevo.');
       // Asegurarse de limpiar los datos cuando hay un error
@@ -162,11 +170,21 @@ const AdminCitas = () => {
   }, [searchTerm, filterStatus, filtroProfesional]);
 
   // Obtener datos nuevamente cuando cambia el rango de fechas
+  // Utilizamos un debounce con useEffect para espaciar las llamadas cuando cambia el rango
   useEffect(() => {
+    let timeoutId;
+    
     if (dateRange.from && dateRange.to) {
-      fetchAgendamientos();
+      // Añadir un retraso para evitar múltiples llamadas rápidas
+      timeoutId = setTimeout(() => {
+        fetchAgendamientos();
+      }, 300);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    
+    // Limpieza del timeout si el componente se desmonta o el rango cambia nuevamente
+    return () => {
+      if (timeoutId) clearTimeout(timeoutId);
+    };
   }, [dateRange.from, dateRange.to]);
 
   // Cambiar estado de agendamiento
@@ -204,6 +222,7 @@ const AdminCitas = () => {
   // Manejar cambio de rango de fechas desde el calendario
   const handleDateRangeChange = (newDateRange) => {
     setDateRange(newDateRange);
+    // No llamamos a fetchAgendamientos aquí para evitar llamadas duplicadas
   };
 
   // Formatear fecha para mostrar en la tabla
