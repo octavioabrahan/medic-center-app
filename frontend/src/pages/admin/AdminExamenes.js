@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import "./AdminExamenes.css";
+import "../../components/admin/AdminCommon.css"; // Importamos los estilos comunes
+import AdminFilterBar from "../../components/admin/AdminFilterBar"; // Importamos el nuevo componente
 
 const AdminExamenes = () => {
   // Estados para almacenar los datos
@@ -13,7 +15,8 @@ const AdminExamenes = () => {
 
   // Estados para filtros
   const [searchTerm, setSearchTerm] = useState("");
-  const [mostrarInactivos, setMostrarInactivos] = useState(false);
+  const [showArchived, setShowArchived] = useState(false); // Renombramos mostrarInactivos para coincidir con AdminFilterBar
+  const [sortOrder, setSortOrder] = useState("az");
 
   // Estados para modales
   const [showAddModal, setShowAddModal] = useState(false);
@@ -137,12 +140,21 @@ const AdminExamenes = () => {
     }
 
     // Filtrar por estado activo/inactivo
-    if (!mostrarInactivos) {
+    if (!showArchived) {
       results = results.filter(examen => examen.is_active);
     }
 
-    // Ordenar por nombre
-    results.sort((a, b) => a.nombre_examen.localeCompare(b.nombre_examen));
+    // Ordenar según el criterio seleccionado
+    switch (sortOrder) {
+      case 'az':
+        results.sort((a, b) => a.nombre_examen.localeCompare(b.nombre_examen));
+        break;
+      case 'za':
+        results.sort((a, b) => b.nombre_examen.localeCompare(a.nombre_examen));
+        break;
+      default:
+        results.sort((a, b) => a.nombre_examen.localeCompare(b.nombre_examen));
+    }
 
     setFilteredExamenes(results);
   };
@@ -150,7 +162,7 @@ const AdminExamenes = () => {
   // Reaccionar a cambios en los filtros
   useEffect(() => {
     applyFilters();
-  }, [searchTerm, mostrarInactivos]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [searchTerm, showArchived, sortOrder]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Manejar cambios en el formulario
   const handleFormChange = (e) => {
@@ -564,31 +576,19 @@ const AdminExamenes = () => {
     <div className="admin-page-container">
       <h1 className="admin-page-title">Exámenes y servicios</h1>
       
-      <div className="admin-filters-bar">
-        <div className="admin-search">
-          <input
-            type="text"
-            placeholder="Buscar por nombre o código..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
-          <span className="search-icon">🔍</span>
-        </div>
-        
-        <div className="admin-checkbox">
-          <input
-            type="checkbox"
-            id="mostrarInactivos"
-            checked={mostrarInactivos}
-            onChange={() => setMostrarInactivos(!mostrarInactivos)}
-          />
-          <label htmlFor="mostrarInactivos">Mostrar inactivos</label>
-        </div>
-        
+      <AdminFilterBar
+        searchTerm={searchTerm}
+        setSearchTerm={setSearchTerm}
+        searchPlaceholder="Buscar por nombre o código..."
+        showArchived={showArchived}
+        setShowArchived={setShowArchived}
+        sortOrder={sortOrder}
+        setSortOrder={setSortOrder}
+      >
         <button className="btn-add" onClick={openAddModal}>
           Agregar uno nuevo
         </button>
-      </div>
+      </AdminFilterBar>
       
       {loading ? (
         <div className="loading-container">Cargando exámenes...</div>

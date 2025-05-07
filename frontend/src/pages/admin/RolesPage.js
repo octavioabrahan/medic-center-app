@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import "../../components/admin/AdminCommon.css"; // Importamos los estilos comunes
+import AdminFilterBar from "../../components/admin/AdminFilterBar"; // Importamos el nuevo componente
 
 function RolesPage() {
   const [roles, setRoles] = useState([]);
@@ -11,26 +12,52 @@ function RolesPage() {
   const [showModal, setShowModal] = useState(false);
   const [currentRol, setCurrentRol] = useState(null);
   const [nuevoRol, setNuevoRol] = useState({ nombre_rol: "", descripcion: "" });
+  const [showArchived, setShowArchived] = useState(false);
+  const [sortOrder, setSortOrder] = useState("az");
 
   useEffect(() => {
     fetchRoles();
   }, []);
 
-  // Filtrar roles cuando cambia el término de búsqueda
+  // Filtrar roles cuando cambia el término de búsqueda o filtros
   useEffect(() => {
     if (roles.length > 0) {
-      if (searchTerm.trim() === "") {
-        setFilteredRoles(roles);
-      } else {
+      let filtered = [...roles];
+      
+      // Filtrar por término de búsqueda
+      if (searchTerm.trim() !== "") {
         const term = searchTerm.toLowerCase();
-        const filtered = roles.filter(rol => 
+        filtered = filtered.filter(rol => 
           rol.nombre_rol.toLowerCase().includes(term) ||
           (rol.descripcion && rol.descripcion.toLowerCase().includes(term))
         );
-        setFilteredRoles(filtered);
       }
+      
+      // Filtrar por estado (archivado/activo)
+      // Si se implementa la funcionalidad de archivado en el futuro
+      if (!showArchived) {
+        filtered = filtered.filter(rol => !rol.archivado);
+      }
+      
+      // Aplicar ordenamiento
+      switch (sortOrder) {
+        case 'az':
+          filtered = [...filtered].sort((a, b) => 
+            a.nombre_rol.localeCompare(b.nombre_rol)
+          );
+          break;
+        case 'za':
+          filtered = [...filtered].sort((a, b) => 
+            b.nombre_rol.localeCompare(a.nombre_rol)
+          );
+          break;
+        default:
+          break;
+      }
+      
+      setFilteredRoles(filtered);
     }
-  }, [searchTerm, roles]);
+  }, [searchTerm, roles, showArchived, sortOrder]);
 
   const fetchRoles = async () => {
     setLoading(true);
@@ -101,21 +128,19 @@ function RolesPage() {
     <div className="admin-page-container">
       <h1 className="admin-page-title">Gestión de Roles</h1>
       
-      <div className="admin-filters-bar">
-        <div className="admin-search">
-          <input
-            type="text"
-            placeholder="Buscar por nombre o descripción..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
-          <span className="search-icon">🔍</span>
-        </div>
-        
+      <AdminFilterBar
+        searchTerm={searchTerm}
+        setSearchTerm={setSearchTerm}
+        searchPlaceholder="Buscar por nombre o descripción..."
+        showArchived={showArchived}
+        setShowArchived={setShowArchived}
+        sortOrder={sortOrder}
+        setSortOrder={setSortOrder}
+      >
         <button className="btn-add" onClick={handleCreateRol}>
           Agregar rol
         </button>
-      </div>
+      </AdminFilterBar>
       
       {loading ? (
         <div className="loading-container">Cargando roles...</div>

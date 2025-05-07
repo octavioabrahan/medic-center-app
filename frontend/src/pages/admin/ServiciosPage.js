@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import "./ServiciosPage.css";
 import "../../components/admin/AdminCommon.css"; // Importamos los estilos comunes
+import AdminFilterBar from "../../components/admin/AdminFilterBar"; // Importamos el nuevo componente
 
 const ServiciosPage = () => {
   // Estados para almacenar los datos de servicios
@@ -13,7 +14,7 @@ const ServiciosPage = () => {
   // Estado para filtros
   const [searchTerm, setSearchTerm] = useState("");
   const [mostrarArchivados, setMostrarArchivados] = useState(false);
-  const [sortOrder, setSortOrder] = useState("asc"); // 'asc' o 'desc' para ordenar alfabéticamente
+  const [sortOrder, setSortOrder] = useState("az"); // Cambiado a 'az' para coincidir con AdminFilterBar
 
   // Estados para modales
   const [showModal, setShowModal] = useState(false);
@@ -55,7 +56,7 @@ const ServiciosPage = () => {
         const nameA = a.nombre_servicio.toLowerCase();
         const nameB = b.nombre_servicio.toLowerCase();
         
-        if (sortOrder === "asc") {
+        if (sortOrder === "az") {
           return nameA.localeCompare(nameB);
         } else {
           return nameB.localeCompare(nameA);
@@ -424,48 +425,19 @@ const ServiciosPage = () => {
     <div className="admin-page-container">
       <h1 className="admin-page-title">Servicios</h1>
       
-      <div className="admin-filters-bar">
-        <div className="admin-search">
-          <input
-            type="text"
-            placeholder="Buscar por nombre de servicio..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
-          <span className="search-icon">🔍</span>
-        </div>
-        
-        <div className="admin-sort-group">
-          <button 
-            className={`admin-sort-btn ${sortOrder === "asc" ? "active" : ""}`}
-            onClick={() => toggleSortOrder("asc")}
-            title="Ordenar de A a Z"
-          >
-            A → Z
-          </button>
-          <button 
-            className={`admin-sort-btn ${sortOrder === "desc" ? "active" : ""}`}
-            onClick={() => toggleSortOrder("desc")}
-            title="Ordenar de Z a A"
-          >
-            Z → A
-          </button>
-        </div>
-
-        <div className="admin-checkbox">
-          <input
-            type="checkbox"
-            id="mostrarArchivados"
-            checked={mostrarArchivados}
-            onChange={(e) => setMostrarArchivados(e.target.checked)}
-          />
-          <label htmlFor="mostrarArchivados">Mostrar archivados</label>
-        </div>
-        
+      <AdminFilterBar
+        searchTerm={searchTerm}
+        setSearchTerm={setSearchTerm}
+        searchPlaceholder="Buscar por nombre de servicio..."
+        showArchived={mostrarArchivados}
+        setShowArchived={setMostrarArchivados}
+        sortOrder={sortOrder}
+        setSortOrder={setSortOrder}
+      >
         <button className="btn-add" onClick={handleAgregarServicio}>
           Crear servicio
         </button>
-      </div>
+      </AdminFilterBar>
       
       {renderServiciosTable()}
       {renderModal()}

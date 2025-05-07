@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import "../../components/admin/AdminCommon.css"; // Importamos los estilos comunes
+import AdminFilterBar from "../../components/admin/AdminFilterBar"; // Importamos el nuevo componente
 
 function EspecialidadesPage() {
   const [especialidades, setEspecialidades] = useState([]);
@@ -11,25 +12,51 @@ function EspecialidadesPage() {
   const [showModal, setShowModal] = useState(false);
   const [currentEspecialidad, setCurrentEspecialidad] = useState(null);
   const [nuevaEspecialidad, setNuevaEspecialidad] = useState({ nombre: "" });
+  const [showArchived, setShowArchived] = useState(false);
+  const [sortOrder, setSortOrder] = useState("az");
 
   useEffect(() => {
     fetchEspecialidades();
   }, []);
 
-  // Filtrar especialidades cuando cambia el término de búsqueda
+  // Filtrar especialidades cuando cambia el término de búsqueda o los filtros
   useEffect(() => {
     if (especialidades.length > 0) {
-      if (searchTerm.trim() === "") {
-        setFilteredEspecialidades(especialidades);
-      } else {
+      let filtered = [...especialidades];
+      
+      // Filtrar por término de búsqueda
+      if (searchTerm.trim() !== "") {
         const term = searchTerm.toLowerCase();
-        const filtered = especialidades.filter(esp => 
+        filtered = filtered.filter(esp => 
           esp.nombre.toLowerCase().includes(term)
         );
-        setFilteredEspecialidades(filtered);
       }
+      
+      // Filtrar por estado (archivado/activo)
+      // Si se implementa la funcionalidad de archivado en el futuro
+      if (!showArchived) {
+        filtered = filtered.filter(esp => !esp.archivado);
+      }
+      
+      // Aplicar ordenamiento
+      switch (sortOrder) {
+        case 'az':
+          filtered = [...filtered].sort((a, b) => 
+            a.nombre.localeCompare(b.nombre)
+          );
+          break;
+        case 'za':
+          filtered = [...filtered].sort((a, b) => 
+            b.nombre.localeCompare(a.nombre)
+          );
+          break;
+        default:
+          break;
+      }
+      
+      setFilteredEspecialidades(filtered);
     }
-  }, [searchTerm, especialidades]);
+  }, [searchTerm, especialidades, showArchived, sortOrder]);
 
   const fetchEspecialidades = async () => {
     setLoading(true);
@@ -100,21 +127,19 @@ function EspecialidadesPage() {
     <div className="admin-page-container">
       <h1 className="admin-page-title">Gestión de Especialidades</h1>
       
-      <div className="admin-filters-bar">
-        <div className="admin-search">
-          <input
-            type="text"
-            placeholder="Buscar especialidad..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
-          <span className="search-icon">🔍</span>
-        </div>
-        
+      <AdminFilterBar
+        searchTerm={searchTerm}
+        setSearchTerm={setSearchTerm}
+        searchPlaceholder="Buscar especialidad..."
+        showArchived={showArchived}
+        setShowArchived={setShowArchived}
+        sortOrder={sortOrder}
+        setSortOrder={setSortOrder}
+      >
         <button className="btn-add" onClick={handleCreateEspecialidad}>
           Agregar especialidad
         </button>
-      </div>
+      </AdminFilterBar>
       
       {loading ? (
         <div className="loading-container">Cargando especialidades...</div>

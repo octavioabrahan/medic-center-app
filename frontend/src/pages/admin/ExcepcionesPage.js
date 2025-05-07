@@ -2,6 +2,7 @@ import React, { useEffect, useState, useRef, useCallback } from "react";
 import apiClient, { fetchWithCache } from "../../api"; // Importando nuestro cliente API mejorado
 import "./HorariosPage.css";
 import "../../components/admin/AdminCommon.css"; // Importamos los estilos comunes
+import AdminFilterBar from "../../components/admin/AdminFilterBar"; // Importamos el nuevo componente
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
 
@@ -13,6 +14,8 @@ function ExcepcionesPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
+  const [sortOrder, setSortOrder] = useState("az");
+  const [showArchived, setShowArchived] = useState(false);
   
   // Estados para modales
   const [showAgregarModal, setShowAgregarModal] = useState(false);
@@ -220,20 +223,44 @@ function ExcepcionesPage() {
     }
   }, [cancelacion.profesional_id, cargarFechasDisponibles]); 
   
-  // Filtrar excepciones cuando cambia el término de búsqueda
+  // Filtrar excepciones cuando cambia el término de búsqueda o filtros
   useEffect(() => {
     if (excepciones.length > 0) {
-      if (searchTerm.trim() === "") {
-        setFilteredExcepciones(excepciones);
-      } else {
+      let filtered = [...excepciones];
+      
+      // Filtrar por término de búsqueda
+      if (searchTerm.trim() !== "") {
         const term = searchTerm.toLowerCase();
-        const filtered = excepciones.filter(excepcion => 
+        filtered = filtered.filter(excepcion => 
           `${excepcion.profesional_nombre} ${excepcion.profesional_apellido}`.toLowerCase().includes(term)
         );
-        setFilteredExcepciones(filtered);
       }
+      
+      // Filtrar por estado (archivado/activo)
+      // Si se implementa la funcionalidad de archivado en el futuro
+      if (!showArchived) {
+        filtered = filtered.filter(excepcion => !excepcion.archivado);
+      }
+      
+      // Aplicar ordenamiento
+      switch (sortOrder) {
+        case 'az':
+          filtered = [...filtered].sort((a, b) => 
+            `${a.profesional_nombre} ${a.profesional_apellido}`.localeCompare(`${b.profesional_nombre} ${b.profesional_apellido}`)
+          );
+          break;
+        case 'za':
+          filtered = [...filtered].sort((a, b) => 
+            `${b.profesional_nombre} ${b.profesional_apellido}`.localeCompare(`${a.profesional_nombre} ${a.profesional_apellido}`)
+          );
+          break;
+        default:
+          break;
+      }
+      
+      setFilteredExcepciones(filtered);
     }
-  }, [searchTerm, excepciones]);
+  }, [searchTerm, excepciones, showArchived, sortOrder]);
 
   // Detectar clics fuera de los selectores
   useEffect(() => {
@@ -464,16 +491,17 @@ function ExcepcionesPage() {
   // Estructura principal del componente
   return (
     <div className="admin-page-container">
-      <div className="admin-filters-bar">
-        <div className="admin-search">
-          <input
-            type="text"
-            placeholder="Buscar por nombre de profesional..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
-          <span className="search-icon">🔍</span>
-        </div>
+      <h1 className="admin-page-title">Gestión de Excepciones</h1>
+      
+      <AdminFilterBar
+        searchTerm={searchTerm}
+        setSearchTerm={setSearchTerm}
+        searchPlaceholder="Buscar por nombre de profesional..."
+        showArchived={showArchived}
+        setShowArchived={setShowArchived}
+        sortOrder={sortOrder}
+        setSortOrder={setSortOrder}
+      >
         <div className="admin-actions">
           <button className="btn-secondary" onClick={() => {
             resetCancelacion();
@@ -488,7 +516,7 @@ function ExcepcionesPage() {
             Agregar día
           </button>
         </div>
-      </div>
+      </AdminFilterBar>
       
       {renderExcepcionesTable()}
       

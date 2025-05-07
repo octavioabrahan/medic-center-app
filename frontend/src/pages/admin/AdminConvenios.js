@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import "./AdminConvenios.css";
+import "../../components/admin/AdminCommon.css"; // Importing common styles
+import AdminFilterBar from "../../components/admin/AdminFilterBar"; // Importing the new component
 
 const LogoUploader = ({ onLogoUploaded, initialLogo }) => {
   const [selectedFile, setSelectedFile] = useState(null);
@@ -218,7 +220,7 @@ const AdminConvenios = () => {
   // Estados para búsqueda y filtros
   const [searchTerm, setSearchTerm] = useState("");
   const [showArchived, setShowArchived] = useState(false);
-  const [ordenamiento, setOrdenamiento] = useState('az'); // 'az', 'za', 'reciente', 'antiguo'
+  const [sortOrder, setSortOrder] = useState('az'); // Changed to 'az' to match AdminFilterBar
   
   // Estados para modal y edición
   const [showAddModal, setShowAddModal] = useState(false);
@@ -332,7 +334,7 @@ const AdminConvenios = () => {
     }
     
     // Aplicar ordenamiento
-    switch (ordenamiento) {
+    switch (sortOrder) {
       case 'az':
         results = [...results].sort((a, b) => 
           a.nombre_empresa.localeCompare(b.nombre_empresa)
@@ -372,7 +374,7 @@ const AdminConvenios = () => {
   useEffect(() => {
     applyFilters();
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchTerm, showArchived, ordenamiento]);
+  }, [searchTerm, showArchived, sortOrder]);
 
   // Manejar cambios en el campo RIF y calcular dígito verificador
   const handleRifChange = (e) => {
@@ -817,67 +819,20 @@ const AdminConvenios = () => {
   };
 
   return (
-    <div className="admin-citas-container">
-      <h1>Convenios</h1>
+    <div className="admin-page-container">
+      <h1 className="admin-page-title">Convenios</h1>
       
       {formSuccess && <div className="success-message">{formSuccess}</div>}
       
-      <div className="admin-citas-filters">
-        <div className="admin-citas-search">
-          <input
-            type="text"
-            placeholder="Buscar por nombre o RIF..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
-          <span className="search-icon">🔍</span>
-        </div>
-        
-        <div className="filter-container">
-          <div className="sort-buttons">
-            <button 
-              className={`sort-btn ${ordenamiento === 'az' ? 'active' : ''}`}
-              onClick={() => setOrdenamiento('az')}
-              title="Ordenar A-Z"
-            >
-              A → Z
-            </button>
-            <button 
-              className={`sort-btn ${ordenamiento === 'za' ? 'active' : ''}`}
-              onClick={() => setOrdenamiento('za')}
-              title="Ordenar Z-A"
-            >
-              Z → A
-            </button>
-            <button 
-              className={`sort-btn ${ordenamiento === 'reciente' ? 'active' : ''}`}
-              onClick={() => setOrdenamiento('reciente')}
-              title="Más recientes primero"
-            >
-              Nuevos
-            </button>
-            <button 
-              className={`sort-btn ${ordenamiento === 'antiguo' ? 'active' : ''}`}
-              onClick={() => setOrdenamiento('antiguo')}
-              title="Más antiguos primero"
-            >
-              Antiguos
-            </button>
-          </div>
-        </div>
-        
-        <div className="filter-container">
-          <div className="checkbox-container">
-            <input 
-              type="checkbox" 
-              id="show-archived" 
-              checked={showArchived}
-              onChange={(e) => setShowArchived(e.target.checked)}
-            />
-            <label htmlFor="show-archived">Mostrar archivados</label>
-          </div>
-        </div>
-        
+      <AdminFilterBar
+        searchTerm={searchTerm}
+        setSearchTerm={setSearchTerm}
+        searchPlaceholder="Buscar por nombre o RIF..."
+        showArchived={showArchived}
+        setShowArchived={setShowArchived}
+        sortOrder={sortOrder}
+        setSortOrder={setSortOrder}
+      >
         <button 
           className="btn-add" 
           onClick={() => {
@@ -892,7 +847,7 @@ const AdminConvenios = () => {
         >
           + Agregar empresa con convenio
         </button>
-      </div>
+      </AdminFilterBar>
       
       {renderConveniosTable()}
       {renderAddModal()}

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import "../../components/admin/AdminCommon.css"; // Importamos los estilos comunes
+import AdminFilterBar from "../../components/admin/AdminFilterBar"; // Importamos el nuevo componente
 
 const AdminEmpresas = () => {
   const [empresas, setEmpresas] = useState([]);
@@ -15,9 +16,11 @@ const AdminEmpresas = () => {
     logo_url: ""
   });
   
-  // Estado para el filtro de búsqueda
+  // Estados para filtrado y ordenamiento
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredEmpresas, setFilteredEmpresas] = useState([]);
+  const [showArchived, setShowArchived] = useState(false);
+  const [sortOrder, setSortOrder] = useState("az");
   
   // Estados para modal
   const [showModal, setShowModal] = useState(false);
@@ -38,21 +41,44 @@ const AdminEmpresas = () => {
     }
   };
 
-  // Filtrar empresas cuando cambia el término de búsqueda
+  // Filtrar y ordenar empresas cuando cambian los criterios
   useEffect(() => {
     if (empresas.length > 0) {
-      if (searchTerm.trim() === "") {
-        setFilteredEmpresas(empresas);
-      } else {
+      let filtered = [...empresas];
+      
+      // Filtrar por término de búsqueda
+      if (searchTerm.trim() !== "") {
         const term = searchTerm.toLowerCase();
-        const filtered = empresas.filter(empresa => 
+        filtered = filtered.filter(empresa => 
           empresa.nombre_empresa.toLowerCase().includes(term) ||
           empresa.rif.toLowerCase().includes(term)
         );
-        setFilteredEmpresas(filtered);
       }
+      
+      // Filtrar por estado activo/inactivo
+      if (!showArchived) {
+        filtered = filtered.filter(empresa => empresa.is_active);
+      }
+      
+      // Aplicar ordenamiento
+      switch (sortOrder) {
+        case 'az':
+          filtered = [...filtered].sort((a, b) => 
+            a.nombre_empresa.localeCompare(b.nombre_empresa)
+          );
+          break;
+        case 'za':
+          filtered = [...filtered].sort((a, b) => 
+            b.nombre_empresa.localeCompare(a.nombre_empresa)
+          );
+          break;
+        default:
+          break;
+      }
+      
+      setFilteredEmpresas(filtered);
     }
-  }, [searchTerm, empresas]);
+  }, [searchTerm, empresas, showArchived, sortOrder]);
 
   useEffect(() => {
     cargarEmpresas();
@@ -138,21 +164,19 @@ const AdminEmpresas = () => {
     <div className="admin-page-container">
       <h1 className="admin-page-title">Gestión de Empresas</h1>
       
-      <div className="admin-filters-bar">
-        <div className="admin-search">
-          <input
-            type="text"
-            placeholder="Buscar por nombre o RIF..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
-          <span className="search-icon">🔍</span>
-        </div>
-        
+      <AdminFilterBar
+        searchTerm={searchTerm}
+        setSearchTerm={setSearchTerm}
+        searchPlaceholder="Buscar por nombre o RIF..."
+        showArchived={showArchived}
+        setShowArchived={setShowArchived}
+        sortOrder={sortOrder}
+        setSortOrder={setSortOrder}
+      >
         <button className="btn-add" onClick={handleCreateEmpresa}>
           Registrar empresa
         </button>
-      </div>
+      </AdminFilterBar>
       
       {mensaje && <div className="success-message">{mensaje}</div>}
       {error && <div className="error-message">{error}</div>}

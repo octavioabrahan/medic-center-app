@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import "../../components/admin/AdminCommon.css"; // Importamos los estilos comunes
+import AdminFilterBar from "../../components/admin/AdminFilterBar"; // Importamos el nuevo componente
 
 function TipoAtencionPage() {
   const [tiposAtencion, setTiposAtencion] = useState([]);
@@ -11,25 +12,51 @@ function TipoAtencionPage() {
   const [showModal, setShowModal] = useState(false);
   const [currentTipo, setCurrentTipo] = useState(null);
   const [nuevoTipo, setNuevoTipo] = useState({ nombre: "" });
+  const [showArchived, setShowArchived] = useState(false);
+  const [sortOrder, setSortOrder] = useState("az");
 
   useEffect(() => {
     fetchTiposAtencion();
   }, []);
 
-  // Filtrar tipos cuando cambia el término de búsqueda
+  // Filtrar tipos cuando cambia el término de búsqueda o los filtros
   useEffect(() => {
     if (tiposAtencion.length > 0) {
-      if (searchTerm.trim() === "") {
-        setFilteredTipos(tiposAtencion);
-      } else {
+      let filtered = [...tiposAtencion];
+      
+      // Filtrar por término de búsqueda
+      if (searchTerm.trim() !== "") {
         const term = searchTerm.toLowerCase();
-        const filtered = tiposAtencion.filter(tipo => 
+        filtered = filtered.filter(tipo => 
           tipo.nombre.toLowerCase().includes(term)
         );
-        setFilteredTipos(filtered);
       }
+      
+      // Filtrar por estado (archivado/activo)
+      // Si se implementa la funcionalidad de archivado en el futuro
+      if (!showArchived) {
+        filtered = filtered.filter(tipo => !tipo.archivado);
+      }
+      
+      // Aplicar ordenamiento
+      switch (sortOrder) {
+        case 'az':
+          filtered = [...filtered].sort((a, b) => 
+            a.nombre.localeCompare(b.nombre)
+          );
+          break;
+        case 'za':
+          filtered = [...filtered].sort((a, b) => 
+            b.nombre.localeCompare(a.nombre)
+          );
+          break;
+        default:
+          break;
+      }
+      
+      setFilteredTipos(filtered);
     }
-  }, [searchTerm, tiposAtencion]);
+  }, [searchTerm, tiposAtencion, showArchived, sortOrder]);
 
   const fetchTiposAtencion = async () => {
     setLoading(true);
@@ -100,21 +127,19 @@ function TipoAtencionPage() {
     <div className="admin-page-container">
       <h1 className="admin-page-title">Gestión de Tipos de Atención</h1>
       
-      <div className="admin-filters-bar">
-        <div className="admin-search">
-          <input
-            type="text"
-            placeholder="Buscar por nombre..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
-          <span className="search-icon">🔍</span>
-        </div>
-        
+      <AdminFilterBar
+        searchTerm={searchTerm}
+        setSearchTerm={setSearchTerm}
+        searchPlaceholder="Buscar por nombre..."
+        showArchived={showArchived}
+        setShowArchived={setShowArchived}
+        sortOrder={sortOrder}
+        setSortOrder={setSortOrder}
+      >
         <button className="btn-add" onClick={handleCreateTipo}>
           Agregar tipo de atención
         </button>
-      </div>
+      </AdminFilterBar>
       
       {loading ? (
         <div className="loading-container">Cargando tipos de atención...</div>
