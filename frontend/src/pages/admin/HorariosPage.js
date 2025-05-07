@@ -191,20 +191,18 @@ function HorariosPage() {
     <div className="admin-page-container">
       <h1 className="admin-page-title">Horarios de atención</h1>
       
-      <div className="admin-tabs-container">
-        <div className="admin-tabs-header">
-          <button 
-            className={`admin-tab-button ${activeTab === "profesionales" ? "active" : ""}`} 
-            onClick={() => setActiveTab("profesionales")}
-          >
-            Profesionales
-          </button>
-          <button 
-            className={`admin-tab-button ${activeTab === "excepciones" ? "active" : ""}`} 
-            onClick={() => setActiveTab("excepciones")}
-          >
-            Excepciones
-          </button>
+      <div className="admin-tabs">
+        <div 
+          className={`admin-tab ${activeTab === "profesionales" ? "active" : ""}`} 
+          onClick={() => setActiveTab("profesionales")}
+        >
+          Profesionales
+        </div>
+        <div 
+          className={`admin-tab ${activeTab === "excepciones" ? "active" : ""}`} 
+          onClick={() => setActiveTab("excepciones")}
+        >
+          Excepciones
         </div>
       </div>
       

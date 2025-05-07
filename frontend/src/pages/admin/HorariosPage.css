@@ -538,3 +538,69 @@
 .dropdown-item:hover {
   background-color: #f8f9fa;
 }
+
+/* Añadir al final del archivo para garantizar precedencia sobre los estilos importados */
+
+/* Override de estilos específicos para la página de horarios */
+.admin-page-container .btn-add {
+  background-color: #4CAF50 !important; /* Verde para el botón de agregar */
+  color: white !important;
+}
+
+.admin-page-container .btn-add:hover {
+  background-color: #3d8b40 !important;
+}
+
+/* Estilos para las pestañas mejoradas */
+.admin-tabs {
+  display: flex;
+  border-bottom: 1px solid #e0e0e0;
+  margin-bottom: 20px;
+}
+
+.admin-tab {
+  padding: 12px 20px;
+  cursor: pointer;
+  color: #666;
+  position: relative;
+  transition: all 0.2s;
+  font-weight: 500;
+  margin-right: 4px;
+}
+
+.admin-tab:hover {
+  color: #333;
+}
+
+.admin-tab.active {
+  color: #007bff;
+}
+
+.admin-tab.active::after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  height: 3px;
+  width: 100%;
+  background-color: #007bff;
+}
+
+/* Sobrescritura de estilos para los filtros y botones de ordenamiento */
+.admin-filters-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  margin-bottom: 20px;
+  padding: 0;
+  background-color: transparent;
+  border-radius: 0;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* Garantizar que el botón de agregar siempre sea verde */
+.btn-add {
+  background-color: #4CAF50 !important; /* Verde */
+  color: white !important;
+}

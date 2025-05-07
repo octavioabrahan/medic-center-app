@@ -491,7 +491,7 @@ function ExcepcionesPage() {
   // Estructura principal del componente
   return (
     <div className="admin-page-container">
-      <h1 className="admin-page-title">Gestión de Excepciones</h1>
+      {/* Eliminamos el h1 redundante para evitar duplicidad con el título principal */}
       
       <AdminFilterBar
         searchTerm={searchTerm}
