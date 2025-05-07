@@ -262,7 +262,7 @@ const AdminCitas = () => {
     if (filteredAgendamientos.length === 0) return <div className="no-results">No se encontraron citas</div>;
 
     return (
-      <div className="admin-table-container">
+      <div className="admin-table-container with-scroll">
         <table className="admin-table">
           <thead>
             <tr>
@@ -442,78 +442,80 @@ const AdminCitas = () => {
           <span className="search-icon">🔍</span>
         </div>
         
-        <div className="admin-filter-container">
-          <select 
-            value={filterStatus}
-            onChange={(e) => setFilterStatus(e.target.value)}
-          >
-            <option value="todos">Todos los estados</option>
-            <option value="pendiente">Pendiente</option>
-            <option value="confirmada">Confirmada</option>
-            <option value="cancelada">Cancelada</option>
-          </select>
-        </div>
-        
-        <div className="admin-filter-container">
-          <select 
-            value={filtroProfesional}
-            onChange={(e) => setFiltroProfesional(e.target.value)}
-          >
-            <option value="todos">Todos los profesionales</option>
-            {profesionales.map((prof) => (
-              <option key={prof.profesional_id} value={prof.profesional_id}>
-                {prof.nombre} {prof.apellido}
-              </option>
-            ))}
-          </select>
-        </div>
-        
-        <div className="admin-date-picker" ref={datePickerRef}>
-          <div 
-            className="date-input-wrapper"
-            onClick={handleDateInputClick}
-          >
-            <span className="calendar-icon">📅</span>
-            <span className="date-input">{formatDateRange()}</span>
+        <div className="filter-group">
+          <div className="admin-filter-container">
+            <select 
+              value={filterStatus}
+              onChange={(e) => setFilterStatus(e.target.value)}
+            >
+              <option value="todos">Todos los estados</option>
+              <option value="pendiente">Pendiente</option>
+              <option value="confirmada">Confirmada</option>
+              <option value="cancelada">Cancelada</option>
+            </select>
           </div>
           
-          {showDatePicker && (
-            <div 
-              className="calendar-dropdown"
-              onClick={e => e.stopPropagation()}
+          <div className="admin-filter-container">
+            <select 
+              value={filtroProfesional}
+              onChange={(e) => setFiltroProfesional(e.target.value)}
             >
-              <Calendar
-                initialDateRange={dateRange}
-                onDateRangeChange={handleDateRangeChange}
-                onClose={() => setShowDatePicker(false)}
-                showPresets={true}
-              />
-
-              <div className="calendar-actions">
-                <button 
-                  className="btn-primary"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    fetchAgendamientos();
-                    setShowDatePicker(false);
-                  }}
-                >
-                  Aplicar
-                </button>
-                <button 
-                  className="btn-secondary"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    setShowDatePicker(false);
-                  }}
-                >
-                  Cancelar
-                </button>
-              </div>
+              <option value="todos">Todos los profesionales</option>
+              {profesionales.map((prof) => (
+                <option key={prof.profesional_id} value={prof.profesional_id}>
+                  {prof.nombre} {prof.apellido}
+                </option>
+              ))}
+            </select>
+          </div>
+          
+          <div className="admin-filter-container date-filter" ref={datePickerRef}>
+            <div 
+              className="date-input-wrapper"
+              onClick={handleDateInputClick}
+            >
+              <span className="calendar-icon">📅</span>
+              <span className="date-input">{formatDateRange()}</span>
             </div>
-          )}
+            
+            {showDatePicker && (
+              <div 
+                className="calendar-dropdown calendar-position-right"
+                onClick={e => e.stopPropagation()}
+              >
+                <Calendar
+                  initialDateRange={dateRange}
+                  onDateRangeChange={handleDateRangeChange}
+                  onClose={() => setShowDatePicker(false)}
+                  showPresets={true}
+                />
+
+                <div className="calendar-actions">
+                  <button 
+                    className="btn-primary"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      fetchAgendamientos();
+                      setShowDatePicker(false);
+                    }}
+                  >
+                    Aplicar
+                  </button>
+                  <button 
+                    className="btn-secondary"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      setShowDatePicker(false);
+                    }}
+                  >
+                    Cancelar
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
         </div>
       </div>
       

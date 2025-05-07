@@ -14,10 +14,10 @@
   font-weight: 600;
 }
 
-/* Barra de filtros específica para AdminCitas */
-.admin-citas-filters {
+/* Barra de filtros con estructura mejorada */
+.admin-filters-bar {
   display: flex;
-  flex-wrap: nowrap;
+  flex-wrap: wrap;
   gap: 15px;
   margin-bottom: 24px;
   padding: 0;
@@ -27,12 +27,13 @@
   justify-content: space-between;
 }
 
-.admin-citas-search {
+.admin-search {
   position: relative;
+  min-width: 280px;
   flex: 1;
 }
 
-.admin-citas-search input {
+.admin-search input {
   width: 100%;
   padding: 8px 12px;
   padding-right: 35px; /* Espacio para el icono */
@@ -42,7 +43,7 @@
   height: 38px;
 }
 
-.admin-citas-search .search-icon {
+.admin-search .search-icon {
   position: absolute;
   right: 10px;
   top: 50%;
@@ -52,33 +53,38 @@
   font-size: 14px;
 }
 
-.filter-container {
-  flex: 1;
-  position: relative; /* Añadir posición relativa */
-  display: flex; /* Asegurar que se expande correctamente */
-  flex-direction: column; /* Mantener los elementos en columna */
+/* Nuevo grupo de filtros para alineación horizontal */
+.filter-group {
+  display: flex;
+  gap: 15px;
+  align-items: center;
+  flex-wrap: nowrap;
 }
 
-.filter-container label {
-  font-weight: 600;
-  font-size: 13px;
-  color: #4b5563;
+.admin-filter-container {
+  position: relative;
+  min-width: 180px;
 }
 
-.filter-container select {
-  padding: 8px;
+.admin-filter-container select {
+  padding: 8px 10px;
   border: 1px solid #e2e8f0;
   border-radius: 4px;
   font-size: 13px;
   background-color: white;
   height: 38px;
   width: 100%;
+  appearance: none;
+  background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23131313%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E");
+  background-repeat: no-repeat;
+  background-position: right 8px top 50%;
+  background-size: 10px auto;
+  cursor: pointer;
 }
 
-/* Selector de fechas modificado */
-.date-picker-container {
-  position: relative;
-  width: 100%;
+/* Ajustes específicos para el filtro de fechas */
+.date-filter {
+  min-width: 220px;
 }
 
 .date-input-wrapper {
@@ -96,120 +102,55 @@
 .calendar-icon {
   font-size: 16px;
   color: #4b5563;
-  margin-right: 5px;
+  margin-right: 8px;
 }
 
 .date-input {
   flex: 1;
-  border: none;
-  outline: none;
-  padding: 8px 5px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
   font-size: 13px;
-  background: transparent;
-  cursor: pointer;
-  width: 100%;
   color: #374151;
 }
 
-/* Selector de fechas modificado para parecer un select */
+/* Posicionamiento mejorado del calendario desplegable */
 .calendar-dropdown {
   position: absolute;
-  top: 100%; /* Mantener posición relativa al contenedor */
-  left: 0; /* Alineado con el borde izquierdo */
-  z-index: 9999; /* Aumentar significativamente el z-index para asegurar que esté sobre todos los elementos */
+  top: 100%;
+  right: 0; /* Alineado a la derecha por defecto */
+  z-index: 9999;
   background: white;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
   border-radius: 6px;
-  margin-top: 8px;
+  margin-top: 5px;
   padding: 12px;
   border: 1px solid #e5e7eb;
-  width: 560px; /* Mantener un tamaño razonable */
-  max-width: 95vw; /* Responsive */
+  width: 560px;
+  max-width: 95vw;
 }
 
-/* Para evitar que el calendario se salga de la pantalla por la derecha */
-@media (min-width: 768px) {
-  .filter-container:last-child .calendar-dropdown {
+/* Clase para cambiar dirección del desplegable según espacio */
+.calendar-position-right {
+  right: 0;
+  left: auto;
+}
+
+/* Clase para cambiar dirección si está cerca del borde derecho */
+@media (max-width: 768px) {
+  .calendar-dropdown {
     left: auto;
     right: 0;
+    width: 300px;
   }
 }
 
-/* Selector de fechas modificado para parecer un select */
-.date-select {
-  width: 100%;
-  padding: 8px;
-  border: 1px solid #e2e8f0;
-  border-radius: 4px;
-  font-size: 13px;
-  background-color: white;
-  height: 38px;
-  appearance: none;
-  cursor: pointer;
-}
-
-/* Detectar si está cerca del borde derecho y reposicionar */
-@media (min-width: 600px) {
-  .date-picker-container:nth-last-child(2) .calendar-dropdown,
-  .date-picker-container:last-child .calendar-dropdown {
-    right: 0;
-    left: auto;
-  }
-}
-
-/* Estilos para el contenido del calendario dentro del dropdown */
+/* Estilos para el contenido del calendario */
 .calendar-dropdown .custom-calendar-wrapper {
   width: 100%;
 }
 
-.calendar-dropdown .date-presets {
-  display: flex;
-  gap: 8px;
-  margin-bottom: 10px;
-  flex-wrap: wrap;
-}
-
-.calendar-dropdown .preset-button {
-  padding: 5px 8px;
-  background-color: #f3f4f6;
-  border: 1px solid #d1d5db;
-  border-radius: 4px;
-  font-size: 12px;
-  cursor: pointer;
-}
-
-.calendar-dropdown .preset-button:hover {
-  background-color: #e5e7eb;
-}
-
-/* Ajustar el tamaño de los meses y asegurar que estén uno al lado del otro */
-.calendar-dropdown .two-month-container {
-  display: flex;
-  justify-content: space-between;
-  margin: 0 auto;
-  max-width: 100%;
-}
-
-.calendar-dropdown .month-container {
-  width: 48%; /* Para que quepan dos meses lado a lado con espacio entre ellos */
-  min-width: 0; /* Permite que se reduzca si es necesario */
-}
-
-.calendar-dropdown .calendar-table {
-  width: 100%;
-  font-size: 12px; /* Texto más pequeño */
-}
-
-.calendar-dropdown .calendar-day {
-  padding: 5px; /* Reducir el padding de cada celda del día */
-  height: 25px; /* Altura fija más pequeña */
-  width: 25px; /* Ancho fijo más pequeño */
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-/* Arreglar los botones de Aplicar y Cancelar */
+/* Botones de acciones del calendario */
 .calendar-actions {
   display: flex;
   justify-content: flex-end;
@@ -219,105 +160,60 @@
   gap: 8px;
 }
 
-.calendar-dropdown .btn-apply, 
-.calendar-dropdown .btn-cancel {
-  padding: 6px 12px;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 13px;
-  font-weight: 500;
-  min-width: 80px;
-  text-align: center;
-  border: 1px solid transparent;
+/* Contenedor de tabla con scroll interno */
+.admin-table-container {
+  width: 100%;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  overflow: hidden;
+  background: white;
 }
 
-.calendar-dropdown .btn-apply {
-  background-color: #0d47a1; /* Color azul más oscuro similar a la imagen */
-  color: white;
-  border-color: #0d47a1;
+.admin-table-container.with-scroll {
+  max-height: calc(100vh - 200px);
+  overflow-y: auto;
 }
 
-.calendar-dropdown .btn-apply:hover {
-  background-color: #1565c0;
-}
-
-.calendar-dropdown .btn-cancel {
-  background-color: #f8f9fa;
-  color: #495057;
-  border-color: #ced4da;
-}
-
-.calendar-dropdown .btn-cancel:hover {
-  background-color: #e9ecef;
-}
-
-/* Ajuste responsivo para pantallas pequeñas */
-@media (max-width: 600px) {
-  .calendar-dropdown {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 90%;
-    max-height: 90vh;
-    overflow-y: auto;
-  }
-  
-  .calendar-dropdown .two-month-container {
-    flex-direction: column;
-  }
-  
-  .calendar-dropdown .month-container {
-    width: 100%;
-    margin-bottom: 15px;
-  }
-}
-
-/* Tabla de citas rediseñada con scroll interno */
-.table-container {
-  overflow-x: auto;
-  margin-bottom: 20px;
-  border-radius: 4px;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
-  max-height: calc(100vh - 200px); /* Ajustar altura máxima para pantalla completa */
-  overflow-y: auto; /* Añadir scroll vertical */
-}
-
-.citas-table {
+/* Estilos de tabla mejorados */
+.admin-table {
   width: 100%;
   border-collapse: separate;
   border-spacing: 0;
-  background-color: white;
-  border-radius: 4px;
-  overflow: hidden;
-  font-size: 13px;
 }
 
-.citas-table th,
-.citas-table td {
-  padding: 8px 15px;
-  text-align: left;
-  border-bottom: 1px solid #f1f5f9;
+.admin-table thead {
+  position: sticky;
+  top: 0;
+  z-index: 10;
 }
 
-.citas-table th {
+.admin-table th {
   background-color: #f9fafb;
   font-weight: 600;
   color: #4b5563;
   font-size: 12px;
   text-transform: uppercase;
   letter-spacing: 0.05em;
+  padding: 12px 15px;
+  text-align: left;
+  border-bottom: 1px solid #e5e7eb;
 }
 
-.citas-table tr:last-child td {
+.admin-table td {
+  padding: 10px 15px;
+  border-bottom: 1px solid #f1f5f9;
+  font-size: 13px;
+}
+
+.admin-table tr:last-child td {
   border-bottom: none;
 }
 
-.citas-table tr:hover {
+.admin-table tr:hover {
   background-color: #f9fafb;
 }
 
-/* Estados rediseñados para ser más pequeños */
+/* Estados */
 .status-badge {
   display: inline-block;
   padding: 3px 8px;
@@ -327,27 +223,28 @@
   text-transform: uppercase;
 }
 
-.pendiente {
+.status-pendiente {
   background-color: #fff4de;
   color: #ff8a00;
 }
 
-.confirmada {
+.status-confirmada {
   background-color: #e6f7e6;
   color: #28a745;
 }
 
-.cancelada {
+.status-cancelada {
   background-color: #ffe6e6;
   color: #dc3545;
 }
 
-/* Celdas de acciones más compactas */
+/* Celdas de acciones */
 .actions-cell {
   display: flex;
   gap: 6px;
   justify-content: flex-start;
   align-items: center;
+  white-space: nowrap;
 }
 
 .btn-action {
@@ -368,27 +265,15 @@
   color: #3b82f6;
 }
 
-.btn-follow {
-  color: #10b981;
-}
-
-.btn-confirm,
-.btn-cancel {
-  border: none;
+.btn-confirm {
+  color: #fff;
+  background-color: #28a745;
   width: 24px;
   height: 24px;
-  border-radius: 4px;
-  cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 12px;
-  color: #fff;
-  transition: all 0.2s;
-}
-
-.btn-confirm {
-  background-color: #28a745;
+  border-radius: 4px;
 }
 
 .btn-confirm:hover {
@@ -396,20 +281,21 @@
 }
 
 .btn-cancel {
+  color: #fff;
   background-color: #dc3545;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
 }
 
 .btn-cancel:hover {
   background-color: #c82333;
 }
 
-/* Fecha celda */
-.fecha-cell {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-}
-
+/* Celda de empresa */
 .empresa-cell {
   width: 40px;
   text-align: center;
@@ -436,23 +322,19 @@
   text-align: center;
   padding: 5px;
   border-radius: 6px;
-  
-  /* Modificar posicionamiento para que aparezca encima */
   position: absolute;
-  z-index: 1500; /* Valor alto para asegurar que esté por encima de todo */
-  bottom: 130%; /* Alejarlo un poco más hacia arriba */
+  z-index: 1500;
+  bottom: 130%;
   left: 50%;
   transform: translateX(-50%);
-  
   opacity: 0;
   transition: opacity 0.3s;
   font-size: 12px;
   font-weight: normal;
   text-transform: none;
-  pointer-events: none; /* Evitar que el tooltip interfiera con clicks */
+  pointer-events: none;
 }
 
-/* Agregar una flecha al tooltip */
 .tooltip .tooltip-text::after {
   content: "";
   position: absolute;
@@ -469,172 +351,15 @@
   opacity: 1;
 }
 
-/* Modales */
-.modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(0, 0, 0, 0.5);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
-}
-
-.modal-content {
-  background-color: white;
-  border-radius: 8px;
-  max-width: 800px;
-  width: 90%;
-  max-height: 90vh;
-  overflow-y: auto;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-}
-
-.modal-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 15px 20px;
-  border-bottom: 1px solid #e5e7eb;
-}
-
-.modal-header h2 {
-  margin: 0;
-  font-size: 20px;
-  color: #1e3a8a;
-}
-
-.close-btn {
-  background: none;
-  border: none;
-  font-size: 24px;
-  cursor: pointer;
-  color: #6b7280;
-}
-
-.modal-body {
-  padding: 20px;
-}
-
-/* Modal de detalles */
-.detail-section {
-  margin-bottom: 25px;
-}
-
-.detail-section h3 {
-  font-size: 16px;
-  color: #374151;
-  margin-bottom: 10px;
-  padding-bottom: 5px;
-  border-bottom: 1px solid #e5e7eb;
-}
-
-.detail-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  gap: 15px;
-}
-
-.detail-grid > div {
-  font-size: 14px;
-}
-
-.action-buttons {
-  display: flex;
-  gap: 10px;
-  margin-top: 20px;
-  justify-content: flex-end;
-}
-
-.btn-primary, 
-.btn-secondary {
-  padding: 10px 15px;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  font-weight: 500;
-}
-
-.btn-primary {
-  background-color: #1e3a8a;
-  color: white;
-}
-
-.btn-secondary {
-  background-color: #e5e7eb;
-  color: #374151;
-}
-
-/* Historial modal */
-.historial-modal {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(0, 0, 0, 0.5);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1100;
-}
-
-.historial-content {
-  background-color: white;
-  border-radius: 8px;
-  max-width: 600px;
-  width: 90%;
-  max-height: 90vh;
-  overflow-y: auto;
-  padding: 20px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-}
-
-.historial-content h3 {
-  margin-top: 0;
-  color: #1e3a8a;
-  margin-bottom: 15px;
-}
-
-.historial-table {
-  width: 100%;
-  border-collapse: collapse;
-}
-
-.historial-table th,
-.historial-table td {
-  padding: 8px 12px;
-  text-align: left;
-  border-bottom: 1px solid #e5e7eb;
-  font-size: 14px;
-}
-
-.historial-table th {
-  background-color: #f9fafb;
-  font-weight: 500;
-}
-
-.historial-actions {
-  display: flex;
-  justify-content: flex-end;
-  margin-top: 20px;
-}
-
-/* Estados de carga, error y sin resultados */
-.loading,
+/* Estilos para los mensajes de estado */
+.loading-container,
 .error-message,
 .no-results {
   padding: 25px;
   text-align: center;
-  border-radius: 10px;
-  margin: 20px 0;
-}
-
-.loading {
   background-color: #f9fafb;
+  border-radius: 6px;
+  margin: 15px 0;
   color: #6b7280;
 }
 
@@ -643,41 +368,26 @@
   color: #dc3545;
 }
 
-.no-results {
-  background-color: #f9fafb;
-  color: #6b7280;
-}
-
 /* Responsive */
 @media (max-width: 768px) {
-  .filters-bar {
+  .admin-filters-bar {
     flex-direction: column;
     align-items: stretch;
   }
   
-  .search-container,
-  .filter-container,
-  .date-picker-container {
-    width: 100%;
-    margin-bottom: 8px;
-  }
-  
-  .action-buttons {
+  .filter-group {
     flex-direction: column;
-  }
-  
-  .btn-primary,
-  .btn-secondary {
     width: 100%;
   }
-
-  .calendar-dropdown {
+  
+  .admin-search,
+  .admin-filter-container {
     width: 100%;
-    left: 0;
-    right: 0;
+    min-width: 100%;
+    margin-bottom: 10px;
   }
   
-  .calendar-dropdown .two-month-container {
-    flex-direction: column;
+  .admin-table-container.with-scroll {
+    max-height: calc(100vh - 300px);
   }
 }
