@@ -57,17 +57,21 @@
 .filter-group {
   display: flex;
   gap: 15px;
-  align-items: center;
+  align-items: flex-start; /* Cambiado a flex-start para alinear desde arriba */
   flex-wrap: nowrap;
+  height: 38px; /* Altura fija para todos los elementos */
 }
 
 .admin-filter-container {
   position: relative;
   min-width: 180px;
+  height: 38px; /* Garantizar altura exacta */
+  display: flex; /* Añadir display flex */
+  align-items: center; /* Centrar contenido verticalmente */
 }
 
 .admin-filter-container select {
-  padding: 8px 10px;
+  padding: 0 28px 0 10px; /* Ajustar padding para centrar contenido */
   border: 1px solid #e2e8f0;
   border-radius: 4px;
   font-size: 13px;
@@ -85,6 +89,7 @@
 /* Ajustes específicos para el filtro de fechas */
 .date-filter {
   min-width: 220px;
+  height: 38px; /* Altura fija para asegurar alineación */
 }
 
 .date-input-wrapper {
@@ -97,12 +102,16 @@
   height: 38px;
   padding: 0 8px;
   cursor: pointer;
+  box-sizing: border-box; /* Asegurar que el padding no afecte la altura */
 }
 
 .calendar-icon {
   font-size: 16px;
   color: #4b5563;
   margin-right: 8px;
+  display: flex; /* Añadir display flex */
+  align-items: center; /* Centrar contenido verticalmente */
+  height: 100%; /* Ocupar toda la altura disponible */
 }
 
 .date-input {
@@ -112,6 +121,9 @@
   text-overflow: ellipsis;
   font-size: 13px;
   color: #374151;
+  display: flex; /* Añadir display flex */
+  align-items: center; /* Centrar contenido verticalmente */
+  height: 100%; /* Ocupar toda la altura disponible */
 }
 
 /* Posicionamiento mejorado del calendario desplegable */
@@ -181,10 +193,22 @@
   border-spacing: 0;
 }
 
+/* Solución para el problema del borde en el encabezado */
 .admin-table thead {
   position: sticky;
   top: 0;
   z-index: 10;
+}
+
+.admin-table thead::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 1px;
+  background-color: #e5e7eb; /* Color del borde */
+  z-index: 11; /* Asegurarse de que esté por encima */
 }
 
 .admin-table th {
@@ -196,7 +220,8 @@
   letter-spacing: 0.05em;
   padding: 12px 15px;
   text-align: left;
-  border-bottom: 1px solid #e5e7eb;
+  border-bottom: none; /* Quitar el borde individual */
+  position: relative; /* Para posicionamiento */
 }
 
 .admin-table td {
