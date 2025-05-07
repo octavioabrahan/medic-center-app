@@ -171,11 +171,17 @@ function ExcepcionesPage() {
   // Fetch de profesionales
   const fetchProfesionales = async () => {
     try {
-      const res = await axios.get("/profesionales");
+      const res = await axios.get("/api/profesionales");
       setProfesionales(res.data);
     } catch (err) {
       console.error("Error cargando profesionales:", err);
       setError("Error al cargar los profesionales");
+      // Agregar manejo para error 429
+      if (err.response && err.response.status === 429) {
+        console.error('Error: Demasiadas solicitudes. Esperando un momento...');
+        // Esperar 2 segundos y reintentar
+        setTimeout(fetchProfesionales, 2000);
+      }
     }
   };
 
@@ -183,12 +189,18 @@ function ExcepcionesPage() {
   const fetchExcepciones = async () => {
     setLoading(true);
     try {
-      const res = await axios.get("/excepciones");
+      const res = await axios.get("/api/excepciones");
       setExcepciones(res.data);
       setFilteredExcepciones(res.data);
     } catch (err) {
       console.error("Error al cargar excepciones:", err);
       setError("Error al cargar las excepciones");
+      // Agregar manejo para error 429
+      if (err.response && err.response.status === 429) {
+        console.error('Error: Demasiadas solicitudes. Esperando un momento...');
+        // Esperar 2 segundos y reintentar
+        setTimeout(fetchExcepciones, 2000);
+      }
     } finally {
       setLoading(false);
     }
@@ -199,8 +211,8 @@ function ExcepcionesPage() {
     try {
       // Cargar fechas del servicio de horarios y excepciones
       const [resHorarios, resExcepciones] = await Promise.all([
-        axios.get(`/horarios/fechas/${profesionalId}`),
-        axios.get(`/excepciones/profesional/${profesionalId}`)
+        axios.get(`/api/horarios/fechas/${profesionalId}`),
+        axios.get(`/api/excepciones/profesional/${profesionalId}`)
       ]);
 
       const horarios = resHorarios.data;
@@ -287,7 +299,7 @@ function ExcepcionesPage() {
       // Formatear la fecha seleccionada
       const fechaFormateada = formatDate(nuevaExcepcion.fecha);
       
-      await axios.post("/excepciones", {
+      await axios.post("/api/excepciones", {
         ...nuevaExcepcion,
         fecha: fechaFormateada
       });
@@ -314,7 +326,7 @@ function ExcepcionesPage() {
       // Formatear la fecha seleccionada
       const fechaFormateada = formatDate(cancelacion.fecha);
       
-      await axios.post("/excepciones", {
+      await axios.post("/api/excepciones", {
         ...cancelacion,
         fecha: fechaFormateada
       });
