@@ -17,6 +17,7 @@ const AdminCitas = () => {
   const [filterStatus, setFilterStatus] = useState("todos");
   const [profesionales, setProfesionales] = useState([]);
   const [filtroProfesional, setFiltroProfesional] = useState("todos");
+  const [sortOrder, setSortOrder] = useState("az"); // Añadido para ordenamiento alfabético
 
   // Referencia para el selector de fechas
   const datePickerRef = useRef(null);
@@ -156,6 +157,21 @@ const AdminCitas = () => {
       );
     }
     
+    // Aplicar ordenamiento alfabético por nombre de paciente
+    if (sortOrder === 'az') {
+      results.sort((a, b) => {
+        const nameA = `${a.paciente_nombre || ''} ${a.paciente_apellido || ''}`.toLowerCase();
+        const nameB = `${b.paciente_nombre || ''} ${b.paciente_apellido || ''}`.toLowerCase();
+        return nameA.localeCompare(nameB);
+      });
+    } else if (sortOrder === 'za') {
+      results.sort((a, b) => {
+        const nameA = `${a.paciente_nombre || ''} ${a.paciente_apellido || ''}`.toLowerCase();
+        const nameB = `${b.paciente_nombre || ''} ${b.paciente_apellido || ''}`.toLowerCase();
+        return nameB.localeCompare(nameA);
+      });
+    }
+    
     console.log("Resultados filtrados:", results.length);
     setFilteredAgendamientos(results);
   };
@@ -167,7 +183,7 @@ const AdminCitas = () => {
       applyFilters();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchTerm, filterStatus, filtroProfesional]);
+  }, [searchTerm, filterStatus, filtroProfesional, sortOrder]);
 
   // Obtener datos nuevamente cuando cambia el rango de fechas
   // Utilizamos un debounce con useEffect para espaciar las llamadas cuando cambia el rango
@@ -431,7 +447,7 @@ const AdminCitas = () => {
     <div className="admin-page-container">
       <h1 className="admin-page-title">Citas agendadas</h1>
       
-      <div className="admin-filters-bar">
+      <div className="admin-filter-bar">
         <div className="admin-search">
           <input
             type="text"
@@ -443,6 +459,21 @@ const AdminCitas = () => {
         </div>
         
         <div className="filter-group">
+          <div className="admin-sort-buttons">
+            <button
+              className={`sort-btn ${sortOrder === 'az' ? 'active' : ''}`}
+              onClick={() => setSortOrder('az')}
+            >
+              A-Z
+            </button>
+            <button
+              className={`sort-btn ${sortOrder === 'za' ? 'active' : ''}`}
+              onClick={() => setSortOrder('za')}
+            >
+              Z-A
+            </button>
+          </div>
+
           <div className="admin-filter-container">
             <select 
               value={filterStatus}
