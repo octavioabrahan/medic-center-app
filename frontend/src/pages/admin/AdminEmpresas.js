@@ -1,263 +1,301 @@
 import React, { useEffect, useState } from "react";
+import axios from "axios";
+import "../../components/admin/AdminCommon.css"; // Importamos los estilos comunes
 
 const AdminEmpresas = () => {
-  const [nombre, setNombre] = useState("");
-  const [rif, setRif] = useState("");
-  const [logoUrl, setLogoUrl] = useState("");
-  const [mensaje, setMensaje] = useState(null);
-  const [error, setError] = useState(null);
   const [empresas, setEmpresas] = useState([]);
-  const [editando, setEditando] = useState(null);
-  const [cambios, setCambios] = useState({});
-
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [mensaje, setMensaje] = useState(null);
+  
+  // Estado para el formulario de empresas
+  const [formData, setFormData] = useState({
+    nombre_empresa: "",
+    rif: "",
+    logo_url: ""
+  });
+  
+  // Estado para el filtro de búsqueda
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filteredEmpresas, setFilteredEmpresas] = useState([]);
+  
+  // Estados para modal
+  const [showModal, setShowModal] = useState(false);
+  const [currentEmpresa, setCurrentEmpresa] = useState(null);
+  
   const cargarEmpresas = async () => {
+    setLoading(true);
     try {
-      const res = await fetch(`${process.env.REACT_APP_API_URL}/api/empresas`);
-      const data = await res.json();
-      setEmpresas(data);
+      const res = await axios.get("/api/empresas");
+      setEmpresas(res.data);
+      setFilteredEmpresas(res.data);
+      setError(null);
     } catch (err) {
       console.error("Error al cargar empresas", err);
+      setError("Error al cargar las empresas. Por favor, intente de nuevo.");
+    } finally {
+      setLoading(false);
     }
   };
+
+  // Filtrar empresas cuando cambia el término de búsqueda
+  useEffect(() => {
+    if (empresas.length > 0) {
+      if (searchTerm.trim() === "") {
+        setFilteredEmpresas(empresas);
+      } else {
+        const term = searchTerm.toLowerCase();
+        const filtered = empresas.filter(empresa => 
+          empresa.nombre_empresa.toLowerCase().includes(term) ||
+          empresa.rif.toLowerCase().includes(term)
+        );
+        setFilteredEmpresas(filtered);
+      }
+    }
+  }, [searchTerm, empresas]);
 
   useEffect(() => {
     cargarEmpresas();
   }, []);
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({
+      ...formData,
+      [name]: value
+    });
+  };
+
+  const handleCreateEmpresa = () => {
+    setCurrentEmpresa(null);
+    setFormData({
+      nombre_empresa: "",
+      rif: "",
+      logo_url: ""
+    });
+    setShowModal(true);
+  };
+
+  const handleEditEmpresa = (empresa) => {
+    setCurrentEmpresa(empresa);
+    setFormData({
+      nombre_empresa: empresa.nombre_empresa,
+      rif: empresa.rif,
+      logo_url: empresa.logo_url || ""
+    });
+    setShowModal(true);
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setMensaje(null);
     setError(null);
 
-    if (!nombre || !rif) {
-      setError("Todos los campos son obligatorios.");
+    if (!formData.nombre_empresa || !formData.rif) {
+      setError("El nombre y RIF son campos obligatorios.");
       return;
     }
 
     try {
-      const res = await fetch(`${process.env.REACT_APP_API_URL}/api/empresas`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ nombre_empresa: nombre, rif, logo_url: logoUrl })
-      });
-
-      const data = await res.json();
-
-      if (!res.ok) {
-        throw new Error(data.error || "Error al registrar la empresa");
+      if (currentEmpresa) {
+        // Actualizar empresa existente
+        await axios.put("/api/empresas", {
+          id_empresa: currentEmpresa.id_empresa,
+          ...formData
+        });
+        setMensaje("Empresa actualizada correctamente.");
+      } else {
+        // Crear nueva empresa
+        await axios.post("/api/empresas", formData);
+        setMensaje("Empresa registrada correctamente.");
       }
-
-      setNombre("");
-      setRif("");
-      setLogoUrl("");
-      setMensaje("Empresa registrada correctamente.");
+      
+      setShowModal(false);
       cargarEmpresas();
     } catch (err) {
-      setError(err.message || "Error inesperado.");
+      setError(err.response?.data?.error || "Error inesperado al procesar la solicitud.");
     }
   };
 
-  const iniciarEdicion = (empresa) => {
-    setEditando(empresa.id_empresa);
-    setCambios({
-      nombre_empresa: empresa.nombre_empresa,
-      rif: empresa.rif,
-      logo_url: empresa.logo_url || ""
-    });
-  };
-
-  const guardarCambios = async (id_empresa) => {
-    try {
-      const res = await fetch(`${process.env.REACT_APP_API_URL}/api/empresas`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          id_empresa,
-          nombre_empresa: cambios.nombre_empresa,
-          rif: cambios.rif,
-          logo_url: cambios.logo_url
-        })
-      });
-
-      if (!res.ok) throw new Error("Error al actualizar");
-
-      setEditando(null);
-      setCambios({});
-      cargarEmpresas();
-    } catch (err) {
-      alert("No se pudo guardar los cambios.");
-    }
-  };
-
-  const desactivarEmpresa = async (id_empresa) => {
-    const confirmar = window.confirm("¿Desactivar esta empresa?");
+  const cambiarEstadoEmpresa = async (id_empresa, activar) => {
+    const action = activar ? "activar" : "desactivar";
+    const confirmar = window.confirm(`¿Desea ${action} esta empresa?`);
     if (!confirmar) return;
 
     try {
-      await fetch(`${process.env.REACT_APP_API_URL}/api/empresas/${id_empresa}`, {
-        method: "DELETE"
-      });
+      if (activar) {
+        await axios.patch(`/api/empresas/${id_empresa}/activar`);
+      } else {
+        await axios.delete(`/api/empresas/${id_empresa}`);
+      }
       cargarEmpresas();
     } catch (err) {
-      alert("Error al desactivar empresa.");
-    }
-  };
-
-  const activarEmpresa = async (id_empresa) => {
-    try {
-      await fetch(`${process.env.REACT_APP_API_URL}/api/empresas/${id_empresa}/activar`, {
-        method: "PATCH"
-      });
-      cargarEmpresas();
-    } catch (err) {
-      alert("Error al activar empresa.");
+      alert(`Error al ${action} la empresa.`);
     }
   };
 
   return (
-    <div style={{ padding: "2rem", maxWidth: "800px", margin: "0 auto" }}>
-      <h2>Registro de Empresas</h2>
-
-      {/* Formulario */}
-      <form onSubmit={handleSubmit}>
-        <div style={{ marginBottom: "1rem" }}>
-          <label>
-            Nombre de la empresa:{" "}
-            <input
-              type="text"
-              value={nombre}
-              onChange={(e) => setNombre(e.target.value)}
-              required
-              style={{ width: "100%" }}
-            />
-          </label>
+    <div className="admin-page-container">
+      <h1 className="admin-page-title">Gestión de Empresas</h1>
+      
+      <div className="admin-filters-bar">
+        <div className="admin-search">
+          <input
+            type="text"
+            placeholder="Buscar por nombre o RIF..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+          <span className="search-icon">🔍</span>
         </div>
-
-        <div style={{ marginBottom: "1rem" }}>
-          <label>
-            RIF:{" "}
-            <input
-              type="text"
-              value={rif}
-              onChange={(e) => setRif(e.target.value)}
-              required
-              style={{ width: "100%" }}
-            />
-          </label>
-        </div>
-
-        <div style={{ marginBottom: "1rem" }}>
-          <label>
-            URL del Logo:{" "}
-            <input
-              type="text"
-              value={logoUrl}
-              onChange={(e) => setLogoUrl(e.target.value)}
-              placeholder="https://ejemplo.com/logo.png"
-              style={{ width: "100%" }}
-            />
-          </label>
-        </div>
-
-        <button type="submit">Registrar Empresa</button>
-      </form>
-
-      {mensaje && <p style={{ color: "green", marginTop: "1rem" }}>{mensaje}</p>}
-      {error && <p style={{ color: "red", marginTop: "1rem" }}>{error}</p>}
-
-      {/* Tabla de empresas */}
-      <h3 style={{ marginTop: "3rem" }}>Empresas registradas</h3>
-      <table border="1" cellPadding="8" style={{ width: "100%" }}>
-        <thead>
-          <tr>
-            <th>Nombre</th>
-            <th>RIF</th>
-            <th>Logo</th>
-            <th>Estado</th>
-            <th>Acciones</th>
-          </tr>
-        </thead>
-        <tbody>
-          {empresas.map((e) => (
-            <tr key={e.id_empresa}>
-              <td>
-                {editando === e.id_empresa ? (
-                  <input
-                    value={cambios.nombre_empresa}
-                    onChange={(ev) =>
-                      setCambios({ ...cambios, nombre_empresa: ev.target.value })
-                    }
-                  />
-                ) : (
-                  e.nombre_empresa
-                )}
-              </td>
-              <td>
-                {editando === e.id_empresa ? (
-                  <input
-                    value={cambios.rif}
-                    onChange={(ev) =>
-                      setCambios({ ...cambios, rif: ev.target.value })
-                    }
-                  />
-                ) : (
-                  e.rif
-                )}
-              </td>
-              <td>
-                {editando === e.id_empresa ? (
-                  <input
-                    value={cambios.logo_url || ""}
-                    onChange={(ev) =>
-                      setCambios({ ...cambios, logo_url: ev.target.value })
-                    }
-                  />
-                ) : (
-                  e.logo_url ? (
-                    <img 
-                      src={e.logo_url} 
-                      alt={`Logo de ${e.nombre_empresa}`} 
-                      style={{ maxWidth: "50px", maxHeight: "50px" }}
-                    />
-                  ) : (
-                    "Sin logo"
-                  )
-                )}
-              </td>
-              <td>{e.is_active ? "Activa" : "Desactivada"}</td>
-              <td>
-                {editando === e.id_empresa ? (
-                  <>
-                    <button onClick={() => guardarCambios(e.id_empresa)}>
-                      Guardar
+        
+        <button className="btn-add" onClick={handleCreateEmpresa}>
+          Registrar empresa
+        </button>
+      </div>
+      
+      {mensaje && <div className="success-message">{mensaje}</div>}
+      {error && <div className="error-message">{error}</div>}
+      
+      {loading ? (
+        <div className="loading-container">Cargando empresas...</div>
+      ) : filteredEmpresas.length === 0 ? (
+        <div className="no-results">No se encontraron empresas</div>
+      ) : (
+        <div className="admin-table-container">
+          <table className="admin-table">
+            <thead>
+              <tr>
+                <th>Nombre</th>
+                <th>RIF</th>
+                <th>Logo</th>
+                <th>Estado</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              {filteredEmpresas.map((empresa) => (
+                <tr key={empresa.id_empresa}>
+                  <td>{empresa.nombre_empresa}</td>
+                  <td>{empresa.rif}</td>
+                  <td>
+                    {empresa.logo_url ? (
+                      <img 
+                        src={empresa.logo_url} 
+                        alt={`Logo de ${empresa.nombre_empresa}`} 
+                        className="empresa-logo"
+                      />
+                    ) : (
+                      <span className="no-logo">Sin logo</span>
+                    )}
+                  </td>
+                  <td>
+                    <span className={`status-badge ${empresa.is_active ? 'status-active' : 'status-inactive'}`}>
+                      {empresa.is_active ? "Activa" : "Inactiva"}
+                    </span>
+                  </td>
+                  <td className="actions-cell">
+                    <button 
+                      className="btn-action btn-edit" 
+                      onClick={() => handleEditEmpresa(empresa)}
+                      title="Editar"
+                    >
+                      ✏️
                     </button>
-                    <button onClick={() => setEditando(null)}>Cancelar</button>
-                  </>
-                ) : (
-                  <>
-                    <button onClick={() => iniciarEdicion(e)}>Editar</button>
-                    {e.is_active ? (
+                    {empresa.is_active ? (
                       <button
-                        onClick={() => desactivarEmpresa(e.id_empresa)}
-                        style={{ marginLeft: "0.5rem" }}
+                        className="btn-action btn-delete"
+                        onClick={() => cambiarEstadoEmpresa(empresa.id_empresa, false)}
+                        title="Desactivar"
                       >
-                        Desactivar
+                        🚫
                       </button>
                     ) : (
                       <button
-                        onClick={() => activarEmpresa(e.id_empresa)}
-                        style={{ marginLeft: "0.5rem" }}
+                        className="btn-action btn-activate"
+                        onClick={() => cambiarEstadoEmpresa(empresa.id_empresa, true)}
+                        title="Activar"
                       >
-                        Activar
+                        ✓
                       </button>
                     )}
-                  </>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+
+      {/* Modal para añadir/editar empresa */}
+      {showModal && (
+        <div className="modal-overlay">
+          <div className="modal-content">
+            <div className="modal-header">
+              <h2>{currentEmpresa ? "Editar empresa" : "Registrar nueva empresa"}</h2>
+              <button className="close-btn" onClick={() => setShowModal(false)}>×</button>
+            </div>
+            <div className="modal-body">
+              <form onSubmit={handleSubmit}>
+                <div className="form-group">
+                  <label htmlFor="nombre_empresa">Nombre de la empresa</label>
+                  <input
+                    id="nombre_empresa"
+                    type="text"
+                    name="nombre_empresa"
+                    value={formData.nombre_empresa}
+                    onChange={handleInputChange}
+                    required
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label htmlFor="rif">RIF</label>
+                  <input
+                    id="rif"
+                    type="text"
+                    name="rif"
+                    value={formData.rif}
+                    onChange={handleInputChange}
+                    required
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label htmlFor="logo_url">URL del Logo</label>
+                  <input
+                    id="logo_url"
+                    type="text"
+                    name="logo_url"
+                    value={formData.logo_url}
+                    onChange={handleInputChange}
+                    placeholder="https://ejemplo.com/logo.png"
+                  />
+                </div>
+
+                {formData.logo_url && (
+                  <div className="logo-preview">
+                    <p>Vista previa del logo:</p>
+                    <img 
+                      src={formData.logo_url} 
+                      alt="Vista previa del logo" 
+                      className="logo-preview-image" 
+                    />
+                  </div>
                 )}
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+              </form>
+            </div>
+            <div className="modal-footer">
+              <button type="button" className="btn-secondary" onClick={() => setShowModal(false)}>
+                Cancelar
+              </button>
+              <button type="button" className="btn-primary" onClick={handleSubmit}>
+                {currentEmpresa ? "Actualizar" : "Registrar"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

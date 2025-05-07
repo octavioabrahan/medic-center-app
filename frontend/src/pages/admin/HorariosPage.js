@@ -3,6 +3,7 @@ import axios from "axios";
 import HorarioForm from "../../components/admin/HorarioForm";
 import ExcepcionesPage from "./ExcepcionesPage";
 import "./HorariosPage.css";
+import "../../components/admin/AdminCommon.css"; // Importamos los estilos comunes
 
 function HorariosPage() {
   const [horarios, setHorarios] = useState([]);
@@ -107,13 +108,13 @@ function HorariosPage() {
   };
 
   const renderHorariosTable = () => {
-    if (loading) return <div className="loading">Cargando horarios...</div>;
+    if (loading) return <div className="loading-container">Cargando horarios...</div>;
     if (error) return <div className="error-message">{error}</div>;
     if (filteredHorarios.length === 0) return <div className="no-results">No se encontraron horarios configurados</div>;
 
     return (
-      <div className="table-container">
-        <table className="horarios-table">
+      <div className="admin-table-container">
+        <table className="admin-table">
           <thead>
             <tr>
               <th>Profesional</th>
@@ -142,14 +143,14 @@ function HorariosPage() {
                     title="Editar"
                     onClick={() => handleEditHorario(horario)}
                   >
-                    <span className="icon-edit">✏️</span>
+                    ✏️
                   </button>
                   <button 
                     className="btn-action btn-delete" 
                     title="Eliminar"
                     onClick={() => handleDeleteHorario(horario.horario_id)}
                   >
-                    <span className="icon-delete">🗑️</span>
+                    🗑️
                   </button>
                 </td>
               </tr>
@@ -163,32 +164,21 @@ function HorariosPage() {
   const renderProfesionalesContent = () => {
     return (
       <>
-        <div className="horarios-header">
-          <div className="admin-citas-search">
+        <div className="admin-filters-bar">
+          <div className="admin-search">
             <input
               type="text"
               placeholder="Buscar por nombre de profesional..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              style={{
-                width: '100%',
-                padding: '8px 12px',
-                paddingRight: '35px',
-                border: '1px solid #e2e8f0',
-                borderRadius: '4px',
-                fontSize: '13px',
-                height: '38px',
-                boxSizing: 'border-box',
-                backgroundColor: 'white'
-              }}
             />
             <span className="search-icon">🔍</span>
           </div>
-          <button className="btn-agregar" onClick={() => {
+          <button className="btn-add" onClick={() => {
             setCurrentHorario(null);
             setShowModal(true);
           }}>
-            <span className="icon-plus">+</span> Agregar horario
+            Agregar horario
           </button>
         </div>
         
@@ -198,19 +188,19 @@ function HorariosPage() {
   };
 
   return (
-    <div className="horarios-container">
-      <h1>Horarios de atención</h1>
+    <div className="admin-page-container">
+      <h1 className="admin-page-title">Horarios de atención</h1>
       
-      <div className="tabs-container">
-        <div className="tabs-header">
+      <div className="admin-tabs-container">
+        <div className="admin-tabs-header">
           <button 
-            className={`tab-button ${activeTab === "profesionales" ? "active" : ""}`} 
+            className={`admin-tab-button ${activeTab === "profesionales" ? "active" : ""}`} 
             onClick={() => setActiveTab("profesionales")}
           >
             Profesionales
           </button>
           <button 
-            className={`tab-button ${activeTab === "excepciones" ? "active" : ""}`} 
+            className={`admin-tab-button ${activeTab === "excepciones" ? "active" : ""}`} 
             onClick={() => setActiveTab("excepciones")}
           >
             Excepciones
@@ -221,13 +211,13 @@ function HorariosPage() {
       {activeTab === "profesionales" ? renderProfesionalesContent() : <ExcepcionesPage />}
       
       {showModal && (
-        <div className="horarios-modal-overlay">
-          <div className="horarios-modal-content narrow-modal">
-            <div className="horarios-modal-header">
+        <div className="modal-overlay">
+          <div className="modal-content">
+            <div className="modal-header">
               <h2>{currentHorario ? "Editar horario" : "Agregar horario de atención"}</h2>
-              <button className="horarios-close-btn" onClick={() => setShowModal(false)}>×</button>
+              <button className="close-btn" onClick={() => setShowModal(false)}>×</button>
             </div>
-            <div className="horarios-modal-body">
+            <div className="modal-body">
               <HorarioForm 
                 horario={currentHorario} 
                 onSuccess={() => {

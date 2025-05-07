@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useRef, useCallback } from "react";
-import api from "../../api";
+import axios from "axios";
 import "./HorariosPage.css";
+import "../../components/admin/AdminCommon.css"; // Importamos los estilos comunes
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
 
@@ -170,7 +171,7 @@ function ExcepcionesPage() {
   // Fetch de profesionales
   const fetchProfesionales = async () => {
     try {
-      const res = await api.get("/profesionales");
+      const res = await axios.get("/profesionales");
       setProfesionales(res.data);
     } catch (err) {
       console.error("Error cargando profesionales:", err);
@@ -182,7 +183,7 @@ function ExcepcionesPage() {
   const fetchExcepciones = async () => {
     setLoading(true);
     try {
-      const res = await api.get("/excepciones");
+      const res = await axios.get("/excepciones");
       setExcepciones(res.data);
       setFilteredExcepciones(res.data);
     } catch (err) {
@@ -198,8 +199,8 @@ function ExcepcionesPage() {
     try {
       // Cargar fechas del servicio de horarios y excepciones
       const [resHorarios, resExcepciones] = await Promise.all([
-        api.get(`/horarios/fechas/${profesionalId}`),
-        api.get(`/excepciones/profesional/${profesionalId}`)
+        axios.get(`/horarios/fechas/${profesionalId}`),
+        axios.get(`/excepciones/profesional/${profesionalId}`)
       ]);
 
       const horarios = resHorarios.data;
@@ -286,7 +287,7 @@ function ExcepcionesPage() {
       // Formatear la fecha seleccionada
       const fechaFormateada = formatDate(nuevaExcepcion.fecha);
       
-      await api.post("/excepciones", {
+      await axios.post("/excepciones", {
         ...nuevaExcepcion,
         fecha: fechaFormateada
       });
@@ -313,7 +314,7 @@ function ExcepcionesPage() {
       // Formatear la fecha seleccionada
       const fechaFormateada = formatDate(cancelacion.fecha);
       
-      await api.post("/excepciones", {
+      await axios.post("/excepciones", {
         ...cancelacion,
         fecha: fechaFormateada
       });
@@ -415,13 +416,13 @@ function ExcepcionesPage() {
 
   // Renderizado de la tabla de excepciones
   const renderExcepcionesTable = () => {
-    if (loading) return <div className="loading">Cargando excepciones...</div>;
+    if (loading) return <div className="loading-container">Cargando excepciones...</div>;
     if (error) return <div className="error-message">{error}</div>;
     if (filteredExcepciones.length === 0) return <div className="no-results">No se encontraron excepciones configuradas</div>;
 
     return (
-      <div className="table-container">
-        <table className="horarios-table">
+      <div className="admin-table-container">
+        <table className="admin-table">
           <thead>
             <tr>
               <th>Profesional</th>
@@ -436,7 +437,11 @@ function ExcepcionesPage() {
             {filteredExcepciones.map((excepcion) => (
               <tr key={excepcion.excepcion_id}>
                 <td>{excepcion.profesional_nombre} {excepcion.profesional_apellido}</td>
-                <td>{excepcion.estado === "cancelado" ? "Cancelado" : "Excepción"}</td>
+                <td>
+                  <span className={`status-badge ${excepcion.estado === "cancelado" ? "status-inactive" : "status-active"}`}>
+                    {excepcion.estado === "cancelado" ? "Cancelado" : "Excepción"}
+                  </span>
+                </td>
                 <td>{excepcion.motivo}</td>
                 <td>{formatFecha(excepcion.fecha)}</td>
                 <td>{excepcion.hora_inicio ? excepcion.hora_inicio.slice(0, 5) : "-"}</td>
@@ -454,40 +459,29 @@ function ExcepcionesPage() {
 
   // Estructura principal del componente
   return (
-    <div className="horarios-container">
-      <div className="horarios-header">
-        <div className="admin-citas-search">
+    <div className="admin-page-container">
+      <div className="admin-filters-bar">
+        <div className="admin-search">
           <input
             type="text"
             placeholder="Buscar por nombre de profesional..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            style={{
-              width: '100%',
-              padding: '8px 12px',
-              paddingRight: '35px',
-              border: '1px solid #e2e8f0',
-              borderRadius: '4px',
-              fontSize: '13px',
-              height: '38px',
-              boxSizing: 'border-box',
-              backgroundColor: 'white'
-            }}
           />
           <span className="search-icon">🔍</span>
         </div>
-        <div className="buttons-container">
-          <button className="btn-agregar" onClick={() => {
+        <div className="admin-actions">
+          <button className="btn-secondary" onClick={() => {
             resetCancelacion();
             setShowCancelarModal(true);
           }}>
-            <span className="icon-plus">✕</span> Cancelar día
+            Cancelar día
           </button>
-          <button className="btn-agregar" onClick={() => {
+          <button className="btn-add" onClick={() => {
             resetNuevaExcepcion();
             setShowAgregarModal(true);
           }}>
-            <span className="icon-plus">+</span> Agregar día
+            Agregar día
           </button>
         </div>
       </div>
@@ -496,13 +490,13 @@ function ExcepcionesPage() {
       
       {/* Modal para agregar día */}
       {showAgregarModal && (
-        <div className="horarios-modal-overlay">
-          <div className="horarios-modal-content narrow-modal">
-            <div className="horarios-modal-header">
+        <div className="modal-overlay">
+          <div className="modal-content">
+            <div className="modal-header">
               <h2>Agregar día en la atención de un profesional</h2>
-              <button className="horarios-close-btn" onClick={() => setShowAgregarModal(false)}>×</button>
+              <button className="close-btn" onClick={() => setShowAgregarModal(false)}>×</button>
             </div>
-            <div className="horarios-modal-body">
+            <div className="modal-body">
               <p className="form-instructions">
                 Usa este formulario para agregar un día específico que un profesional atenderá.
               </p>
@@ -510,22 +504,20 @@ function ExcepcionesPage() {
               <form onSubmit={guardarExcepcion} className="horario-form">
                 <div className="form-group">
                   <label htmlFor="profesional_id">Profesional</label>
-                  <div className="select-wrapper">
-                    <select
-                      id="profesional_id"
-                      name="profesional_id"
-                      value={nuevaExcepcion.profesional_id}
-                      onChange={(e) => setNuevaExcepcion({...nuevaExcepcion, profesional_id: e.target.value})}
-                      required
-                    >
-                      <option value="">Selecciona un profesional</option>
-                      {profesionales.map((p) => (
-                        <option key={p.profesional_id} value={p.profesional_id}>
-                          {p.nombre} {p.apellido}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
+                  <select
+                    id="profesional_id"
+                    name="profesional_id"
+                    value={nuevaExcepcion.profesional_id}
+                    onChange={(e) => setNuevaExcepcion({...nuevaExcepcion, profesional_id: e.target.value})}
+                    required
+                  >
+                    <option value="">Selecciona un profesional</option>
+                    {profesionales.map((p) => (
+                      <option key={p.profesional_id} value={p.profesional_id}>
+                        {p.nombre} {p.apellido}
+                      </option>
+                    ))}
+                  </select>
                 </div>
                 
                 {/* Selector de mes y año */}
@@ -611,82 +603,78 @@ function ExcepcionesPage() {
                 <div className="form-row">
                   <div className="form-group">
                     <label htmlFor="hora_inicio">Hora de inicio</label>
-                    <div className="select-wrapper">
-                      <select 
-                        id="hora_inicio"
-                        name="hora_inicio" 
-                        value={nuevaExcepcion.hora_inicio}
-                        onChange={(e) => setNuevaExcepcion({...nuevaExcepcion, hora_inicio: e.target.value})}
-                        required
-                      >
-                        <option value="">Seleccione</option>
-                        <option value="07:00">07:00 AM</option>
-                        <option value="07:30">07:30 AM</option>
-                        <option value="08:00">08:00 AM</option>
-                        <option value="08:30">08:30 AM</option>
-                        <option value="09:00">09:00 AM</option>
-                        <option value="09:30">09:30 AM</option>
-                        <option value="10:00">10:00 AM</option>
-                        <option value="10:30">10:30 AM</option>
-                        <option value="11:00">11:00 AM</option>
-                        <option value="11:30">11:30 AM</option>
-                        <option value="12:00">12:00 PM</option>
-                        <option value="12:30">12:30 PM</option>
-                        <option value="13:00">01:00 PM</option>
-                        <option value="13:30">01:30 PM</option>
-                        <option value="14:00">02:00 PM</option>
-                        <option value="14:30">02:30 PM</option>
-                        <option value="15:00">03:00 PM</option>
-                        <option value="15:30">03:30 PM</option>
-                        <option value="16:00">04:00 PM</option>
-                        <option value="16:30">04:30 PM</option>
-                        <option value="17:00">05:00 PM</option>
-                        <option value="17:30">05:30 PM</option>
-                        <option value="18:00">06:00 PM</option>
-                        <option value="18:30">06:30 PM</option>
-                        <option value="19:00">07:00 PM</option>
-                      </select>
-                    </div>
+                    <select 
+                      id="hora_inicio"
+                      name="hora_inicio" 
+                      value={nuevaExcepcion.hora_inicio}
+                      onChange={(e) => setNuevaExcepcion({...nuevaExcepcion, hora_inicio: e.target.value})}
+                      required
+                    >
+                      <option value="">Seleccione</option>
+                      <option value="07:00">07:00 AM</option>
+                      <option value="07:30">07:30 AM</option>
+                      <option value="08:00">08:00 AM</option>
+                      <option value="08:30">08:30 AM</option>
+                      <option value="09:00">09:00 AM</option>
+                      <option value="09:30">09:30 AM</option>
+                      <option value="10:00">10:00 AM</option>
+                      <option value="10:30">10:30 AM</option>
+                      <option value="11:00">11:00 AM</option>
+                      <option value="11:30">11:30 AM</option>
+                      <option value="12:00">12:00 PM</option>
+                      <option value="12:30">12:30 PM</option>
+                      <option value="13:00">01:00 PM</option>
+                      <option value="13:30">01:30 PM</option>
+                      <option value="14:00">02:00 PM</option>
+                      <option value="14:30">02:30 PM</option>
+                      <option value="15:00">03:00 PM</option>
+                      <option value="15:30">03:30 PM</option>
+                      <option value="16:00">04:00 PM</option>
+                      <option value="16:30">04:30 PM</option>
+                      <option value="17:00">05:00 PM</option>
+                      <option value="17:30">05:30 PM</option>
+                      <option value="18:00">06:00 PM</option>
+                      <option value="18:30">06:30 PM</option>
+                      <option value="19:00">07:00 PM</option>
+                    </select>
                   </div>
 
                   <div className="form-group">
                     <label htmlFor="hora_termino">Hora de término</label>
-                    <div className="select-wrapper">
-                      <select 
-                        id="hora_termino"
-                        name="hora_termino" 
-                        value={nuevaExcepcion.hora_termino}
-                        onChange={(e) => setNuevaExcepcion({...nuevaExcepcion, hora_termino: e.target.value})}
-                        required
-                      >
-                        <option value="">Seleccione</option>
-                        <option value="08:00">08:00 AM</option>
-                        <option value="08:30">08:30 AM</option>
-                        <option value="09:00">09:00 AM</option>
-                        <option value="09:30">09:30 AM</option>
-                        <option value="10:00">10:00 AM</option>
-                        <option value="10:30">10:30 AM</option>
-                        <option value="11:00">11:00 AM</option>
-                        <option value="11:30">11:30 AM</option>
-                        <option value="12:00">12:00 PM</option>
-                        <option value="12:30">12:30 PM</option>
-                        <option value="13:00">01:00 PM</option>
-                        <option value="13:30">01:30 PM</option>
-                        <option value="14:00">02:00 PM</option>
-                        <option value="14:30">02:30 PM</option>
-                        <option value="15:00">03:00 PM</option>
-                        <option value="15:30">03:30 PM</option>
-                        <option value="16:00">04:00 PM</option>
-                        <option value="16:30">04:30 PM</option>
-                        <option value="17:00">05:00 PM</option>
-                        <option value="17:30">05:30 PM</option>
-                        <option value="18:00">06:00 PM</option>
-                        <option value="18:30">06:30 PM</option>
-                        <option value="19:00">07:00 PM</option>
-                        <option value="19:30">07:30 PM</option>
-                        <option value="20:00">08:00 PM</option>
-                      </select>
-                    </div>
+                    <select 
+                      id="hora_termino"
+                      name="hora_termino" 
+                      value={nuevaExcepcion.hora_termino}
+                      onChange={(e) => setNuevaExcepcion({...nuevaExcepcion, hora_termino: e.target.value})}
+                      required
+                    >
+                      <option value="">Seleccione</option>
+                      <option value="08:00">08:00 AM</option>
+                      <option value="08:30">08:30 AM</option>
+                      <option value="09:00">09:00 AM</option>
+                      <option value="09:30">09:30 AM</option>
+                      <option value="10:00">10:00 AM</option>
+                      <option value="10:30">10:30 AM</option>
+                      <option value="11:00">11:00 AM</option>
+                      <option value="11:30">11:30 AM</option>
+                      <option value="12:00">12:00 PM</option>
+                      <option value="12:30">12:30 PM</option>
+                      <option value="13:00">01:00 PM</option>
+                      <option value="13:30">01:30 PM</option>
+                      <option value="14:00">02:00 PM</option>
+                      <option value="14:30">02:30 PM</option>
+                      <option value="15:00">03:00 PM</option>
+                      <option value="15:30">03:30 PM</option>
+                      <option value="16:00">04:00 PM</option>
+                      <option value="16:30">04:30 PM</option>
+                      <option value="17:00">05:00 PM</option>
+                      <option value="17:30">05:30 PM</option>
+                      <option value="18:00">06:00 PM</option>
+                      <option value="18:30">06:30 PM</option>
+                      <option value="19:00">07:00 PM</option>
+                      <option value="19:30">07:30 PM</option>
+                      <option value="20:00">08:00 PM</option>
+                    </select>
                   </div>
                 </div>
                 
@@ -703,17 +691,17 @@ function ExcepcionesPage() {
                   />
                 </div>
                 
-                <div className="form-actions">
+                <div className="modal-footer">
                   <button 
                     type="button" 
-                    className="btn-cancelar"
+                    className="btn-secondary"
                     onClick={() => setShowAgregarModal(false)}
                   >
                     Cancelar
                   </button>
                   <button 
                     type="submit" 
-                    className="btn-guardar"
+                    className="btn-primary"
                   >
                     Guardar
                   </button>
@@ -726,13 +714,13 @@ function ExcepcionesPage() {
       
       {/* Modal para cancelar día */}
       {showCancelarModal && (
-        <div className="horarios-modal-overlay">
-          <div className="horarios-modal-content narrow-modal">
-            <div className="horarios-modal-header">
+        <div className="modal-overlay">
+          <div className="modal-content">
+            <div className="modal-header">
               <h2>Cancelar día en la atención de un profesional</h2>
-              <button className="horarios-close-btn" onClick={() => setShowCancelarModal(false)}>×</button>
+              <button className="close-btn" onClick={() => setShowCancelarModal(false)}>×</button>
             </div>
-            <div className="horarios-modal-body">
+            <div className="modal-body">
               <p className="form-instructions">
                 Usa este formulario para cancelar un día específico que un profesional no atenderá.
               </p>
@@ -740,22 +728,20 @@ function ExcepcionesPage() {
               <form onSubmit={cancelarDia} className="horario-form">
                 <div className="form-group">
                   <label htmlFor="profesional_id_cancelar">Profesional</label>
-                  <div className="select-wrapper">
-                    <select
-                      id="profesional_id_cancelar"
-                      name="profesional_id"
-                      value={cancelacion.profesional_id}
-                      onChange={(e) => setCancelacion({...cancelacion, profesional_id: e.target.value})}
-                      required
-                    >
-                      <option value="">Selecciona un profesional</option>
-                      {profesionales.map((p) => (
-                        <option key={p.profesional_id} value={p.profesional_id}>
-                          {p.nombre} {p.apellido}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
+                  <select
+                    id="profesional_id_cancelar"
+                    name="profesional_id"
+                    value={cancelacion.profesional_id}
+                    onChange={(e) => setCancelacion({...cancelacion, profesional_id: e.target.value})}
+                    required
+                  >
+                    <option value="">Selecciona un profesional</option>
+                    {profesionales.map((p) => (
+                      <option key={p.profesional_id} value={p.profesional_id}>
+                        {p.nombre} {p.apellido}
+                      </option>
+                    ))}
+                  </select>
                 </div>
                 
                 {/* Selector de mes y año para cancelar */}
@@ -868,17 +854,17 @@ function ExcepcionesPage() {
                   />
                 </div>
                 
-                <div className="form-actions">
+                <div className="modal-footer">
                   <button 
                     type="button" 
-                    className="btn-cancelar"
+                    className="btn-secondary"
                     onClick={() => setShowCancelarModal(false)}
                   >
                     Cancelar
                   </button>
                   <button 
                     type="submit" 
-                    className="btn-guardar"
+                    className="btn-primary"
                   >
                     Cancelar día
                   </button>

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import "./ServiciosPage.css";
+import "../../components/admin/AdminCommon.css"; // Importamos los estilos comunes
 
 const ServiciosPage = () => {
   // Estados para almacenar los datos de servicios
@@ -218,13 +219,13 @@ const ServiciosPage = () => {
 
   // Renderizar tabla de servicios
   const renderServiciosTable = () => {
-    if (loading && servicios.length === 0) return <div className="loading">Cargando servicios...</div>;
+    if (loading && servicios.length === 0) return <div className="loading-container">Cargando servicios...</div>;
     if (error) return <div className="error-message">{error}</div>;
     if (filteredServicios.length === 0) return <div className="no-results">No se encontraron servicios</div>;
 
     return (
-      <div className="table-container">
-        <table className="servicios-table">
+      <div className="admin-table-container">
+        <table className="admin-table">
           <thead>
             <tr>
               <th>Servicio</th>
@@ -241,13 +242,13 @@ const ServiciosPage = () => {
                 <td>${parseFloat(servicio.price_usd).toFixed(2)}</td>
                 <td>
                   {servicio.is_recommended ? (
-                    <span className="badge recomendado">Sí</span>
+                    <span className="status-badge status-active">Sí</span>
                   ) : (
-                    <span className="badge no-recomendado">No</span>
+                    <span className="status-badge status-inactive">No</span>
                   )}
                 </td>
                 <td>
-                  <span className={`status-badge ${servicio.is_active ? 'activo' : 'archivado'}`}>
+                  <span className={`status-badge ${servicio.is_active ? 'status-activo' : 'status-inactivo'}`}>
                     {servicio.is_active ? 'Activo' : 'Archivado'}
                   </span>
                 </td>
@@ -319,8 +320,8 @@ const ServiciosPage = () => {
                 />
               </div>
               
-              <div className="form-group checkbox-container">
-                <div className="compact-checkbox">
+              <div className="form-group">
+                <div className="admin-checkbox">
                   <input
                     type="checkbox"
                     id="is_recommended"
@@ -338,7 +339,7 @@ const ServiciosPage = () => {
                 {isEditing && isActive && (
                   <button
                     type="button"
-                    className="btn-archive"
+                    className="btn-secondary"
                     onClick={handleConfirmarArchivar}
                   >
                     Archivar
@@ -384,7 +385,7 @@ const ServiciosPage = () => {
               <li>Los profesionales que lo tienen asignado dejarán de mostrarse si no tienen otros servicios activos.</li>
               <li>Los agendamientos previamente generados no se eliminarán.</li>
             </ul>
-            <div className="checkbox-container">
+            <div className="admin-checkbox">
               <input 
                 type="checkbox"
                 id="entiendo"
@@ -406,7 +407,7 @@ const ServiciosPage = () => {
               </button>
               <button 
                 type="button" 
-                className="btn-archive"
+                className="btn-primary"
                 onClick={archivarServicio}
                 disabled={loading}
               >
@@ -420,11 +421,11 @@ const ServiciosPage = () => {
   };
 
   return (
-    <div className="servicios-container">
-      <h1>Servicios</h1>
+    <div className="admin-page-container">
+      <h1 className="admin-page-title">Servicios</h1>
       
-      <div className="servicios-filters">
-        <div className="servicios-search">
+      <div className="admin-filters-bar">
+        <div className="admin-search">
           <input
             type="text"
             placeholder="Buscar por nombre de servicio..."
@@ -434,16 +435,16 @@ const ServiciosPage = () => {
           <span className="search-icon">🔍</span>
         </div>
         
-        <div className="sort-filters">
+        <div className="admin-sort-group">
           <button 
-            className={`sort-btn ${sortOrder === "asc" ? "active" : ""}`}
+            className={`admin-sort-btn ${sortOrder === "asc" ? "active" : ""}`}
             onClick={() => toggleSortOrder("asc")}
             title="Ordenar de A a Z"
           >
             A → Z
           </button>
           <button 
-            className={`sort-btn ${sortOrder === "desc" ? "active" : ""}`}
+            className={`admin-sort-btn ${sortOrder === "desc" ? "active" : ""}`}
             onClick={() => toggleSortOrder("desc")}
             title="Ordenar de Z a A"
           >
@@ -451,7 +452,7 @@ const ServiciosPage = () => {
           </button>
         </div>
 
-        <div className="filter-checkbox">
+        <div className="admin-checkbox">
           <input
             type="checkbox"
             id="mostrarArchivados"
@@ -461,8 +462,8 @@ const ServiciosPage = () => {
           <label htmlFor="mostrarArchivados">Mostrar archivados</label>
         </div>
         
-        <button className="btn-agregar" onClick={handleAgregarServicio}>
-          <span className="icon-plus">+</span> Crear servicio
+        <button className="btn-add" onClick={handleAgregarServicio}>
+          Crear servicio
         </button>
       </div>
       

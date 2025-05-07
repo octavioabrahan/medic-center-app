@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import "./AdministracionPage.css";
+import "../../components/admin/AdminCommon.css"; // Importamos los estilos comunes
 import UsuariosAdminTab from "../../components/admin/UsuariosAdminTab";
 import RolesAdminTab from "../../components/admin/RolesAdminTab";
 import PantallasAdminTab from "../../components/admin/PantallasAdminTab";
@@ -24,19 +25,19 @@ function AdministracionPage() {
   };
 
   return (
-    <div className="admin-container">
-      <h1>Administración del Sistema</h1>
+    <div className="admin-page-container">
+      <h1 className="admin-page-title">Administración del Sistema</h1>
       
-      <div className="tabs-container">
-        <div className="tabs-header">
+      <div className="admin-tabs">
+        <div className="admin-tabs-header">
           <button 
-            className={`tab-button ${activeTab === "usuarios" ? "active" : ""}`} 
+            className={`admin-tab ${activeTab === "usuarios" ? "active" : ""}`} 
             onClick={() => setActiveTab("usuarios")}
           >
             Usuarios
           </button>
           <button 
-            className={`tab-button ${activeTab === "roles" ? "active" : ""}`} 
+            className={`admin-tab ${activeTab === "roles" ? "active" : ""}`} 
             onClick={() => setActiveTab("roles")}
           >
             Roles
@@ -44,7 +45,7 @@ function AdministracionPage() {
           {/* Solo mostrar la pestaña de Pantallas para superadmin */}
           {isSuperAdmin && (
             <button 
-              className={`tab-button ${activeTab === "pantallas" ? "active" : ""}`} 
+              className={`admin-tab ${activeTab === "pantallas" ? "active" : ""}`} 
               onClick={() => setActiveTab("pantallas")}
             >
               Pantallas
@@ -53,7 +54,7 @@ function AdministracionPage() {
         </div>
       </div>
       
-      <div className="tab-content">
+      <div className="admin-tab-content">
         {renderTabContent()}
       </div>
     </div>

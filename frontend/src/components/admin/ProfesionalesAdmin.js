@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import './ProfesionalesAdmin.css';
+import './AdminCommon.css'; // Importamos los estilos comunes
 
 function ProfesionalesAdmin() {
   // Estados para datos
@@ -305,7 +306,7 @@ function ProfesionalesAdmin() {
 
     return (
       <div className="modal-overlay">
-        <div className="modal-content-profesionales">
+        <div className="modal-content">
           <div className="modal-header">
             <h2>Crear especialidad</h2>
             <button className="close-btn" onClick={() => setShowAddEspecialidadModal(false)}>×</button>
@@ -322,15 +323,15 @@ function ProfesionalesAdmin() {
                   required
                 />
               </div>
-              <div className="form-actions">
-                <button type="button" className="btn-cancelar" onClick={() => setShowAddEspecialidadModal(false)}>
-                  Cancelar
-                </button>
-                <button type="submit" className="btn-guardar">
-                  Guardar
-                </button>
-              </div>
             </form>
+          </div>
+          <div className="modal-footer">
+            <button type="button" className="btn-secondary" onClick={() => setShowAddEspecialidadModal(false)}>
+              Cancelar
+            </button>
+            <button type="button" className="btn-primary" onClick={handleCreateEspecialidad}>
+              Guardar
+            </button>
           </div>
         </div>
       </div>
@@ -700,36 +701,36 @@ function ProfesionalesAdmin() {
           </select>
         </div>
         
-        <div className="profesionales-sort-container">
+        <div className="admin-sort-group">
           <button 
-            className={`profesionales-sort-btn ${ordenamiento === 'reciente' ? 'active' : ''}`}
+            className={`admin-sort-btn ${ordenamiento === 'reciente' ? 'active' : ''}`}
             onClick={() => setOrdenamiento('reciente')}
           >
             Más reciente
           </button>
           <button 
-            className={`profesionales-sort-btn ${ordenamiento === 'antiguo' ? 'active' : ''}`}
+            className={`admin-sort-btn ${ordenamiento === 'antiguo' ? 'active' : ''}`}
             onClick={() => setOrdenamiento('antiguo')}
           >
             Más antiguo
           </button>
           <button 
-            className={`profesionales-sort-btn ${ordenamiento === 'az' ? 'active' : ''}`}
+            className={`admin-sort-btn ${ordenamiento === 'az' ? 'active' : ''}`}
             onClick={() => setOrdenamiento('az')}
           >
             A → Z
           </button>
           <button 
-            className={`profesionales-sort-btn ${ordenamiento === 'za' ? 'active' : ''}`}
+            className={`admin-sort-btn ${ordenamiento === 'za' ? 'active' : ''}`}
             onClick={() => setOrdenamiento('za')}
           >
             Z → A
           </button>
         </div>
         
-        <div className="actions-container">
+        <div className="admin-actions">
           <button 
-            className="btn-create" 
+            className="btn-secondary" 
             onClick={() => setShowAddEspecialidadModal(true)}
           >
             Crear especialidad
@@ -739,14 +740,13 @@ function ProfesionalesAdmin() {
             className="btn-add" 
             onClick={() => setShowAddProfesionalModal(true)}
           >
-            <span>+</span>
-            Agregar nuevo profesional
+            Agregar profesional
           </button>
         </div>
       </div>
       
       {loading ? (
-        <div className="loading">Cargando profesionales...</div>
+        <div className="loading-container">Cargando profesionales...</div>
       ) : error ? (
         <div className="error-message">{error}</div>
       ) : filteredProfesionales.length === 0 ? (
@@ -767,13 +767,13 @@ function ProfesionalesAdmin() {
               {filteredProfesionales.map(profesional => (
                 <tr 
                   key={profesional.profesional_id}
-                  className={profesional.is_active === false ? 'profesional-inactivo' : ''}
+                  className={profesional.is_active === false ? 'row-inactive' : ''}
                 >
                   <td>{profesional.cedula}</td>
                   <td>{profesional.nombre} {profesional.apellido}</td>
                   <td>{profesional.nombre_especialidad}</td>
                   <td>
-                    <span className={`status-badge ${profesional.is_active ? 'status-activo' : 'status-inactivo'}`}>
+                    <span className={`status-badge ${profesional.is_active ? 'status-active' : 'status-inactive'}`}>
                       {profesional.is_active ? 'Activo' : 'Archivado'}
                     </span>
                   </td>
@@ -803,8 +803,41 @@ function ProfesionalesAdmin() {
         </div>
       )}
 
-      {/* Modales - Mantenemos el código original de los modales */}
-      {renderAddEspecialidadModal()}
+      {/* Modales */}
+      {showAddEspecialidadModal && (
+        <div className="modal-overlay">
+          <div className="modal-content">
+            <div className="modal-header">
+              <h2>Crear especialidad</h2>
+              <button className="close-btn" onClick={() => setShowAddEspecialidadModal(false)}>×</button>
+            </div>
+            <div className="modal-body">
+              <form onSubmit={handleCreateEspecialidad}>
+                <div className="form-group">
+                  <label htmlFor="nombre">Nombre de la especialidad</label>
+                  <input
+                    id="nombre"
+                    type="text"
+                    value={nuevaEspecialidad.nombre}
+                    onChange={(e) => setNuevaEspecialidad({ ...nuevaEspecialidad, nombre: e.target.value })}
+                    required
+                  />
+                </div>
+              </form>
+            </div>
+            <div className="modal-footer">
+              <button type="button" className="btn-secondary" onClick={() => setShowAddEspecialidadModal(false)}>
+                Cancelar
+              </button>
+              <button type="button" className="btn-primary" onClick={handleCreateEspecialidad}>
+                Guardar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+      
+      {/* Mantener el estilo de los otros modales */}
       {renderAddProfesionalModal()}
       {renderEditProfesionalModal()}
       {renderConfirmArchiveModal()}

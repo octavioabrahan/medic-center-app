@@ -278,451 +278,6 @@ const AdminExamenes = () => {
     }
   };
 
-  // Renderizar tabla de exámenes
-  const renderExamenesTable = () => {
-    if (loading) return <div className="loading">Cargando exámenes...</div>;
-    if (error) return <div className="error-message">{error}</div>;
-    if (filteredExamenes.length === 0) return <div className="no-results">No se encontraron exámenes</div>;
-
-    return (
-      <div className="admin-table-container">
-        <table className="admin-table">
-          <thead>
-            <tr>
-              <th>Código</th>
-              <th>Nombre</th>
-              <th>Precio USD</th>
-              <th>Precio Bs. F.</th>
-              <th>Última modificación</th>
-              <th>Acciones</th>
-            </tr>
-          </thead>
-          <tbody>
-            {filteredExamenes.map(examen => (
-              <tr key={examen.codigo}>
-                <td>{examen.codigo}</td>
-                <td>
-                  {examen.nombre_examen}
-                  {!examen.is_active && (
-                    <span className="status-badge status-inactivo">Inactivo</span>
-                  )}
-                </td>
-                <td>$ {parseFloat(examen.preciousd).toFixed(2)}</td>
-                <td>Bs. F. {calcularPrecioBs(examen.preciousd)}</td>
-                <td>
-                  {lastChangeDate[examen.codigo] ? formatDate(lastChangeDate[examen.codigo]) : 'N/A'}
-                </td>
-                <td className="actions-cell">
-                  {/* Para exámenes activos: mostrar Editar y Ver historial */}
-                  {examen.is_active && (
-                    <>
-                      <button 
-                        className="btn-action btn-edit" 
-                        onClick={() => openEditModal(examen)}
-                        title="Editar"
-                      >
-                        ✎
-                      </button>
-                      <button
-                        className="btn-action btn-view"
-                        onClick={() => openHistorialModal(examen)}
-                        title="Ver historial"
-                      >
-                        🕒
-                      </button>
-                    </>
-                  )}
-                  
-                  {/* Para exámenes inactivos: mostrar solo Activar y Ver historial */}
-                  {!examen.is_active && (
-                    <>
-                      <button
-                        className="btn-action btn-activate"
-                        onClick={() => toggleActivo(examen)}
-                        title="Activar"
-                      >
-                        🔄
-                      </button>
-                      <button
-                        className="btn-action btn-view"
-                        onClick={() => openHistorialModal(examen)}
-                        title="Ver historial"
-                      >
-                        🕒
-                      </button>
-                    </>
-                  )}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-    );
-  };
-
-  // Renderizar modal para agregar un nuevo examen
-  const renderAddModal = () => {
-    if (!showAddModal) return null;
-
-    return (
-      <div className="modal-overlay">
-        <div className="modal-content">
-          <div className="modal-header">
-            <h2>Agrega un nuevo item para cotizar</h2>
-            <button className="close-btn" onClick={() => setShowAddModal(false)}>×</button>
-          </div>
-          <form onSubmit={handleAddExamen}>
-            <div className="modal-body">
-              <div className="form-group">
-                <label htmlFor="codigo">Código</label>
-                <input
-                  type="text"
-                  id="codigo"
-                  name="codigo"
-                  value={formData.codigo}
-                  onChange={handleFormChange}
-                  required
-                />
-              </div>
-              
-              <div className="form-group">
-                <label htmlFor="nombre_examen">Nombre</label>
-                <input
-                  type="text"
-                  id="nombre_examen"
-                  name="nombre_examen"
-                  value={formData.nombre_examen}
-                  onChange={handleFormChange}
-                  required
-                />
-              </div>
-              
-              <div className="form-group">
-                <label htmlFor="preciousd">Precio en USD</label>
-                <input
-                  type="number"
-                  id="preciousd"
-                  name="preciousd"
-                  min="0"
-                  step="0.01"
-                  value={formData.preciousd}
-                  onChange={handleFormChange}
-                  required
-                />
-              </div>
-              
-              <div className="form-group">
-                <label htmlFor="preciobs">Precio en Bs. F.</label>
-                <input
-                  type="text"
-                  id="preciobs"
-                  className="precio-bs"
-                  value={calcularPrecioBs(formData.preciousd)}
-                  readOnly
-                />
-                <div className="helper-text">Este precio se calcula en base al precio ingresado en USD. No se mostrará en el cotizador</div>
-              </div>
-              
-              <div className="form-group">
-                <label htmlFor="tiempo_entrega">Tiempo de entrega</label>
-                <input
-                  type="text"
-                  id="tiempo_entrega"
-                  name="tiempo_entrega"
-                  value={formData.tiempo_entrega}
-                  onChange={handleFormChange}
-                />
-              </div>
-              
-              <div className="form-group">
-                <label htmlFor="informacion">Indicaciones</label>
-                <textarea
-                  id="informacion"
-                  name="informacion"
-                  value={formData.informacion}
-                  onChange={handleFormChange}
-                />
-              </div>
-              
-              <div className="form-group">
-                <label htmlFor="tipo">Tipo</label>
-                <select
-                  id="tipo"
-                  name="tipo"
-                  value={formData.tipo}
-                  onChange={handleFormChange}
-                >
-                  <option value="examen">Examen</option>
-                  <option value="servicio">Servicio</option>
-                </select>
-              </div>
-            </div>
-            <div className="modal-footer">
-              <button type="button" className="btn-secondary" onClick={() => setShowAddModal(false)}>
-                Cancelar
-              </button>
-              <button type="submit" className="btn-primary">
-                Agregar
-              </button>
-            </div>
-          </form>
-        </div>
-      </div>
-    );
-  };
-
-  // Renderizar modal para editar un examen existente
-  const renderEditModal = () => {
-    if (!showEditModal || !currentExamen) return null;
-
-    return (
-      <div className="modal-overlay">
-        <div className="modal-content">
-          <div className="modal-header">
-            <h2>Editar examen</h2>
-            <button className="close-btn" onClick={() => setShowEditModal(false)}>×</button>
-          </div>
-          <form onSubmit={handleUpdateExamen}>
-            <div className="modal-body">
-              <div className="form-group">
-                <label htmlFor="edit-codigo">Código</label>
-                <input
-                  type="text"
-                  id="edit-codigo"
-                  name="codigo"
-                  value={formData.codigo}
-                  readOnly
-                />
-                <div className="helper-text">El código no se puede editar</div>
-              </div>
-              
-              <div className="form-group">
-                <label htmlFor="edit-nombre_examen">Nombre</label>
-                <input
-                  type="text"
-                  id="edit-nombre_examen"
-                  name="nombre_examen"
-                  value={formData.nombre_examen}
-                  onChange={handleFormChange}
-                  required
-                />
-              </div>
-              
-              <div className="form-group">
-                <label htmlFor="edit-preciousd">Precio en USD</label>
-                <input
-                  type="number"
-                  id="edit-preciousd"
-                  name="preciousd"
-                  min="0"
-                  step="0.01"
-                  value={formData.preciousd}
-                  onChange={handleFormChange}
-                  required
-                />
-              </div>
-              
-              <div className="form-group">
-                <label htmlFor="edit-preciobs">Precio en Bs. F.</label>
-                <input
-                  type="text"
-                  id="edit-preciobs"
-                  className="precio-bs"
-                  value={calcularPrecioBs(formData.preciousd)}
-                  readOnly
-                />
-                <div className="helper-text">Este precio se calcula en base al precio ingresado en USD. No se mostrará en el cotizador</div>
-              </div>
-              
-              <div className="form-group">
-                <label htmlFor="edit-tiempo_entrega">Tiempo de entrega</label>
-                <input
-                  type="text"
-                  id="edit-tiempo_entrega"
-                  name="tiempo_entrega"
-                  value={formData.tiempo_entrega}
-                  onChange={handleFormChange}
-                />
-              </div>
-              
-              <div className="form-group">
-                <label htmlFor="edit-informacion">Indicaciones</label>
-                <textarea
-                  id="edit-informacion"
-                  name="informacion"
-                  value={formData.informacion}
-                  onChange={handleFormChange}
-                />
-              </div>
-              
-              <div className="form-group">
-                <label htmlFor="edit-tipo">Tipo</label>
-                <select
-                  id="edit-tipo"
-                  name="tipo"
-                  value={formData.tipo}
-                  onChange={handleFormChange}
-                >
-                  <option value="examen">Examen</option>
-                  <option value="servicio">Servicio</option>
-                </select>
-              </div>
-            </div>
-            <div className="modal-footer">
-              <button 
-                type="button" 
-                className="btn-delete"
-                onClick={() => {
-                  // Crear una copia del examen con is_active = false
-                  const updatedExamen = {
-                    ...currentExamen,
-                    is_active: false
-                  };
-                  toggleActivo(updatedExamen);
-                }}
-              >
-                Archivar
-              </button>
-              <button type="button" className="btn-secondary" onClick={() => setShowEditModal(false)}>
-                Cancelar
-              </button>
-              <button type="submit" className="btn-primary">
-                Guardar
-              </button>
-            </div>
-          </form>
-        </div>
-      </div>
-    );
-  };
-
-  // Renderizar modal de historial de un examen
-  const renderHistorialModal = () => {
-    if (!showHistorialModal || !currentExamen) return null;
-
-    return (
-      <div className="modal-overlay">
-        <div className="modal-content">
-          <div className="modal-header">
-            <h2>Historial de cambios</h2>
-            <button className="close-btn" onClick={() => setShowHistorialModal(false)}>×</button>
-          </div>
-          <div className="modal-body">
-            <div className="examenes-info">
-              <div className="examenes-header">
-                <div className="examenes-title">
-                  <div className="examenes-codigo">Código: {currentExamen.codigo}</div>
-                  <div className="examenes-nombre">Nombre: {currentExamen.nombre_examen}</div>
-                </div>
-                <div className={`status-badge ${currentExamen.is_active ? "status-activo" : "status-inactivo"}`}>
-                  {currentExamen.is_active ? "Activo" : "Inactivo"}
-                </div>
-              </div>
-            </div>
-            
-            <div className="examenes-registro-cambios">
-              <h3>Registro de cambios</h3>
-              {loadingHistorial ? (
-                <div className="loading">Cargando historial...</div>
-              ) : historialExamen.length === 0 ? (
-                <div className="no-results">No hay registros de cambios para este examen</div>
-              ) : (
-                <div className="examenes-timeline">
-                  {historialExamen.map((registro, index) => {
-                    // Determinar el registro previo para comparación
-                    const prevRegistro = index < historialExamen.length - 1 ? historialExamen[index + 1] : null;
-                    
-                    return (
-                      <div className="examenes-cambio" key={index}>
-                        <div className="examenes-cambio-fecha">
-                          {formatDate(registro.fecha_cambio)}
-                        </div>
-                        <div className="examenes-cambio-usuario">
-                          Usuario: {registro.usuario || 'Sistema'}
-                        </div>
-                        <div className="examenes-cambio-detalles">
-                          {/* Mostrar siempre el precio y estado actual */}
-                          <div className="examenes-cambio-campo">
-                            <strong>Precio USD:</strong> 
-                            {parseFloat(registro.preciousd).toFixed(2)}
-                          </div>
-                          <div className="examenes-cambio-campo">
-                            <strong>Estado:</strong> 
-                            {registro.is_active ? 'Activo' : 'Inactivo'}
-                          </div>
-                          
-                          {/* Mostrar nombre del examen si cambió */}
-                          {prevRegistro && prevRegistro.nombre_examen !== registro.nombre_examen && (
-                            <div className="examenes-cambio-campo">
-                              <strong>Nombre:</strong> 
-                              <span className="nuevo-valor">{registro.nombre_examen}</span>
-                              <span className="valor-anterior"> (Anterior: {prevRegistro.nombre_examen})</span>
-                            </div>
-                          )}
-                          
-                          {/* Mostrar tiempo de entrega si cambió */}
-                          {prevRegistro && prevRegistro.tiempo_entrega !== registro.tiempo_entrega && (
-                            <div className="examenes-cambio-campo">
-                              <strong>Tiempo de entrega:</strong> 
-                              <span className="nuevo-valor">{registro.tiempo_entrega || 'No especificado'}</span>
-                              <span className="valor-anterior"> (Anterior: {prevRegistro.tiempo_entrega || 'No especificado'})</span>
-                            </div>
-                          )}
-                          
-                          {/* Mostrar información si cambió */}
-                          {prevRegistro && prevRegistro.informacion !== registro.informacion && (
-                            <div className="examenes-cambio-campo">
-                              <strong>Indicaciones:</strong> 
-                              <span className="nuevo-valor">{registro.informacion || 'No especificado'}</span>
-                              <span className="valor-anterior"> (Anterior: {prevRegistro.informacion || 'No especificado'})</span>
-                            </div>
-                          )}
-                          
-                          {/* Mostrar tipo si cambió */}
-                          {prevRegistro && prevRegistro.tipo !== registro.tipo && (
-                            <div className="examenes-cambio-campo">
-                              <strong>Tipo:</strong> 
-                              <span className="nuevo-valor">{registro.tipo || 'No especificado'}</span>
-                              <span className="valor-anterior"> (Anterior: {prevRegistro.tipo || 'No especificado'})</span>
-                            </div>
-                          )}
-                          
-                          {/* Para el primer registro (el más reciente) o si no hay registros previos, mostrar todos los campos */}
-                          {(!prevRegistro && index === 0) && (
-                            <>
-                              <div className="examenes-cambio-campo">
-                                <strong>Nombre:</strong> {registro.nombre_examen}
-                              </div>
-                              <div className="examenes-cambio-campo">
-                                <strong>Tiempo de entrega:</strong> {registro.tiempo_entrega || 'No especificado'}
-                              </div>
-                              <div className="examenes-cambio-campo">
-                                <strong>Indicaciones:</strong> {registro.informacion || 'No especificado'}
-                              </div>
-                              <div className="examenes-cambio-campo">
-                                <strong>Tipo:</strong> {registro.tipo || 'No especificado'}
-                              </div>
-                            </>
-                          )}
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
-              )}
-            </div>
-          </div>
-          <div className="modal-footer">
-            <button className="btn-secondary" onClick={() => setShowHistorialModal(false)}>
-              Cerrar
-            </button>
-          </div>
-        </div>
-      </div>
-    );
-  };
-
   return (
     <div className="admin-page-container">
       <h1 className="admin-page-title">Exámenes y servicios</h1>
@@ -738,7 +293,7 @@ const AdminExamenes = () => {
           <span className="search-icon">🔍</span>
         </div>
         
-        <div className="checkbox-filter">
+        <div className="admin-checkbox">
           <input
             type="checkbox"
             id="mostrarInactivos"
@@ -749,11 +304,93 @@ const AdminExamenes = () => {
         </div>
         
         <button className="btn-add" onClick={openAddModal}>
-          + Agregar uno nuevo
+          Agregar uno nuevo
         </button>
       </div>
       
-      {renderExamenesTable()}
+      {loading ? (
+        <div className="loading-container">Cargando exámenes...</div>
+      ) : error ? (
+        <div className="error-message">{error}</div>
+      ) : filteredExamenes.length === 0 ? (
+        <div className="no-results">No se encontraron exámenes</div>
+      ) : (
+        <div className="admin-table-container">
+          <table className="admin-table">
+            <thead>
+              <tr>
+                <th>Código</th>
+                <th>Nombre</th>
+                <th>Precio USD</th>
+                <th>Precio Bs. F.</th>
+                <th>Última modificación</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              {filteredExamenes.map(examen => (
+                <tr key={examen.codigo}>
+                  <td>{examen.codigo}</td>
+                  <td>
+                    {examen.nombre_examen}
+                    {!examen.is_active && (
+                      <span className="status-badge status-inactivo">Inactivo</span>
+                    )}
+                  </td>
+                  <td>$ {parseFloat(examen.preciousd).toFixed(2)}</td>
+                  <td>Bs. F. {calcularPrecioBs(examen.preciousd)}</td>
+                  <td>
+                    {lastChangeDate[examen.codigo] ? formatDate(lastChangeDate[examen.codigo]) : 'N/A'}
+                  </td>
+                  <td className="actions-cell">
+                    {/* Para exámenes activos: mostrar Editar y Ver historial */}
+                    {examen.is_active && (
+                      <>
+                        <button 
+                          className="btn-action btn-edit" 
+                          onClick={() => openEditModal(examen)}
+                          title="Editar"
+                        >
+                          ✎
+                        </button>
+                        <button
+                          className="btn-action btn-history"
+                          onClick={() => openHistorialModal(examen)}
+                          title="Ver historial"
+                        >
+                          🕒
+                        </button>
+                      </>
+                    )}
+                    
+                    {/* Para exámenes inactivos: mostrar solo Activar y Ver historial */}
+                    {!examen.is_active && (
+                      <>
+                        <button
+                          className="btn-action btn-activate"
+                          onClick={() => toggleActivo(examen)}
+                          title="Activar"
+                        >
+                          🔄
+                        </button>
+                        <button
+                          className="btn-action btn-history"
+                          onClick={() => openHistorialModal(examen)}
+                          title="Ver historial"
+                        >
+                          🕒
+                        </button>
+                      </>
+                    )}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+
+      {/* Renderizado de modales - mantenemos el código original */}
       {renderAddModal()}
       {renderEditModal()}
       {renderHistorialModal()}

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './CotizacionesAdmin.css';
+import '../admin/AdminCommon.css'; // Importamos los estilos comunes
 
 function CotizacionesAdmin() {
   const [cotizaciones, setCotizaciones] = useState([]);
@@ -541,26 +542,26 @@ function CotizacionesAdmin() {
   };
 
   return (
-    <div className="cotizaciones-admin">
-      <h1>Administración de Cotizaciones</h1>
+    <div className="admin-page-container">
+      <h1 className="admin-page-title">Administración de Cotizaciones</h1>
       
-      <div className="filters-bar">
-        <div className="search-container">
+      <div className="admin-filters-bar">
+        <div className="admin-search">
           <input
             type="text"
             placeholder="Buscar por folio, cliente o cédula..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
+          <span className="search-icon">🔍</span>
         </div>
         
-        <div className="filter-container">
-          <label>Estado:</label>
+        <div className="admin-filter-container">
           <select 
             value={filterStatus}
             onChange={(e) => setFilterStatus(e.target.value)}
           >
-            <option value="todos">Todos</option>
+            <option value="todos">Todos los estados</option>
             <option value="pendiente">Pendiente</option>
             <option value="confirmado">Confirmado</option>
             <option value="cancelado">Cancelado</option>
@@ -568,16 +569,327 @@ function CotizacionesAdmin() {
           </select>
         </div>
         
-        <button className="refresh-btn" onClick={fetchCotizaciones}>
+        <button className="btn-blue" onClick={fetchCotizaciones}>
           Actualizar
         </button>
       </div>
       
-      {renderCotizacionesTable()}
+      {loading ? (
+        <div className="loading-container">Cargando cotizaciones...</div>
+      ) : error ? (
+        <div className="error-message">{error}</div>
+      ) : filteredCotizaciones.length === 0 ? (
+        <div className="no-results">No se encontraron cotizaciones</div>
+      ) : (
+        <div className="admin-table-container">
+          <table className="admin-table">
+            <thead>
+              <tr>
+                <th>Folio</th>
+                <th>Cliente</th>
+                <th>Cédula</th>
+                <th>Fecha</th>
+                <th>Exámenes</th>
+                <th>Total USD</th>
+                <th>Total VES</th>
+                <th>Estado</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              {filteredCotizaciones.map(cot => {
+                // Calcular el total en VES a partir del total en USD
+                const totalUsd = typeof cot.total_usd === 'number' ? cot.total_usd : 
+                               parseFloat(cot.total_usd) || 0;
+                const totalVes = totalUsd * tasaCambio;
+                
+                return (
+                  <tr key={cot.id_unico}>
+                    <td>{cot.folio}</td>
+                    <td>{cot.nombre} {cot.apellido}</td>
+                    <td>{cot.cedula_cliente}</td>
+                    <td>{formatDate(cot.fecha_creacion)}</td>
+                    <td>{cot.cantidad_examenes}</td>
+                    <td>${formatNumber(totalUsd)}</td>
+                    <td>Bs. {formatNumber(totalVes)}</td>
+                    <td>
+                      <span className={`status-badge status-${cot.estado}`}>
+                        {cot.estado.toUpperCase()}
+                      </span>
+                    </td>
+                    <td className="actions-cell">
+                      <button 
+                        className="btn-action btn-view" 
+                        onClick={() => fetchCotizacionDetails(cot.id_unico)}
+                        title="Ver detalles"
+                      >
+                        👁️
+                      </button>
+                      <button 
+                        className="btn-action btn-follow" 
+                        onClick={() => openSeguimientoModal(cot)}
+                        title="Seguimiento"
+                      >
+                        📞
+                      </button>
+                      <div className="status-dropdown">
+                        <button className="btn-action btn-status" title="Cambiar estado">📋</button>
+                        <div className="dropdown-content">
+                          <button onClick={() => updateCotizacionStatus(cot.id_unico, 'pendiente')}>Pendiente</button>
+                          <button onClick={() => updateCotizacionStatus(cot.id_unico, 'confirmado')}>Confirmado</button>
+                          <button onClick={() => updateCotizacionStatus(cot.id_unico, 'cancelado')}>Cancelado</button>
+                          <button onClick={() => updateCotizacionStatus(cot.id_unico, 'completado')}>Completado</button>
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+      )}
+
       {renderDetailModal()}
       {renderSeguimientoModal()}
     </div>
   );
+
+  // Modal de detalles de cotización
+  function renderDetailModal() {
+    if (!showDetailModal || !currentCotizacion) return null;
+
+    // Calcular el total de manera segura
+    const totalUsd = typeof currentCotizacion.total_usd === 'number' ? currentCotizacion.total_usd : 
+                   parseFloat(currentCotizacion.total_usd) || 0;
+    const totalVes = totalUsd * tasaCambio;
+
+    return (
+      <div className="modal-overlay">
+        <div className="modal-content">
+          <div className="modal-header">
+            <h2>Detalles de Cotización</h2>
+            <button className="close-btn" onClick={() => setShowDetailModal(false)}>×</button>
+          </div>
+          <div className="modal-body">
+            <div className="detail-section">
+              <h3>Información General</h3>
+              <div className="detail-grid">
+                <div>
+                  <strong>Folio:</strong> {currentCotizacion.folio}
+                </div>
+                <div>
+                  <strong>Fecha:</strong> {formatDate(currentCotizacion.fecha_creacion)}
+                </div>
+                <div>
+                  <strong>Estado:</strong> 
+                  <span className={`status-badge status-${currentCotizacion.estado}`}>
+                    {currentCotizacion.estado.toUpperCase()}
+                  </span>
+                </div>
+                <div>
+                  <strong>Total USD:</strong> ${formatNumber(totalUsd)}
+                </div>
+                <div>
+                  <strong>Total VES:</strong> Bs. {formatNumber(totalVes)}
+                </div>
+              </div>
+            </div>
+
+            <div className="detail-section">
+              <h3>Información del Cliente</h3>
+              <div className="detail-grid">
+                <div>
+                  <strong>Nombre:</strong> {currentCotizacion.nombre} {currentCotizacion.apellido}
+                </div>
+                <div>
+                  <strong>Cédula:</strong> {currentCotizacion.cedula_cliente}
+                </div>
+                <div>
+                  <strong>Email:</strong> {currentCotizacion.email || 'No disponible'}
+                </div>
+                <div>
+                  <strong>Teléfono:</strong> {currentCotizacion.telefono || 'No disponible'}
+                </div>
+              </div>
+            </div>
+
+            <div className="detail-section">
+              <h3>Exámenes</h3>
+              {Array.isArray(currentCotizacion.examenes) && currentCotizacion.examenes.length > 0 ? (
+                <table className="detail-table">
+                  <thead>
+                    <tr>
+                      <th>Código</th>
+                      <th>Nombre</th>
+                      <th>Tiempo de Entrega</th>
+                      <th>Precio USD</th>
+                      <th>Precio VES</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {currentCotizacion.examenes.map((exam, index) => {
+                      const precioUsd = typeof exam.precio_unitario === 'number' ? exam.precio_unitario : 
+                                      parseFloat(exam.precio_unitario) || 0;
+                      const precioVes = precioUsd * tasaCambio;
+                      
+                      return (
+                        <tr key={index}>
+                          <td>{exam.examen_codigo}</td>
+                          <td>{exam.nombre_examen}</td>
+                          <td>{exam.tiempo_entrega || 'Estándar'}</td>
+                          <td>${formatNumber(precioUsd)}</td>
+                          <td>Bs. {formatNumber(precioVes)}</td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              ) : (
+                <p>No hay exámenes disponibles</p>
+              )}
+            </div>
+
+            <div className="modal-footer">
+              <button className="btn-secondary" onClick={() => setShowDetailModal(false)}>
+                Cerrar
+              </button>
+              <button className="btn-primary" onClick={() => openSeguimientoModal(currentCotizacion)}>
+                Gestionar Seguimiento
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Modal de seguimiento
+  function renderSeguimientoModal() {
+    if (!showSeguimientoModal || !currentCotizacion) return null;
+
+    return (
+      <div className="modal-overlay">
+        <div className="modal-content seguimiento-modal">
+          <div className="modal-header">
+            <h2>Seguimiento de Cotización</h2>
+            <button className="close-btn" onClick={() => setShowSeguimientoModal(false)}>×</button>
+          </div>
+          <div className="modal-body">
+            <div className="cotizacion-info">
+              <p><strong>Folio:</strong> {currentCotizacion.folio}</p>
+              <p><strong>Cliente:</strong> {currentCotizacion.nombre} {currentCotizacion.apellido}</p>
+              <p><strong>Estado:</strong> 
+                <span className={`status-badge ${statusClasses[currentCotizacion.estado] || ''}`}>
+                  {currentCotizacion.estado}
+                </span>
+              </p>
+            </div>
+
+            <div className="nuevo-seguimiento">
+              <h3>Nuevo Seguimiento</h3>
+              <div className="form-row">
+                <div className="form-group">
+                  <label>Tipo de Contacto</label>
+                  <select 
+                    value={nuevoSeguimiento.tipo_contacto}
+                    onChange={(e) => setNuevoSeguimiento({...nuevoSeguimiento, tipo_contacto: e.target.value})}
+                  >
+                    <option value="llamada">Llamada</option>
+                    <option value="email">Email</option>
+                    <option value="whatsapp">WhatsApp</option>
+                    <option value="presencial">Presencial</option>
+                  </select>
+                </div>
+                <div className="form-group">
+                  <label>Resultado</label>
+                  <select 
+                    value={nuevoSeguimiento.resultado}
+                    onChange={(e) => setNuevoSeguimiento({...nuevoSeguimiento, resultado: e.target.value})}
+                  >
+                    <option value="exitoso">Exitoso</option>
+                    <option value="sin_respuesta">Sin Respuesta</option>
+                    <option value="rechazado">Rechazado</option>
+                    <option value="pendiente_decision">Pendiente de Decisión</option>
+                  </select>
+                </div>
+              </div>
+              <div className="form-group">
+                <label>Comentarios</label>
+                <textarea 
+                  value={nuevoSeguimiento.comentarios}
+                  onChange={(e) => setNuevoSeguimiento({...nuevoSeguimiento, comentarios: e.target.value})}
+                  placeholder="Detalles de la comunicación..."
+                  rows={3}
+                ></textarea>
+              </div>
+              <div className="form-row">
+                <div className="form-group">
+                  <label>Próxima Acción</label>
+                  <input 
+                    type="text"
+                    value={nuevoSeguimiento.proxima_accion}
+                    onChange={(e) => setNuevoSeguimiento({...nuevoSeguimiento, proxima_accion: e.target.value})}
+                    placeholder="Ej: Volver a llamar, enviar recordatorio..."
+                  />
+                </div>
+                <div className="form-group">
+                  <label>Fecha Próxima Acción</label>
+                  <input 
+                    type="date"
+                    value={nuevoSeguimiento.fecha_proxima_accion}
+                    onChange={(e) => setNuevoSeguimiento({...nuevoSeguimiento, fecha_proxima_accion: e.target.value})}
+                  />
+                </div>
+              </div>
+              <button className="btn-primary" onClick={addSeguimiento}>
+                Guardar Seguimiento
+              </button>
+            </div>
+
+            <div className="historial-seguimiento">
+              <h3>Historial de Seguimiento</h3>
+              {!Array.isArray(seguimientos) || seguimientos.length === 0 ? (
+                <p className="no-results">No hay registros de seguimiento previos</p>
+              ) : (
+                <div className="timeline">
+                  {seguimientos.map(seg => (
+                    <div className="timeline-item" key={seg.id}>
+                      <div className="timeline-date">
+                        {formatDate(seg.fecha_seguimiento)}
+                      </div>
+                      <div className="timeline-content">
+                        <div className="timeline-header">
+                          <span className={`tipo-badge ${seg.tipo_contacto}`}>
+                            {seg.tipo_contacto}
+                          </span>
+                          <span className={`resultado-badge ${seg.resultado}`}>
+                            {seg.resultado}
+                          </span>
+                        </div>
+                        <p>{seg.comentarios}</p>
+                        {seg.proxima_accion && (
+                          <div className="proxima-accion">
+                            <strong>Próxima acción:</strong> {seg.proxima_accion}
+                            {seg.fecha_proxima_accion && (
+                              <span> ({new Date(seg.fecha_proxima_accion).toLocaleDateString()})</span>
+                            )}
+                          </div>
+                        )}
+                        <div className="timeline-footer">
+                          <span>Usuario: {seg.usuario}</span>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 }
 
 export default CotizacionesAdmin;

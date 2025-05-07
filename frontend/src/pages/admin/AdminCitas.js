@@ -3,6 +3,7 @@ import axios from "axios";
 import { format } from 'date-fns';
 import Calendar from '../../components/common/Calendar';
 import "./AdminCitas.css";
+import "../../components/admin/AdminCommon.css"; // Importamos los estilos comunes
 
 const AdminCitas = () => {
   // Estados para almacenar los datos
@@ -237,13 +238,13 @@ const AdminCitas = () => {
 
   // Renderizar tabla de agendamientos
   const renderAgendamientosTable = () => {
-    if (loading) return <div className="loading">Cargando citas...</div>;
+    if (loading) return <div className="loading-container">Cargando citas...</div>;
     if (error) return <div className="error-message">{error}</div>;
     if (filteredAgendamientos.length === 0) return <div className="no-results">No se encontraron citas</div>;
 
     return (
-      <div className="table-container">
-        <table className="citas-table">
+      <div className="admin-table-container">
+        <table className="admin-table">
           <thead>
             <tr>
               <th></th> {/* Columna para icono de maletín */}
@@ -284,7 +285,7 @@ const AdminCitas = () => {
                   <td>{agendamiento.tipo_atencion}</td>
                   <td>{agendamiento.profesional_nombre} {agendamiento.profesional_apellido}</td>
                   <td>
-                    <span className={`status-badge ${agendamiento.status ? agendamiento.status.toLowerCase() : ''}`}>
+                    <span className={`status-badge status-${agendamiento.status ? agendamiento.status.toLowerCase() : 'pendiente'}`}>
                       {agendamiento.status || 'Sin estado'}
                     </span>
                   </td>
@@ -300,14 +301,14 @@ const AdminCitas = () => {
                       <>
                         <button
                           onClick={() => actualizarEstado(agendamiento.agendamiento_id, "confirmada")}
-                          className="btn-confirm"
+                          className="btn-action btn-confirm"
                           title="Confirmar"
                         >
                           ✓
                         </button>
                         <button
                           onClick={() => actualizarEstado(agendamiento.agendamiento_id, "cancelada")}
-                          className="btn-cancel"
+                          className="btn-action btn-cancel"
                           title="Cancelar"
                         >
                           ✕
@@ -330,7 +331,7 @@ const AdminCitas = () => {
 
     return (
       <div className="modal-overlay">
-        <div className="modal-content detail-modal">
+        <div className="modal-content">
           <div className="modal-header">
             <h2>Detalles del Agendamiento</h2>
             <button className="close-btn" onClick={() => setShowDetailModal(false)}>×</button>
@@ -350,7 +351,7 @@ const AdminCitas = () => {
                 </div>
                 <div>
                   <strong>Estado:</strong> 
-                  <span className={`status-badge ${currentAgendamiento.status ? currentAgendamiento.status.toLowerCase() : ''}`}>
+                  <span className={`status-badge status-${currentAgendamiento.status ? currentAgendamiento.status.toLowerCase() : 'pendiente'}`}>
                     {currentAgendamiento.status || 'Sin estado'}
                   </span>
                 </div>
@@ -396,12 +397,11 @@ const AdminCitas = () => {
               <h3>Servicios</h3>
               <p>{currentAgendamiento.observaciones || 'No se especificaron servicios'}</p>
             </div>
-            
-            <div className="action-buttons">
-              <button className="btn-secondary" onClick={() => setShowDetailModal(false)}>
-                Cerrar
-              </button>
-            </div>
+          </div>
+          <div className="modal-footer">
+            <button className="btn-secondary" onClick={() => setShowDetailModal(false)}>
+              Cerrar
+            </button>
           </div>
         </div>
       </div>
@@ -409,11 +409,11 @@ const AdminCitas = () => {
   };
 
   return (
-    <div className="admin-citas-container">
-      <h1>Citas agendadas</h1>
+    <div className="admin-page-container">
+      <h1 className="admin-page-title">Citas agendadas</h1>
       
-      <div className="admin-citas-filters">
-        <div className="admin-citas-search">
+      <div className="admin-filters-bar">
+        <div className="admin-search">
           <input
             type="text"
             placeholder="Buscar por nombre o cédula..."
@@ -423,7 +423,7 @@ const AdminCitas = () => {
           <span className="search-icon">🔍</span>
         </div>
         
-        <div className="filter-container">
+        <div className="admin-filter-container">
           <select 
             value={filterStatus}
             onChange={(e) => setFilterStatus(e.target.value)}
@@ -435,7 +435,7 @@ const AdminCitas = () => {
           </select>
         </div>
         
-        <div className="filter-container">
+        <div className="admin-filter-container">
           <select 
             value={filtroProfesional}
             onChange={(e) => setFiltroProfesional(e.target.value)}
@@ -449,15 +449,14 @@ const AdminCitas = () => {
           </select>
         </div>
         
-        <div className="filter-container" ref={datePickerRef}>
-          <input 
-            type="text" 
-            className="date-select"
-            placeholder="dd/mm/yyyy - dd/mm/yyyy"
-            value={formatDateRange()}
-            readOnly
+        <div className="admin-date-picker" ref={datePickerRef}>
+          <div 
+            className="date-input-wrapper"
             onClick={handleDateInputClick}
-          />
+          >
+            <span className="calendar-icon">📅</span>
+            <span className="date-input">{formatDateRange()}</span>
+          </div>
           
           {showDatePicker && (
             <div 
@@ -473,7 +472,7 @@ const AdminCitas = () => {
 
               <div className="calendar-actions">
                 <button 
-                  className="btn-apply"
+                  className="btn-primary"
                   onClick={(e) => {
                     e.preventDefault();
                     e.stopPropagation();
@@ -484,7 +483,7 @@ const AdminCitas = () => {
                   Aplicar
                 </button>
                 <button 
-                  className="btn-cancel"
+                  className="btn-secondary"
                   onClick={(e) => {
                     e.preventDefault();
                     e.stopPropagation();

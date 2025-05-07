@@ -2,204 +2,271 @@
 
 /* ------------- VARIABLES GLOBALES ------------- */
 :root {
-  /* Colores de la marca - actualizados según la imagen */
+  /* Colores de la marca - actualizados según las imágenes */
   --primary-color: #20377A;
   --primary-hover: #15285a;
   --secondary-color: #2C2C2C;
-  --bg-color: #FBFBFC;
-  --border-color: #e5e7eb;
-  --text-color: #333;
-  --text-muted: #6b7280;
-  --table-header-bg: #2C2C2C;
+  
+  /* Colores de fondo */
+  --bg-color: #FFFFFF;
+  --bg-secondary: #f8f9fa;
+  --bg-light: #FBFBFC;
+  
+  /* Colores de bordes y líneas */
+  --border-color: #dee2e6;
+  --divider-color: #20377A;
+  
+  /* Colores de texto */
+  --text-color: #333333;
+  --text-muted: #6c757d;
+  
+  /* Colores específicos para componentes */
+  --table-header-bg: #20377A;
   --table-header-text: #ffffff;
-  --btn-primary-bg: #2C2C2C;
+  
+  /* Colores de botones */
+  --btn-primary-bg: #4CAF50; /* Verde para botones primarios según las imágenes */
+  --btn-primary-hover: #3d8b40;
   --btn-primary-text: #ffffff;
-  --btn-secondary-bg: transparent;
-  --btn-secondary-border: #767676;
-  --btn-secondary-text: #2C2C2C;
-  --btn-create-bg: #767676;
-  --btn-create-text: #ffffff;
+  
+  --btn-secondary-bg: #FFFFFF;
+  --btn-secondary-border: #ced4da;
+  --btn-secondary-text: #333333;
+  
+  --btn-blue-bg: #3071b8; /* Azul para algunos botones específicos */
+  --btn-blue-hover: #255a94;
+  --btn-blue-text: #ffffff;
   
   /* Estados */
-  --success-bg: #e6f7e6;
-  --success-color: #28a745;
-  --warning-bg: #fff4de;
-  --warning-color: #ff8a00;
-  --danger-bg: #ffe6e6;
-  --danger-color: #dc3545;
-  --info-bg: #e6f3ff;
-  --info-color: #0d6efd;
+  --success-bg: #e8f5e9;
+  --success-color: #4CAF50;
+  --warning-bg: #fff8e1;
+  --warning-color: #FFC107;
+  --danger-bg: #ffebee;
+  --danger-color: #F44336;
+  --info-bg: #e3f2fd;
+  --info-color: #2196F3;
   
   /* Espaciados */
+  --spacing-xs: 4px;
   --spacing-sm: 8px;
   --spacing-md: 16px;
-  --spacing-lg: 20px;
-  --spacing-xl: 24px;
+  --spacing-lg: 24px;
+  --spacing-xl: 32px;
   
   /* Radios y sombras */
   --border-radius: 4px;
   --box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  --box-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
 }
 
 /* ------------- ESTILOS GENERALES ------------- */
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+  color: var(--text-color);
+  background-color: var(--bg-light);
+}
 
 /* Contenedor principal de páginas administrativas */
 .admin-page-container {
-  max-width: 1200px;
+  max-width: 100%;
   margin: 0 auto;
   padding: 20px;
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
 }
 
-/* Títulos de páginas con línea inferior */
+/* ------------- TÍTULOS DE PÁGINA ESTANDARIZADOS ------------- */
 .admin-page-title {
-  color: var(--secondary-color);
-  margin-bottom: var(--spacing-xl);
-  font-size: 20px;
-  font-weight: 600;
-  padding-bottom: var(--spacing-sm);
-  border-bottom: 1px solid var(--border-color);
   position: relative;
+  color: var(--secondary-color);
+  font-size: 24px;
+  font-weight: 500;
+  margin-bottom: var(--spacing-lg);
+  margin-top: 0;
+  padding-bottom: var(--spacing-md);
+  border-bottom: 1px solid var(--border-color);
 }
 
-/* Línea de color debajo del título */
 .admin-page-title::after {
   content: '';
   position: absolute;
-  left: 0;
   bottom: -1px;
+  left: 0;
+  height: 3px;
   width: 100px;
-  height: 2px;
   background-color: var(--primary-color);
 }
 
-/* ------------- BARRA DE FILTROS ------------- */
+/* ------------- PESTAÑAS DE NAVEGACIÓN ------------- */
+.admin-tabs {
+  display: flex;
+  border-bottom: 1px solid var(--border-color);
+  margin-bottom: var(--spacing-lg);
+}
+
+.admin-tab {
+  padding: var(--spacing-md);
+  cursor: pointer;
+  color: var(--text-muted);
+  border-bottom: 2px solid transparent;
+  transition: all 0.2s ease;
+}
+
+.admin-tab.active {
+  color: var(--primary-color);
+  border-bottom-color: var(--primary-color);
+  font-weight: 500;
+}
+
+/* ------------- BARRA DE FILTROS ESTANDARIZADA ------------- */
 .admin-filters-bar {
   display: flex;
   flex-wrap: wrap;
-  gap: 15px;
-  margin-bottom: var(--spacing-xl);
-  padding: 0;
-  background-color: transparent;
+  margin-bottom: var(--spacing-lg);
+  gap: var(--spacing-md);
   align-items: center;
-  justify-content: space-between;
 }
 
 /* Componente de búsqueda */
 .admin-search {
   position: relative;
-  flex: 1;
-  max-width: 300px;
+  min-width: 250px;
+  flex-grow: 1;
 }
 
 .admin-search input {
   width: 100%;
-  padding: 8px 30px 8px 12px;
+  height: 38px;
+  padding: 8px 12px;
+  padding-right: 40px;
   border: 1px solid var(--border-color);
   border-radius: var(--border-radius);
-  font-size: 13px;
-  height: 38px;
+  font-size: 14px;
 }
 
 .admin-search .search-icon {
   position: absolute;
-  right: 10px;
+  right: 12px;
   top: 50%;
   transform: translateY(-50%);
   color: var(--text-muted);
   pointer-events: none;
-  font-size: 14px;
 }
 
-/* Contenedor de filtros adicionales */
+/* Contenedor de filtros select */
 .admin-filter-container {
-  position: relative;
-  min-width: 120px;
+  min-width: 180px;
 }
 
 .admin-filter-container select {
   width: 100%;
-  padding: 8px;
+  height: 38px;
+  padding: 8px 12px;
   border: 1px solid var(--border-color);
   border-radius: var(--border-radius);
-  font-size: 13px;
   background-color: white;
-  height: 38px;
   appearance: none;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%236c757d' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
   background-position: right 12px center;
-  cursor: pointer;
+  background-size: 16px;
+  font-size: 14px;
 }
 
 /* Selector de fechas */
 .admin-date-picker {
   position: relative;
+  min-width: 230px;
 }
 
 .admin-date-picker .date-input-wrapper {
   display: flex;
   align-items: center;
-  background-color: white;
+  height: 38px;
+  padding: 0 12px;
   border: 1px solid var(--border-color);
   border-radius: var(--border-radius);
-  height: 38px;
-  padding: 0 8px;
+  background-color: white;
   cursor: pointer;
 }
 
 .admin-date-picker .calendar-icon {
-  font-size: 16px;
   color: var(--text-muted);
-  margin-right: 5px;
+  margin-right: 8px;
 }
 
 .admin-date-picker .date-input {
   flex: 1;
-  border: none;
-  outline: none;
-  padding: 8px 5px;
-  font-size: 13px;
-  background: transparent;
-  cursor: pointer;
-  color: var(--secondary-color);
+  font-size: 14px;
 }
 
-/* ------------- TABLAS ------------- */
+/* Grupo de botones de ordenamiento */
+.admin-sort-group {
+  display: flex;
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+  overflow: hidden;
+}
+
+.admin-sort-btn {
+  background: var(--bg-light);
+  border: none;
+  padding: 8px 12px;
+  font-size: 14px;
+  cursor: pointer;
+  color: var(--text-color);
+  border-right: 1px solid var(--border-color);
+}
+
+.admin-sort-btn:last-child {
+  border-right: none;
+}
+
+.admin-sort-btn.active {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+/* Checkbox personalizado */
+.admin-checkbox {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.admin-checkbox input {
+  margin-right: 8px;
+}
+
+/* ------------- TABLAS ESTANDARIZADAS ------------- */
 .admin-table-container {
-  overflow-x: auto;
-  margin-bottom: var(--spacing-lg);
+  background-color: white;
   border-radius: var(--border-radius);
   box-shadow: var(--box-shadow);
-  max-height: calc(100vh - 200px);
-  overflow-y: auto;
+  overflow: hidden;
+  margin-bottom: var(--spacing-lg);
 }
 
 .admin-table {
   width: 100%;
-  border-collapse: separate;
-  border-spacing: 0;
-  background-color: white;
-  border-radius: var(--border-radius);
-  overflow: hidden;
-  font-size: 13px;
-}
-
-.admin-table th,
-.admin-table td {
-  padding: 10px 15px;
-  text-align: left;
-  border-bottom: 1px solid #f1f5f9;
+  border-collapse: collapse;
+  font-size: 14px;
 }
 
 .admin-table th {
-  /* Actualizado según la imagen */
   background-color: var(--table-header-bg);
   color: var(--table-header-text);
-  font-weight: 600;
-  font-size: 12px;
+  padding: 12px 16px;
+  text-align: left;
+  font-weight: 500;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+.admin-table td {
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border-color);
+  color: var(--text-color);
 }
 
 .admin-table tr:last-child td {
@@ -207,63 +274,46 @@
 }
 
 .admin-table tr:hover {
-  background-color: #f9fafb;
+  background-color: var(--bg-light);
 }
 
-/* Celdas de acciones */
+/* Acciones en tablas */
 .actions-cell {
+  white-space: nowrap;
   display: flex;
-  gap: 6px;
-  justify-content: flex-start;
-  align-items: center;
+  gap: var(--spacing-sm);
 }
 
 .btn-action {
   background: none;
   border: none;
+  color: var(--text-muted);
   cursor: pointer;
-  font-size: 14px;
   padding: 4px;
-  border-radius: var(--border-radius);
-  transition: all 0.2s;
 }
 
 .btn-action:hover {
-  background-color: rgba(0, 0, 0, 0.05);
+  color: var(--secondary-color);
 }
 
-.btn-view {
-  color: var(--info-color);
-}
-
-.btn-edit {
-  color: #3b82f6;
-}
-
-.btn-activate {
-  color: var(--success-color);
-}
-
-.btn-delete,
-.btn-archive {
-  color: var(--danger-color);
-}
-
-/* ------------- BADGES DE ESTADO ------------- */
+/* ------------- BADGES DE ESTADO ESTANDARIZADOS ------------- */
 .status-badge {
   display: inline-block;
-  padding: 3px 8px;
-  border-radius: var(--border-radius);
-  font-size: 11px;
+  padding: 4px 8px;
+  font-size: 12px;
   font-weight: 500;
+  border-radius: var(--border-radius);
   text-transform: uppercase;
+  text-align: center;
+  min-width: 100px;
 }
 
-/* Estados comunes */
-.status-activo,
+/* Estados específicos */
+.status-activo, 
 .status-active,
+.status-confirmado,
 .status-confirmada,
-.status-confirmed {
+.status-completado {
   background-color: var(--success-bg);
   color: var(--success-color);
 }
@@ -275,83 +325,107 @@
 }
 
 .status-cancelada,
-.status-cancelled,
+.status-cancelado,
 .status-inactivo,
 .status-inactive {
   background-color: var(--danger-bg);
   color: var(--danger-color);
 }
 
-/* ------------- BOTONES PRINCIPALES ------------- */
-.btn-primary,
-.btn-secondary {
-  padding: 10px 15px;
-  border: none;
-  border-radius: var(--border-radius);
-  cursor: pointer;
-  font-weight: 500;
-  font-size: 14px;
-  transition: all 0.2s ease;
-}
-
+/* ------------- BOTONES ESTANDARIZADOS ------------- */
+/* Botón primario (verde) */
 .btn-primary {
   background-color: var(--btn-primary-bg);
   color: var(--btn-primary-text);
+  border: none;
+  padding: 8px 16px;
+  border-radius: var(--border-radius);
+  font-weight: 500;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.2s;
+  height: 38px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .btn-primary:hover {
-  background-color: #222222;
+  background-color: var(--btn-primary-hover);
 }
 
+/* Botón secundario (blanco con borde) */
 .btn-secondary {
   background-color: var(--btn-secondary-bg);
   color: var(--btn-secondary-text);
   border: 1px solid var(--btn-secondary-border);
+  padding: 8px 16px;
+  border-radius: var(--border-radius);
+  font-weight: 500;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.2s;
+  height: 38px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .btn-secondary:hover {
-  background-color: #f0f0f0;
+  background-color: var(--bg-light);
 }
 
-/* Botón de agregar - actualizado según la imagen */
-.btn-add {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 8px 16px;
-  background-color: var(--secondary-color);
-  color: white;
+/* Botón azul (para algunas acciones específicas) */
+.btn-blue {
+  background-color: var(--btn-blue-bg);
+  color: var(--btn-blue-text);
   border: none;
+  padding: 8px 16px;
   border-radius: var(--border-radius);
-  font-size: 14px;
   font-weight: 500;
   cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.2s;
   height: 38px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-blue:hover {
+  background-color: var(--btn-blue-hover);
+}
+
+/* Botón de agregar nuevo con ícono + */
+.btn-add {
+  background-color: var(--btn-primary-bg);
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  padding-left: 12px;
+  border-radius: var(--border-radius);
+  font-weight: 500;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.2s;
+  height: 38px;
+  display: inline-flex;
+  align-items: center;
+}
+
+.btn-add::before {
+  content: "+";
+  margin-right: 8px;
+  font-size: 18px;
+  font-weight: bold;
+  line-height: 1;
 }
 
 .btn-add:hover {
-  background-color: #222222;
+  background-color: var(--btn-primary-hover);
 }
 
-/* Botón para crear especialidad - actualizado según la imagen */
-.btn-create {
-  display: inline-flex;
-  align-items: center;
-  padding: 8px 16px;
-  background-color: var(--btn-create-bg);
-  color: var(--btn-create-text);
-  border: none;
-  border-radius: var(--border-radius);
-  font-size: 14px;
-  font-weight: 500;
-  cursor: pointer;
-}
-
-.btn-create:hover {
-  background-color: #606060;
-}
-
-/* ------------- MODALES ------------- */
+/* ------------- MODALES ESTANDARIZADOS ------------- */
 .modal-overlay {
   position: fixed;
   top: 0;
@@ -360,41 +434,33 @@
   bottom: 0;
   background-color: rgba(0, 0, 0, 0.5);
   display: flex;
-  justify-content: center;
   align-items: center;
+  justify-content: center;
   z-index: 1000;
 }
 
 .modal-content {
   background-color: white;
   border-radius: 8px;
-  max-width: 600px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   width: 90%;
+  max-width: 600px;
   max-height: 90vh;
   overflow-y: auto;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 .modal-header {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  padding: 15px 20px;
+  justify-content: space-between;
+  padding: 16px 20px;
   border-bottom: 1px solid var(--border-color);
 }
 
 .modal-header h2 {
   margin: 0;
   font-size: 18px;
-  color: var(--secondary-color);
-}
-
-.close-btn {
-  background: none;
-  border: none;
-  font-size: 24px;
-  cursor: pointer;
-  color: var(--text-muted);
+  font-weight: 500;
 }
 
 .modal-body {
@@ -404,22 +470,39 @@
 .modal-footer {
   display: flex;
   justify-content: flex-end;
-  gap: 10px;
-  padding: 15px 20px;
+  gap: 12px;
+  padding: 16px 20px;
   border-top: 1px solid var(--border-color);
 }
 
-/* ------------- FORMULARIOS ------------- */
+.close-btn {
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  color: var(--text-muted);
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}
+
+.close-btn:hover {
+  color: var(--text-color);
+}
+
+/* ------------- FORMULARIOS ESTANDARIZADOS ------------- */
 .form-group {
-  margin-bottom: 15px;
+  margin-bottom: 16px;
 }
 
 .form-group label {
   display: block;
-  margin-bottom: 5px;
-  font-weight: 500;
+  margin-bottom: 6px;
   font-size: 14px;
-  color: var(--secondary-color);
+  font-weight: 500;
 }
 
 .form-group input,
@@ -430,6 +513,7 @@
   border: 1px solid var(--border-color);
   border-radius: var(--border-radius);
   font-size: 14px;
+  color: var (--text-color);
 }
 
 .form-group textarea {
@@ -437,29 +521,36 @@
   resize: vertical;
 }
 
-/* ------------- ESTADOS DE CARGA Y ERROR ------------- */
-.loading,
-.error-message,
-.no-results {
-  padding: 25px;
-  text-align: center;
-  border-radius: 10px;
-  margin: 20px 0;
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+  border-color: var(--primary-color);
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(32, 55, 122, 0.2);
 }
 
-.loading {
-  background-color: #f9fafb;
+/* ------------- ESTADOS DE CARGA Y ERROR ------------- */
+.loading-container {
+  padding: var(--spacing-lg);
+  text-align: center;
   color: var(--text-muted);
+  font-size: 16px;
 }
 
 .error-message {
+  padding: var(--spacing-lg);
   background-color: var(--danger-bg);
   color: var(--danger-color);
+  border-radius: var(--border-radius);
+  margin-bottom: var(--spacing-lg);
 }
 
 .no-results {
-  background-color: #f9fafb;
+  padding: var(--spacing-lg);
+  text-align: center;
   color: var(--text-muted);
+  background-color: var(--bg-light);
+  border-radius: var(--border-radius);
 }
 
 /* ------------- RESPONSIVE ------------- */
@@ -470,50 +561,22 @@
   }
   
   .admin-search,
-  .admin-filter-container {
-    max-width: none;
+  .admin-filter-container,
+  .admin-date-picker {
     width: 100%;
-    margin-bottom: 8px;
+    min-width: 100%;
+  }
+  
+  .admin-table {
+    font-size: 12px;
+  }
+  
+  .admin-table th,
+  .admin-table td {
+    padding: 8px;
   }
   
   .modal-content {
     width: 95%;
   }
-  
-  .modal-footer {
-    flex-direction: column;
-  }
-  
-  .btn-primary,
-  .btn-secondary {
-    width: 100%;
-    margin: 5px 0;
-  }
-}
-
-/* ------------- COMPONENTES ESPECÍFICOS ------------- */
-/* Estilos específicos para los botones de ordenamiento en la página de profesionales */
-.profesionales-sort-container {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 5px;
-}
-
-.profesionales-sort-btn {
-  padding: 6px 10px;
-  background-color: #f3f4f6;
-  border: 1px solid #e5e7eb;
-  border-radius: var(--border-radius);
-  font-size: 13px;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-.profesionales-sort-btn.active {
-  background-color: #e5e7eb;
-  font-weight: 500;
-}
-
-.profesionales-sort-btn:hover {
-  background-color: #e5e7eb;
 }
