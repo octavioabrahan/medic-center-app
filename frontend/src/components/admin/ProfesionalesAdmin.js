@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import './ProfesionalesAdmin.css';
 import './AdminCommon.css'; // Importamos los estilos comunes
+import AdminFilterBar from './AdminFilterBar'; // Importamos el nuevo componente
 
 function ProfesionalesAdmin() {
   // Estados para datos
@@ -12,7 +13,8 @@ function ProfesionalesAdmin() {
   const [searchTerm, setSearchTerm] = useState('');
   const [filteredProfesionales, setFilteredProfesionales] = useState([]);
   const [especialidadFiltro, setEspecialidadFiltro] = useState('');
-  const [ordenamiento, setOrdenamiento] = useState('reciente'); // 'reciente', 'antiguo', 'az', 'za'
+  const [showArchived, setShowArchived] = useState(false);
+  const [sortOrder, setSortOrder] = useState('az');
 
   // Estados para modales
   const [showAddEspecialidadModal, setShowAddEspecialidadModal] = useState(false);
@@ -82,16 +84,13 @@ function ProfesionalesAdmin() {
         );
       }
       
+      // Filtrar por estado (archivado/activo)
+      if (!showArchived) {
+        results = results.filter(profesional => profesional.is_active);
+      }
+      
       // Aplicar ordenamiento
-      switch (ordenamiento) {
-        case 'reciente':
-          // Asumiendo que hay una propiedad de fecha de creación o ID incremental
-          // Si no hay fecha de creación, mantenemos el orden actual
-          break;
-        case 'antiguo':
-          // Invertimos el orden de "reciente"
-          results = [...results].reverse();
-          break;
+      switch (sortOrder) {
         case 'az':
           results = [...results].sort((a, b) => 
             `${a.nombre} ${a.apellido}`.localeCompare(`${b.nombre} ${b.apellido}`)
@@ -108,7 +107,7 @@ function ProfesionalesAdmin() {
       
       setFilteredProfesionales(results);
     }
-  }, [searchTerm, profesionales, especialidadFiltro, ordenamiento]);
+  }, [searchTerm, profesionales, especialidadFiltro, showArchived, sortOrder]);
 
   // Fetch de servicios para los modales
   useEffect(() => {
@@ -672,62 +671,31 @@ function ProfesionalesAdmin() {
     );
   };
 
+  // Preparar opciones para el filtro de especialidades
+  const especialidadesOptions = especialidades.map(esp => ({
+    value: esp.nombre,
+    label: esp.nombre
+  }));
+
   return (
     <div className="admin-page-container">
       <h1 className="admin-page-title">Gestión de Profesionales</h1>
       
-      <div className="admin-filters-bar">
-        <div className="admin-search">
-          <input
-            type="text"
-            placeholder="Buscar por nombre o cédula"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
-          <span className="search-icon">🔍</span>
-        </div>
-        
-        <div className="admin-filter-container">
-          <select 
-            value={especialidadFiltro}
-            onChange={(e) => setEspecialidadFiltro(e.target.value)}
-          >
-            <option value="">Todas las especialidades</option>
-            {especialidades.map(esp => (
-              <option key={esp.especialidad_id} value={esp.nombre}>
-                {esp.nombre}
-              </option>
-            ))}
-          </select>
-        </div>
-        
-        <div className="admin-sort-group">
-          <button 
-            className={`admin-sort-btn ${ordenamiento === 'reciente' ? 'active' : ''}`}
-            onClick={() => setOrdenamiento('reciente')}
-          >
-            Más reciente
-          </button>
-          <button 
-            className={`admin-sort-btn ${ordenamiento === 'antiguo' ? 'active' : ''}`}
-            onClick={() => setOrdenamiento('antiguo')}
-          >
-            Más antiguo
-          </button>
-          <button 
-            className={`admin-sort-btn ${ordenamiento === 'az' ? 'active' : ''}`}
-            onClick={() => setOrdenamiento('az')}
-          >
-            A → Z
-          </button>
-          <button 
-            className={`admin-sort-btn ${ordenamiento === 'za' ? 'active' : ''}`}
-            onClick={() => setOrdenamiento('za')}
-          >
-            Z → A
-          </button>
-        </div>
-        
+      {/* Reemplazamos la anterior barra de filtros con nuestro componente reutilizable */}
+      <AdminFilterBar
+        searchTerm={searchTerm}
+        setSearchTerm={setSearchTerm}
+        searchPlaceholder="Buscar por nombre o cédula"
+        filterOptions={especialidadesOptions}
+        filterValue={especialidadFiltro}
+        setFilterValue={setEspecialidadFiltro}
+        filterLabel="Todas las especialidades"
+        showArchived={showArchived}
+        setShowArchived={setShowArchived}
+        sortOrder={sortOrder}
+        setSortOrder={setSortOrder}
+      >
+        {/* Botones de acción */}
         <div className="admin-actions">
           <button 
             className="btn-secondary" 
@@ -743,7 +711,7 @@ function ProfesionalesAdmin() {
             Agregar profesional
           </button>
         </div>
-      </div>
+      </AdminFilterBar>
       
       {loading ? (
         <div className="loading-container">Cargando profesionales...</div>

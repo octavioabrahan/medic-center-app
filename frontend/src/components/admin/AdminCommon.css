@@ -124,6 +124,14 @@ body {
   margin-bottom: var(--spacing-lg);
   gap: var(--spacing-md);
   align-items: center;
+  justify-content: space-between;
+}
+
+.filter-group {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  flex-wrap: wrap;
 }
 
 /* Componente de búsqueda */
@@ -199,42 +207,52 @@ body {
   font-size: 14px;
 }
 
-/* Grupo de botones de ordenamiento */
-.admin-sort-group {
+/* Checkbox para mostrar archivados */
+.archived-checkbox {
   display: flex;
-  border: 1px solid var(--border-color);
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  user-select: none;
+  font-size: 14px;
+  padding: 5px 10px;
+  background-color: #f5f5f5;
   border-radius: var(--border-radius);
-  overflow: hidden;
 }
 
-.admin-sort-btn {
-  background: var(--bg-light);
-  border: none;
-  padding: 8px 12px;
-  font-size: 14px;
+.archived-checkbox input[type="checkbox"] {
+  margin: 0;
   cursor: pointer;
-  color: var(--text-color);
+}
+
+/* Botones de ordenamiento A-Z y Z-A */
+.sort-buttons {
+  display: flex;
+  align-items: center;
+  border-radius: var(--border-radius);
+  overflow: hidden;
+  border: 1px solid var(--border-color);
+}
+
+.sort-button {
+  background: #f5f5f5;
+  border: none;
+  padding: 7px 12px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 500;
+  transition: background-color 0.2s;
+}
+
+.sort-button:first-child {
   border-right: 1px solid var(--border-color);
 }
 
-.admin-sort-btn:last-child {
-  border-right: none;
-}
-
-.admin-sort-btn.active {
+.sort-button.active {
   background-color: var(--primary-color);
   color: white;
-}
-
-/* Checkbox personalizado */
-.admin-checkbox {
-  display: flex;
-  align-items: center;
-  cursor: pointer;
-}
-
-.admin-checkbox input {
-  margin-right: 8px;
 }
 
 /* ------------- TABLAS ESTANDARIZADAS ------------- */
@@ -315,7 +333,7 @@ body {
 .status-confirmada,
 .status-completado {
   background-color: var(--success-bg);
-  color: var(--success-color);
+  color: var (--success-color);
 }
 
 .status-pendiente,

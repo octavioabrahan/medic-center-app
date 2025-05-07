@@ -1,0 +1,105 @@
+import React from 'react';
+import './AdminCommon.css';
+
+/**
+ * Componente reutilizable para la barra de filtros en las páginas de administración.
+ * 
+ * @param {Object} props - Las propiedades del componente
+ * @param {string} props.searchTerm - El término de búsqueda actual
+ * @param {Function} props.setSearchTerm - Función para actualizar el término de búsqueda
+ * @param {string} props.searchPlaceholder - Texto placeholder para el campo de búsqueda
+ * @param {Array} props.filterOptions - Opciones para el filtro dropdown principal
+ * @param {string} props.filterValue - Valor seleccionado actualmente en el filtro dropdown
+ * @param {Function} props.setFilterValue - Función para actualizar el valor del filtro
+ * @param {string} props.filterLabel - Label para el primer option del dropdown (ej: "Todas las especialidades")
+ * @param {boolean} props.showArchived - Estado para mostrar ítems archivados
+ * @param {Function} props.setShowArchived - Función para actualizar el estado de mostrar archivados
+ * @param {string} props.sortOrder - Orden de clasificación actual ("az" o "za")
+ * @param {Function} props.setSortOrder - Función para actualizar el orden de clasificación
+ * @param {JSX.Element} props.children - Elementos adicionales a renderizar en la barra de filtros (botones de acción, etc.)
+ */
+const AdminFilterBar = ({ 
+  searchTerm = '', 
+  setSearchTerm,
+  searchPlaceholder = 'Buscar por nombre',
+  filterOptions = [], 
+  filterValue = '', 
+  setFilterValue,
+  filterLabel = 'Todos',
+  showArchived = false,
+  setShowArchived,
+  sortOrder = 'az',
+  setSortOrder,
+  children
+}) => {
+  return (
+    <div className="admin-filters-bar">
+      {/* Componente de búsqueda */}
+      <div className="admin-search">
+        <input
+          type="text"
+          placeholder={searchPlaceholder}
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+        />
+        <span className="search-icon">🔍</span>
+      </div>
+      
+      <div className="filter-group">
+        {/* Dropdown de filtro principal */}
+        {filterOptions.length > 0 && setFilterValue && (
+          <div className="admin-filter-container">
+            <select 
+              value={filterValue}
+              onChange={(e) => setFilterValue(e.target.value)}
+            >
+              <option value="">{filterLabel}</option>
+              {filterOptions.map((option) => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
+            </select>
+          </div>
+        )}
+        
+        {/* Checkbox para mostrar archivados */}
+        {setShowArchived && (
+          <label className="archived-checkbox">
+            <input
+              type="checkbox"
+              checked={showArchived}
+              onChange={(e) => setShowArchived(e.target.checked)}
+            />
+            Mostrar archivados
+          </label>
+        )}
+        
+        {/* Botones de ordenamiento A-Z y Z-A */}
+        {setSortOrder && (
+          <div className="sort-buttons">
+            <button 
+              className={`sort-button ${sortOrder === 'az' ? 'active' : ''}`}
+              onClick={() => setSortOrder('az')}
+              title="Ordenar de A a Z"
+            >
+              A → Z
+            </button>
+            <button 
+              className={`sort-button ${sortOrder === 'za' ? 'active' : ''}`}
+              onClick={() => setSortOrder('za')}
+              title="Ordenar de Z a A"
+            >
+              Z → A
+            </button>
+          </div>
+        )}
+        
+        {/* Contenido adicional (botones de acción, etc.) */}
+        {children}
+      </div>
+    </div>
+  );
+};
+
+export default AdminFilterBar;
