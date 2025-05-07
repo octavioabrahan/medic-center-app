@@ -210,7 +210,7 @@ function ProfesionalesAdmin() {
 
     try {
       // 1. Crear el profesional
-      const res = await axios.post('/api/profesionales', {
+      await axios.post('/api/profesionales', {
         cedula: nuevoProfesional.cedula,
         nombre: nuevoProfesional.nombre,
         apellido: nuevoProfesional.apellido,

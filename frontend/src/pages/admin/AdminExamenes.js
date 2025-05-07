@@ -116,7 +116,7 @@ const AdminExamenes = () => {
   useEffect(() => {
     fetchExamenes();
     fetchExchangeRate();
-  }, []);
+  }, [fetchExamenes]); // Added fetchExamenes to dependency array
 
   // Aplicar filtros cuando cambian los criterios
   const applyFilters = (data = examenes) => {
@@ -276,6 +276,288 @@ const AdminExamenes = () => {
       console.error('Error:', err);
       alert(`Error al ${newStatus ? 'activar' : 'desactivar'} el examen`);
     }
+  };
+
+  // Renderizar modal para añadir examen
+  const renderAddModal = () => {
+    if (!showAddModal) return null;
+    
+    return (
+      <div className="modal-overlay">
+        <div className="modal-content">
+          <div className="modal-header">
+            <h2>Agregar Nuevo Examen</h2>
+            <button className="close-btn" onClick={() => setShowAddModal(false)}>×</button>
+          </div>
+          <div className="modal-body">
+            <form onSubmit={handleAddExamen}>
+              <div className="form-group">
+                <label>Código</label>
+                <input 
+                  type="text" 
+                  name="codigo" 
+                  value={formData.codigo} 
+                  onChange={handleFormChange} 
+                  required 
+                />
+              </div>
+              <div className="form-group">
+                <label>Nombre</label>
+                <input 
+                  type="text" 
+                  name="nombre_examen" 
+                  value={formData.nombre_examen} 
+                  onChange={handleFormChange} 
+                  required 
+                />
+              </div>
+              <div className="form-group">
+                <label>Precio USD</label>
+                <input 
+                  type="number" 
+                  name="preciousd" 
+                  value={formData.preciousd} 
+                  onChange={handleFormChange} 
+                  step="0.01"
+                  min="0" 
+                  required 
+                />
+              </div>
+              <div className="form-group">
+                <label>Tiempo de Entrega</label>
+                <input 
+                  type="text" 
+                  name="tiempo_entrega" 
+                  value={formData.tiempo_entrega} 
+                  onChange={handleFormChange} 
+                  placeholder="Ej: 24 horas" 
+                />
+              </div>
+              <div className="form-group">
+                <label>Información</label>
+                <textarea 
+                  name="informacion" 
+                  value={formData.informacion} 
+                  onChange={handleFormChange} 
+                  placeholder="Instrucciones o información adicional"
+                />
+              </div>
+              <div className="form-group">
+                <label>Tipo</label>
+                <select 
+                  name="tipo" 
+                  value={formData.tipo} 
+                  onChange={handleFormChange}
+                >
+                  <option value="examen">Examen</option>
+                  <option value="servicio">Servicio</option>
+                  <option value="paquete">Paquete</option>
+                </select>
+              </div>
+              <div className="form-group checkbox-group">
+                <input 
+                  type="checkbox" 
+                  id="is_active" 
+                  name="is_active" 
+                  checked={formData.is_active} 
+                  onChange={handleFormChange} 
+                />
+                <label htmlFor="is_active">Activo</label>
+              </div>
+              <div className="modal-footer">
+                <button type="button" className="btn-secondary" onClick={() => setShowAddModal(false)}>
+                  Cancelar
+                </button>
+                <button type="submit" className="btn-primary">
+                  Guardar
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  // Renderizar modal para editar examen
+  const renderEditModal = () => {
+    if (!showEditModal || !currentExamen) return null;
+    
+    return (
+      <div className="modal-overlay">
+        <div className="modal-content">
+          <div className="modal-header">
+            <h2>Editar Examen</h2>
+            <button className="close-btn" onClick={() => setShowEditModal(false)}>×</button>
+          </div>
+          <div className="modal-body">
+            <form onSubmit={handleUpdateExamen}>
+              <div className="form-group">
+                <label>Código</label>
+                <input 
+                  type="text" 
+                  name="codigo" 
+                  value={formData.codigo} 
+                  disabled
+                />
+              </div>
+              <div className="form-group">
+                <label>Nombre</label>
+                <input 
+                  type="text" 
+                  name="nombre_examen" 
+                  value={formData.nombre_examen} 
+                  onChange={handleFormChange} 
+                  required 
+                />
+              </div>
+              <div className="form-group">
+                <label>Precio USD</label>
+                <input 
+                  type="number" 
+                  name="preciousd" 
+                  value={formData.preciousd} 
+                  onChange={handleFormChange} 
+                  step="0.01"
+                  min="0" 
+                  required 
+                />
+              </div>
+              <div className="form-group">
+                <label>Tiempo de Entrega</label>
+                <input 
+                  type="text" 
+                  name="tiempo_entrega" 
+                  value={formData.tiempo_entrega} 
+                  onChange={handleFormChange} 
+                  placeholder="Ej: 24 horas" 
+                />
+              </div>
+              <div className="form-group">
+                <label>Información</label>
+                <textarea 
+                  name="informacion" 
+                  value={formData.informacion} 
+                  onChange={handleFormChange} 
+                  placeholder="Instrucciones o información adicional"
+                />
+              </div>
+              <div className="form-group">
+                <label>Tipo</label>
+                <select 
+                  name="tipo" 
+                  value={formData.tipo} 
+                  onChange={handleFormChange}
+                >
+                  <option value="examen">Examen</option>
+                  <option value="servicio">Servicio</option>
+                  <option value="paquete">Paquete</option>
+                </select>
+              </div>
+              <div className="form-group checkbox-group">
+                <input 
+                  type="checkbox" 
+                  id="is_active_edit" 
+                  name="is_active" 
+                  checked={formData.is_active} 
+                  onChange={handleFormChange} 
+                />
+                <label htmlFor="is_active_edit">Activo</label>
+              </div>
+              <div className="modal-footer">
+                <button type="button" className="btn-secondary" onClick={() => setShowEditModal(false)}>
+                  Cancelar
+                </button>
+                {!formData.is_active && (
+                  <button 
+                    type="button" 
+                    className="btn-warning" 
+                    onClick={() => toggleActivo(currentExamen)}
+                  >
+                    Activar
+                  </button>
+                )}
+                {formData.is_active && (
+                  <button 
+                    type="button" 
+                    className="btn-danger" 
+                    onClick={() => toggleActivo(currentExamen)}
+                  >
+                    Desactivar
+                  </button>
+                )}
+                <button type="submit" className="btn-primary">
+                  Guardar
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  // Renderizar modal para ver historial de un examen
+  const renderHistorialModal = () => {
+    if (!showHistorialModal || !currentExamen) return null;
+    
+    return (
+      <div className="modal-overlay">
+        <div className="modal-content">
+          <div className="modal-header">
+            <h2>Historial de Cambios</h2>
+            <button className="close-btn" onClick={() => setShowHistorialModal(false)}>×</button>
+          </div>
+          <div className="modal-body">
+            <div className="examen-info">
+              <p><strong>Código:</strong> {currentExamen.codigo}</p>
+              <p><strong>Nombre:</strong> {currentExamen.nombre_examen}</p>
+            </div>
+
+            {loadingHistorial ? (
+              <div className="loading">Cargando historial...</div>
+            ) : !Array.isArray(historialExamen) || historialExamen.length === 0 ? (
+              <p className="no-results">No hay registros de cambios previos</p>
+            ) : (
+              <div className="historial-table-container">
+                <table className="admin-table historial-table">
+                  <thead>
+                    <tr>
+                      <th>Fecha</th>
+                      <th>Usuario</th>
+                      <th>Precio USD</th>
+                      <th>Estado</th>
+                      <th>Detalles</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {historialExamen.map((item, index) => (
+                      <tr key={index}>
+                        <td>{formatDate(item.fecha_cambio)}</td>
+                        <td>{item.usuario || 'Sistema'}</td>
+                        <td>${parseFloat(item.preciousd).toFixed(2)}</td>
+                        <td>
+                          <span className={`status-badge ${item.is_active ? 'status-activo' : 'status-inactivo'}`}>
+                            {item.is_active ? 'Activo' : 'Inactivo'}
+                          </span>
+                        </td>
+                        <td>{item.descripcion_cambio || 'Actualización general'}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+            
+            <div className="modal-footer">
+              <button className="btn-secondary" onClick={() => setShowHistorialModal(false)}>
+                Cerrar
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
   };
 
   return (
