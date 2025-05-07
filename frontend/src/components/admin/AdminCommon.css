@@ -152,10 +152,10 @@ body {
   margin-bottom: var(--spacing-lg);
   padding: var(--spacing-md);
   gap: var(--spacing-md);
-  align-items: center;
-  background-color: var(--bg-light);
+  align-items: stretch;
+  background-color: transparent;
   border-radius: var(--border-radius);
-  border: 1px solid var(--border-color);
+  border: none;
   width: 100%;
 }
 
