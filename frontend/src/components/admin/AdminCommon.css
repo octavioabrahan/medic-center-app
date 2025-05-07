@@ -214,12 +214,13 @@ body {
   gap: 8px;
   cursor: pointer;
   user-select: none;
-  font-size: 14px;
-  padding: 5px 10px;
+  font-size: 13px;
+  padding: 4px 10px;
   border-radius: var(--border-radius);
   background-color: transparent;
   border: none;
-  height: 38px;
+  height: 32px; /* Reducido para coincidir con los botones de ordenamiento */
+  margin-right: 6px; /* Separación adicional */
 }
 
 .admin-checkbox input[type="checkbox"] {
@@ -234,14 +235,15 @@ body {
   border-radius: var(--border-radius);
   overflow: hidden;
   border: none;
-  height: 38px;
-  background-color: #F2F2F2;
+  height: 32px; /* Reducido de 38px a 32px */
+  background-color: #F5F5F5; /* Color de fondo desactivado */
+  margin-right: 6px; /* Separación adicional */
 }
 
 .sort-btn {
   background: transparent;
   border: none;
-  padding: 7px 12px;
+  padding: 5px 10px; /* Reducido de 7px 12px */
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -250,15 +252,17 @@ body {
   transition: background-color 0.2s;
   height: 100%;
   color: #6B6B6B;
-  min-width: 60px;
+  min-width: 50px; /* Reducido de 60px */
+  font-size: 13px; /* Fuente más pequeña */
 }
 
 .sort-btn:first-child {
   border-right: 1px solid rgba(0, 0, 0, 0.1);
+  margin-right: 2px; /* Separación entre botones */
 }
 
 .sort-btn.active {
-  background-color: #E6E6E6;
+  background-color: #E6E6E6; /* Color activo */
   color: #333333;
 }
 
@@ -364,7 +368,7 @@ body {
 .status-inactivo,
 .status-inactive {
   background-color: var(--danger-bg);
-  color: var(--danger-color);
+  color: var (--danger-color);
 }
 
 /* ------------- BOTONES ESTANDARIZADOS ------------- */
@@ -743,7 +747,7 @@ body {
   padding: var(--spacing-lg);
   background-color: var(--danger-bg);
   color: var(--danger-color);
-  border-radius: var(--border-radius);
+  border-radius: var (--border-radius);
   margin-bottom: var(--spacing-lg);
 }
 
