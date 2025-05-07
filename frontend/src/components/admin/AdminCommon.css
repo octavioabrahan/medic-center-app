@@ -266,6 +266,49 @@ body {
   color: #333333;
 }
 
+/* Botones de ordenamiento A-Z y Z-A - con mayor especificidad */
+.admin-page-container .admin-filter-bar .admin-sort-buttons,
+html body .admin-sort-buttons {
+  display: flex;
+  align-items: center;
+  border-radius: var(--border-radius);
+  overflow: hidden;
+  border: none !important;
+  height: 32px; /* Reducido de 38px a 32px */
+  background-color: #F5F5F5 !important; /* Color de fondo desactivado */
+  margin-right: 6px; /* Separación adicional */
+}
+
+.admin-page-container .admin-filter-bar .sort-btn,
+html body .admin-sort-buttons .sort-btn {
+  background: transparent;
+  border: none !important;
+  padding: 5px 10px; /* Reducido de 7px 12px */
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 500;
+  transition: background-color 0.2s;
+  height: 100%;
+  color: #6B6B6B !important;
+  min-width: 50px; /* Reducido de 60px */
+  font-size: 13px; /* Fuente más pequeña */
+}
+
+.admin-page-container .admin-filter-bar .sort-btn:first-child,
+html body .admin-sort-buttons .sort-btn:first-child {
+  border-right: 1px solid rgba(0, 0, 0, 0.1) !important;
+  margin-right: 2px; /* Separación entre botones */
+}
+
+.admin-page-container .admin-filter-bar .sort-btn.active,
+html body .admin-sort-buttons .sort-btn.active {
+  background-color: #E6E6E6 !important; /* Color activo exactamente como lo pediste */
+  color: #333333 !important;
+  border-color: transparent !important;
+}
+
 /* Clases antiguas para compatibilidad - Se eliminarán posteriormente */
 .admin-filters-bar,
 .filter-group,
