@@ -111,6 +111,8 @@ body {
   margin-bottom: var(--spacing-lg);
   flex-wrap: wrap;
   gap: var(--spacing-md);
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: var(--spacing-md);
 }
 
 .admin-header h1 {
@@ -215,8 +217,8 @@ body {
   font-size: 14px;
   padding: 5px 10px;
   border-radius: var(--border-radius);
-  background-color: white;
-  border: 1px solid var(--border-color);
+  background-color: transparent;
+  border: none;
   height: 38px;
 }
 
@@ -229,14 +231,15 @@ body {
 .admin-sort-buttons {
   display: flex;
   align-items: center;
-  border-radius: var (--border-radius);
+  border-radius: var(--border-radius);
   overflow: hidden;
-  border: 1px solid var(--border-color);
+  border: none;
   height: 38px;
+  background-color: #F2F2F2;
 }
 
 .sort-btn {
-  background: white;
+  background: transparent;
   border: none;
   padding: 7px 12px;
   cursor: pointer;
@@ -246,15 +249,17 @@ body {
   font-weight: 500;
   transition: background-color 0.2s;
   height: 100%;
+  color: #6B6B6B;
+  min-width: 60px;
 }
 
 .sort-btn:first-child {
-  border-right: 1px solid var(--border-color);
+  border-right: 1px solid rgba(0, 0, 0, 0.1);
 }
 
 .sort-btn.active {
-  background-color: var(--primary-color);
-  color: white;
+  background-color: #E6E6E6;
+  color: #333333;
 }
 
 /* Clases antiguas para compatibilidad - Se eliminarán posteriormente */
