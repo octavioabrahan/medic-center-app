@@ -203,6 +203,53 @@ const obtenerInfoArchivo = async (req, res) => {
   }
 };
 
+// Controlador para obtener una miniatura del archivo
+const obtenerThumbnail = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const archivo = await ArchivoAdjunto.obtenerArchivoPorId(id);
+    
+    if (!archivo) {
+      return res.status(404).json({ error: 'Archivo no encontrado' });
+    }
+    
+    // Verificar si el archivo existe físicamente
+    if (!fs.existsSync(archivo.ruta_archivo)) {
+      return res.status(404).json({ error: 'El archivo físico no existe' });
+    }
+    
+    // Comprobar si es una imagen
+    const esImagen = archivo.tipo_archivo.startsWith('image/');
+    
+    if (esImagen) {
+      // Si es imagen, servir la imagen directamente como miniatura
+      res.setHeader('Content-Type', archivo.tipo_archivo);
+      fs.createReadStream(archivo.ruta_archivo).pipe(res);
+    } else {
+      // Si no es imagen, servir un ícono genérico según el tipo de archivo
+      let iconoRuta;
+      
+      if (archivo.tipo_archivo === 'application/pdf') {
+        iconoRuta = path.join(__dirname, '..', 'assets', 'pdf-icon.png');
+      } else {
+        iconoRuta = path.join(__dirname, '..', 'assets', 'document-icon.png');
+      }
+      
+      // Verificar si existe el icono, si no, usar una respuesta alternativa
+      if (fs.existsSync(iconoRuta)) {
+        res.setHeader('Content-Type', 'image/png');
+        fs.createReadStream(iconoRuta).pipe(res);
+      } else {
+        // Redirigir a un icono genérico online si no tenemos el icono localmente
+        res.redirect('https://cdn-icons-png.flaticon.com/512/337/337946.png');
+      }
+    }
+  } catch (error) {
+    console.error('Error al obtener miniatura:', error);
+    res.status(500).json({ error: 'Error al generar la miniatura del archivo' });
+  }
+};
+
 // Eliminar archivo
 const eliminarArchivo = async (req, res) => {
   try {
@@ -238,6 +285,7 @@ module.exports = {
   subirArchivo,
   obtenerArchivo,
   obtenerInfoArchivo,
+  obtenerThumbnail,
   eliminarArchivo,
   limpiarArchivosExpirados
 };

@@ -8,6 +8,9 @@ router.post('/upload', archivoController.upload.single('archivo'), archivoContro
 // Ruta para obtener información de un archivo sin descargarlo
 router.get('/:id/info', archivoController.obtenerInfoArchivo);
 
+// Ruta para obtener una miniatura del archivo
+router.get('/:id/thumbnail', archivoController.obtenerThumbnail);
+
 // Ruta para obtener/visualizar archivo por ID
 router.get('/:id', archivoController.obtenerArchivo);
 
