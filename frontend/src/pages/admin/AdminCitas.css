@@ -164,7 +164,10 @@
   gap: 8px;
 }
 
-/* Contenedor de tabla con scroll interno */
+/* Clases modificadas para evitar conflicto con AdminCommon.css */
+/* Las siguientes clases han sido comentadas para permitir que AdminCommon.css tenga precedencia */
+
+/*
 .admin-table-container {
   width: 100%;
   border: 1px solid #e5e7eb;
@@ -177,6 +180,7 @@
   max-height: calc(100vh - 200px);
   overflow-y: auto;
 }
+*/
 
 /* Estilos de tabla mejorados */
 .admin-table {
@@ -203,6 +207,8 @@
   z-index: 11; /* Asegurarse de que esté por encima */
 }
 
+/* Comentamos estos estilos para permitir que AdminCommon.css tenga precedencia en el color del encabezado */
+/*
 .admin-table th {
   background-color: #f9fafb;
   font-weight: 600;
@@ -212,9 +218,10 @@
   letter-spacing: 0.05em;
   padding: 12px 15px;
   text-align: left;
-  border-bottom: none; /* Quitar el borde individual */
-  position: relative; /* Para posicionamiento */
+  border-bottom: none;
+  position: relative;
 }
+*/
 
 .admin-table td {
   padding: 10px 15px;
@@ -255,7 +262,8 @@
   color: #dc3545;
 }
 
-/* Celdas de acciones */
+/* Celdas de acciones - Comentado para permitir que AdminCommon.css tenga precedencia */
+/*
 .actions-cell {
   display: flex;
   gap: 6px;
@@ -263,6 +271,7 @@
   align-items: center;
   white-space: nowrap;
 }
+*/
 
 .btn-action {
   background: none;
