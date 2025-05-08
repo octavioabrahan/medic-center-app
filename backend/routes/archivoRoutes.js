@@ -5,6 +5,9 @@ const archivoController = require('../controllers/archivoController');
 // Ruta para subir archivo
 router.post('/upload', archivoController.upload.single('archivo'), archivoController.subirArchivo);
 
+// Ruta para obtener información de un archivo sin descargarlo
+router.get('/:id/info', archivoController.obtenerInfoArchivo);
+
 // Ruta para obtener/visualizar archivo por ID
 router.get('/:id', archivoController.obtenerArchivo);
 

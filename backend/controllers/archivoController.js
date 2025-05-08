@@ -176,6 +176,40 @@ const obtenerArchivo = async (req, res) => {
   }
 };
 
+// Controlador para obtener información del archivo sin enviarlo
+const obtenerInfoArchivo = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const archivo = await ArchivoAdjunto.obtenerArchivoPorId(id);
+    
+    if (!archivo) {
+      return res.status(404).json({ error: 'Archivo no encontrado' });
+    }
+    
+    // Verificar si el archivo existe físicamente
+    if (!fs.existsSync(archivo.ruta_archivo)) {
+      return res.status(404).json({ error: 'El archivo físico no existe en el servidor' });
+    }
+    
+    // Extraer solo el nombre del archivo de la ruta completa
+    const nombreArchivo = path.basename(archivo.ruta_archivo);
+    
+    // Devolver información relevante sobre el archivo
+    res.json({
+      id: archivo.id,
+      nombre_original: archivo.nombre_original,
+      ruta_archivo: archivo.ruta_archivo,
+      tipo_archivo: archivo.tipo_archivo,
+      tamaño: archivo.tamaño,
+      fecha_subida: archivo.fecha_subida,
+      nombre_archivo: nombreArchivo
+    });
+  } catch (error) {
+    console.error('Error al obtener información del archivo:', error);
+    res.status(500).json({ error: 'Error al obtener información del archivo' });
+  }
+};
+
 // Eliminar archivo
 const eliminarArchivo = async (req, res) => {
   try {
@@ -210,6 +244,7 @@ module.exports = {
   upload,
   subirArchivo,
   obtenerArchivo,
+  obtenerInfoArchivo,
   eliminarArchivo,
   limpiarArchivosExpirados
 };

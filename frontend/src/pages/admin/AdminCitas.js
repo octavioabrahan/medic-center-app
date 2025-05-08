@@ -392,21 +392,67 @@ const AdminCitas = () => {
                 )}
                 {currentAgendamiento.id_empresa && currentAgendamiento.archivo_adjunto_id && (
                   <div>
-                    <strong>Orden médica:</strong> <a 
-                      href={`/api/archivos/${currentAgendamiento.archivo_adjunto_id}?inline=true`} 
-                      target="_blank" 
-                      rel="noopener noreferrer"
-                      className="orden-medica-link"
+                    <strong>Orden médica:</strong>
+                    <button 
+                      className="btn-link orden-medica-link"
+                      onClick={async () => {
+                        try {
+                          // Obtener la información del archivo desde el backend
+                          const response = await axios.get(`/api/archivos/${currentAgendamiento.archivo_adjunto_id}/info`);
+                          
+                          if (response.data && response.data.ruta_archivo) {
+                            // Extraer el nombre del archivo de la ruta
+                            const nombreArchivo = response.data.ruta_archivo.split('/').pop();
+                            
+                            // Construir URL para acceder directamente al archivo
+                            const urlArchivo = `/uploads/agendamientos/${nombreArchivo}`;
+                            
+                            // Abrir el archivo en una nueva pestaña
+                            window.open(urlArchivo, '_blank');
+                          } else {
+                            alert('No se pudo obtener la información del archivo adjunto');
+                          }
+                        } catch (error) {
+                          console.error('Error al obtener información del archivo:', error);
+                          alert('Error al acceder al archivo adjunto');
+                        }
+                      }}
                     >
                       Ver orden médica 📄
-                    </a>
+                    </button>
                     {' | '}
-                    <a 
-                      href={`/api/archivos/${currentAgendamiento.archivo_adjunto_id}?download=true`} 
-                      className="orden-medica-link"
+                    <button 
+                      className="btn-link orden-medica-link"
+                      onClick={async () => {
+                        try {
+                          // Obtener la información del archivo desde el backend
+                          const response = await axios.get(`/api/archivos/${currentAgendamiento.archivo_adjunto_id}/info`);
+                          
+                          if (response.data && response.data.ruta_archivo) {
+                            // Extraer el nombre del archivo de la ruta
+                            const nombreArchivo = response.data.ruta_archivo.split('/').pop();
+                            
+                            // Construir URL para acceder directamente al archivo con atributo de descarga
+                            const urlArchivo = `/uploads/agendamientos/${nombreArchivo}`;
+                            
+                            // Crear un elemento <a> temporal para forzar la descarga
+                            const a = document.createElement('a');
+                            a.href = urlArchivo;
+                            a.download = response.data.nombre_original || nombreArchivo;
+                            document.body.appendChild(a);
+                            a.click();
+                            document.body.removeChild(a);
+                          } else {
+                            alert('No se pudo obtener la información del archivo adjunto');
+                          }
+                        } catch (error) {
+                          console.error('Error al obtener información del archivo:', error);
+                          alert('Error al descargar el archivo adjunto');
+                        }
+                      }}
                     >
                       Descargar
-                    </a>
+                    </button>
                   </div>
                 )}
               </div>
