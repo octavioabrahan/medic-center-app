@@ -51,7 +51,7 @@
 /* Contenedor horizontal para los filtros en la segunda línea */
 .admin-filter-controls {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: flex-start;
   gap: 10px;
   flex-wrap: nowrap;
