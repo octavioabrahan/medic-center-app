@@ -367,7 +367,7 @@ html body .admin-sort-buttons .sort-btn.active {
   background-color: white;
   border-radius: var(--border-radius);
   box-shadow: var(--box-shadow);
-  overflow: hidden;
+  overflow: visible; /* Cambiado de 'hidden' a 'visible' para evitar cortar el contenido */
   margin-bottom: var(--spacing-lg);
   margin-top: 0; /* Eliminar espacio superior */
 }
