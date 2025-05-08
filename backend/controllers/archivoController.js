@@ -133,10 +133,20 @@ const obtenerArchivo = async (req, res) => {
       return res.status(404).json({ error: 'Archivo no encontrado' });
     }
     
-    const filePath = path.resolve(archivo.ruta_archivo);
+    // Manejar correctamente tanto rutas absolutas como relativas
+    let filePath;
+    if (path.isAbsolute(archivo.ruta_archivo)) {
+      // Si la ruta ya es absoluta, usarla directamente
+      filePath = archivo.ruta_archivo;
+    } else {
+      // Si es una ruta relativa, resolverla desde la ubicación del backend
+      filePath = path.resolve(__dirname, '..', archivo.ruta_archivo);
+    }
+    
+    console.log('Intentando acceder al archivo en:', filePath);
     
     if (!fs.existsSync(filePath)) {
-      return res.status(404).json({ error: 'El archivo físico no existe' });
+      return res.status(404).json({ error: 'El archivo físico no existe en la ruta: ' + filePath });
     }
     
     // Establecer tipo de contenido
@@ -155,7 +165,7 @@ const obtenerArchivo = async (req, res) => {
     fileStream.pipe(res);
   } catch (error) {
     console.error('Error al obtener archivo:', error);
-    res.status(500).json({ error: 'Error al obtener el archivo' });
+    res.status(500).json({ error: 'Error al obtener el archivo: ' + error.message });
   }
 };
 
