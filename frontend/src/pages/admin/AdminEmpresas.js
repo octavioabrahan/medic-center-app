@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import "../../components/admin/AdminCommon.css"; // Importamos los estilos comunes
 import AdminFilterBar from "../../components/admin/AdminFilterBar"; // Importamos el nuevo componente
+import ArchivoAdjuntoForm from "../../components/public/ArchivoAdjuntoForm"; // Importamos el componente de archivos mejorado
 import "./AdminEmpresas.css"; // Importamos los estilos específicos
 
 const AdminEmpresas = () => {
@@ -26,6 +27,7 @@ const AdminEmpresas = () => {
   // Estados para modal
   const [showModal, setShowModal] = useState(false);
   const [currentEmpresa, setCurrentEmpresa] = useState(null);
+  const [logoArchivoId, setLogoArchivoId] = useState(null);
   
   const cargarEmpresas = async () => {
     setLoading(true);
@@ -100,6 +102,7 @@ const AdminEmpresas = () => {
       rif: "",
       logo_url: ""
     });
+    setLogoArchivoId(null);
     setShowModal(true);
   };
 
@@ -110,7 +113,24 @@ const AdminEmpresas = () => {
       rif: empresa.rif,
       logo_url: empresa.logo_url || ""
     });
+    setLogoArchivoId(null);
     setShowModal(true);
+  };
+
+  const handleFileUploaded = (fileId) => {
+    setLogoArchivoId(fileId);
+    if (fileId) {
+      // Actualizar la URL del logo cuando se sube un archivo
+      setFormData({
+        ...formData,
+        logo_url: `/api/archivos/${fileId}`
+      });
+    } else {
+      setFormData({
+        ...formData,
+        logo_url: ""
+      });
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -290,23 +310,19 @@ const AdminEmpresas = () => {
                 </div>
 
                 <div className="form-group">
-                  <label htmlFor="logo_url">URL del Logo</label>
-                  <input
-                    id="logo_url"
-                    type="text"
-                    name="logo_url"
-                    value={formData.logo_url}
-                    onChange={handleInputChange}
-                    placeholder="https://ejemplo.com/logo.png"
+                  <label>Logo de la empresa</label>
+                  <ArchivoAdjuntoForm 
+                    onFileUploaded={handleFileUploaded} 
+                    requiereArchivo={false} 
                   />
                 </div>
 
-                {formData.logo_url && (
+                {formData.logo_url && !logoArchivoId && (
                   <div className="logo-preview">
-                    <p>Vista previa del logo:</p>
+                    <p>Logo actual:</p>
                     <img 
                       src={formData.logo_url} 
-                      alt="Vista previa del logo" 
+                      alt="Logo actual" 
                       className="logo-preview-image" 
                     />
                   </div>
