@@ -407,7 +407,7 @@ const AdminCitas = () => {
                             fontSize: '14px'
                           }}
                         >
-                          👁️ Ver documento
+                          Ver documento
                         </a>
                         <a 
                           href={`${process.env.REACT_APP_API_URL || ''}/api/archivos/${currentAgendamiento.archivo_adjunto_id}?download=true`}
@@ -418,7 +418,7 @@ const AdminCitas = () => {
                             fontSize: '14px'
                           }}
                         >
-                          ⬇️ Descargar documento
+                          Descargar documento
                         </a>
                       </div>
                     </div>
