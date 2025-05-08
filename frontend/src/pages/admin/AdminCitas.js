@@ -394,25 +394,6 @@ const AdminCitas = () => {
                   <div>
                     <strong>Orden médica:</strong>
                     <div className="orden-medica-container" style={{ marginTop: '10px' }}>
-                      <a 
-                        href={`${process.env.REACT_APP_API_URL || ''}/api/archivos/${currentAgendamiento.archivo_adjunto_id}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        <img 
-                          src={`${process.env.REACT_APP_API_URL || ''}/api/archivos/${currentAgendamiento.archivo_adjunto_id}/thumbnail`} 
-                          alt="Vista previa del documento" 
-                          style={{ 
-                            maxWidth: '150px', 
-                            maxHeight: '150px',
-                            border: '1px solid #ddd',
-                            display: 'block',
-                            marginBottom: '10px',
-                            cursor: 'pointer'
-                          }}
-                          title="Click para ver el documento completo"
-                        />
-                      </a>
                       <div style={{ marginTop: '8px' }}>
                         <a 
                           href={`${process.env.REACT_APP_API_URL || ''}/api/archivos/${currentAgendamiento.archivo_adjunto_id}`}
@@ -422,20 +403,22 @@ const AdminCitas = () => {
                             color: '#0066cc', 
                             textDecoration: 'underline',
                             display: 'block',
-                            marginBottom: '5px'
+                            marginBottom: '10px',
+                            fontSize: '14px'
                           }}
                         >
-                          Ver en nueva pestaña
+                          👁️ Ver documento
                         </a>
                         <a 
                           href={`${process.env.REACT_APP_API_URL || ''}/api/archivos/${currentAgendamiento.archivo_adjunto_id}?download=true`}
                           download
                           style={{ 
                             color: '#0066cc', 
-                            textDecoration: 'underline' 
+                            textDecoration: 'underline',
+                            fontSize: '14px'
                           }}
                         >
-                          Descargar archivo
+                          ⬇️ Descargar documento
                         </a>
                       </div>
                     </div>
