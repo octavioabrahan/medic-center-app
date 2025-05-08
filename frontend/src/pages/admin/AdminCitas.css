@@ -526,3 +526,38 @@
   padding: 16px 20px;
   border-top: 1px solid #e5e7eb;
 }
+
+/* Estilos para el selector de estado en el modal */
+.estado-select {
+  margin-left: 8px;
+  padding: 4px 8px;
+  border: 1px solid #e5e7eb;
+  border-radius: 4px;
+  font-size: 13px;
+  background-color: white;
+  cursor: pointer;
+  height: 28px;
+  min-width: 110px;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.estado-select option {
+  padding: 4px;
+}
+
+/* Estilo para cada opción según el estado */
+.estado-select option[value="pendiente"] {
+  background-color: #fff4de;
+  color: #ff8a00;
+}
+
+.estado-select option[value="confirmada"] {
+  background-color: #e6f7e6;
+  color: #28a745;
+}
+
+.estado-select option[value="cancelada"] {
+  background-color: #ffe6e6;
+  color: #dc3545;
+}

@@ -82,7 +82,7 @@ const AgendamientoModel = {
   },
 
   actualizarEstado: async (id, nuevoEstado, cambiadoPor = 'sistema') => {
-    const client = await db.connect();
+    const client = await db.getClient();
     try {
       await client.query('BEGIN');
       const update = await client.query(

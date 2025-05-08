@@ -378,9 +378,15 @@ const AdminCitas = () => {
                 </div>
                 <div>
                   <strong>Estado:</strong> 
-                  <span className={`status-badge status-${currentAgendamiento.status ? currentAgendamiento.status.toLowerCase() : 'pendiente'}`}>
-                    {currentAgendamiento.status || 'Sin estado'}
-                  </span>
+                  <select 
+                    className="estado-select"
+                    value={currentAgendamiento.status || 'pendiente'}
+                    onChange={(e) => actualizarEstado(currentAgendamiento.agendamiento_id, e.target.value)}
+                  >
+                    <option value="pendiente">Pendiente</option>
+                    <option value="confirmada">Confirmada</option>
+                    <option value="cancelada">Cancelada</option>
+                  </select>
                 </div>
                 <div>
                   <strong>Tipo:</strong> {currentAgendamiento.tipo_atencion}
