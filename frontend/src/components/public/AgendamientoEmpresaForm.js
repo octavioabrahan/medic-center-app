@@ -64,7 +64,11 @@ const AgendamientoEmpresaForm = () => {
   useEffect(() => {
     fetch('/api/empresas')
       .then(res => res.json())
-      .then(data => setEmpresas(data.filter(e => e.activa)));
+      .then(data => setEmpresas(data.filter(e => e.is_active)))
+      .catch(error => {
+        console.error('Error al cargar empresas:', error);
+        alert('Error al cargar las empresas disponibles. Por favor, recarga la página.');
+      });
   }, []);
 
   useEffect(() => {
