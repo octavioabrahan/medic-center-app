@@ -334,22 +334,13 @@ const AdminCitas = () => {
                       👁️
                     </button>
                     {agendamiento.status && agendamiento.status.toLowerCase() === 'pendiente' && (
-                      <>
-                        <button
-                          onClick={() => actualizarEstado(agendamiento.agendamiento_id, "confirmada")}
-                          className="btn-action btn-confirm"
-                          title="Confirmar"
-                        >
-                          ✓
-                        </button>
-                        <button
-                          onClick={() => actualizarEstado(agendamiento.agendamiento_id, "cancelada")}
-                          className="btn-action btn-cancel"
-                          title="Cancelar"
-                        >
-                          ✕
-                        </button>
-                      </>
+                      <button
+                        onClick={() => actualizarEstado(agendamiento.agendamiento_id, "confirmada")}
+                        className="btn-action btn-confirm"
+                        title="Confirmar"
+                      >
+                        ✓
+                      </button>
                     )}
                   </td>
                 </tr>
@@ -435,6 +426,29 @@ const AdminCitas = () => {
             </div>
           </div>
           <div className="modal-footer">
+            <div className="modal-estado-selector">
+              <label>Cambiar estado:</label>
+              <div className="estado-buttons">
+                <button 
+                  className={`estado-btn estado-pendiente ${currentAgendamiento.status === 'pendiente' ? 'active' : ''}`}
+                  onClick={() => actualizarEstado(currentAgendamiento.agendamiento_id, "pendiente")}
+                >
+                  Pendiente
+                </button>
+                <button 
+                  className={`estado-btn estado-confirmada ${currentAgendamiento.status === 'confirmada' ? 'active' : ''}`}
+                  onClick={() => actualizarEstado(currentAgendamiento.agendamiento_id, "confirmada")}
+                >
+                  Confirmada
+                </button>
+                <button 
+                  className={`estado-btn estado-cancelada ${currentAgendamiento.status === 'cancelada' ? 'active' : ''}`}
+                  onClick={() => actualizarEstado(currentAgendamiento.agendamiento_id, "cancelada")}
+                >
+                  Cancelada
+                </button>
+              </div>
+            </div>
             <button className="btn-secondary" onClick={() => setShowDetailModal(false)}>
               Cerrar
             </button>

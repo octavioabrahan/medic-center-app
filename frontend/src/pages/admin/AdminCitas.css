@@ -456,3 +456,73 @@
     max-height: calc(100vh - 300px);
   }
 }
+
+/* Estilos para el selector de estado en el modal */
+.modal-estado-selector {
+  margin-right: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.modal-estado-selector label {
+  font-weight: 500;
+  font-size: 14px;
+  color: #374151;
+}
+
+.estado-buttons {
+  display: flex;
+  gap: 8px;
+}
+
+.estado-btn {
+  padding: 6px 12px;
+  border-radius: 4px;
+  font-size: 13px;
+  font-weight: 500;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.estado-btn.active {
+  box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.1);
+  transform: scale(1.05);
+}
+
+.estado-pendiente {
+  background-color: #fff4de;
+  color: #ff8a00;
+}
+
+.estado-pendiente:hover {
+  background-color: #ffe8c2;
+}
+
+.estado-confirmada {
+  background-color: #e6f7e6;
+  color: #28a745;
+}
+
+.estado-confirmada:hover {
+  background-color: #d4efda;
+}
+
+.estado-cancelada {
+  background-color: #ffe6e6;
+  color: #dc3545;
+}
+
+.estado-cancelada:hover {
+  background-color: #ffd0d0;
+}
+
+/* Ajustes en el modal-footer para acomodar los botones de estado */
+.modal-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 20px;
+  border-top: 1px solid #e5e7eb;
+}
