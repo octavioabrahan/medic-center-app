@@ -395,7 +395,7 @@ const AdminCitas = () => {
                     <strong>Orden médica:</strong>
                     <div className="orden-medica-container" style={{ marginTop: '10px' }}>
                       <img 
-                        src={`/api/archivos/${currentAgendamiento.archivo_adjunto_id}/thumbnail`} 
+                        src={`${process.env.REACT_APP_API_URL || ''}/api/archivos/${currentAgendamiento.archivo_adjunto_id}/thumbnail`} 
                         alt="Vista previa del documento" 
                         style={{ 
                           maxWidth: '150px', 
@@ -407,7 +407,7 @@ const AdminCitas = () => {
                       />
                       <div style={{ marginTop: '8px' }}>
                         <a 
-                          href={`/api/archivos/${currentAgendamiento.archivo_adjunto_id}`}
+                          href={`${process.env.REACT_APP_API_URL || ''}/api/archivos/${currentAgendamiento.archivo_adjunto_id}`}
                           target="_blank" 
                           rel="noopener noreferrer"
                           style={{ 
@@ -420,7 +420,7 @@ const AdminCitas = () => {
                           Ver en nueva pestaña
                         </a>
                         <a 
-                          href={`/api/archivos/${currentAgendamiento.archivo_adjunto_id}?download=true`}
+                          href={`${process.env.REACT_APP_API_URL || ''}/api/archivos/${currentAgendamiento.archivo_adjunto_id}?download=true`}
                           download
                           style={{ 
                             color: '#0066cc', 
