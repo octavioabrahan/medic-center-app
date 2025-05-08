@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import "../../components/admin/AdminCommon.css"; // Importamos los estilos comunes
 import AdminFilterBar from "../../components/admin/AdminFilterBar"; // Importamos el nuevo componente
+import "./AdminEmpresas.css"; // Importamos los estilos específicos
 
 const AdminEmpresas = () => {
   const [empresas, setEmpresas] = useState([]);
@@ -202,7 +203,7 @@ const AdminEmpresas = () => {
             </thead>
             <tbody>
               {filteredEmpresas.map((empresa) => (
-                <tr key={empresa.id_empresa}>
+                <tr key={empresa.id_empresa} className={!empresa.is_active ? 'inactive-row' : ''}>
                   <td>{empresa.nombre_empresa}</td>
                   <td>{empresa.rif}</td>
                   <td>
@@ -217,8 +218,8 @@ const AdminEmpresas = () => {
                     )}
                   </td>
                   <td>
-                    <span className={`status-badge ${empresa.is_active ? 'status-active' : 'status-inactive'}`}>
-                      {empresa.is_active ? "Activa" : "Inactiva"}
+                    <span className={`status-badge ${empresa.is_active ? 'status-activo' : 'status-inactivo'}`}>
+                      {empresa.is_active ? "ACTIVO" : "INACTIVO"}
                     </span>
                   </td>
                   <td className="actions-cell">
@@ -231,7 +232,7 @@ const AdminEmpresas = () => {
                     </button>
                     {empresa.is_active ? (
                       <button
-                        className="btn-action btn-delete"
+                        className="btn-action btn-archive"
                         onClick={() => cambiarEstadoEmpresa(empresa.id_empresa, false)}
                         title="Desactivar"
                       >

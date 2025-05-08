@@ -1,0 +1,70 @@
+/* Estilos específicos para la gestión de empresas */
+.empresa-logo {
+  max-width: 80px;
+  max-height: 30px;
+  object-fit: contain;
+}
+
+.no-logo {
+  font-style: italic;
+  color: #6c757d;
+}
+
+/* Vista previa del logo en el formulario */
+.logo-preview {
+  margin-top: 15px;
+  padding: 15px;
+  background-color: #f8f9fa;
+  border-radius: 4px;
+  text-align: center;
+}
+
+.logo-preview p {
+  margin-bottom: 10px;
+  font-size: 14px;
+  color: #495057;
+}
+
+.logo-preview-image {
+  max-width: 200px;
+  max-height: 80px;
+  object-fit: contain;
+  border: 1px dashed #ced4da;
+  padding: 10px;
+}
+
+/* Filas inactivas con estilo atenuado */
+.inactive-row {
+  background-color: #f9f9f9;
+  color: #6c757d;
+}
+
+.inactive-row:hover {
+  background-color: #f3f3f3 !important;
+}
+
+/* Mejoras para los estados */
+.status-badge {
+  letter-spacing: 0.5px;
+  font-size: 11px;
+}
+
+.status-activo {
+  background-color: #e6f7e6;
+  color: #28a745;
+}
+
+.status-inactivo {
+  background-color: #ffe6e6;
+  color: #dc3545;
+}
+
+/* Mensajes de éxito */
+.success-message {
+  padding: 15px;
+  background-color: #e6f7e6;
+  color: #28a745;
+  border-radius: 4px;
+  margin-bottom: 20px;
+  font-weight: 500;
+}
