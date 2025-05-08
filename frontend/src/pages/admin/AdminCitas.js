@@ -455,7 +455,7 @@ const AdminCitas = () => {
         sortOrder={sortOrder}
         setSortOrder={setSortOrder}
       >
-        <div className="admin-actions">
+        <div className="filter-group">
           <div className="admin-filter-container">
             <select 
               value={filterStatus}
