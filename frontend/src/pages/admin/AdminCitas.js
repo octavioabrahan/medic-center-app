@@ -394,17 +394,25 @@ const AdminCitas = () => {
                   <div>
                     <strong>Orden médica:</strong>
                     <div className="orden-medica-container" style={{ marginTop: '10px' }}>
-                      <img 
-                        src={`${process.env.REACT_APP_API_URL || ''}/api/archivos/${currentAgendamiento.archivo_adjunto_id}/thumbnail`} 
-                        alt="Vista previa del documento" 
-                        style={{ 
-                          maxWidth: '150px', 
-                          maxHeight: '150px',
-                          border: '1px solid #ddd',
-                          display: 'block',
-                          marginBottom: '10px'
-                        }}
-                      />
+                      <a 
+                        href={`${process.env.REACT_APP_API_URL || ''}/api/archivos/${currentAgendamiento.archivo_adjunto_id}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        <img 
+                          src={`${process.env.REACT_APP_API_URL || ''}/api/archivos/${currentAgendamiento.archivo_adjunto_id}/thumbnail`} 
+                          alt="Vista previa del documento" 
+                          style={{ 
+                            maxWidth: '150px', 
+                            maxHeight: '150px',
+                            border: '1px solid #ddd',
+                            display: 'block',
+                            marginBottom: '10px',
+                            cursor: 'pointer'
+                          }}
+                          title="Click para ver el documento completo"
+                        />
+                      </a>
                       <div style={{ marginTop: '8px' }}>
                         <a 
                           href={`${process.env.REACT_APP_API_URL || ''}/api/archivos/${currentAgendamiento.archivo_adjunto_id}`}
