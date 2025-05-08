@@ -21,8 +21,8 @@
   --text-muted: #6c757d;
   
   /* Colores específicos para componentes */
-  --table-header-bg: #20377A;
-  --table-header-text: #ffffff;
+  --table-header-bg: #FAF8FF;
+  --table-header-text: #333333;
   
   /* Colores de botones */
   --btn-primary-bg: #4CAF50; /* Verde para botones primarios según las imágenes */
@@ -369,6 +369,7 @@ html body .admin-sort-buttons .sort-btn.active {
   box-shadow: var(--box-shadow);
   overflow: hidden;
   margin-bottom: var(--spacing-lg);
+  margin-top: 0; /* Eliminar espacio superior */
 }
 
 .admin-table {
@@ -407,6 +408,8 @@ html body .admin-sort-buttons .sort-btn.active {
   white-space: nowrap;
   display: flex;
   gap: var(--spacing-sm);
+  justify-content: flex-end; /* Alinear iconos a la derecha */
+  align-items: center; /* Centrar verticalmente */
 }
 
 .btn-action {
@@ -415,6 +418,9 @@ html body .admin-sort-buttons .sort-btn.active {
   color: var(--text-muted);
   cursor: pointer;
   padding: 4px;
+  display: flex; /* Asegurar que los iconos estén bien alineados */
+  align-items: center;
+  justify-content: center;
 }
 
 .btn-action:hover {
