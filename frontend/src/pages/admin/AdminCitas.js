@@ -390,6 +390,18 @@ const AdminCitas = () => {
                     <strong>Empresa:</strong> {currentAgendamiento.nombre_empresa || 'Convenio empresarial'}
                   </div>
                 )}
+                {currentAgendamiento.id_empresa && currentAgendamiento.archivo_adjunto_id && (
+                  <div>
+                    <strong>Orden médica:</strong> <a 
+                      href={`/api/archivos/${currentAgendamiento.archivo_adjunto_id}`} 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="orden-medica-link"
+                    >
+                      Ver orden médica 📄
+                    </a>
+                  </div>
+                )}
               </div>
             </div>
 
