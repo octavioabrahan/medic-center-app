@@ -133,24 +133,21 @@ const obtenerArchivo = async (req, res) => {
       return res.status(404).json({ error: 'Archivo no encontrado' });
     }
     
-    // Extraer solo la parte del nombre del archivo de la ruta completa
-    // Esto es importante porque las rutas completas en el servidor no son accesibles desde el navegador
+    // Manejar correctamente la ruta del archivo
     let filePath = archivo.ruta_archivo;
+    console.log('Intentando acceder al archivo en:', filePath);
     
-    console.log('Ruta original del archivo:', filePath);
-    
-    // Verificar si el archivo existe
     if (!fs.existsSync(filePath)) {
       return res.status(404).json({ 
-        error: `El archivo físico no existe en la ruta: ${filePath}`,
-        detalles: `Tipo: ${archivo.tipo_archivo}, Nombre original: ${archivo.nombre_original}`
+        error: 'El archivo físico no existe',
+        ruta: filePath // Solo para debug
       });
     }
     
-    // Establecer tipo de contenido basado en el registro del archivo
+    // Establecer tipo de contenido
     res.setHeader('Content-Type', archivo.tipo_archivo);
     
-    // Decidir si mostrar en navegador o descargar basado en query param
+    // Decidir si mostrar en navegador o descargar
     const descargar = req.query.download === 'true';
     if (descargar) {
       res.setHeader('Content-Disposition', `attachment; filename="${archivo.nombre_original}"`);
@@ -158,21 +155,17 @@ const obtenerArchivo = async (req, res) => {
       res.setHeader('Content-Disposition', `inline; filename="${archivo.nombre_original}"`);
     }
     
-    // Leer y enviar el archivo como respuesta
+    // Enviar el archivo directamente usando fs
     fs.readFile(filePath, (err, data) => {
       if (err) {
-        console.error('Error al leer el archivo:', err);
+        console.error("Error al leer el archivo:", err);
         return res.status(500).json({ error: 'Error al leer el archivo' });
       }
       res.end(data);
     });
   } catch (error) {
     console.error('Error al obtener archivo:', error);
-    res.status(500).json({ 
-      error: 'Error al obtener el archivo', 
-      mensaje: error.message,
-      stack: process.env.NODE_ENV === 'development' ? error.stack : undefined 
-    });
+    res.status(500).json({ error: 'Error al obtener el archivo: ' + error.message });
   }
 };
 
