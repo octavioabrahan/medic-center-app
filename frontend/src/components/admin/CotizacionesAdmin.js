@@ -10,6 +10,7 @@ function CotizacionesAdmin() {
   const [error, setError] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [filterStatus, setFilterStatus] = useState('todos');
+  const [sortOrder, setSortOrder] = useState('az'); // Añadimos el estado para el ordenamiento alfabético
   const [currentCotizacion, setCurrentCotizacion] = useState(null);
   const [showDetailModal, setShowDetailModal] = useState(false);
   const [showSeguimientoModal, setShowSeguimientoModal] = useState(false);
@@ -51,9 +52,21 @@ function CotizacionesAdmin() {
         results = results.filter(cot => cot.estado === filterStatus);
       }
       
+      // Aplicar ordenamiento alfabético por nombre del cliente
+      if (sortOrder) {
+        results.sort((a, b) => {
+          const nameA = `${a.nombre} ${a.apellido}`.toLowerCase();
+          const nameB = `${b.nombre} ${b.apellido}`.toLowerCase();
+          
+          return sortOrder === 'az' 
+            ? nameA.localeCompare(nameB) 
+            : nameB.localeCompare(nameA);
+        });
+      }
+      
       setFilteredCotizaciones(results);
     }
-  }, [searchTerm, filterStatus, cotizaciones]);
+  }, [searchTerm, filterStatus, cotizaciones, sortOrder]);
 
   // Obtener tasa de cambio
   const fetchTasaCambio = async () => {
@@ -564,6 +577,8 @@ function CotizacionesAdmin() {
         filterValue={filterStatus}
         setFilterValue={setFilterStatus}
         filterLabel="Todos los estados"
+        sortOrder={sortOrder}
+        setSortOrder={setSortOrder}
       />
       
       {loading ? (
