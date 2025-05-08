@@ -322,7 +322,7 @@ function ExcepcionesPage() {
       const fechaFormateada = formatDate(nuevaExcepcion.fecha);
       console.log("Fecha formateada para la excepción:", fechaFormateada);
 
-      const response = await apiClient.post("/api/excepciones", {
+      const response = await apiClient.post("/excepciones", {
         ...nuevaExcepcion,
         fecha: fechaFormateada
       });
