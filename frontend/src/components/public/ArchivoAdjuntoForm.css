@@ -30,34 +30,6 @@
   background-color: #f9f9f9;
 }
 
-.upload-button, .remove-button {
-  padding: 8px 16px;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  font-weight: 500;
-  transition: background-color 0.3s ease;
-}
-
-.upload-button {
-  background-color: #4a90e2;
-  color: white;
-}
-
-.upload-button:hover {
-  background-color: #357abD;
-}
-
-.upload-button:disabled {
-  background-color: #a9a9a9;
-  cursor: not-allowed;
-}
-
-.upload-button.loading {
-  background-color: #a9a9a9;
-  cursor: wait;
-}
-
 .remove-button {
   margin-left: 10px;
   padding: 8px 16px;
