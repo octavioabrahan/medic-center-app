@@ -24,7 +24,7 @@ const LogoUploader = ({ onLogoUploaded, initialLogo }) => {
     }
   }, [initialLogo]);
 
-  const handleFileChange = (event) => {
+  const handleFileChange = async (event) => {
     const file = event.target.files[0];
     setError('');
     
@@ -57,10 +57,15 @@ const LogoUploader = ({ onLogoUploaded, initialLogo }) => {
       setPreviewUrl(fileReader.result);
     };
     fileReader.readAsDataURL(file);
+    
+    // Iniciar la carga automáticamente
+    await handleUpload(file);
   };
 
-  const handleUpload = async () => {
-    if (!selectedFile) {
+  const handleUpload = async (fileToUpload) => {
+    const fileToUse = fileToUpload || selectedFile;
+    
+    if (!fileToUse) {
       setError('Por favor selecciona una imagen.');
       return;
     }
@@ -70,7 +75,7 @@ const LogoUploader = ({ onLogoUploaded, initialLogo }) => {
     setError('');
 
     const formData = new FormData();
-    formData.append('archivo', selectedFile);
+    formData.append('archivo', fileToUse);
 
     try {
       console.log('Iniciando carga de logo...');
@@ -122,7 +127,7 @@ const LogoUploader = ({ onLogoUploaded, initialLogo }) => {
       }
       
       setError(errorMessage);
-      setPreviewUrl(''); // Limpiar la vista previa en caso de error
+      // No limpiar la vista previa en caso de error
     } finally {
       setLoading(false);
     }
@@ -155,16 +160,6 @@ const LogoUploader = ({ onLogoUploaded, initialLogo }) => {
             disabled={loading}
             className="file-input"
           />
-          
-          {selectedFile && !loading && (
-            <button 
-              type="button"
-              onClick={handleUpload}
-              className="upload-button"
-            >
-              Subir imagen
-            </button>
-          )}
         </div>
 
         {error && <div className="error-message">{error}</div>}
@@ -172,7 +167,7 @@ const LogoUploader = ({ onLogoUploaded, initialLogo }) => {
         {loading && (
           <div className="progress-container">
             <div className="progress-bar" style={{ width: `${progress}%` }}></div>
-            <span className="progress-text">{progress}%</span>
+            <span className="progress-text">{progress}% {progress < 100 ? 'Subiendo...' : 'Finalizando...'}</span>
           </div>
         )}
         
