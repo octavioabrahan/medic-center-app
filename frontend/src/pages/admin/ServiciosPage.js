@@ -423,7 +423,14 @@ const ServiciosPage = () => {
 
   return (
     <div className="admin-page-container">
-      <h1 className="admin-page-title">Servicios</h1>
+      <div className="admin-header">
+        <h1>Gestión de Servicios</h1>
+        <div className="admin-header-buttons">
+          <button className="btn-add-main" onClick={handleAgregarServicio}>
+            Crear servicio
+          </button>
+        </div>
+      </div>
       
       <AdminFilterBar
         searchTerm={searchTerm}
@@ -433,11 +440,9 @@ const ServiciosPage = () => {
         setShowArchived={setMostrarArchivados}
         sortOrder={sortOrder}
         setSortOrder={setSortOrder}
-      >
-        <button className="btn-add" onClick={handleAgregarServicio}>
-          Crear servicio
-        </button>
-      </AdminFilterBar>
+      />
+      
+      {error && <div className="error-message">{error}</div>}
       
       {renderServiciosTable()}
       {renderModal()}

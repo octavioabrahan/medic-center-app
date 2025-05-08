@@ -679,9 +679,25 @@ function ProfesionalesAdmin() {
 
   return (
     <div className="admin-page-container">
-      <h1 className="admin-page-title">Gestión de Profesionales</h1>
+      <div className="admin-header">
+        <h1>Gestión de Profesionales</h1>
+        <div className="admin-header-buttons">
+          <button 
+            className="btn-secondary" 
+            onClick={() => setShowAddEspecialidadModal(true)}
+          >
+            Crear especialidad
+          </button>
+          
+          <button 
+            className="btn-add-main" 
+            onClick={() => setShowAddProfesionalModal(true)}
+          >
+            Agregar profesional
+          </button>
+        </div>
+      </div>
       
-      {/* Reemplazamos la anterior barra de filtros con nuestro componente reutilizable */}
       <AdminFilterBar
         searchTerm={searchTerm}
         setSearchTerm={setSearchTerm}
@@ -694,24 +710,7 @@ function ProfesionalesAdmin() {
         setShowArchived={setShowArchived}
         sortOrder={sortOrder}
         setSortOrder={setSortOrder}
-      >
-        {/* Botones de acción */}
-        <div className="admin-actions">
-          <button 
-            className="btn-secondary" 
-            onClick={() => setShowAddEspecialidadModal(true)}
-          >
-            Crear especialidad
-          </button>
-          
-          <button 
-            className="btn-add" 
-            onClick={() => setShowAddProfesionalModal(true)}
-          >
-            Agregar profesional
-          </button>
-        </div>
-      </AdminFilterBar>
+      />
       
       {loading ? (
         <div className="loading-container">Cargando profesionales...</div>
@@ -772,40 +771,7 @@ function ProfesionalesAdmin() {
       )}
 
       {/* Modales */}
-      {showAddEspecialidadModal && (
-        <div className="modal-overlay">
-          <div className="modal-content">
-            <div className="modal-header">
-              <h2>Crear especialidad</h2>
-              <button className="close-btn" onClick={() => setShowAddEspecialidadModal(false)}>×</button>
-            </div>
-            <div className="modal-body">
-              <form onSubmit={handleCreateEspecialidad}>
-                <div className="form-group">
-                  <label htmlFor="nombre">Nombre de la especialidad</label>
-                  <input
-                    id="nombre"
-                    type="text"
-                    value={nuevaEspecialidad.nombre}
-                    onChange={(e) => setNuevaEspecialidad({ ...nuevaEspecialidad, nombre: e.target.value })}
-                    required
-                  />
-                </div>
-              </form>
-            </div>
-            <div className="modal-footer">
-              <button type="button" className="btn-secondary" onClick={() => setShowAddEspecialidadModal(false)}>
-                Cancelar
-              </button>
-              <button type="button" className="btn-primary" onClick={handleCreateEspecialidad}>
-                Guardar
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-      
-      {/* Mantener el estilo de los otros modales */}
+      {renderAddEspecialidadModal()}
       {renderAddProfesionalModal()}
       {renderEditProfesionalModal()}
       {renderConfirmArchiveModal()}
