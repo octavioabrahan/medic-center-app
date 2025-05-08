@@ -543,12 +543,12 @@
 
 /* Override de estilos específicos para la página de horarios */
 .admin-page-container .btn-add {
-  background-color: #4CAF50 !important; /* Verde para el botón de agregar */
+  background-color: #2c2c2c !important;
   color: white !important;
 }
 
 .admin-page-container .btn-add:hover {
-  background-color: #3d8b40 !important;
+  background-color: #2c2c2c !important;
 }
 
 /* Estilos para las pestañas mejoradas */
