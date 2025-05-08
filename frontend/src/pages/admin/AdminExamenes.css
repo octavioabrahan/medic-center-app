@@ -111,8 +111,8 @@
   background-color: #1565c0;
 }
 
-/* Tabla de exámenes */
-.table-container {
+/* Tabla de exámenes - Hago específico el selector para no afectar a otras páginas */
+.admin-examenes-container .table-container {
   overflow-x: auto;
   margin-bottom: 20px;
   border-radius: 4px;
