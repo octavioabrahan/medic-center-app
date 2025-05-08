@@ -448,43 +448,43 @@ const AdminCitas = () => {
     <div className="admin-page-container">
       <h1 className="admin-page-title">Citas agendadas</h1>
       
-      <AdminFilterBar
-        searchTerm={searchTerm}
-        setSearchTerm={setSearchTerm}
-        searchPlaceholder="Buscar por nombre o cédula..."
-        sortOrder={sortOrder}
-        setSortOrder={setSortOrder}
-      >
-        <div className="filter-group">
-          <div className="admin-filter-container">
-            <select 
-              value={filterStatus}
-              onChange={(e) => setFilterStatus(e.target.value)}
-              className="filter-select"
-            >
-              <option value="todos">Todos los estados</option>
-              <option value="pendiente">Pendiente</option>
-              <option value="confirmada">Confirmada</option>
-              <option value="cancelada">Cancelada</option>
-            </select>
-          </div>
+      <div className="admin-filter-section">
+        <div className="admin-search">
+          <input
+            type="text"
+            placeholder="Buscar por nombre o cédula..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+          <span className="search-icon">🔍</span>
+        </div>
+        
+        <div className="admin-filter-controls">
+          <select 
+            value={filterStatus}
+            onChange={(e) => setFilterStatus(e.target.value)}
+            className="filter-select"
+          >
+            <option value="todos">Todos los estados</option>
+            <option value="pendiente">Pendiente</option>
+            <option value="confirmada">Confirmada</option>
+            <option value="cancelada">Cancelada</option>
+          </select>
           
-          <div className="admin-filter-container">
-            <select 
-              value={filtroProfesional}
-              onChange={(e) => setFiltroProfesional(e.target.value)}
-              className="filter-select"
-            >
-              <option value="todos">Todos los profesionales</option>
-              {profesionales.map((prof) => (
-                <option key={prof.profesional_id} value={prof.profesional_id}>
-                  {prof.nombre} {prof.apellido}
-                </option>
-              ))}
-            </select>
-          </div>
+          <select 
+            value={filtroProfesional}
+            onChange={(e) => setFiltroProfesional(e.target.value)}
+            className="filter-select"
+          >
+            <option value="todos">Todos los profesionales</option>
+            {profesionales.map((prof) => (
+              <option key={prof.profesional_id} value={prof.profesional_id}>
+                {prof.nombre} {prof.apellido}
+              </option>
+            ))}
+          </select>
           
-          <div className="admin-filter-container date-filter" ref={datePickerRef}>
+          <div className="date-picker-wrapper" ref={datePickerRef}>
             <div 
               className="date-input-wrapper"
               onClick={handleDateInputClick}
@@ -531,8 +531,25 @@ const AdminCitas = () => {
               </div>
             )}
           </div>
+          
+          <div className="admin-sort-buttons">
+            <button 
+              className={`sort-btn ${sortOrder === 'az' ? 'active' : ''}`}
+              onClick={() => setSortOrder('az')}
+              title="Ordenar de A a Z"
+            >
+              A → Z
+            </button>
+            <button 
+              className={`sort-btn ${sortOrder === 'za' ? 'active' : ''}`}
+              onClick={() => setSortOrder('za')}
+              title="Ordenar de Z a A"
+            >
+              Z → A
+            </button>
+          </div>
         </div>
-      </AdminFilterBar>
+      </div>
       
       {renderAgendamientosTable()}
       {renderDetailModal()}
