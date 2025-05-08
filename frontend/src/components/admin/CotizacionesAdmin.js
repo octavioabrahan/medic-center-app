@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './CotizacionesAdmin.css';
 import '../admin/AdminCommon.css'; // Importamos los estilos comunes
+import AdminFilterBar from '../admin/AdminFilterBar'; // Importamos el componente AdminFilterBar
 
 function CotizacionesAdmin() {
   const [cotizaciones, setCotizaciones] = useState([]);
@@ -541,38 +542,29 @@ function CotizacionesAdmin() {
     );
   };
 
+  // Preparar opciones para el filtro de estados
+  const estadosOptions = [
+    { value: 'pendiente', label: 'Pendiente' },
+    { value: 'confirmado', label: 'Confirmado' },
+    { value: 'cancelado', label: 'Cancelado' },
+    { value: 'completado', label: 'Completado' }
+  ];
+
   return (
     <div className="admin-page-container">
-      <h1 className="admin-page-title">Administración de Cotizaciones</h1>
-      
-      <div className="admin-filters-bar">
-        <div className="admin-search">
-          <input
-            type="text"
-            placeholder="Buscar por folio, cliente o cédula..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
-          <span className="search-icon">🔍</span>
-        </div>
-        
-        <div className="admin-filter-container">
-          <select 
-            value={filterStatus}
-            onChange={(e) => setFilterStatus(e.target.value)}
-          >
-            <option value="todos">Todos los estados</option>
-            <option value="pendiente">Pendiente</option>
-            <option value="confirmado">Confirmado</option>
-            <option value="cancelado">Cancelado</option>
-            <option value="completado">Completado</option>
-          </select>
-        </div>
-        
-        <button className="btn-blue" onClick={fetchCotizaciones}>
-          Actualizar
-        </button>
+      <div className="admin-header">
+        <h1>Administración de Cotizaciones</h1>
       </div>
+      
+      <AdminFilterBar
+        searchTerm={searchTerm}
+        setSearchTerm={setSearchTerm}
+        searchPlaceholder="Buscar por folio, cliente o cédula..."
+        filterOptions={estadosOptions}
+        filterValue={filterStatus}
+        setFilterValue={setFilterStatus}
+        filterLabel="Todos los estados"
+      />
       
       {loading ? (
         <div className="loading-container">Cargando cotizaciones...</div>
@@ -613,7 +605,7 @@ function CotizacionesAdmin() {
                     <td>${formatNumber(totalUsd)}</td>
                     <td>Bs. {formatNumber(totalVes)}</td>
                     <td>
-                      <span className={`status-badge status-${cot.estado}`}>
+                      <span className={`status-badge ${statusClasses[cot.estado] || ''}`}>
                         {cot.estado.toUpperCase()}
                       </span>
                     </td>
