@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import HorarioForm from "../../components/admin/HorarioForm";
 import ExcepcionesPage from "./ExcepcionesPage";
+import AdminFilterBar from "../../components/admin/AdminFilterBar"; // Importamos el componente de barra de filtros
 import "./HorariosPage.css";
 import "../../components/admin/AdminCommon.css"; // Importamos los estilos comunes
 
@@ -16,27 +17,42 @@ function HorariosPage() {
   const [activeTab, setActiveTab] = useState("profesionales");
   const [currentHorario, setCurrentHorario] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
+  // También vamos a añadir estado para ordenamiento alfabético
+  const [sortOrder, setSortOrder] = useState("az");
 
   useEffect(() => {
     fetchHorarios();
     fetchProfesionales();
   }, []);
   
-  // Filtrar horarios cuando cambia el término de búsqueda
+  // Filtrar y ordenar horarios
   useEffect(() => {
     if (horarios.length > 0) {
-      if (searchTerm.trim() === "") {
-        setFilteredHorarios(horarios);
-      } else {
+      let results = [...horarios];
+      
+      // Filtrar por término de búsqueda
+      if (searchTerm.trim() !== "") {
         const term = searchTerm.toLowerCase();
-        const filtered = horarios.filter(horario => 
+        results = results.filter(horario => 
           `${horario.profesional_nombre} ${horario.profesional_apellido}`.toLowerCase().includes(term) ||
           horario.tipo_atencion.toLowerCase().includes(term)
         );
-        setFilteredHorarios(filtered);
       }
+      
+      // Aplicar ordenamiento alfabético
+      if (sortOrder === 'az') {
+        results.sort((a, b) => 
+          `${a.profesional_nombre} ${a.profesional_apellido}`.localeCompare(`${b.profesional_nombre} ${b.profesional_apellido}`)
+        );
+      } else if (sortOrder === 'za') {
+        results.sort((a, b) => 
+          `${b.profesional_nombre} ${b.profesional_apellido}`.localeCompare(`${a.profesional_nombre} ${a.profesional_apellido}`)
+        );
+      }
+      
+      setFilteredHorarios(results);
     }
-  }, [searchTerm, horarios]);
+  }, [searchTerm, horarios, sortOrder]);
 
   // Modificamos fetchHorarios para trabajar con el nuevo formato de días como array
   const fetchHorarios = async () => {
@@ -164,23 +180,22 @@ function HorariosPage() {
   const renderProfesionalesContent = () => {
     return (
       <>
-        <div className="admin-filters-bar">
-          <div className="admin-search">
-            <input
-              type="text"
-              placeholder="Buscar por nombre de profesional..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
-            <span className="search-icon">🔍</span>
+        <AdminFilterBar
+          searchTerm={searchTerm}
+          setSearchTerm={setSearchTerm}
+          searchPlaceholder="Buscar por nombre de profesional..."
+          sortOrder={sortOrder}
+          setSortOrder={setSortOrder}
+        >
+          <div className="admin-actions">
+            <button className="btn-add" onClick={() => {
+              setCurrentHorario(null);
+              setShowModal(true);
+            }}>
+              Agregar horario
+            </button>
           </div>
-          <button className="btn-add" onClick={() => {
-            setCurrentHorario(null);
-            setShowModal(true);
-          }}>
-            Agregar horario
-          </button>
-        </div>
+        </AdminFilterBar>
         
         {renderHorariosTable()}
       </>
