@@ -297,28 +297,28 @@ import ArrowLeftIcon from '../../assets/ArrowLeft.svg';
 
               <div className="form-group" style={{ marginBottom: '0.5rem' }}>
                 <label style={{ color: '#000', marginBottom: 0 }}>Sexo <span className="required">*</span></label>
-                <div style={{ display: 'flex', gap: '30px', marginTop: '5px' }}>
-                  <label style={{ display: 'flex', alignItems: 'center', cursor: 'pointer', color: '#000', fontSize: '14px' }}>
+                <div className="radio-group-container">
+                  <label className="radio-label">
                     <input 
                       type="radio" 
                       name="sexo" 
                       value="F" 
-                      style={{ marginRight: '6px' }}
+                      className="radio-input"
                       checked={form.sexo === 'F'} 
                       onChange={() => setForm({ ...form, sexo: 'F' })}
                     />
-                    Femenino
+                    <span className="radio-text">Femenino</span>
                   </label>
-                  <label style={{ display: 'flex', alignItems: 'center', cursor: 'pointer', color: '#000', fontSize: '14px' }}>
+                  <label className="radio-label">
                     <input 
                       type="radio" 
                       name="sexo" 
                       value="M" 
-                      style={{ marginRight: '6px' }}
+                      className="radio-input"
                       checked={form.sexo === 'M'} 
                       onChange={() => setForm({ ...form, sexo: 'M' })}
                     />
-                    Masculino
+                    <span className="radio-text">Masculino</span>
                   </label>
                 </div>
               </div>

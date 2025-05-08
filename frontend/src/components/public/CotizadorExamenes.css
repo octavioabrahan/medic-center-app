@@ -373,7 +373,7 @@ body {
 }
 
 /* Radio buttons para sexo */
-.radio-group {
+.radio-group-container {
   display: flex;
   gap: 30px;
   margin-top: 5px;
@@ -388,8 +388,25 @@ body {
   font-size: 14px;
 }
 
-.radio-label input {
-  margin-right: 6px;
+.radio-input {
+  margin-right: 8px;
+  appearance: radio;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: 1px solid #ccc;
+  outline: none;
+  cursor: pointer;
+}
+
+.radio-input:checked {
+  border-color: #1e3a8a;
+}
+
+.radio-text {
+  color: #000;
+  font-size: 14px;
+  font-weight: 400;
 }
 
 /* Botones de formulario */
