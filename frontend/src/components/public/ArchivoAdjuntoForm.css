@@ -1,117 +1,126 @@
 .archivo-adjunto-form {
-    margin-bottom: 20px;
-  }
-  
-  .archivo-label {
-    display: block;
-    margin-bottom: 10px;
-    font-weight: 500;
-  }
-  
-  .file-info-text {
-    display: block;
-    font-size: 12px;
-    color: #666;
-    margin-top: 4px;
-    font-weight: normal;
-  }
-  
-  .file-input-container {
-    display: flex;
-    align-items: center;
-    margin-bottom: 10px;
-  }
-  
-  .file-input {
-    flex: 1;
-    padding: 8px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    margin-right: 10px;
-  }
-  
-  .upload-button, .remove-button {
-    padding: 8px 16px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-weight: 500;
-    transition: background-color 0.3s ease;
-  }
-  
-  .upload-button {
-    background-color: #4a90e2;
-    color: white;
-  }
-  
-  .upload-button:hover {
-    background-color: #357abD;
-  }
-  
-  .upload-button:disabled {
-    background-color: #a9a9a9;
-    cursor: not-allowed;
-  }
-  
-  .upload-button.loading {
-    background-color: #a9a9a9;
-    cursor: wait;
-  }
-  
-  .remove-button {
-    background-color: #e74c3c;
-    color: white;
-  }
-  
-  .remove-button:hover {
-    background-color: #c0392b;
-  }
-  
-  .error-message {
-    color: #e74c3c;
-    margin-top: 8px;
-    font-size: 14px;
-  }
-  
-  .success-message {
-    color: #2ecc71;
-    margin-top: 8px;
-    font-size: 14px;
-  }
-  
-  .progress-container {
-    width: 100%;
-    height: 10px;
-    background-color: #f1f1f1;
-    border-radius: 5px;
-    margin-top: 10px;
-    position: relative;
-  }
-  
-  .progress-bar {
-    height: 100%;
-    background-color: #4a90e2;
-    border-radius: 5px;
-    transition: width 0.3s ease;
-  }
-  
-  .progress-text {
-    position: absolute;
-    top: -20px;
-    right: 0;
-    font-size: 12px;
-    color: #666;
-  }
-  
-  .selected-file-info {
-    margin-top: 10px;
-    font-size: 14px;
-    background-color: #f9f9f9;
-    padding: 10px;
-    border-radius: 4px;
-    border: 1px solid #eaeaea;
-  }
-  
-  .selected-file-info p {
-    margin: 5px 0;
-  }
+  margin-bottom: 20px;
+}
+
+.archivo-label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 500;
+}
+
+.file-info-text {
+  display: block;
+  font-size: 0.85em;
+  color: #666;
+  margin-top: 4px;
+  font-weight: normal;
+}
+
+.file-input-container {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.file-input {
+  flex: 1;
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  background-color: #f9f9f9;
+}
+
+.upload-button, .remove-button {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background-color 0.3s ease;
+}
+
+.upload-button {
+  background-color: #4a90e2;
+  color: white;
+}
+
+.upload-button:hover {
+  background-color: #357abD;
+}
+
+.upload-button:disabled {
+  background-color: #a9a9a9;
+  cursor: not-allowed;
+}
+
+.upload-button.loading {
+  background-color: #a9a9a9;
+  cursor: wait;
+}
+
+.remove-button {
+  margin-left: 10px;
+  padding: 8px 16px;
+  background-color: #f44336;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.remove-button:hover {
+  background-color: #d32f2f;
+}
+
+.error-message {
+  color: #f44336;
+  margin-top: 5px;
+  font-size: 0.9em;
+}
+
+.success-message {
+  color: #4caf50;
+  margin-top: 5px;
+  font-size: 0.9em;
+  font-weight: 500;
+}
+
+.progress-container {
+  margin-top: 10px;
+  height: 20px;
+  width: 100%;
+  background-color: #e0e0e0;
+  border-radius: 4px;
+  overflow: hidden;
+  position: relative;
+}
+
+.progress-bar {
+  height: 100%;
+  background-color: #4caf50;
+  transition: width 0.3s ease;
+}
+
+.progress-text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: #000;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.selected-file-info {
+  background-color: #f5f5f5;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  padding: 10px;
+  margin-top: 10px;
+  font-size: 0.9em;
+}
+
+.selected-file-info p {
+  margin: 5px 0;
+}

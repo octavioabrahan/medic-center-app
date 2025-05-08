@@ -15,7 +15,7 @@ const ArchivoAdjuntoForm = ({ onFileUploaded, requiereArchivo }) => {
   const ALLOWED_FILE_TYPES = ['application/pdf', 'image/jpeg', 'image/png'];
   const ALLOWED_FILE_EXTENSIONS = ['.pdf', '.jpg', '.jpeg', '.png'];
 
-  const handleFileChange = (event) => {
+  const handleFileChange = async (event) => {
     const file = event.target.files[0];
     setError('');
     
@@ -41,10 +41,15 @@ const ArchivoAdjuntoForm = ({ onFileUploaded, requiereArchivo }) => {
     }
 
     setSelectedFile(file);
+    
+    // Iniciar carga automáticamente después de seleccionar el archivo
+    await handleUpload(file);
   };
 
-  const handleUpload = async () => {
-    if (!selectedFile) {
+  const handleUpload = async (fileToUpload) => {
+    const fileToUse = fileToUpload || selectedFile;
+    
+    if (!fileToUse) {
       if (requiereArchivo) {
         setError('Por favor selecciona un archivo.');
       }
@@ -56,7 +61,7 @@ const ArchivoAdjuntoForm = ({ onFileUploaded, requiereArchivo }) => {
     setError('');
 
     const formData = new FormData();
-    formData.append('archivo', selectedFile);
+    formData.append('archivo', fileToUse);
 
     try {
       console.log("Enviando archivo al servidor...");
@@ -84,10 +89,13 @@ const ArchivoAdjuntoForm = ({ onFileUploaded, requiereArchivo }) => {
 
       // Limpiar después de la subida exitosa
       setSelectedFile(null);
-      fileInputRef.current.value = '';
     } catch (error) {
       console.error('Error al subir archivo:', error);
       setError(error.response?.data?.error || 'Error al subir el archivo. Inténtalo de nuevo.');
+      // Restaurar input de archivo para permitir reintento
+      if (fileInputRef.current) {
+        fileInputRef.current.value = '';
+      }
     } finally {
       setLoading(false);
     }
@@ -126,17 +134,6 @@ const ArchivoAdjuntoForm = ({ onFileUploaded, requiereArchivo }) => {
             className="file-input"
           />
           
-          {!archivoId && (
-            <button 
-              type="button"
-              onClick={handleUpload}
-              disabled={!selectedFile || loading}
-              className={`upload-button ${loading ? 'loading' : ''}`}
-            >
-              {loading ? 'Subiendo...' : 'Subir archivo'}
-            </button>
-          )}
-          
           {archivoId && (
             <button 
               type="button"
@@ -153,7 +150,7 @@ const ArchivoAdjuntoForm = ({ onFileUploaded, requiereArchivo }) => {
         {loading && (
           <div className="progress-container">
             <div className="progress-bar" style={{ width: `${progress}%` }}></div>
-            <span className="progress-text">{progress}%</span>
+            <span className="progress-text">{progress}% {progress < 100 ? 'Subiendo...' : 'Finalizando...'}</span>
           </div>
         )}
 
@@ -163,7 +160,7 @@ const ArchivoAdjuntoForm = ({ onFileUploaded, requiereArchivo }) => {
           </div>
         )}
         
-        {selectedFile && !archivoId && (
+        {selectedFile && !archivoId && !loading && (
           <div className="selected-file-info">
             <p><strong>Nombre:</strong> {selectedFile.name}</p>
             <p><strong>Tamaño:</strong> {(selectedFile.size / 1024).toFixed(2)} KB</p>
