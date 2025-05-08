@@ -393,12 +393,19 @@ const AdminCitas = () => {
                 {currentAgendamiento.id_empresa && currentAgendamiento.archivo_adjunto_id && (
                   <div>
                     <strong>Orden médica:</strong> <a 
-                      href={`/api/archivos/${currentAgendamiento.archivo_adjunto_id}`} 
+                      href={`/api/archivos/${currentAgendamiento.archivo_adjunto_id}?inline=true`} 
                       target="_blank" 
                       rel="noopener noreferrer"
                       className="orden-medica-link"
                     >
                       Ver orden médica 📄
+                    </a>
+                    {' | '}
+                    <a 
+                      href={`/api/archivos/${currentAgendamiento.archivo_adjunto_id}?download=true`} 
+                      className="orden-medica-link"
+                    >
+                      Descargar
                     </a>
                   </div>
                 )}
