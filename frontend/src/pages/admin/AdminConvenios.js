@@ -759,8 +759,8 @@ const AdminConvenios = () => {
     if (filteredEmpresas.length === 0) return <div className="no-results">No se encontraron convenios</div>;
 
     return (
-      <div className="table-container">
-        <table className="citas-table">
+      <div className="admin-table-container">
+        <table className="admin-table">
           <thead>
             <tr>
               <th>Nombre</th>
