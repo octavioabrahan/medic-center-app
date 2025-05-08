@@ -391,39 +391,41 @@ const AdminCitas = () => {
                   </div>
                 )}
                 {currentAgendamiento.id_empresa && currentAgendamiento.archivo_adjunto_id && (
-                  <div className="archivo-adjunto-container">
+                  <div>
                     <strong>Orden médica:</strong>
-                    <div className="archivo-preview">
-                      {/* Previsualización del archivo (miniatura) */}
-                      <div className="archivo-thumbnail">
-                        <img 
-                          src={`/api/archivos/${currentAgendamiento.archivo_adjunto_id}/thumbnail`} 
-                          alt="Vista previa del documento" 
-                          onError={(e) => {
-                            // Si falla la carga de la miniatura, mostrar un icono genérico
-                            e.target.onerror = null;
-                            e.target.src = "https://cdn-icons-png.flaticon.com/512/337/337946.png";
-                          }}
-                          onClick={() => window.open(`/api/archivos/${currentAgendamiento.archivo_adjunto_id}`, '_blank')}
-                          style={{ cursor: 'pointer', maxWidth: '100px', maxHeight: '100px', border: '1px solid #ddd' }}
-                        />
-                      </div>
-                      
-                      {/* Enlaces de acción */}
-                      <div className="archivo-actions">
+                    <div className="orden-medica-container" style={{ marginTop: '10px' }}>
+                      <img 
+                        src={`/api/archivos/${currentAgendamiento.archivo_adjunto_id}/thumbnail`} 
+                        alt="Vista previa del documento" 
+                        style={{ 
+                          maxWidth: '150px', 
+                          maxHeight: '150px',
+                          border: '1px solid #ddd',
+                          display: 'block',
+                          marginBottom: '10px'
+                        }}
+                      />
+                      <div style={{ marginTop: '8px' }}>
                         <a 
                           href={`/api/archivos/${currentAgendamiento.archivo_adjunto_id}`}
                           target="_blank" 
                           rel="noopener noreferrer"
-                          className="orden-medica-link"
-                          style={{ display: 'block', margin: '5px 0', color: '#0066cc' }}
+                          style={{ 
+                            color: '#0066cc', 
+                            textDecoration: 'underline',
+                            display: 'block',
+                            marginBottom: '5px'
+                          }}
                         >
                           Ver en nueva pestaña
                         </a>
                         <a 
                           href={`/api/archivos/${currentAgendamiento.archivo_adjunto_id}?download=true`}
-                          className="orden-medica-link"
-                          style={{ display: 'block', margin: '5px 0', color: '#0066cc' }}
+                          download
+                          style={{ 
+                            color: '#0066cc', 
+                            textDecoration: 'underline' 
+                          }}
                         >
                           Descargar archivo
                         </a>
