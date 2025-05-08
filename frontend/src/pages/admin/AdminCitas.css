@@ -14,19 +14,18 @@
   font-weight: 600;
 }
 
-/* Nueva implementación para la barra de filtros horizontal */
+/* Nueva implementación para la barra de filtros con dos secciones */
 .admin-filter-section {
   display: flex;
-  align-items: center;
-  gap: 15px;
+  flex-direction: column;
   margin-bottom: 20px;
-  flex-wrap: wrap;
+  width: 100%;
 }
 
 .admin-search {
   position: relative;
-  min-width: 280px;
-  flex: 1;
+  width: 100%;
+  margin-bottom: 15px;
 }
 
 .admin-search input {
@@ -49,15 +48,18 @@
   font-size: 14px;
 }
 
-/* Nuevo contenedor para controles de filtro horizontales */
+/* Contenedor horizontal para los filtros en la segunda línea */
 .admin-filter-controls {
   display: flex;
   align-items: center;
+  justify-content: flex-start;
   gap: 10px;
   flex-wrap: nowrap;
+  width: 100%;
 }
 
-.admin-filter-controls select.filter-select {
+/* Estilos para los selectores */
+.filter-select {
   padding: 0 28px 0 10px;
   border: 1px solid #e2e8f0;
   border-radius: 4px;
@@ -71,12 +73,14 @@
   background-position: right 8px top 50%;
   background-size: 10px auto;
   cursor: pointer;
+  flex: 1;
 }
 
 /* Estilos para el selector de fecha */
 .date-picker-wrapper {
   position: relative;
-  min-width: 220px;
+  min-width: 200px;
+  flex: 1.5;
 }
 
 .date-input-wrapper {
@@ -90,6 +94,7 @@
   padding: 0 8px;
   cursor: pointer;
   box-sizing: border-box;
+  width: 100%;
 }
 
 .calendar-icon {
@@ -380,6 +385,43 @@
   color: #dc3545;
 }
 
+/* Botones de ordenamiento */
+.admin-sort-buttons {
+  display: flex;
+  align-items: center;
+  height: 38px;
+  background-color: #f5f5f5;
+  border-radius: 4px;
+  overflow: hidden;
+  border: none;
+  flex-shrink: 0;
+}
+
+.sort-btn {
+  background: transparent;
+  border: none;
+  padding: 5px 10px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 500;
+  transition: background-color 0.2s;
+  height: 100%;
+  color: #6b6b6b;
+  min-width: 50px;
+  font-size: 13px;
+}
+
+.sort-btn:first-child {
+  border-right: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.sort-btn.active {
+  background-color: #e6e6e6;
+  color: #333333;
+}
+
 /* Responsive */
 @media (max-width: 768px) {
   .admin-filter-section {
@@ -389,11 +431,11 @@
   
   .admin-filter-controls {
     flex-wrap: wrap;
-    width: 100%;
+    gap: 10px;
   }
   
   .admin-search,
-  .admin-filter-controls select,
+  .filter-select,
   .date-picker-wrapper,
   .admin-sort-buttons {
     width: 100%;
