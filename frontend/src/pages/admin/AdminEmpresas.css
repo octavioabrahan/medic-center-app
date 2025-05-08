@@ -1,4 +1,16 @@
 /* Estilos específicos para la gestión de empresas */
+/* Usar selectores más específicos para aumentar la precedencia */
+.admin-page-container .admin-table-container {
+  background-color: white;
+  border-radius: 4px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  overflow-x: auto !important; /* Permitir scroll horizontal si es necesario */
+  overflow-y: auto !important; /* Permitir scroll vertical */
+  margin-bottom: 20px !important;
+  max-height: calc(48px + (8 * 41px)) !important; /* Altura para encabezado (48px) + 8 filas (aprox. 41px cada una) */
+}
+
+/* Resto de estilos para elementos específicos de la tabla de empresas */
 .empresa-logo {
   max-width: 80px;
   max-height: 30px;
@@ -34,29 +46,36 @@
 }
 
 /* Filas inactivas con estilo atenuado */
-.inactive-row {
-  background-color: #f9f9f9;
-  color: #6c757d;
+.admin-page-container .admin-table tbody .inactive-row {
+  background-color: #f9f9f9 !important;
+  color: #6c757d !important;
 }
 
-.inactive-row:hover {
+.admin-page-container .admin-table tbody .inactive-row:hover {
   background-color: #f3f3f3 !important;
 }
 
 /* Mejoras para los estados */
-.status-badge {
+.admin-page-container .status-badge {
   letter-spacing: 0.5px;
   font-size: 11px;
+  display: inline-block;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-weight: 500;
+  text-transform: uppercase;
+  text-align: center;
+  min-width: 100px;
 }
 
-.status-activo {
-  background-color: #e6f7e6;
-  color: #28a745;
+.admin-page-container .status-activo {
+  background-color: #e6f7e6 !important;
+  color: #28a745 !important;
 }
 
-.status-inactivo {
-  background-color: #ffe6e6;
-  color: #dc3545;
+.admin-page-container .status-inactivo {
+  background-color: #ffe6e6 !important;
+  color: #dc3545 !important;
 }
 
 /* Mensajes de éxito */
