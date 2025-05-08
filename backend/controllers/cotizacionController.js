@@ -109,7 +109,7 @@ const crear = async (req, res) => {
 
   logGeneral(`🧾 Nueva cotización recibida para: ${nombre} ${apellido} (${cedula})`);
 
-  const client = await pool.connect();
+  const client = await pool.getClient();
 
   try {
     await client.query('BEGIN');
