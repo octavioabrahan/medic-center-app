@@ -376,37 +376,26 @@ body {
 .radio-group-container {
   display: flex;
   gap: 30px;
-  margin-top: 5px;
+  margin-top: 10px;
 }
 
-.radio-label {
+.radio-option {
   display: flex;
   align-items: center;
-  cursor: pointer;
-  font-weight: normal;
-  color: #000;
-  font-size: 14px;
 }
 
-.radio-input {
+.radio-option input[type="radio"] {
   margin-right: 8px;
-  appearance: radio;
-  width: 16px;
-  height: 16px;
-  border-radius: 50%;
-  border: 1px solid #ccc;
-  outline: none;
-  cursor: pointer;
+  appearance: auto;
+  -webkit-appearance: radio;
+  width: auto;
+  height: auto;
 }
 
-.radio-input:checked {
-  border-color: #1e3a8a;
-}
-
-.radio-text {
-  color: #000;
+.radio-option label {
   font-size: 14px;
-  font-weight: 400;
+  color: #000;
+  cursor: pointer;
 }
 
 /* Botones de formulario */
