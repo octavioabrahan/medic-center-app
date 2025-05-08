@@ -190,7 +190,7 @@ const AdminEmpresas = () => {
       ) : filteredEmpresas.length === 0 ? (
         <div className="no-results">No se encontraron empresas</div>
       ) : (
-        <div className="admin-table-container">
+        <div className="empresas-table-container">
           <table className="admin-table">
             <thead>
               <tr>
