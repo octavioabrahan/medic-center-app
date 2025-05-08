@@ -27,7 +27,7 @@
   padding: 8px;
   border: 1px solid #ddd;
   border-radius: 4px;
-  background-color: #f9f9f9;
+  background-color: transparent; /* Cambiado de #f9f9f9 a transparent para eliminar el fondo */
 }
 
 .remove-button {
