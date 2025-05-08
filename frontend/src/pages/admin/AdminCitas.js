@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import { format } from 'date-fns';
 import Calendar from '../../components/common/Calendar';
+import AdminFilterBar from "../../components/admin/AdminFilterBar"; // Importamos el componente de barra de filtros
 import "./AdminCitas.css";
 import "../../components/admin/AdminCommon.css"; // Importamos los estilos comunes
 
@@ -447,37 +448,19 @@ const AdminCitas = () => {
     <div className="admin-page-container">
       <h1 className="admin-page-title">Citas agendadas</h1>
       
-      <div className="admin-filter-bar">
-        <div className="admin-search">
-          <input
-            type="text"
-            placeholder="Buscar por nombre o cédula..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
-          <span className="search-icon">🔍</span>
-        </div>
-        
-        <div className="filter-group">
-          <div className="admin-sort-buttons">
-            <button
-              className={`sort-btn ${sortOrder === 'az' ? 'active' : ''}`}
-              onClick={() => setSortOrder('az')}
-            >
-              A-Z
-            </button>
-            <button
-              className={`sort-btn ${sortOrder === 'za' ? 'active' : ''}`}
-              onClick={() => setSortOrder('za')}
-            >
-              Z-A
-            </button>
-          </div>
-
+      <AdminFilterBar
+        searchTerm={searchTerm}
+        setSearchTerm={setSearchTerm}
+        searchPlaceholder="Buscar por nombre o cédula..."
+        sortOrder={sortOrder}
+        setSortOrder={setSortOrder}
+      >
+        <div className="admin-actions">
           <div className="admin-filter-container">
             <select 
               value={filterStatus}
               onChange={(e) => setFilterStatus(e.target.value)}
+              className="filter-select"
             >
               <option value="todos">Todos los estados</option>
               <option value="pendiente">Pendiente</option>
@@ -490,6 +473,7 @@ const AdminCitas = () => {
             <select 
               value={filtroProfesional}
               onChange={(e) => setFiltroProfesional(e.target.value)}
+              className="filter-select"
             >
               <option value="todos">Todos los profesionales</option>
               {profesionales.map((prof) => (
@@ -548,7 +532,7 @@ const AdminCitas = () => {
             )}
           </div>
         </div>
-      </div>
+      </AdminFilterBar>
       
       {renderAgendamientosTable()}
       {renderDetailModal()}
