@@ -11,14 +11,15 @@ const AgendamientoModel = {
       observaciones,
       id_categoria,
       id_empresa,
+      archivo_adjunto_id,
     } = datos;
 
     const query = `
       INSERT INTO agendamiento (
         cedula, fecha_agendada, convenio,
-        profesional_id, tipo_atencion_id, observaciones, id_categoria, id_empresa
+        profesional_id, tipo_atencion_id, observaciones, id_categoria, id_empresa, archivo_adjunto_id
       )
-      VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
     `;
 
     await db.query(query, [
@@ -29,7 +30,8 @@ const AgendamientoModel = {
       tipo_atencion_id,
       observaciones || null,
       id_categoria || null,
-      id_empresa || null
+      id_empresa || null,
+      archivo_adjunto_id || null
     ]);
   },
 

@@ -27,7 +27,8 @@ const AgendamientoController = {
         observaciones,
         hora_inicio,
         id_categoria,
-        id_empresa
+        id_empresa,
+        archivo_adjunto_id
       } = req.body;
 
       if (!nombre || !apellido || !fecha_nacimiento || !sexo) {
@@ -63,7 +64,8 @@ const AgendamientoController = {
         tipo_atencion_id,
         observaciones,
         id_categoria,
-        id_empresa
+        id_empresa,
+        archivo_adjunto_id
       });
 
       // 🔍 Obtener nombre del profesional

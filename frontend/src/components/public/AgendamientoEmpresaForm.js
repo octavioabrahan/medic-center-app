@@ -249,7 +249,8 @@ const getTipoAtencionId = (slug) => {
         tipo_atencion_id: tipoAtencionId,
         observaciones: serviciosSeleccionados.join(", "), // Unimos todos los servicios con comas
         id_categoria: categoriaId,
-        nro_consulta: fechaSeleccionada?.nro_consulta || null
+        nro_consulta: fechaSeleccionada?.nro_consulta || null,
+        archivo_adjunto_id: archivoAdjuntoId // Incluir el ID del archivo adjunto
       };
     
       try {
