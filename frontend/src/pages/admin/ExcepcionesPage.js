@@ -308,27 +308,34 @@ function ExcepcionesPage() {
   const guardarExcepcion = async (e) => {
     e.preventDefault();
     
+    console.log("Iniciando el guardado de excepción", nuevaExcepcion);
+
     if (!nuevaExcepcion.profesional_id || !nuevaExcepcion.hora_inicio || 
         !nuevaExcepcion.hora_termino || !nuevaExcepcion.motivo) {
       alert("Por favor complete todos los campos obligatorios");
+      console.error("Campos obligatorios faltantes", nuevaExcepcion);
       return;
     }
     
     try {
       // Formatear la fecha seleccionada
       const fechaFormateada = formatDate(nuevaExcepcion.fecha);
-      
-      await apiClient.post("/api/excepciones", {
+      console.log("Fecha formateada para la excepción:", fechaFormateada);
+
+      const response = await apiClient.post("/api/excepciones", {
         ...nuevaExcepcion,
         fecha: fechaFormateada
       });
-      
+
+      console.log("Respuesta del servidor al guardar excepción:", response.data);
+
       await fetchExcepciones();
       setShowAgregarModal(false);
       resetNuevaExcepcion();
+      console.log("Excepción guardada exitosamente y modal cerrado");
     } catch (err) {
       alert("Error al guardar la excepción");
-      console.error(err);
+      console.error("Error al guardar la excepción:", err);
     }
   };
 
