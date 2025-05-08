@@ -367,9 +367,12 @@ html body .admin-sort-buttons .sort-btn.active {
   background-color: white;
   border-radius: var(--border-radius);
   box-shadow: var(--box-shadow);
-  overflow: visible; /* Cambiado de 'hidden' a 'visible' para evitar cortar el contenido */
+  overflow-x: auto; /* Permitir scroll horizontal si es necesario */
+  overflow-y: auto; /* Permitir scroll vertical */
   margin-bottom: var(--spacing-lg);
   margin-top: 0; /* Eliminar espacio superior */
+  max-height: calc(48px + (8 * 41px)); /* Altura para encabezado (48px) + 8 filas (aprox. 41px cada una) */
+  min-height: calc(48px + (8 * 41px)); /* Altura fija para 8 filas */
 }
 
 .admin-table {
