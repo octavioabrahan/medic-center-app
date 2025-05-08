@@ -127,24 +127,71 @@ const subirArchivo = async (req, res) => {
 const obtenerArchivo = async (req, res) => {
   try {
     const { id } = req.params;
+    console.log('Obteniendo archivo con ID:', id);
+    
+    // Obtener información del archivo desde la base de datos
     const archivo = await ArchivoAdjunto.obtenerArchivoPorId(id);
     
     if (!archivo) {
-      return res.status(404).json({ error: 'Archivo no encontrado' });
+      console.error('Archivo no encontrado en la base de datos:', id);
+      return res.status(404).json({ error: 'Archivo no encontrado en la base de datos' });
     }
     
-    // Manejar correctamente la ruta del archivo
-    let filePath = archivo.ruta_archivo;
-    console.log('Intentando acceder al archivo en:', filePath);
+    console.log('Información del archivo obtenida:', {
+      id: archivo.id,
+      nombre: archivo.nombre_original,
+      tipo: archivo.tipo_archivo,
+      ruta: archivo.ruta_archivo
+    });
     
-    if (!fs.existsSync(filePath)) {
+    // Extraer solo el nombre del archivo de la ruta completa
+    const nombreArchivo = path.basename(archivo.ruta_archivo);
+    console.log('Nombre de archivo extraído:', nombreArchivo);
+    
+    // Intentar diferentes rutas para encontrar el archivo
+    let rutasIntento = [];
+    let archivoEncontrado = false;
+    let rutaCorrecta = '';
+    
+    // 1. Intentar con la ruta exacta almacenada en la BD
+    rutasIntento.push(archivo.ruta_archivo);
+    
+    // 2. Intentar con la ruta relativa desde el directorio de uploads
+    rutasIntento.push(path.join(UPLOAD_DIR, nombreArchivo));
+    
+    // 3. Intentar buscando directamente por el nombre del archivo en el directorio de uploads
+    rutasIntento.push(path.join(UPLOAD_DIR, nombreArchivo));
+    
+    // 4. Intentar con el directorio absoluto predeterminado
+    rutasIntento.push(path.join('/opt/medic-center-app/backend/uploads/agendamientos', nombreArchivo));
+    
+    // 5. Intentar con el directorio absoluto alternativo (en caso de ser un entorno de desarrollo)
+    rutasIntento.push(path.join(process.cwd(), 'uploads', 'agendamientos', nombreArchivo));
+    
+    // Eliminar duplicados
+    rutasIntento = [...new Set(rutasIntento)];
+    
+    // Verificar cada ruta
+    for (let ruta of rutasIntento) {
+      console.log('Intentando acceder a ruta:', ruta);
+      if (fs.existsSync(ruta)) {
+        archivoEncontrado = true;
+        rutaCorrecta = ruta;
+        console.log('¡Archivo encontrado en:', rutaCorrecta);
+        break;
+      }
+    }
+    
+    // Si no se encuentra el archivo en ninguna ruta, devolver error 404
+    if (!archivoEncontrado) {
+      console.error('No se pudo encontrar el archivo físico. Rutas intentadas:', rutasIntento);
       return res.status(404).json({ 
-        error: 'El archivo físico no existe',
-        ruta: filePath // Solo para debug
+        error: 'No se pudo encontrar el archivo físico',
+        rutasIntentadas: rutasIntento
       });
     }
     
-    // Establecer tipo de contenido
+    // Configurar la respuesta con los encabezados correctos según el tipo MIME
     res.setHeader('Content-Type', archivo.tipo_archivo);
     
     // Decidir si mostrar en navegador o descargar
@@ -155,17 +202,28 @@ const obtenerArchivo = async (req, res) => {
       res.setHeader('Content-Disposition', `inline; filename="${archivo.nombre_original}"`);
     }
     
-    // Enviar el archivo directamente usando fs
-    fs.readFile(filePath, (err, data) => {
-      if (err) {
-        console.error("Error al leer el archivo:", err);
-        return res.status(500).json({ error: 'Error al leer el archivo' });
+    // Stream de archivo para optimizar el uso de memoria
+    const fileStream = fs.createReadStream(rutaCorrecta);
+    fileStream.on('error', (error) => {
+      console.error('Error al leer el archivo:', error);
+      // Solo enviar respuesta si no se ha enviado ya
+      if (!res.headersSent) {
+        res.status(500).json({ error: 'Error al leer el archivo' });
       }
-      res.end(data);
     });
+    
+    // Pipe directamente al response
+    fileStream.pipe(res);
+    
   } catch (error) {
-    console.error('Error al obtener archivo:', error);
-    res.status(500).json({ error: 'Error al obtener el archivo: ' + error.message });
+    console.error('Error general al obtener archivo:', error);
+    // Solo enviar respuesta si no se ha enviado ya
+    if (!res.headersSent) {
+      res.status(500).json({ 
+        error: 'Error al obtener el archivo',
+        mensaje: error.message
+      });
+    }
   }
 };
 
