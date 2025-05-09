@@ -464,26 +464,22 @@ function ExcepcionesPage() {
           <thead>
             <tr>
               <th>Profesional</th>
-              <th>Estado</th>
-              <th>Motivo</th>
+              <th>Tipo</th>
               <th>Fecha</th>
               <th>Hora de inicio</th>
               <th>Hora de término</th>
+              <th>Motivo</th>
             </tr>
           </thead>
           <tbody>
             {filteredExcepciones.map((excepcion) => (
               <tr key={excepcion.excepcion_id}>
                 <td>{excepcion.profesional_nombre} {excepcion.profesional_apellido}</td>
-                <td>
-                  <span className={`status-badge ${excepcion.estado === "cancelado" ? "status-inactive" : "status-active"}`}>
-                    {excepcion.estado === "cancelado" ? "Cancelado" : "Excepción"}
-                  </span>
-                </td>
-                <td>{excepcion.motivo}</td>
+                <td>{excepcion.tipo}</td>
                 <td>{formatFecha(excepcion.fecha)}</td>
                 <td>{excepcion.hora_inicio ? excepcion.hora_inicio.slice(0, 5) : "-"}</td>
                 <td>{excepcion.hora_termino ? excepcion.hora_termino.slice(0, 5) : "-"}</td>
+                <td>{excepcion.motivo}</td>
               </tr>
             ))}
           </tbody>
