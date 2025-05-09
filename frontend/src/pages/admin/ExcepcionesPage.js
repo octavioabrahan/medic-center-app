@@ -352,7 +352,7 @@ function ExcepcionesPage() {
       // Formatear la fecha seleccionada
       const fechaFormateada = formatDate(cancelacion.fecha);
       
-      await apiClient.post("/api/excepciones", {
+      await apiClient.post("/excepciones", {
         ...cancelacion,
         fecha: fechaFormateada
       });
