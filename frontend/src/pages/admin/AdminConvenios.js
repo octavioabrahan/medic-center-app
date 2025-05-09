@@ -295,13 +295,9 @@ const AdminConvenios = () => {
   const cargarEmpresas = async () => {
     setLoading(true);
     try {
-      const res = await axios.get(`${process.env.REACT_APP_API_URL || ''}/api/empresas`, {
-        params: {
-          archived: showArchived, // Incluir parámetro para obtener archivados
-        },
-      });
+      const res = await axios.get(`${process.env.REACT_APP_API_URL || ''}/api/empresas`);
       setEmpresas(res.data);
-      applyFilters(res.data);
+      setFilteredEmpresas(res.data.filter(empresa => empresa.is_active)); // Mostrar solo activos por defecto
     } catch (err) {
       console.error("Error al cargar empresas", err);
       setError("No se pudieron cargar los convenios. Por favor, intente nuevamente.");
