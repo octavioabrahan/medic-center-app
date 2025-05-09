@@ -20,7 +20,8 @@ const LogoUploader = ({ onLogoUploaded, initialLogo }) => {
   // Efecto para manejar la URL inicial cuando se recibe
   useEffect(() => {
     if (initialLogo) {
-      setPreviewUrl(initialLogo);
+      // Utilizar la función helper para obtener la URL correcta
+      setPreviewUrl(getImageUrl(initialLogo));
     }
   }, [initialLogo]);
 
@@ -107,7 +108,9 @@ const LogoUploader = ({ onLogoUploaded, initialLogo }) => {
       }
       
       // Actualizar vista previa con la ruta real del servidor
-      setPreviewUrl(logoPath);
+      const fullPath = getImageUrl(logoPath);
+      console.log('URL completa para vista previa:', fullPath);
+      setPreviewUrl(fullPath);
 
       // Limpiar selección después de la subida exitosa
       setSelectedFile(null);
@@ -177,6 +180,12 @@ const LogoUploader = ({ onLogoUploaded, initialLogo }) => {
               src={previewUrl} 
               alt="Logo de la empresa" 
               style={{ maxWidth: "200px", maxHeight: "100px" }}
+              onError={(e) => {
+                console.error("Error cargando vista previa:", e.target.src);
+                e.target.onerror = null;
+                e.target.src = ""; 
+                e.target.alt = "Logo no disponible";
+              }}
             />
             <button 
               type="button" 
@@ -289,6 +298,22 @@ const AdminConvenios = () => {
     rif = rif.toUpperCase().replace(/[^A-Z0-9]/g, '');
     if (rif.length !== 10) return rif;
     return `${rif.substring(0, 1)}-${rif.substring(1, 9)}-${rif.substring(9)}`;
+  };
+
+  // Función para obtener la URL correcta de las imágenes
+  const getImageUrl = (path) => {
+    if (!path) return '';
+    
+    // Si la URL ya es absoluta, la devolvemos tal cual
+    if (path.startsWith('http')) {
+      return path;
+    }
+    
+    // Asegurarse de que la ruta comience con /
+    const normalizedPath = path.startsWith('/') ? path : `/${path}`;
+    
+    // Construir la URL absoluta usando la base de la aplicación
+    return `${window.location.origin}${normalizedPath}`;
   };
 
   // Cargar empresas desde la API
@@ -679,7 +704,7 @@ const AdminConvenios = () => {
                         <strong>Logo:</strong>
                         <div className="logo-preview">
                           <img 
-                            src={`${process.env.PUBLIC_URL || ''}${currentEmpresa.logo_url}`} 
+                            src={getImageUrl(currentEmpresa.logo_url)} 
                             alt={`Logo de ${currentEmpresa.nombre_empresa}`}
                             style={{ maxWidth: "100px", maxHeight: "100px", marginTop: "8px" }}
                             onError={(e) => {
@@ -798,13 +823,13 @@ const AdminConvenios = () => {
                 <td>
                   {empresa.logo_url ? (
                     <img 
-                      src={`${process.env.PUBLIC_URL || ''}${empresa.logo_url}`}
+                      src={getImageUrl(empresa.logo_url)}
                       alt={`Logo de ${empresa.nombre_empresa}`}
                       style={{ maxWidth: "40px", maxHeight: "40px" }}
                       onError={(e) => {
                         console.error("Error cargando imagen:", e.target.src);
                         e.target.onerror = null; 
-                        e.target.src = ""; // URL de imagen por defecto
+                        e.target.src = ""; 
                         e.target.alt = "Logo no disponible";
                       }}
                     />
