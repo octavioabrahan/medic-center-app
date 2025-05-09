@@ -721,7 +721,7 @@ const AdminConvenios = () => {
               <li>Los agendamientos previamente generados no se eliminarán.</li>
             </ul>
             
-            <div className="checkbox-container">
+            <div className="admin-checkbox">
               <input 
                 type="checkbox" 
                 id="confirm-archive" 
