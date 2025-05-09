@@ -734,11 +734,11 @@ const AdminConvenios = () => {
             </div>
             
             <div className="action-buttons">
-              <button className="btn-secondary" onClick={() => setShowArchiveModal(false)}>
-                Cancelar
-              </button>
               <button className="btn-archive" onClick={archivarEmpresa}>
                 Archivar convenio
+              </button>
+              <button className="btn-secondary" onClick={() => setShowArchiveModal(false)}>
+                Cancelar
               </button>
             </div>
           </div>
