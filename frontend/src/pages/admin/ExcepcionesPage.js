@@ -501,6 +501,7 @@ function ExcepcionesPage() {
       {/* Eliminamos el h1 redundante para evitar duplicidad con el título principal */}
       
       <AdminFilterBar
+        isExcepciones={true} // Se pasa la prop para ocultar "Mostrar Archivados"
         searchTerm={searchTerm}
         setSearchTerm={setSearchTerm}
         searchPlaceholder="Buscar por nombre de profesional..."

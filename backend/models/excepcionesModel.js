@@ -4,9 +4,9 @@ const ExcepcionesModel = {
   crear: async ({ profesional_id, fecha, estado, hora_inicio, hora_termino, motivo, nro_consulta }) => {
     await db.query(
       `INSERT INTO horario_excepciones 
-        (profesional_id, fecha, estado, hora_inicio, hora_termino, motivo, nro_consulta)
+        (profesional_id, fecha, estado, hora_inicio, hora_termino, nro_consulta, motivo)
        VALUES ($1, $2, $3, $4, $5, $6, $7)`,
-      [profesional_id, fecha, estado, hora_inicio, hora_termino, motivo, nro_consulta]
+      [profesional_id, fecha, estado, hora_inicio, hora_termino, nro_consulta, motivo]
     );
   },
 

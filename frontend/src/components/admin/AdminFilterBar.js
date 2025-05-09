@@ -17,6 +17,7 @@ import './AdminCommon.css';
  * @param {string} props.sortOrder - Orden de clasificación actual ("az" o "za")
  * @param {Function} props.setSortOrder - Función para actualizar el orden de clasificación
  * @param {ReactNode} props.children - Elementos hijos (botones de acción) que se mostrarán en la barra de filtros
+ * @param {boolean} props.isExcepciones - Indica si es el caso de excepciones
  */
 const AdminFilterBar = ({ 
   searchTerm = '', 
@@ -30,7 +31,8 @@ const AdminFilterBar = ({
   setShowArchived,
   sortOrder = 'az',
   setSortOrder,
-  children // Añadido el parámetro children para renderizar los botones
+  children,
+  isExcepciones // Añadido el parámetro isExcepciones
 }) => {
   return (
     <div className="admin-filter-bar">
@@ -63,19 +65,6 @@ const AdminFilterBar = ({
           </div>
         )}
         
-        {/* Checkbox para mostrar archivados */}
-        {setShowArchived && (
-          <div className="admin-checkbox">
-            <input
-              type="checkbox"
-              id="showArchivedCheckbox"
-              checked={showArchived}
-              onChange={(e) => setShowArchived(e.target.checked)}
-            />
-            <label htmlFor="showArchivedCheckbox">Mostrar archivados</label>
-          </div>
-        )}
-        
         {/* Botones de ordenamiento A-Z y Z-A */}
         {setSortOrder && (
           <div className="admin-sort-buttons">
@@ -93,6 +82,19 @@ const AdminFilterBar = ({
             >
               Z → A
             </button>
+          </div>
+        )}
+
+        {/* Checkbox para mostrar archivados */}
+        {setShowArchived && !isExcepciones && (
+          <div className="admin-checkbox">
+            <input
+              type="checkbox"
+              id="showArchivedCheckbox"
+              checked={showArchived}
+              onChange={(e) => setShowArchived(e.target.checked)}
+            />
+            <label htmlFor="showArchivedCheckbox">Mostrar archivados</label>
           </div>
         )}
       </div>
