@@ -4,22 +4,6 @@ import "./AdminConvenios.css";
 import "../../components/admin/AdminCommon.css"; // Importing common styles
 import AdminFilterBar from "../../components/admin/AdminFilterBar"; // Importing the new component
 
-// Función para obtener la URL correcta de las imágenes
-const getImageUrl = (path) => {
-  if (!path) return '';
-  
-  // Si la URL ya es absoluta, la devolvemos tal cual
-  if (path.startsWith('http')) {
-    return path;
-  }
-  
-  // Asegurarse de que la ruta comience con /
-  const normalizedPath = path.startsWith('/') ? path : `/${path}`;
-  
-  // Construir la URL absoluta usando la base de la aplicación
-  return `${window.location.origin}${normalizedPath}`;
-};
-
 const LogoUploader = ({ onLogoUploaded, initialLogo }) => {
   const [selectedFile, setSelectedFile] = useState(null);
   const [previewUrl, setPreviewUrl] = useState(initialLogo || "");
@@ -36,8 +20,7 @@ const LogoUploader = ({ onLogoUploaded, initialLogo }) => {
   // Efecto para manejar la URL inicial cuando se recibe
   useEffect(() => {
     if (initialLogo) {
-      // Utilizar la función helper para obtener la URL correcta
-      setPreviewUrl(getImageUrl(initialLogo));
+      setPreviewUrl(initialLogo);
     }
   }, [initialLogo]);
 
@@ -124,9 +107,7 @@ const LogoUploader = ({ onLogoUploaded, initialLogo }) => {
       }
       
       // Actualizar vista previa con la ruta real del servidor
-      const fullPath = getImageUrl(logoPath);
-      console.log('URL completa para vista previa:', fullPath);
-      setPreviewUrl(fullPath);
+      setPreviewUrl(logoPath);
 
       // Limpiar selección después de la subida exitosa
       setSelectedFile(null);
@@ -196,12 +177,6 @@ const LogoUploader = ({ onLogoUploaded, initialLogo }) => {
               src={previewUrl} 
               alt="Logo de la empresa" 
               style={{ maxWidth: "200px", maxHeight: "100px" }}
-              onError={(e) => {
-                console.error("Error cargando vista previa:", e.target.src);
-                e.target.onerror = null;
-                e.target.src = ""; 
-                e.target.alt = "Logo no disponible";
-              }}
             />
             <button 
               type="button" 
@@ -320,15 +295,13 @@ const AdminConvenios = () => {
   const cargarEmpresas = async () => {
     setLoading(true);
     try {
-      // Usamos una ruta relativa en lugar de absoluta para evitar problemas con el entorno
-      const apiUrl = '/api/empresas';
+      // Aseguramos que la URL esté bien formada
+      const apiUrl = `${process.env.REACT_APP_API_URL || ''}/api/empresas`;
       console.log("Cargando empresas desde:", apiUrl);
       
       const res = await axios.get(apiUrl);
-      console.log("Datos recibidos:", res.data.length, "empresas");
       setEmpresas(res.data);
-      
-      // Aplicar filtros a los datos recién cargados
+      // El filtrado se hace en applyFilters, no aquí
       applyFilters(res.data);
     } catch (err) {
       console.error("Error al cargar empresas", err);
@@ -345,12 +318,6 @@ const AdminConvenios = () => {
       return;
     }
 
-    console.log("Aplicando filtros:", { 
-      showArchived: showArchived, 
-      totalEmpresas: data.length,
-      searchTerm: searchTerm
-    });
-
     let results = [...data];
     
     // Filtrar por término de búsqueda
@@ -364,11 +331,7 @@ const AdminConvenios = () => {
     
     // Filtrar por estado (archivado/activo)
     if (!showArchived) {
-      console.log("Filtrando solo empresas activas");
-      results = results.filter(empresa => empresa.is_active === true);
-    } else {
-      console.log("Mostrando todas las empresas (activas y archivadas)");
-      // No aplicamos filtro aquí para mostrar todas
+      results = results.filter(empresa => empresa.is_active);
     }
     
     // Aplicar ordenamiento
@@ -410,10 +373,11 @@ const AdminConvenios = () => {
 
   // Aplicar filtros cuando cambian los criterios
   useEffect(() => {
-    console.log("Estado de filtro cambiado:", { showArchived, searchTerm, sortOrder });
     applyFilters();
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchTerm, showArchived, sortOrder]);
+
+  // Eliminamos el useEffect duplicado que estaba causando problemas
 
   // Manejar cambios en el campo RIF y calcular dígito verificador
   const handleRifChange = (e) => {
@@ -704,15 +668,9 @@ const AdminConvenios = () => {
                         <strong>Logo:</strong>
                         <div className="logo-preview">
                           <img 
-                            src={getImageUrl(currentEmpresa.logo_url)} 
+                            src={currentEmpresa.logo_url} 
                             alt={`Logo de ${currentEmpresa.nombre_empresa}`}
                             style={{ maxWidth: "100px", maxHeight: "100px", marginTop: "8px" }}
-                            onError={(e) => {
-                              console.error("Error cargando imagen en modal:", e.target.src);
-                              e.target.onerror = null; 
-                              e.target.src = ""; 
-                              e.target.alt = "Logo no disponible";
-                            }}
                           />
                         </div>
                       </div>
@@ -823,13 +781,13 @@ const AdminConvenios = () => {
                 <td>
                   {empresa.logo_url ? (
                     <img 
-                      src={getImageUrl(empresa.logo_url)}
+                      src={empresa.logo_url.replace(/&$/, '')} // Eliminamos el & al final si existe
                       alt={`Logo de ${empresa.nombre_empresa}`}
                       style={{ maxWidth: "40px", maxHeight: "40px" }}
                       onError={(e) => {
                         console.error("Error cargando imagen:", e.target.src);
                         e.target.onerror = null; 
-                        e.target.src = ""; 
+                        e.target.src = ""; // URL de imagen por defecto
                         e.target.alt = "Logo no disponible";
                       }}
                     />

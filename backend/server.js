@@ -74,13 +74,7 @@ app.use('/api/', limiter); // Aplicar limitador de tasa a rutas API
 
 // Servir archivos estáticos
 const logosFolderPath = path.join(__dirname, '..', 'frontend', 'src', 'components', 'logos_empresas');
-app.use('/components/logos_empresas', express.static(logosFolderPath, {
-  maxAge: '1d',
-  setHeaders: function (res, path, stat) {
-    // Configurar cabeceras para evitar problemas de caché
-    res.set('Cache-Control', 'public, max-age=86400');
-  }
-}));
+app.use('/components/logos_empresas', express.static(logosFolderPath));
 
 // Configurar acceso a la carpeta de uploads para ver los archivos adjuntos directamente
 const uploadsPath = path.join(__dirname, 'uploads', 'agendamientos');

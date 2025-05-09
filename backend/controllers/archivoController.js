@@ -75,11 +75,7 @@ const subirArchivo = async (req, res) => {
     if (isLogo) {
       // Para logos, simplemente devolver la ruta relativa
       const fileName = path.basename(req.file.path);
-      
-      // Asegurarse de que la ruta esté construida correctamente sin caracteres problemáticos
-      const logoPath = `/components/logos_empresas/${fileName}`.replace(/\/\//g, '/');
-      
-      console.log("Logo subido exitosamente:", logoPath);
+      const logoPath = `/components/logos_empresas/${fileName}`;
       
       res.status(201).json({
         message: 'Logo subido exitosamente',
