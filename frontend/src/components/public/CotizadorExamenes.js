@@ -3,6 +3,7 @@ import { useMediaQuery } from 'react-responsive';
 import './CotizadorExamenes.css';
 import MailIcon from '../../assets/Mail.svg';
 import ArrowLeftIcon from '../../assets/ArrowLeft.svg';
+import logo from '../../assets/logo_header.png'; // Importación del logo
 
   export default function CotizadorExamenes() {
   const [examenes, setExamenes] = useState([]);
@@ -152,7 +153,9 @@ import ArrowLeftIcon from '../../assets/ArrowLeft.svg';
   if (cotizacionEnviada) {
     return (
       <div className="thankyou-screen">
-        <div className="logo-header">LOGO AQUÍ</div>
+        <div className="logo-header">
+          <img src={logo} alt="DIAGNOCENTRO" className="sidebar-logo" />
+        </div>
         <h1>¡Gracias por cotizar con nosotros!</h1>
         <p>
           Te enviamos un PDF con el detalle de tu cotización al correo que nos indicaste.<br />
@@ -169,7 +172,9 @@ import ArrowLeftIcon from '../../assets/ArrowLeft.svg';
 
   return (
     <div className={`cotizador-wrapper ${isMobile ? 'mobile' : 'desktop'}`}>
-      <div className="logo-header">LOGO AQUÍ</div>
+      <div className="logo-header">
+        <img src={logo} alt="DIAGNOCENTRO" className="sidebar-logo" />
+      </div>
 
       {examenesError && modoFormulario && (
         <div className="notification error-notification">
