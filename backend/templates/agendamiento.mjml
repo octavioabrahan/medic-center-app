@@ -1,11 +1,5 @@
 <mjml>
   <mj-body background-color="#ffffff" font-family="Inter, sans-serif">
-    <mj-section border-bottom="1px solid #D9D9D9" padding="24px 0">
-      <mj-column>
-        <mj-image width="169px" src="cid:logoHeader" alt="Diagnocentro" />
-      </mj-column>
-    </mj-section>
-
     <mj-section background-color="#f7f9fc" padding="32px">
       <mj-column>
         <mj-text font-size="20px" font-weight="600" color="#20377A" align="center">Notificación de Agendamiento</mj-text>
