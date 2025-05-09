@@ -1,0 +1,76 @@
+.dashboardContainer {
+  width: 100%;
+}
+
+.welcomeSection {
+  background-color: var(--bg-primary);
+  border-radius: var(--border-radius);
+  padding: var(--spacing-4);
+  margin-bottom: var(--spacing-4);
+  box-shadow: var(--box-shadow-sm);
+}
+
+.welcomeTitle {
+  font-size: var(--font-size-xl);
+  color: var(--text-primary);
+  margin-top: 0;
+  margin-bottom: var(--spacing-2);
+}
+
+.welcomeText {
+  color: var(--text-secondary);
+  margin: 0;
+  line-height: 1.5;
+}
+
+.quickLinksGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: var(--spacing-3);
+  margin-bottom: var(--spacing-4);
+}
+
+.quickLinkCard {
+  background-color: var(--bg-primary);
+  border-radius: var(--border-radius);
+  box-shadow: var(--box-shadow-sm);
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.quickLinkCard:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--box-shadow);
+}
+
+.quickLink {
+  display: block;
+  padding: var(--spacing-4);
+  color: var(--text-primary);
+  text-decoration: none;
+  height: 100%;
+}
+
+.quickLinkIcon {
+  font-size: 2.5rem;
+  margin-bottom: var(--spacing-2);
+  color: var(--primary-color);
+}
+
+.quickLinkTitle {
+  margin: 0 0 var(--spacing-2);
+  font-size: var(--font-size-lg);
+  color: var(--text-primary);
+}
+
+.quickLinkDescription {
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: var(--font-size-sm);
+  line-height: 1.5;
+}
+
+@media (max-width: 768px) {
+  .quickLinksGrid {
+    grid-template-columns: 1fr;
+  }
+}

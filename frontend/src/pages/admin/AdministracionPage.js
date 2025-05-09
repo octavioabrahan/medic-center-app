@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import "./AdministracionPage.css";
-import "../../components/admin/AdminCommon.css"; // Importamos los estilos comunes
-import UsuariosAdminTab from "../../components/admin/UsuariosAdminTab";
-import RolesAdminTab from "../../components/admin/RolesAdminTab";
-import PantallasAdminTab from "../../components/admin/PantallasAdminTab";
+import "./components/AdminCommon.css"; // Actualizada ubicación de estilos comunes
+import UsuariosAdminTab from "./components/UsuariosAdminTab";
+import RolesAdminTab from "./components/RolesAdminTab";
+import PantallasAdminTab from "./components/PantallasAdminTab";
 import { auth } from "../../api";
 
 function AdministracionPage() {

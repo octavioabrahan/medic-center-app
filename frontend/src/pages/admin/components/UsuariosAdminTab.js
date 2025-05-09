@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import api, { auth } from "../../api";
-import "./AdminComponents.css"; // Importamos los nuevos estilos específicos
+import api, { auth } from "../../../api";
+import "./AdminComponents.css"; // Importamos los estilos específicos
 
 // Componente principal para la administración de usuarios
 function UsuariosAdminTab() {

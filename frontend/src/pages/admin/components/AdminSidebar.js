@@ -1,10 +1,10 @@
-// frontend/src/components/admin/AdminSidebar.js
+// frontend/src/pages/admin/components/AdminSidebar.js
 import React, { useState, useEffect } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import './AdminSidebar.css';
-import logo from '../../assets/logo.svg'; // Asegúrate de que la ruta sea correcta
-import { auth } from '../../api';
-import api from '../../api';
+import logo from '../../../assets/logo.svg'; // Ajustada la ruta para reflejar la nueva ubicación del componente
+import { auth } from '../../../api';
+import api from '../../../api';
 
 const AdminSidebar = () => {
   const navigate = useNavigate();

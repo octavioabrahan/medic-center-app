@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import "./ServiciosPage.css";
-import "../../components/admin/AdminCommon.css"; // Importamos los estilos comunes
-import AdminFilterBar from "../../components/admin/AdminFilterBar"; // Importamos el nuevo componente
+import "./components/AdminCommon.css"; // Actualizamos la ruta de los estilos
+import AdminFilterBar from "./components/AdminFilterBar"; // Actualizamos la ubicación del componente
 
 const ServiciosPage = () => {
   // Estados para almacenar los datos de servicios

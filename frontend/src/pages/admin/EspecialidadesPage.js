@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import "../../components/admin/AdminCommon.css"; // Importamos los estilos comunes
-import AdminFilterBar from "../../components/admin/AdminFilterBar"; // Importamos el nuevo componente
+import "./components/AdminCommon.css"; // Actualizada la ubicación de estilos comunes
+import AdminFilterBar from "./components/AdminFilterBar"; // Actualizada la ubicación del componente
 
 function EspecialidadesPage() {
   const [especialidades, setEspecialidades] = useState([]);

@@ -1,12 +1,14 @@
 import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import { format } from 'date-fns';
+import { AdminLayout } from '../../components/layouts';
 import Calendar from '../../components/common/Calendar';
-import AdminFilterBar from "../../components/admin/AdminFilterBar"; // Importamos el componente de barra de filtros
-import "./AdminCitas.css";
-import "../../components/admin/AdminCommon.css"; // Importamos los estilos comunes
+import styles from './CitasPage.module.css';
 
-const AdminCitas = () => {
+/**
+ * Página para gestionar las citas agendadas en el área administrativa
+ */
+const CitasPage = () => {
   // Estados para almacenar los datos
   const [agendamientos, setAgendamientos] = useState([]);
   const [filteredAgendamientos, setFilteredAgendamientos] = useState([]);
@@ -18,7 +20,7 @@ const AdminCitas = () => {
   const [filterStatus, setFilterStatus] = useState("todos");
   const [profesionales, setProfesionales] = useState([]);
   const [filtroProfesional, setFiltroProfesional] = useState("todos");
-  const [sortOrder, setSortOrder] = useState("az"); // Añadido para ordenamiento alfabético
+  const [sortOrder, setSortOrder] = useState("az");
 
   // Referencia para el selector de fechas
   const datePickerRef = useRef(null);
@@ -27,8 +29,8 @@ const AdminCitas = () => {
   const [dateRange, setDateRange] = useState(() => {
     // Obtener la fecha del lunes de la semana actual
     const today = new Date();
-    const day = today.getDay(); // 0 = domingo, 1 = lunes, ..., 6 = sábado
-    const diff = day === 0 ? -6 : 1 - day; // Si es domingo, retrocedemos 6 días, sino calculamos distancia a lunes
+    const day = today.getDay();
+    const diff = day === 0 ? -6 : 1 - day;
     
     const monday = new Date(today);
     monday.setDate(today.getDate() + diff);
@@ -53,19 +55,15 @@ const AdminCitas = () => {
   // Detectar clics fuera del selector de fechas para cerrarlo
   useEffect(() => {
     function handleClickOutside(event) {
-      // Solo ejecutar si el calendario está visible
       if (!showDatePicker) return;
       
-      // Verificar si el clic fue dentro del selector de fechas
       if (datePickerRef.current && !datePickerRef.current.contains(event.target)) {
         setShowDatePicker(false);
       }
     }
 
-    // Agregar el event listener cuando el componente se monta o cuando showDatePicker cambia
     document.addEventListener("mousedown", handleClickOutside);
     
-    // Limpiar el event listener cuando el componente se desmonta o showDatePicker cambia
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
@@ -75,31 +73,22 @@ const AdminCitas = () => {
   const fetchAgendamientos = async () => {
     setLoading(true);
     try {
-      // Agregar un pequeño retraso para evitar múltiples llamadas
       const params = new URLSearchParams();
       if (dateRange.from) params.append('desde', format(dateRange.from, 'yyyy-MM-dd'));
       if (dateRange.to) params.append('hasta', format(dateRange.to, 'yyyy-MM-dd'));
       
       const response = await axios.get(`/api/agendamiento?${params.toString()}`);
-      console.log("Datos cargados de la API:", response.data);
       
-      // Guardar los datos originales
       setAgendamientos(response.data);
-      
-      // Inicialmente mostrar todos los datos sin filtrar
       applyFilters(response.data);
       
     } catch (err) {
       if (err.response && err.response.status === 429) {
-        console.error('Error: Demasiadas solicitudes. Esperando un momento...');
-        // Esperar 2 segundos y reintentar
         setTimeout(fetchAgendamientos, 2000);
         return;
       }
       
-      console.error('Error:', err);
       setError('No se pudieron cargar los agendamientos. Por favor, intenta de nuevo.');
-      // Asegurarse de limpiar los datos cuando hay un error
       setAgendamientos([]);
       setFilteredAgendamientos([]);
     } finally {
@@ -126,13 +115,11 @@ const AdminCitas = () => {
 
   // Aplicar filtros cuando cambian los criterios
   const applyFilters = (data = agendamientos) => {
-    // Si no hay datos, establecer una lista vacía y retornar
     if (!data || data.length === 0) {
       setFilteredAgendamientos([]);
       return;
     }
     
-    console.log("Aplicando filtros a", data.length, "registros");
     let results = [...data];
     
     // Filtrar por término de búsqueda
@@ -173,13 +160,11 @@ const AdminCitas = () => {
       });
     }
     
-    console.log("Resultados filtrados:", results.length);
     setFilteredAgendamientos(results);
   };
 
   // Reaccionar a cambios en los filtros
   useEffect(() => {
-    // Solo aplicar filtros si ya tenemos datos cargados
     if (agendamientos.length > 0) {
       applyFilters();
     }
@@ -187,18 +172,15 @@ const AdminCitas = () => {
   }, [searchTerm, filterStatus, filtroProfesional, sortOrder]);
 
   // Obtener datos nuevamente cuando cambia el rango de fechas
-  // Utilizamos un debounce con useEffect para espaciar las llamadas cuando cambia el rango
   useEffect(() => {
     let timeoutId;
     
     if (dateRange.from && dateRange.to) {
-      // Añadir un retraso para evitar múltiples llamadas rápidas
       timeoutId = setTimeout(() => {
         fetchAgendamientos();
       }, 300);
     }
     
-    // Limpieza del timeout si el componente se desmonta o el rango cambia nuevamente
     return () => {
       if (timeoutId) clearTimeout(timeoutId);
     };
@@ -209,17 +191,13 @@ const AdminCitas = () => {
     try {
       await axios.put(`/api/agendamiento/${id}`, { status: nuevoEstado });
       
-      // Actualizar estado en la lista local
       const updatedAgendamientos = agendamientos.map(agendamiento => 
         agendamiento.agendamiento_id === id ? { ...agendamiento, status: nuevoEstado } : agendamiento
       );
       
       setAgendamientos(updatedAgendamientos);
-      
-      // Volver a aplicar filtros para actualizar la vista
       applyFilters(updatedAgendamientos);
 
-      // Si el agendamiento está siendo mostrado en detalle, actualizar su estado
       if (currentAgendamiento && currentAgendamiento.agendamiento_id === id) {
         setCurrentAgendamiento({...currentAgendamiento, status: nuevoEstado});
       }
@@ -239,7 +217,6 @@ const AdminCitas = () => {
   // Manejar cambio de rango de fechas desde el calendario
   const handleDateRangeChange = (newDateRange) => {
     setDateRange(newDateRange);
-    // No llamamos a fetchAgendamientos aquí para evitar llamadas duplicadas
   };
 
   // Formatear fecha para mostrar en la tabla
@@ -266,7 +243,7 @@ const AdminCitas = () => {
     return `${format(dateRange.from, 'dd/MM/yyyy')} - ${format(dateRange.to, 'dd/MM/yyyy')}`;
   };
 
-  // Mostrar detalles del agendamiento (utilizando el agendamiento directamente)
+  // Mostrar detalles del agendamiento
   const mostrarDetalles = (agendamiento) => {
     setCurrentAgendamiento(agendamiento);
     setShowDetailModal(true);
@@ -274,13 +251,13 @@ const AdminCitas = () => {
 
   // Renderizar tabla de agendamientos
   const renderAgendamientosTable = () => {
-    if (loading) return <div className="loading-container">Cargando citas...</div>;
-    if (error) return <div className="error-message">{error}</div>;
-    if (filteredAgendamientos.length === 0) return <div className="no-results">No se encontraron citas</div>;
+    if (loading) return <div className={styles.loadingContainer}>Cargando citas...</div>;
+    if (error) return <div className={styles.errorMessage}>{error}</div>;
+    if (filteredAgendamientos.length === 0) return <div className={styles.noResults}>No se encontraron citas</div>;
 
     return (
-      <div className="admin-table-container with-scroll">
-        <table className="admin-table">
+      <div className={styles.tableContainer}>
+        <table className={styles.table}>
           <thead>
             <tr>
               <th></th> {/* Columna para icono de maletín */}
@@ -295,7 +272,6 @@ const AdminCitas = () => {
           </thead>
           <tbody>
             {filteredAgendamientos.map(agendamiento => {
-              // Simplificar formato de fecha para mostrar solo la parte necesaria
               const fecha = new Date(agendamiento.fecha_agendada);
               const formatoFecha = fecha.toLocaleDateString('es-ES', {
                 day: '2-digit',
@@ -305,29 +281,27 @@ const AdminCitas = () => {
               
               return (
                 <tr key={agendamiento.agendamiento_id}>
-                  <td className="empresa-cell">
+                  <td className={styles.empresaCell}>
                     {agendamiento.id_empresa && (
-                      <div className="tooltip">
-                        <div className="empresa-icon">💼</div>
-                        <span className="tooltip-text">Agendamiento con convenio</span>
+                      <div className={styles.tooltip}>
+                        <div className={styles.empresaIcon}>💼</div>
+                        <span className={styles.tooltipText}>Agendamiento con convenio</span>
                       </div>
                     )}
                   </td>
-                  <td>
-                    {formatoFecha}
-                  </td>
+                  <td>{formatoFecha}</td>
                   <td>{agendamiento.paciente_nombre} {agendamiento.paciente_apellido}</td>
                   <td>{agendamiento.cedula}</td>
                   <td>{agendamiento.tipo_atencion}</td>
                   <td>{agendamiento.profesional_nombre} {agendamiento.profesional_apellido}</td>
                   <td>
-                    <span className={`status-badge status-${agendamiento.status ? agendamiento.status.toLowerCase() : 'pendiente'}`}>
+                    <span className={`${styles.statusBadge} ${styles[`status${agendamiento.status ? agendamiento.status.charAt(0).toUpperCase() + agendamiento.status.slice(1) : 'Pendiente'}`]}`}>
                       {agendamiento.status || 'Sin estado'}
                     </span>
                   </td>
-                  <td className="actions-cell">
+                  <td className={styles.actionsCell}>
                     <button 
-                      className="btn-action btn-view" 
+                      className={`${styles.btnAction} ${styles.btnView}`} 
                       onClick={() => mostrarDetalles(agendamiento)}
                       title="Ver detalles"
                     >
@@ -336,7 +310,7 @@ const AdminCitas = () => {
                     {agendamiento.status && agendamiento.status.toLowerCase() === 'pendiente' && (
                       <button
                         onClick={() => actualizarEstado(agendamiento.agendamiento_id, "confirmada")}
-                        className="btn-action btn-confirm"
+                        className={`${styles.btnAction} ${styles.btnConfirm}`}
                         title="Confirmar"
                       >
                         ✓
@@ -357,16 +331,16 @@ const AdminCitas = () => {
     if (!showDetailModal || !currentAgendamiento) return null;
 
     return (
-      <div className="modal-overlay">
-        <div className="modal-content">
-          <div className="modal-header">
+      <div className={styles.modalOverlay}>
+        <div className={styles.modalContent}>
+          <div className={styles.modalHeader}>
             <h2>Detalles del Agendamiento</h2>
-            <button className="close-btn" onClick={() => setShowDetailModal(false)}>×</button>
+            <button className={styles.closeBtn} onClick={() => setShowDetailModal(false)}>×</button>
           </div>
-          <div className="modal-body">
-            <div className="detail-section">
+          <div className={styles.modalBody}>
+            <div className={styles.detailSection}>
               <h3>Información General</h3>
-              <div className="detail-grid">
+              <div className={styles.detailGrid}>
                 <div>
                   <strong>ID:</strong> {currentAgendamiento.agendamiento_id}
                 </div>
@@ -378,7 +352,7 @@ const AdminCitas = () => {
                 </div>
                 <div>
                   <strong>Estado:</strong> 
-                  <span className={`status-badge status-${currentAgendamiento.status ? currentAgendamiento.status.toLowerCase() : 'pendiente'}`}>
+                  <span className={`${styles.statusBadge} ${styles[`status${currentAgendamiento.status ? currentAgendamiento.status.charAt(0).toUpperCase() + currentAgendamiento.status.slice(1) : 'Pendiente'}`]}`}>
                     {currentAgendamiento.status || 'Sin estado'}
                   </span>
                 </div>
@@ -393,30 +367,20 @@ const AdminCitas = () => {
                 {currentAgendamiento.id_empresa && currentAgendamiento.archivo_adjunto_id && (
                   <div>
                     <strong>Orden médica:</strong>
-                    <div className="orden-medica-container" style={{ marginTop: '10px' }}>
-                      <div style={{ marginTop: '8px' }}>
+                    <div className={styles.ordenMedicaContainer}>
+                      <div>
                         <a 
                           href={`${process.env.REACT_APP_API_URL || ''}/api/archivos/${currentAgendamiento.archivo_adjunto_id}`}
                           target="_blank" 
                           rel="noopener noreferrer"
-                          style={{ 
-                            color: '#0066cc', 
-                            textDecoration: 'underline',
-                            display: 'block',
-                            marginBottom: '10px',
-                            fontSize: '14px'
-                          }}
+                          className={styles.documentLink}
                         >
                           Ver documento
                         </a>
                         <a 
                           href={`${process.env.REACT_APP_API_URL || ''}/api/archivos/${currentAgendamiento.archivo_adjunto_id}?download=true`}
                           download
-                          style={{ 
-                            color: '#0066cc', 
-                            textDecoration: 'underline',
-                            fontSize: '14px'
-                          }}
+                          className={styles.documentLink}
                         >
                           Descargar documento
                         </a>
@@ -427,9 +391,9 @@ const AdminCitas = () => {
               </div>
             </div>
 
-            <div className="detail-section">
+            <div className={styles.detailSection}>
               <h3>Información del Paciente</h3>
-              <div className="detail-grid">
+              <div className={styles.detailGrid}>
                 <div>
                   <strong>Nombre:</strong> {currentAgendamiento.paciente_nombre} {currentAgendamiento.paciente_apellido}
                 </div>
@@ -445,45 +409,45 @@ const AdminCitas = () => {
               </div>
             </div>
 
-            <div className="detail-section">
+            <div className={styles.detailSection}>
               <h3>Profesional</h3>
-              <div className="detail-grid">
+              <div className={styles.detailGrid}>
                 <div>
                   <strong>Nombre:</strong> {currentAgendamiento.profesional_nombre} {currentAgendamiento.profesional_apellido}
                 </div>
               </div>
             </div>
 
-            <div className="detail-section">
+            <div className={styles.detailSection}>
               <h3>Servicios</h3>
               <p>{currentAgendamiento.observaciones || 'No se especificaron servicios'}</p>
             </div>
           </div>
-          <div className="modal-footer">
-            <div className="modal-estado-selector">
+          <div className={styles.modalFooter}>
+            <div className={styles.estadoSelector}>
               <label>Cambiar estado:</label>
-              <div className="estado-buttons">
+              <div className={styles.estadoButtons}>
                 <button 
-                  className={`estado-btn estado-pendiente ${currentAgendamiento.status === 'pendiente' ? 'active' : ''}`}
+                  className={`${styles.estadoBtn} ${styles.estadoPendiente} ${currentAgendamiento.status === 'pendiente' ? styles.active : ''}`}
                   onClick={() => actualizarEstado(currentAgendamiento.agendamiento_id, "pendiente")}
                 >
                   Pendiente
                 </button>
                 <button 
-                  className={`estado-btn estado-confirmada ${currentAgendamiento.status === 'confirmada' ? 'active' : ''}`}
+                  className={`${styles.estadoBtn} ${styles.estadoConfirmada} ${currentAgendamiento.status === 'confirmada' ? styles.active : ''}`}
                   onClick={() => actualizarEstado(currentAgendamiento.agendamiento_id, "confirmada")}
                 >
                   Confirmada
                 </button>
                 <button 
-                  className={`estado-btn estado-cancelada ${currentAgendamiento.status === 'cancelada' ? 'active' : ''}`}
+                  className={`${styles.estadoBtn} ${styles.estadoCancelada} ${currentAgendamiento.status === 'cancelada' ? styles.active : ''}`}
                   onClick={() => actualizarEstado(currentAgendamiento.agendamiento_id, "cancelada")}
                 >
                   Cancelada
                 </button>
               </div>
             </div>
-            <button className="btn-secondary" onClick={() => setShowDetailModal(false)}>
+            <button className={styles.btnSecondary} onClick={() => setShowDetailModal(false)}>
               Cerrar
             </button>
           </div>
@@ -492,26 +456,32 @@ const AdminCitas = () => {
     );
   };
 
+  // Datos para las migas de pan
+  const breadcrumbs = [
+    { label: 'Citas agendadas' }
+  ];
+
   return (
-    <div className="admin-page-container">
-      <h1 className="admin-page-title">Citas agendadas</h1>
-      
-      <div className="admin-filter-section">
-        <div className="admin-search">
+    <AdminLayout 
+      title="Citas agendadas" 
+      breadcrumbs={breadcrumbs}
+    >
+      <div className={styles.filterSection}>
+        <div className={styles.search}>
           <input
             type="text"
             placeholder="Buscar por nombre o cédula..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
-          <span className="search-icon">🔍</span>
+          <span className={styles.searchIcon}>🔍</span>
         </div>
         
-        <div className="admin-filter-controls">
+        <div className={styles.filterControls}>
           <select 
             value={filterStatus}
             onChange={(e) => setFilterStatus(e.target.value)}
-            className="filter-select"
+            className={styles.filterSelect}
           >
             <option value="todos">Todos los estados</option>
             <option value="pendiente">Pendiente</option>
@@ -522,7 +492,7 @@ const AdminCitas = () => {
           <select 
             value={filtroProfesional}
             onChange={(e) => setFiltroProfesional(e.target.value)}
-            className="filter-select"
+            className={styles.filterSelect}
           >
             <option value="todos">Todos los profesionales</option>
             {profesionales.map((prof) => (
@@ -532,18 +502,18 @@ const AdminCitas = () => {
             ))}
           </select>
           
-          <div className="date-picker-wrapper" ref={datePickerRef}>
+          <div className={styles.datePickerWrapper} ref={datePickerRef}>
             <div 
-              className="date-input-wrapper"
+              className={styles.dateInputWrapper}
               onClick={handleDateInputClick}
             >
-              <span className="calendar-icon">📅</span>
-              <span className="date-input">{formatDateRange()}</span>
+              <span className={styles.calendarIcon}>📅</span>
+              <span className={styles.dateInput}>{formatDateRange()}</span>
             </div>
             
             {showDatePicker && (
               <div 
-                className="calendar-dropdown calendar-position-right"
+                className={styles.calendarDropdown}
                 onClick={e => e.stopPropagation()}
               >
                 <Calendar
@@ -553,9 +523,9 @@ const AdminCitas = () => {
                   showPresets={true}
                 />
 
-                <div className="calendar-actions">
+                <div className={styles.calendarActions}>
                   <button 
-                    className="btn-primary"
+                    className={styles.btnPrimary}
                     onClick={(e) => {
                       e.preventDefault();
                       e.stopPropagation();
@@ -566,7 +536,7 @@ const AdminCitas = () => {
                     Aplicar
                   </button>
                   <button 
-                    className="btn-secondary"
+                    className={styles.btnSecondary}
                     onClick={(e) => {
                       e.preventDefault();
                       e.stopPropagation();
@@ -580,16 +550,16 @@ const AdminCitas = () => {
             )}
           </div>
           
-          <div className="admin-sort-buttons">
+          <div className={styles.sortButtons}>
             <button 
-              className={`sort-btn ${sortOrder === 'az' ? 'active' : ''}`}
+              className={`${styles.sortBtn} ${sortOrder === 'az' ? styles.active : ''}`}
               onClick={() => setSortOrder('az')}
               title="Ordenar de A a Z"
             >
               A → Z
             </button>
             <button 
-              className={`sort-btn ${sortOrder === 'za' ? 'active' : ''}`}
+              className={`${styles.sortBtn} ${sortOrder === 'za' ? styles.active : ''}`}
               onClick={() => setSortOrder('za')}
               title="Ordenar de Z a A"
             >
@@ -601,8 +571,8 @@ const AdminCitas = () => {
       
       {renderAgendamientosTable()}
       {renderDetailModal()}
-    </div>
+    </AdminLayout>
   );
 };
 
-export default AdminCitas;
+export default CitasPage;

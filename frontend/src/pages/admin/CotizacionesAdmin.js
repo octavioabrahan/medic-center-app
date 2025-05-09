@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './CotizacionesAdmin.css';
-import '../admin/AdminCommon.css'; // Importamos los estilos comunes
-import AdminFilterBar from '../admin/AdminFilterBar'; // Importamos el componente AdminFilterBar
+import './components/AdminCommon.css'; // Actualizada la ubicación de estilos comunes
+import AdminFilterBar from './components/AdminFilterBar'; // Actualizada la ubicación del componente
 
 function CotizacionesAdmin() {
   const [cotizaciones, setCotizaciones] = useState([]);

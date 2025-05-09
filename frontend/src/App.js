@@ -12,20 +12,19 @@ import RolesPage from "./pages/admin/RolesPage";
 import ExcepcionesPage from "./pages/admin/ExcepcionesPage";
 import AgendamientoPrivadoForm from "./components/public/AgendamientoPrivadoForm";
 import ProfesionalAsignarServicios from './pages/admin/ProfesionalAsignarServicios';
-import AdminCitas from './pages/admin/AdminCitas';
+import AgendamientoAdmin from './pages/admin/AgendamientoAdmin'; // Usando AgendamientoAdmin directamente
 import ServiciosPage from './pages/admin/ServiciosPage';
 import AdminEmpresas from "./pages/admin/AdminEmpresas";
 import AdminConvenios from "./pages/admin/AdminConvenios";
 import AgendamientoEmpresaForm from "./components/public/AgendamientoEmpresaForm";
 import AgendamientoIndex from './components/public/AgendamientoIndex';
-import CotizacionesAdmin from './components/admin/CotizacionesAdmin';
-import AdminLayout from './components/admin/AdminLayout';
+import CotizacionesAdmin from './pages/admin/CotizacionesAdmin';
+import AdminLayout from './pages/admin/components/AdminLayout';
 import AdminExamenes from './pages/admin/AdminExamenes';
-import AdministracionPage from './pages/admin/AdministracionPage'; // Nueva página de administración
+import AdministracionPage from './pages/admin/AdministracionPage';
 // Importar componentes de autenticación
 import LoginPage from './pages/auth/LoginPage';
 import ProtectedRoute from './components/auth/ProtectedRoute';
-// Eliminamos la importación no utilizada de 'auth'
 
 function App() {
   return (
@@ -56,7 +55,7 @@ function App() {
           <Route path="tipo-atencion" element={<TipoAtencionPage />} />
           <Route path="roles" element={<RolesPage />} />
           <Route path="excepciones" element={<ExcepcionesPage />} />
-          <Route path="citas" element={<AdminCitas />} />
+          <Route path="citas" element={<AgendamientoAdmin />} />
           <Route path="empresas" element={<AdminEmpresas />} />
           <Route path="convenios" element={<AdminConvenios />} />
           <Route path="cotizaciones" element={<CotizacionesAdmin />} />

@@ -1,7 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { Link } from 'react-router-dom';
+import { Link, NavLink, useNavigate } from 'react-router-dom';
 import styles from './AdminLayout.module.css';
+import { auth } from '../../../api'; // Asumiendo que la API se importa desde aquí
+import api from '../../../api';
 
 /**
  * Layout principal para secciones administrativas
@@ -11,7 +13,50 @@ const AdminLayout = ({
   title,
   breadcrumbs = [] 
 }) => {
+  const navigate = useNavigate();
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const [allowedScreens, setAllowedScreens] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  const currentUser = auth.getCurrentUser();
+  
+  // Determinar si el usuario tiene roles administrativos
+  const isAdmin = currentUser?.roles?.some(role => 
+    ['admin', 'superadmin'].includes(role)
+  );
+
+  // Cargar las pantallas permitidas para este usuario
+  useEffect(() => {
+    const fetchAllowedScreens = async () => {
+      try {
+        const response = await api.get('/role-screen-permissions/usuario');
+        setAllowedScreens(response.data);
+      } catch (error) {
+        console.error('Error al cargar pantallas permitidas:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchAllowedScreens();
+  }, []);
+
+  // Función para verificar si una ruta está permitida para el usuario
+  const isRouteAllowed = (path) => {
+    // Si es superadmin, permitir todo
+    if (currentUser?.roles?.includes('superadmin')) return true;
+    
+    // Si no hay pantallas cargadas aún, no mostrar nada excepto a superadmin
+    if (loading && !currentUser?.roles?.includes('superadmin')) return false;
+    
+    // Para otros usuarios, verificar contra la lista de pantallas permitidas
+    return allowedScreens.some(screen => screen.path === path);
+  };
+
+  const handleLogout = () => {
+    auth.logout();
+    navigate('/login');
+  };
 
   const toggleSidebar = () => {
     setSidebarCollapsed(!sidebarCollapsed);
@@ -34,10 +79,10 @@ const AdminLayout = ({
         
         <div className={styles.headerRight}>
           <div className={styles.userMenu}>
-            <span className={styles.userGreeting}>Bienvenido/a</span>
+            <span className={styles.userGreeting}>Bienvenido/a, {currentUser?.name || 'Usuario'}</span>
             <div className={styles.userActions}>
               <Link to="/admin/profile" className={styles.profileLink}>Mi perfil</Link>
-              <button className={styles.logoutButton}>Cerrar sesión</button>
+              <button className={styles.logoutButton} onClick={handleLogout}>Cerrar sesión</button>
             </div>
           </div>
         </div>
@@ -48,50 +93,138 @@ const AdminLayout = ({
         <aside className={`${styles.sidebar} ${sidebarCollapsed ? styles.collapsed : ''}`}>
           <nav className={styles.adminNav}>
             <ul className={styles.navList}>
-              <li className={styles.navItem}>
-                <Link to="/admin/dashboard" className={styles.navLink}>
-                  <span className={styles.navIcon}>📊</span>
-                  <span className={styles.navText}>Dashboard</span>
-                </Link>
+              {isRouteAllowed('/admin') && (
+                <li className={styles.navItem}>
+                  <NavLink 
+                    to="/admin/dashboard" 
+                    className={({isActive}) => `${styles.navLink} ${isActive ? styles.active : ''}`}
+                  >
+                    <span className={styles.navIcon}>📊</span>
+                    <span className={styles.navText}>Inicio</span>
+                  </NavLink>
+                </li>
+              )}
+              
+              {/* Sección de Agendamiento */}
+              <li className={styles.navSection}>
+                <span className={styles.navSectionTitle}>Agendamiento</span>
               </li>
-              <li className={styles.navItem}>
-                <Link to="/admin/agendamiento" className={styles.navLink}>
-                  <span className={styles.navIcon}>📅</span>
-                  <span className={styles.navText}>Agendamiento</span>
-                </Link>
+              
+              {isRouteAllowed('/admin/citas') && (
+                <li className={styles.navItem}>
+                  <NavLink 
+                    to="/admin/citas" 
+                    className={({isActive}) => `${styles.navLink} ${isActive ? styles.active : ''}`}
+                  >
+                    <span className={styles.navIcon}>📅</span>
+                    <span className={styles.navText}>Citas agendadas</span>
+                  </NavLink>
+                </li>
+              )}
+              
+              {isRouteAllowed('/admin/horarios') && (
+                <li className={styles.navItem}>
+                  <NavLink 
+                    to="/admin/horarios" 
+                    className={({isActive}) => `${styles.navLink} ${isActive ? styles.active : ''}`}
+                  >
+                    <span className={styles.navIcon}>🕒</span>
+                    <span className={styles.navText}>Horarios de atención</span>
+                  </NavLink>
+                </li>
+              )}
+              
+              {isRouteAllowed('/admin/profesionales') && (
+                <li className={styles.navItem}>
+                  <NavLink 
+                    to="/admin/profesionales" 
+                    className={({isActive}) => `${styles.navLink} ${isActive ? styles.active : ''}`}
+                  >
+                    <span className={styles.navIcon}>👨‍⚕️</span>
+                    <span className={styles.navText}>Profesionales</span>
+                  </NavLink>
+                </li>
+              )}
+              
+              {isRouteAllowed('/admin/servicios') && (
+                <li className={styles.navItem}>
+                  <NavLink 
+                    to="/admin/servicios" 
+                    className={({isActive}) => `${styles.navLink} ${isActive ? styles.active : ''}`}
+                  >
+                    <span className={styles.navIcon}>🏥</span>
+                    <span className={styles.navText}>Servicios</span>
+                  </NavLink>
+                </li>
+              )}
+
+              {isRouteAllowed('/admin/convenios') && (
+                <li className={styles.navItem}>
+                  <NavLink 
+                    to="/admin/convenios" 
+                    className={({isActive}) => `${styles.navLink} ${isActive ? styles.active : ''}`}
+                  >
+                    <span className={styles.navIcon}>📝</span>
+                    <span className={styles.navText}>Convenios</span>
+                  </NavLink>
+                </li>
+              )}
+              
+              {/* Sección de Cotizador */}
+              <li className={styles.navSection}>
+                <span className={styles.navSectionTitle}>Cotizador</span>
               </li>
-              <li className={styles.navItem}>
-                <Link to="/admin/profesionales" className={styles.navLink}>
-                  <span className={styles.navIcon}>👨‍⚕️</span>
-                  <span className={styles.navText}>Profesionales</span>
-                </Link>
-              </li>
-              <li className={styles.navItem}>
-                <Link to="/admin/pacientes" className={styles.navLink}>
-                  <span className={styles.navIcon}>🧑</span>
-                  <span className={styles.navText}>Pacientes</span>
-                </Link>
-              </li>
-              <li className={styles.navItem}>
-                <Link to="/admin/cotizaciones" className={styles.navLink}>
-                  <span className={styles.navIcon}>💲</span>
-                  <span className={styles.navText}>Cotizaciones</span>
-                </Link>
-              </li>
-              <li className={styles.navItem}>
-                <Link to="/admin/usuarios" className={styles.navLink}>
-                  <span className={styles.navIcon}>👥</span>
-                  <span className={styles.navText}>Usuarios</span>
-                </Link>
-              </li>
-              <li className={styles.navItem}>
-                <Link to="/admin/configuracion" className={styles.navLink}>
-                  <span className={styles.navIcon}>⚙️</span>
-                  <span className={styles.navText}>Configuración</span>
-                </Link>
-              </li>
+              
+              {isRouteAllowed('/admin/cotizaciones') && (
+                <li className={styles.navItem}>
+                  <NavLink 
+                    to="/admin/cotizaciones" 
+                    className={({isActive}) => `${styles.navLink} ${isActive ? styles.active : ''}`}
+                  >
+                    <span className={styles.navIcon}>💲</span>
+                    <span className={styles.navText}>Cotizaciones recibidas</span>
+                  </NavLink>
+                </li>
+              )}
+              
+              {isRouteAllowed('/admin/examenes') && (
+                <li className={styles.navItem}>
+                  <NavLink 
+                    to="/admin/examenes" 
+                    className={({isActive}) => `${styles.navLink} ${isActive ? styles.active : ''}`}
+                  >
+                    <span className={styles.navIcon}>🔬</span>
+                    <span className={styles.navText}>Exámenes y servicios</span>
+                  </NavLink>
+                </li>
+              )}
+              
+              {/* Sección de Administración */}
+              {isRouteAllowed('/admin/administracion') && (
+                <>
+                  <li className={styles.navSection}>
+                    <span className={styles.navSectionTitle}>Administrar</span>
+                  </li>
+                  <li className={styles.navItem}>
+                    <NavLink 
+                      to="/admin/administracion" 
+                      className={({isActive}) => `${styles.navLink} ${isActive ? styles.active : ''}`}
+                    >
+                      <span className={styles.navIcon}>⚙️</span>
+                      <span className={styles.navText}>Configuración</span>
+                    </NavLink>
+                  </li>
+                </>
+              )}
             </ul>
           </nav>
+          
+          <div className={styles.sidebarFooter}>
+            <div className={styles.userInfo}>
+              <span className={styles.userName}>{currentUser?.name || 'Usuario'}</span>
+              <span className={styles.userRole}>{currentUser?.roles?.join(', ') || 'Sin rol'}</span>
+            </div>
+          </div>
         </aside>
 
         {/* Main content */}

@@ -1,5 +1,5 @@
 import React from "react";
-import ProfesionalesAdmin from "../../components/admin/ProfesionalesAdmin";
+import ProfesionalesAdmin from "./ProfesionalesAdmin"; // Actualizada ubicación del componente
 
 const ProfesionalesPage = () => {
   return <ProfesionalesAdmin />;

@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import HorarioForm from "../../components/admin/HorarioForm";
+import "./components/HorarioForm"; // Actualizada la ubicación del componente
 import ExcepcionesPage from "./ExcepcionesPage";
-import AdminFilterBar from "../../components/admin/AdminFilterBar"; // Importamos el componente de barra de filtros
+import "./components/AdminFilterBar"; // Actualizada la ubicación del componente
 import "./HorariosPage.css";
-import "../../components/admin/AdminCommon.css"; // Importamos los estilos comunes
+import "./components/AdminCommon.css"; // Actualizada la ubicación de los estilos
 
 function HorariosPage() {
   const [horarios, setHorarios] = useState([]);

@@ -1,4 +1,4 @@
-// frontend/src/components/admin/AdminLayout.js
+// frontend/src/pages/admin/components/AdminLayout.js
 import React from 'react';
 import { Outlet } from 'react-router-dom';
 import AdminSidebar from './AdminSidebar';

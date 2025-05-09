@@ -1,5 +1,5 @@
 import React from 'react';
-import AgendamientoAdmin from '../../components/admin/AgendamientoAdmin';
+import AgendamientoAdmin from './AgendamientoAdmin'; // Actualizada ubicación del componente
 
 function AgendamientoAdminPage() {
   return (
