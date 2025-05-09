@@ -295,9 +295,14 @@ const AdminConvenios = () => {
   const cargarEmpresas = async () => {
     setLoading(true);
     try {
-      const res = await axios.get(`${process.env.REACT_APP_API_URL || ''}/api/empresas`);
+      // Aseguramos que la URL esté bien formada
+      const apiUrl = `${process.env.REACT_APP_API_URL || ''}/api/empresas`;
+      console.log("Cargando empresas desde:", apiUrl);
+      
+      const res = await axios.get(apiUrl);
       setEmpresas(res.data);
-      setFilteredEmpresas(res.data.filter(empresa => empresa.is_active)); // Mostrar solo activos por defecto
+      // El filtrado se hace en applyFilters, no aquí
+      applyFilters(res.data);
     } catch (err) {
       console.error("Error al cargar empresas", err);
       setError("No se pudieron cargar los convenios. Por favor, intente nuevamente.");
@@ -313,6 +318,12 @@ const AdminConvenios = () => {
       return;
     }
 
+    console.log("Aplicando filtros:", { 
+      showArchived: showArchived, 
+      totalEmpresas: data.length,
+      searchTerm: searchTerm
+    });
+
     let results = [...data];
     
     // Filtrar por término de búsqueda
@@ -326,7 +337,10 @@ const AdminConvenios = () => {
     
     // Filtrar por estado (archivado/activo)
     if (!showArchived) {
+      console.log("Filtrando solo empresas activas");
       results = results.filter(empresa => empresa.is_active);
+    } else {
+      console.log("Mostrando todas las empresas (activas y archivadas)");
     }
     
     // Aplicar ordenamiento
@@ -372,9 +386,7 @@ const AdminConvenios = () => {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchTerm, showArchived, sortOrder]);
 
-  useEffect(() => {
-    applyFilters();
-  }, [showArchived]); // Llamar a applyFilters cuando cambia showArchived
+  // Eliminamos el useEffect duplicado que estaba causando problemas
 
   // Manejar cambios en el campo RIF y calcular dígito verificador
   const handleRifChange = (e) => {
@@ -778,9 +790,15 @@ const AdminConvenios = () => {
                 <td>
                   {empresa.logo_url ? (
                     <img 
-                      src={empresa.logo_url}
+                      src={empresa.logo_url.replace(/&$/, '')} // Eliminamos el & al final si existe
                       alt={`Logo de ${empresa.nombre_empresa}`}
                       style={{ maxWidth: "40px", maxHeight: "40px" }}
+                      onError={(e) => {
+                        console.error("Error cargando imagen:", e.target.src);
+                        e.target.onerror = null; 
+                        e.target.src = ""; // URL de imagen por defecto
+                        e.target.alt = "Logo no disponible";
+                      }}
                     />
                   ) : (
                     <span className="no-logo">Sin logo</span>

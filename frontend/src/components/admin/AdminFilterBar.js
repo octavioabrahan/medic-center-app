@@ -92,7 +92,10 @@ const AdminFilterBar = ({
               type="checkbox"
               id="showArchivedCheckbox"
               checked={showArchived}
-              onChange={(e) => setShowArchived(e.target.checked)}
+              onChange={(e) => {
+                console.log("Cambiando showArchived a:", e.target.checked);
+                setShowArchived(e.target.checked);
+              }}
             />
             <label htmlFor="showArchivedCheckbox">Mostrar archivados</label>
           </div>
