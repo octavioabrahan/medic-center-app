@@ -374,7 +374,7 @@ const AdminConvenios = () => {
 
   useEffect(() => {
     applyFilters();
-  }, [showArchived]); // Llamar a applyFilters cuando cambia showArchived
+  }, [showArchived, applyFilters]); // Agregué applyFilters como dependencia para evitar el warning
 
   // Manejar cambios en el campo RIF y calcular dígito verificador
   const handleRifChange = (e) => {
