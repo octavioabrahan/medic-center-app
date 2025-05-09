@@ -340,7 +340,7 @@ const ServiciosPage = () => {
                 {isEditing && isActive && (
                   <button
                     type="button"
-                    className="btn-secondary"
+                    className="btn-archive"
                     onClick={handleConfirmarArchivar}
                   >
                     Archivar
@@ -376,7 +376,7 @@ const ServiciosPage = () => {
       <div className="modal-overlay">
         <div className="modal-content confirm-modal">
           <div className="modal-header">
-            <h2>¿Quieres archivar el servicio?</h2>
+            <h2>Estas a punto de archivar el servicio</h2>
             <button className="close-btn" onClick={() => setShowConfirmArchivarModal(false)}>×</button>
           </div>
           <div className="modal-body">

@@ -710,7 +710,7 @@ const AdminConvenios = () => {
       <div className="modal-overlay">
         <div className="modal-content">
           <div className="modal-header">
-            <h2>¿Quieres archivar el convenio?</h2>
+            <h2>Estas a punto de archivar el convenio</h2>
             <button className="close-btn" onClick={() => setShowArchiveModal(false)}>×</button>
           </div>
           <div className="modal-body">
