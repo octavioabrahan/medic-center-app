@@ -329,7 +329,7 @@ function ProfesionalesAdmin() {
               Cancelar
             </button>
             <button type="button" className="btn-primary" onClick={handleCreateEspecialidad}>
-              Guardar
+              Crear
             </button>
           </div>
         </div>
@@ -371,7 +371,7 @@ function ProfesionalesAdmin() {
                 className="btn-archivar"
                 onClick={() => cambiarEstadoProfesional(currentProfesional.profesional_id, false)}
               >
-                Confirmar archivo
+                Si, quiero archivar
               </button>
             </div>
           </div>
@@ -515,7 +515,7 @@ function ProfesionalesAdmin() {
                   Cancelar
                 </button>
                 <button type="submit" className="btn-guardar">
-                  Guardar cambios
+                  Agregar
                 </button>
               </div>
             </form>
