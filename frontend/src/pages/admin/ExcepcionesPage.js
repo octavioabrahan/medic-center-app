@@ -464,7 +464,7 @@ function ExcepcionesPage() {
           <thead>
             <tr>
               <th>Profesional</th>
-              <th>Tipo</th>
+              <th>Estado</th>
               <th>Fecha</th>
               <th>Hora de inicio</th>
               <th>Hora de término</th>
@@ -475,7 +475,7 @@ function ExcepcionesPage() {
             {filteredExcepciones.map((excepcion) => (
               <tr key={excepcion.excepcion_id}>
                 <td>{excepcion.profesional_nombre} {excepcion.profesional_apellido}</td>
-                <td>{excepcion.tipo}</td>
+                <td>{excepcion.estado}</td>
                 <td>{formatFecha(excepcion.fecha)}</td>
                 <td>{excepcion.hora_inicio ? excepcion.hora_inicio.slice(0, 5) : "-"}</td>
                 <td>{excepcion.hora_termino ? excepcion.hora_termino.slice(0, 5) : "-"}</td>
