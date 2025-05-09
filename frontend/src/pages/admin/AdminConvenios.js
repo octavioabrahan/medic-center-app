@@ -372,6 +372,10 @@ const AdminConvenios = () => {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchTerm, showArchived, sortOrder]);
 
+  useEffect(() => {
+    applyFilters();
+  }, [showArchived]); // Llamar a applyFilters cuando cambia showArchived
+
   // Manejar cambios en el campo RIF y calcular dígito verificador
   const handleRifChange = (e) => {
     const valor = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
