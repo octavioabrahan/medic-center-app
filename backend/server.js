@@ -76,6 +76,10 @@ app.use('/api/', limiter); // Aplicar limitador de tasa a rutas API
 const logosFolderPath = path.join(__dirname, '..', 'frontend', 'src', 'components', 'logos_empresas');
 app.use('/components/logos_empresas', express.static(logosFolderPath));
 
+// Configurar acceso a la carpeta de uploads para ver los archivos adjuntos directamente
+const uploadsPath = path.join(__dirname, 'uploads', 'agendamientos');
+app.use('/uploads/agendamientos', express.static(uploadsPath));
+
 // Rutas públicas (no requieren autenticación)
 app.get('/', (req, res) => {
   res.json({ message: 'API del Centro Médico funcionando correctamente' });
@@ -192,3 +196,4 @@ schedule.scheduleJob('0 2 * * *', async () => {
 app.listen(port, '0.0.0.0', () => {
   logger.logGeneral(`Backend corriendo en http://10.20.20.111:${port}`);
 });
+

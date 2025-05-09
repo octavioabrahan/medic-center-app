@@ -318,6 +318,12 @@ const AdminConvenios = () => {
       return;
     }
 
+    console.log("Aplicando filtros:", { 
+      showArchived: showArchived, 
+      totalEmpresas: data.length,
+      searchTerm: searchTerm
+    });
+
     let results = [...data];
     
     // Filtrar por término de búsqueda
@@ -331,7 +337,10 @@ const AdminConvenios = () => {
     
     // Filtrar por estado (archivado/activo)
     if (!showArchived) {
+      console.log("Filtrando solo empresas activas");
       results = results.filter(empresa => empresa.is_active);
+    } else {
+      console.log("Mostrando todas las empresas (activas y archivadas)");
     }
     
     // Aplicar ordenamiento
