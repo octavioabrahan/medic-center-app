@@ -98,10 +98,13 @@ const LogoUploader = ({ onLogoUploaded, initialLogo }) => {
         throw new Error('Formato de respuesta inválido: No se recibió la ruta del archivo');
       }
       
-      const logoPath = response.data.archivo.url;
-      console.log('Ruta del logo recibida:', logoPath);
+      // Decodificar la URL antes de usarla para evitar problemas con caracteres codificados
+      let logoPath = response.data.archivo.url;
+      // Decodificar entidades HTML comunes como &#x2F; a /
+      logoPath = logoPath.replace(/&#x2F;/g, '/');
+      console.log('Ruta del logo decodificada:', logoPath);
       
-      // Notificar al componente padre con la ruta del archivo
+      // Notificar al componente padre con la ruta del archivo decodificada
       if (onLogoUploaded) {
         onLogoUploaded(logoPath);
       }
@@ -677,7 +680,7 @@ const AdminConvenios = () => {
                         <strong>Logo:</strong>
                         <div className="logo-preview">
                           <img 
-                            src={currentEmpresa.logo_url} 
+                            src={currentEmpresa.logo_url.replace(/&#x2F;/g, '/')} 
                             alt={`Logo de ${currentEmpresa.nombre_empresa}`}
                             style={{ maxWidth: "100px", maxHeight: "100px", marginTop: "8px" }}
                           />
@@ -790,7 +793,7 @@ const AdminConvenios = () => {
                 <td>
                   {empresa.logo_url ? (
                     <img 
-                      src={empresa.logo_url.replace(/&$/, '')} // Eliminamos el & al final si existe
+                      src={empresa.logo_url.replace(/&#x2F;/g, '/').replace(/&$/, '')} 
                       alt={`Logo de ${empresa.nombre_empresa}`}
                       style={{ maxWidth: "40px", maxHeight: "40px" }}
                       onError={(e) => {
