@@ -4,6 +4,22 @@ import "./AdminConvenios.css";
 import "../../components/admin/AdminCommon.css"; // Importing common styles
 import AdminFilterBar from "../../components/admin/AdminFilterBar"; // Importing the new component
 
+// Función para obtener la URL correcta de las imágenes
+const getImageUrl = (path) => {
+  if (!path) return '';
+  
+  // Si la URL ya es absoluta, la devolvemos tal cual
+  if (path.startsWith('http')) {
+    return path;
+  }
+  
+  // Asegurarse de que la ruta comience con /
+  const normalizedPath = path.startsWith('/') ? path : `/${path}`;
+  
+  // Construir la URL absoluta usando la base de la aplicación
+  return `${window.location.origin}${normalizedPath}`;
+};
+
 const LogoUploader = ({ onLogoUploaded, initialLogo }) => {
   const [selectedFile, setSelectedFile] = useState(null);
   const [previewUrl, setPreviewUrl] = useState(initialLogo || "");
@@ -298,22 +314,6 @@ const AdminConvenios = () => {
     rif = rif.toUpperCase().replace(/[^A-Z0-9]/g, '');
     if (rif.length !== 10) return rif;
     return `${rif.substring(0, 1)}-${rif.substring(1, 9)}-${rif.substring(9)}`;
-  };
-
-  // Función para obtener la URL correcta de las imágenes
-  const getImageUrl = (path) => {
-    if (!path) return '';
-    
-    // Si la URL ya es absoluta, la devolvemos tal cual
-    if (path.startsWith('http')) {
-      return path;
-    }
-    
-    // Asegurarse de que la ruta comience con /
-    const normalizedPath = path.startsWith('/') ? path : `/${path}`;
-    
-    // Construir la URL absoluta usando la base de la aplicación
-    return `${window.location.origin}${normalizedPath}`;
   };
 
   // Cargar empresas desde la API
