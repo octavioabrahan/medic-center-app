@@ -18,11 +18,23 @@ function Login() {
       // Primera intentamos con la función auth.login normal
       try {
         console.log("Intentando con auth.login:", { email });
-        await auth.login(email, password);
-        window.location.href = "/admin";
+        const userData = await auth.login(email, password);
+        
+        // Verificar explícitamente que el token se guardó antes de redirigir
+        const token = localStorage.getItem("authToken");
+        if (!token) {
+          console.error("Token no guardado en localStorage después del login");
+          throw new Error("Error al guardar la sesión");
+        }
+        
+        console.log("Login exitoso, token almacenado correctamente");
+        setTimeout(() => {
+          // Usar setTimeout para asegurar que el token se guarda antes de redirigir
+          window.location.href = "/admin";
+        }, 100);
         return;
       } catch (error) {
-        console.log("Primer método falló, intentando directo con axios");
+        console.log("Primer método falló, intentando directo con axios", error);
       }
 
       // Si falla, intentamos con axios directamente
@@ -41,7 +53,17 @@ function Login() {
       if (response.data.token) {
         localStorage.setItem("authToken", response.data.token);
         localStorage.setItem("user", JSON.stringify(response.data.usuario));
-        window.location.href = "/admin";
+        
+        // Verificar que se ha guardado
+        const token = localStorage.getItem("authToken");
+        if (!token) {
+          throw new Error("Error al guardar la sesión");
+        }
+        
+        // Usar setTimeout para asegurar que el token se guarda antes de redirigir
+        setTimeout(() => {
+          window.location.href = "/admin";
+        }, 100);
       }
     } catch (err) {
       console.error("Error de login:", err);

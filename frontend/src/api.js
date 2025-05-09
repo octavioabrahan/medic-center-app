@@ -153,7 +153,24 @@ const auth = {
   },
   
   isAuthenticated: () => {
-    return !!localStorage.getItem("authToken");
+    const token = localStorage.getItem("authToken");
+    if (!token) return false;
+    
+    try {
+      // Verificación básica de formato de token (esto es una verificación simple)
+      // No decodifica ni valida la firma, solo comprueba que tenga el formato esperado
+      const parts = token.split('.');
+      if (parts.length !== 3) return false;
+      
+      // Comprobar si tenemos datos de usuario
+      const user = localStorage.getItem("user");
+      if (!user) return false;
+      
+      return true;
+    } catch (error) {
+      console.error("Error validando token:", error);
+      return false;
+    }
   },
   
   register: async (userData) => {
