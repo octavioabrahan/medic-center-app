@@ -464,7 +464,7 @@ function ExcepcionesPage() {
           <thead>
             <tr>
               <th>Profesional</th>
-              <th>Estado</th>
+              <th>Tipo</th>
               <th>Fecha</th>
               <th>Hora de inicio</th>
               <th>Hora de término</th>
