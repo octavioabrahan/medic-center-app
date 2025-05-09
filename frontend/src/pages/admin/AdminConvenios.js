@@ -223,6 +223,7 @@ const AdminConvenios = () => {
   const [showArchiveModal, setShowArchiveModal] = useState(false);
   const [currentEmpresa, setCurrentEmpresa] = useState(null);
   const [editMode, setEditMode] = useState(false);
+  const [checkboxChecked, setCheckboxChecked] = useState(false); // Estado para el checkbox
 
   // Función para calcular el dígito verificador del RIF
   const calcularDigitoVerificador = (rifInput) => {
@@ -720,21 +721,21 @@ const AdminConvenios = () => {
               <li>Los profesionales que lo tienen asignado dejarán de mostrarse si no tienen otros servicios activos.</li>
               <li>Los agendamientos previamente generados no se eliminarán.</li>
             </ul>
-            
             <div className="admin-checkbox">
               <input 
                 type="checkbox" 
                 id="confirm-archive" 
                 value="confirm"
-                onChange={(e) => {}}
+                checked={checkboxChecked}
+                onChange={(e) => setCheckboxChecked(e.target.checked)}
               />
               <label htmlFor="confirm-archive">
                 Entiendo que este convenio y los profesionales que solo lo ofrecen dejarán de mostrarse en el portal.
               </label>
             </div>
-            
+
             <div className="action-buttons">
-              <button className="btn-archive" onClick={archivarEmpresa}>
+              <button className="btn-archive" onClick={archivarEmpresa} disabled={!checkboxChecked}>
                 Archivar convenio
               </button>
               <button className="btn-secondary" onClick={() => setShowArchiveModal(false)}>
