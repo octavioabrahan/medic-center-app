@@ -194,6 +194,6 @@ schedule.scheduleJob('0 2 * * *', async () => {
 
 // Iniciar el servidor - configuración simplificada para escuchar en todas las interfaces
 app.listen(port, '0.0.0.0', () => {
-  logger.logGeneral(`Backend corriendo en http://10.20.20.211:${port}`);
+  logger.logGeneral(`Backend corriendo en http://10.20.20.111:${port}`);
 });
 
