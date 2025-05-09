@@ -295,7 +295,11 @@ const AdminConvenios = () => {
   const cargarEmpresas = async () => {
     setLoading(true);
     try {
-      const res = await axios.get(`${process.env.REACT_APP_API_URL || ''}/api/empresas`);
+      const res = await axios.get(`${process.env.REACT_APP_API_URL || ''}/api/empresas`, {
+        params: {
+          archived: showArchived, // Incluir parámetro para obtener archivados
+        },
+      });
       setEmpresas(res.data);
       applyFilters(res.data);
     } catch (err) {
