@@ -295,13 +295,15 @@ const AdminConvenios = () => {
   const cargarEmpresas = async () => {
     setLoading(true);
     try {
-      // Aseguramos que la URL esté bien formada
-      const apiUrl = `${process.env.REACT_APP_API_URL || ''}/api/empresas`;
+      // Usamos una ruta relativa en lugar de absoluta para evitar problemas con el entorno
+      const apiUrl = '/api/empresas';
       console.log("Cargando empresas desde:", apiUrl);
       
       const res = await axios.get(apiUrl);
+      console.log("Datos recibidos:", res.data.length, "empresas");
       setEmpresas(res.data);
-      // El filtrado se hace en applyFilters, no aquí
+      
+      // Aplicar filtros a los datos recién cargados
       applyFilters(res.data);
     } catch (err) {
       console.error("Error al cargar empresas", err);
@@ -338,9 +340,10 @@ const AdminConvenios = () => {
     // Filtrar por estado (archivado/activo)
     if (!showArchived) {
       console.log("Filtrando solo empresas activas");
-      results = results.filter(empresa => empresa.is_active);
+      results = results.filter(empresa => empresa.is_active === true);
     } else {
       console.log("Mostrando todas las empresas (activas y archivadas)");
+      // No aplicamos filtro aquí para mostrar todas
     }
     
     // Aplicar ordenamiento
@@ -382,11 +385,10 @@ const AdminConvenios = () => {
 
   // Aplicar filtros cuando cambian los criterios
   useEffect(() => {
+    console.log("Estado de filtro cambiado:", { showArchived, searchTerm, sortOrder });
     applyFilters();
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchTerm, showArchived, sortOrder]);
-
-  // Eliminamos el useEffect duplicado que estaba causando problemas
 
   // Manejar cambios en el campo RIF y calcular dígito verificador
   const handleRifChange = (e) => {
@@ -677,9 +679,15 @@ const AdminConvenios = () => {
                         <strong>Logo:</strong>
                         <div className="logo-preview">
                           <img 
-                            src={currentEmpresa.logo_url} 
+                            src={`${process.env.PUBLIC_URL || ''}${currentEmpresa.logo_url}`} 
                             alt={`Logo de ${currentEmpresa.nombre_empresa}`}
                             style={{ maxWidth: "100px", maxHeight: "100px", marginTop: "8px" }}
+                            onError={(e) => {
+                              console.error("Error cargando imagen en modal:", e.target.src);
+                              e.target.onerror = null; 
+                              e.target.src = ""; 
+                              e.target.alt = "Logo no disponible";
+                            }}
                           />
                         </div>
                       </div>
@@ -790,7 +798,7 @@ const AdminConvenios = () => {
                 <td>
                   {empresa.logo_url ? (
                     <img 
-                      src={empresa.logo_url.replace(/&$/, '')} // Eliminamos el & al final si existe
+                      src={`${process.env.PUBLIC_URL || ''}${empresa.logo_url}`}
                       alt={`Logo de ${empresa.nombre_empresa}`}
                       style={{ maxWidth: "40px", maxHeight: "40px" }}
                       onError={(e) => {
