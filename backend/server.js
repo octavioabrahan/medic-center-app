@@ -58,7 +58,7 @@ const limiter = rateLimit({
 // Configurar CORS para entornos de producción/desarrollo
 const corsOptions = {
   origin: true, //process.env.CORS_ORIGIN || 'http://localhost:3000',
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
   allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true,
   maxAge: 600 // Cache preflight por 10 minutos (600 segundos)
