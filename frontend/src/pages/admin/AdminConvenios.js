@@ -374,7 +374,7 @@ const AdminConvenios = () => {
 
   useEffect(() => {
     applyFilters();
-  }, [showArchived, applyFilters]); // Agregué applyFilters como dependencia para evitar el warning
+  }, [showArchived]); // Llamar a applyFilters cuando cambia showArchived
 
   // Manejar cambios en el campo RIF y calcular dígito verificador
   const handleRifChange = (e) => {
@@ -466,20 +466,11 @@ const AdminConvenios = () => {
   // Archivar empresa
   const archivarEmpresa = async () => {
     try {
-      if (!currentEmpresa || !currentEmpresa.id_empresa) {
-        console.error("Error: currentEmpresa o id_empresa no está definido", currentEmpresa);
-        setError("No se puede archivar el convenio porque falta información.");
-        return;
-      }
-
-      console.log("Intentando archivar empresa con id:", currentEmpresa.id_empresa);
-
       await axios.delete(`${process.env.REACT_APP_API_URL || ''}/api/empresas/${currentEmpresa.id_empresa}`);
       setShowArchiveModal(false);
       setCurrentEmpresa(null);
       cargarEmpresas();
     } catch (err) {
-      console.error("Error al archivar convenio:", err);
       setError("Error al archivar convenio.");
     }
   };

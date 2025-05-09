@@ -46,7 +46,6 @@ const EmpresasController = {
   
   desactivar: async (req, res) => {
     const { id } = req.params;
-    console.log("Solicitud para desactivar empresa con id:", id);
     try {
       await model.desactivar(id);
       res.json({ mensaje: "Empresa desactivada" });
