@@ -28,6 +28,8 @@ const ServiciosPage = () => {
     is_recommended: false
   });
 
+  const [checkboxChecked, setCheckboxChecked] = useState(false); // Estado para el checkbox
+
   // Cargar servicios al montar el componente
   useEffect(() => {
     fetchServicios();
@@ -390,8 +392,8 @@ const ServiciosPage = () => {
               <input 
                 type="checkbox"
                 id="entiendo"
-                checked={true}
-                readOnly
+                checked={checkboxChecked}
+                onChange={(e) => setCheckboxChecked(e.target.checked)}
               />
               <label htmlFor="entiendo">
                 Entiendo que este servicio y los profesionales que solo lo ofrecen dejarán de mostrarse en el portal.
@@ -410,7 +412,7 @@ const ServiciosPage = () => {
                 type="button" 
                 className="btn-archive"
                 onClick={archivarServicio}
-                disabled={loading}
+                disabled={loading || !checkboxChecked} // Deshabilitar si el checkbox no está marcado
               >
                 {loading ? "Archivando..." : "Archivar servicio"}
               </button>
