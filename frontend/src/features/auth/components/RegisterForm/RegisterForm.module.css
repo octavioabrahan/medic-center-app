@@ -1,0 +1,64 @@
+.registerForm {
+  width: 100%;
+}
+
+.formAlert {
+  margin-bottom: var(--spacing-3);
+}
+
+.formGroup {
+  margin-bottom: var(--spacing-3);
+}
+
+.formGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--spacing-3);
+}
+
+.termsConditions {
+  margin-bottom: var(--spacing-3);
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+  text-align: center;
+}
+
+.termsLink {
+  color: var(--primary-color);
+  text-decoration: none;
+  transition: var(--transition-base);
+}
+
+.termsLink:hover {
+  text-decoration: underline;
+}
+
+.formActions {
+  margin: var(--spacing-3) 0;
+}
+
+.loginLink {
+  text-align: center;
+  margin-top: var(--spacing-2);
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+}
+
+.loginLinkText {
+  color: var(--primary-color);
+  text-decoration: none;
+  font-weight: 500;
+  transition: var(--transition-base);
+}
+
+.loginLinkText:hover {
+  text-decoration: underline;
+}
+
+/* Responsive */
+@media (max-width: 576px) {
+  .formGrid {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+}

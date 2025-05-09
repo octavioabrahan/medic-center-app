@@ -1,0 +1,69 @@
+.tableResponsive {
+  display: block;
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.table {
+  width: 100%;
+  margin-bottom: var(--spacing-3);
+  color: var(--text-primary);
+  border-collapse: collapse;
+}
+
+.table th,
+.table td {
+  padding: var(--spacing-2);
+  vertical-align: top;
+  text-align: left;
+}
+
+.tableHeader {
+  background-color: var(--bg-secondary);
+}
+
+.tableHeaderCell {
+  font-weight: 600;
+  border-bottom: 2px solid var(--border-color);
+}
+
+.tableBordered {
+  border: 1px solid var(--border-color);
+}
+
+.tableBordered th,
+.tableBordered td {
+  border: 1px solid var(--border-color);
+}
+
+.tableStriped tbody tr:nth-of-type(odd) {
+  background-color: rgba(0, 0, 0, 0.025);
+}
+
+.tableHover tbody tr:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+.clickableRow {
+  cursor: pointer;
+}
+
+.emptyMessage {
+  text-align: center;
+  padding: var(--spacing-4) !important;
+  color: var(--text-muted);
+  font-style: italic;
+}
+
+/* Responsive tables */
+@media (max-width: 768px) {
+  .table {
+    font-size: 0.9rem;
+  }
+  
+  .table th,
+  .table td {
+    padding: var(--spacing-1);
+  }
+}

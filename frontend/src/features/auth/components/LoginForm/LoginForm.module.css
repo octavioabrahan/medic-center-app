@@ -1,0 +1,50 @@
+.loginForm {
+  width: 100%;
+}
+
+.formGroup {
+  margin-bottom: var(--spacing-3);
+}
+
+.formAlert {
+  margin-bottom: var(--spacing-3);
+}
+
+.forgotPassword {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: var(--spacing-3);
+  font-size: var(--font-size-sm);
+}
+
+.forgotPasswordLink {
+  color: var(--primary-color);
+  text-decoration: none;
+  transition: var(--transition-base);
+}
+
+.forgotPasswordLink:hover {
+  text-decoration: underline;
+}
+
+.formActions {
+  margin-bottom: var(--spacing-3);
+}
+
+.registerLink {
+  text-align: center;
+  margin-top: var(--spacing-3);
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+}
+
+.registerLinkText {
+  color: var(--primary-color);
+  text-decoration: none;
+  font-weight: 500;
+  transition: var(--transition-base);
+}
+
+.registerLinkText:hover {
+  text-decoration: underline;
+}
