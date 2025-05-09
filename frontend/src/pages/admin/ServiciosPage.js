@@ -360,7 +360,7 @@ const ServiciosPage = () => {
                   className="btn-primary"
                   disabled={loading}
                 >
-                  {loading ? "Guardando..." : "Guardar"}
+                  {loading ? "Creando..." : "Crear"}
                 </button>
               </div>
             </form>
