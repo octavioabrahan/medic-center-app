@@ -328,7 +328,7 @@ function ProfesionalesAdmin() {
             <button type="button" className="btn-secondary" onClick={() => setShowAddEspecialidadModal(false)}>
               Cancelar
             </button>
-            <button type="button" className="btn-primary" onClick={handleCreateEspecialidad}>
+            <button type="button" className="btn-guardar" onClick={handleCreateEspecialidad}>
               Crear
             </button>
           </div>
