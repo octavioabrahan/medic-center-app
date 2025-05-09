@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import "./components/AdminCommon.css"; // Actualizamos la ruta de los estilos
 import AdminFilterBar from "./components/AdminFilterBar"; // Actualizamos la ubicación del componente
-import ArchivoAdjuntoForm from "../../components/public/ArchivoAdjuntoForm"; // Importamos el componente de archivos mejorado
+import ArchivoAdjuntoForm from "../../components/common/ArchivoAdjuntoForm"; // Actualizada la ubicación del componente reutilizable
 import "./AdminEmpresas.css"; // Importamos los estilos específicos
 
 const AdminEmpresas = () => {

@@ -1,12 +1,12 @@
-import React, { useState } from "react";
-import "./AdministracionPage.css";
+import React, { useEffect, useState } from "react";
+import "./AdminAdministracion.css";
 import "./components/AdminCommon.css"; // Actualizada ubicación de estilos comunes
 import UsuariosAdminTab from "./components/UsuariosAdminTab";
 import RolesAdminTab from "./components/RolesAdminTab";
 import PantallasAdminTab from "./components/PantallasAdminTab";
 import { auth } from "../../api";
 
-function AdministracionPage() {
+function AdminAdministracion() {
   const [activeTab, setActiveTab] = useState("usuarios");
   const currentUser = auth.getCurrentUser();
   const isSuperAdmin = currentUser?.roles?.includes('superadmin');
@@ -61,4 +61,4 @@ function AdministracionPage() {
   );
 }
 
-export default AdministracionPage;
+export default AdminAdministracion;

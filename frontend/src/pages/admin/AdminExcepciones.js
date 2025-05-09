@@ -1,12 +1,12 @@
 import React, { useEffect, useState, useRef, useCallback } from "react";
 import apiClient, { fetchWithCache } from "../../api"; // Importando nuestro cliente API mejorado
-import "./HorariosPage.css";
+import "./AdminHorarios.css";
 import "./components/AdminCommon.css"; // Actualizamos la ruta de los estilos
 import AdminFilterBar from "./components/AdminFilterBar"; // Actualizamos la ubicación del componente
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
 
-function ExcepcionesPage() {
+function AdminExcepciones() {
   // Estados para datos
   const [profesionales, setProfesionales] = useState([]);
   const [excepciones, setExcepciones] = useState([]);
@@ -918,4 +918,4 @@ function ExcepcionesPage() {
   );
 }
 
-export default ExcepcionesPage;
+export default AdminExcepciones;

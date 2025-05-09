@@ -1,8 +1,8 @@
 import React from "react";
 import ProfesionalesAdmin from "./ProfesionalesAdmin"; // Actualizada ubicación del componente
 
-const ProfesionalesPage = () => {
+const AdminProfesionales = () => {
   return <ProfesionalesAdmin />;
 };
 
-export default ProfesionalesPage;
+export default AdminProfesionales;

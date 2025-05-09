@@ -3,7 +3,7 @@ import axios from "axios";
 import "./components/AdminCommon.css"; // Importamos los estilos comunes
 import AdminFilterBar from "./components/AdminFilterBar"; // Actualizada la ubicación del componente
 
-function RolesPage() {
+function AdminRoles() {
   const [roles, setRoles] = useState([]);
   const [filteredRoles, setFilteredRoles] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -232,4 +232,4 @@ function RolesPage() {
   );
 }
 
-export default RolesPage;
+export default AdminRoles;

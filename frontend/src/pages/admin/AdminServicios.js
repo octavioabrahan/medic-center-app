@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import "./ServiciosPage.css";
+import "./AdminServicios.css";
 import "./components/AdminCommon.css"; // Actualizamos la ruta de los estilos
 import AdminFilterBar from "./components/AdminFilterBar"; // Actualizamos la ubicación del componente
 
-const ServiciosPage = () => {
+const AdminServicios = () => {
   // Estados para almacenar los datos de servicios
   const [servicios, setServicios] = useState([]);
   const [filteredServicios, setFilteredServicios] = useState([]);
@@ -453,4 +453,4 @@ const ServiciosPage = () => {
   );
 };
 
-export default ServiciosPage;
+export default AdminServicios;

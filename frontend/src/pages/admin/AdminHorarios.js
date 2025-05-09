@@ -1,12 +1,13 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import axios from "axios";
-import "./components/HorarioForm"; // Actualizada la ubicación del componente
-import ExcepcionesPage from "./ExcepcionesPage";
-import "./components/AdminFilterBar"; // Actualizada la ubicación del componente
-import "./HorariosPage.css";
+import apiClient from "../../api"; // Cliente API centralizado
+import AdminExcepciones from "./AdminExcepciones";
+import "./AdminHorarios.css";
+import HorarioForm from "./components/HorarioForm"; // Corregida: importación correcta del componente
+import AdminFilterBar from "./components/AdminFilterBar"; // Corregida: importación correcta del componente
 import "./components/AdminCommon.css"; // Actualizada la ubicación de los estilos
 
-function HorariosPage() {
+function AdminHorarios() {
   const [horarios, setHorarios] = useState([]);
   const [filteredHorarios, setFilteredHorarios] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -221,7 +222,7 @@ function HorariosPage() {
         </div>
       </div>
       
-      {activeTab === "profesionales" ? renderProfesionalesContent() : <ExcepcionesPage />}
+      {activeTab === "profesionales" ? renderProfesionalesContent() : <AdminExcepciones />}
       
       {showModal && (
         <div className="modal-overlay">
@@ -246,4 +247,4 @@ function HorariosPage() {
   );
 }
 
-export default HorariosPage;
+export default AdminHorarios;

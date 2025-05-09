@@ -4,16 +4,16 @@ import Home from './pages/Home';
 import AgendarHora from './pages/AgendarHora';
 import CotizadorExamenes from './components/public/CotizadorExamenes';
 import AdminDashboard from "./pages/admin/AdminDashboard";
-import ProfesionalesPage from "./pages/admin/ProfesionalesPage";
-import HorariosPage from "./pages/admin/HorariosPage";
-import EspecialidadesPage from "./pages/admin/EspecialidadesPage";
-import TipoAtencionPage from "./pages/admin/TipoAtencionPage";
-import RolesPage from "./pages/admin/RolesPage";
-import ExcepcionesPage from "./pages/admin/ExcepcionesPage";
+import AdminProfesionales from "./pages/admin/AdminProfesionales";
+import AdminHorarios from "./pages/admin/AdminHorarios";
+import AdminEspecialidades from "./pages/admin/AdminEspecialidades";
+import AdminTipoAtencion from "./pages/admin/AdminTipoAtencion";
+import AdminRoles from "./pages/admin/AdminRoles";
+import AdminExcepciones from "./pages/admin/AdminExcepciones";
 import AgendamientoPrivadoForm from "./components/public/AgendamientoPrivadoForm";
-import ProfesionalAsignarServicios from './pages/admin/ProfesionalAsignarServicios';
-import AgendamientoAdmin from './pages/admin/AgendamientoAdmin'; // Usando AgendamientoAdmin directamente
-import ServiciosPage from './pages/admin/ServiciosPage';
+import AdminProfesionalServicios from './pages/admin/AdminProfesionalServicios';
+import AgendamientoAdmin from './pages/admin/AgendamientoAdmin';
+import AdminServicios from './pages/admin/AdminServicios';
 import AdminEmpresas from "./pages/admin/AdminEmpresas";
 import AdminConvenios from "./pages/admin/AdminConvenios";
 import AgendamientoEmpresaForm from "./components/public/AgendamientoEmpresaForm";
@@ -21,7 +21,7 @@ import AgendamientoIndex from './components/public/AgendamientoIndex';
 import CotizacionesAdmin from './pages/admin/CotizacionesAdmin';
 import AdminLayout from './pages/admin/components/AdminLayout';
 import AdminExamenes from './pages/admin/AdminExamenes';
-import AdministracionPage from './pages/admin/AdministracionPage';
+import AdminAdministracion from './pages/admin/AdminAdministracion';
 // Importar componentes de autenticación
 import LoginPage from './pages/auth/LoginPage';
 import ProtectedRoute from './components/auth/ProtectedRoute';
@@ -48,23 +48,23 @@ function App() {
           </ProtectedRoute>
         }>
           <Route index element={<AdminDashboard />} />
-          <Route path="profesionales" element={<ProfesionalesPage />} />
-          <Route path="profesionales/:id/editar-servicios" element={<ProfesionalAsignarServicios />} />
-          <Route path="horarios" element={<HorariosPage />} />
-          <Route path="especialidades" element={<EspecialidadesPage />} />
-          <Route path="tipo-atencion" element={<TipoAtencionPage />} />
-          <Route path="roles" element={<RolesPage />} />
-          <Route path="excepciones" element={<ExcepcionesPage />} />
+          <Route path="profesionales" element={<AdminProfesionales />} />
+          <Route path="profesionales/:id/editar-servicios" element={<AdminProfesionalServicios />} />
+          <Route path="horarios" element={<AdminHorarios />} />
+          <Route path="especialidades" element={<AdminEspecialidades />} />
+          <Route path="tipo-atencion" element={<AdminTipoAtencion />} />
+          <Route path="roles" element={<AdminRoles />} />
+          <Route path="excepciones" element={<AdminExcepciones />} />
           <Route path="citas" element={<AgendamientoAdmin />} />
           <Route path="empresas" element={<AdminEmpresas />} />
           <Route path="convenios" element={<AdminConvenios />} />
           <Route path="cotizaciones" element={<CotizacionesAdmin />} />
-          <Route path="servicios" element={<ServiciosPage />} />
+          <Route path="servicios" element={<AdminServicios />} />
           <Route path="examenes" element={<AdminExamenes />} />
           {/* Nueva ruta para la página de administración */}
           <Route path="administracion" element={
             <ProtectedRoute requiredRoles={['admin', 'superadmin']}>
-              <AdministracionPage />
+              <AdminAdministracion />
             </ProtectedRoute>
           } />
         </Route>

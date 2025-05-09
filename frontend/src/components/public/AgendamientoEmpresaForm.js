@@ -1,9 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
-import CalendarioFechasDisponiblesDayPicker from './CalendarioFechasDisponiblesDayPicker';
+import CalendarioFechasDisponiblesDayPicker from '../common/CalendarioFechasDisponiblesDayPicker';
+import TimePicker from 'react-time-picker';
 import './AgendamientoEmpresaForm.css';
+import ArchivoAdjuntoForm from '../common/ArchivoAdjuntoForm';
+import { Link, useNavigate } from 'react-router-dom';
 import logo from '../../assets/logo_header.png';
-import ArchivoAdjuntoForm from './ArchivoAdjuntoForm';
 
 const AgendamientoEmpresaForm = () => {
   const [step, setStep] = useState(1);
