@@ -408,7 +408,7 @@ const ServiciosPage = () => {
               </button>
               <button 
                 type="button" 
-                className="btn-primary"
+                className="btn-archive"
                 onClick={archivarServicio}
                 disabled={loading}
               >
