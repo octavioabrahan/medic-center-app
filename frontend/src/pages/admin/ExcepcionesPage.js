@@ -1,7 +1,8 @@
 import React, { useEffect, useState, useRef, useCallback } from "react";
 import apiClient, { fetchWithCache } from "../../api"; // Importando nuestro cliente API mejorado
-import "./HorariosPage.css";
-import "../../components/admin/AdminCommon.css"; // Importamos los estilos comunes
+// Eliminadas las importaciones CSS redundantes que ahora están en main.css
+// import "./HorariosPage.css";
+// import "../../components/admin/AdminCommon.css";
 import AdminFilterBar from "../../components/admin/AdminFilterBar"; // Importamos el nuevo componente
 import { format } from "date-fns";
 import { es } from "date-fns/locale";

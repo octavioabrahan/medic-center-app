@@ -1,6 +1,7 @@
 import React, { useState } from "react";
-import "./AdministracionPage.css";
-import "../../components/admin/AdminCommon.css"; // Importamos los estilos comunes
+// Eliminadas las importaciones CSS redundantes que ahora están en main.css
+// import "./AdministracionPage.css";
+// import "../../components/admin/AdminCommon.css";
 import UsuariosAdminTab from "../../components/admin/UsuariosAdminTab";
 import RolesAdminTab from "../../components/admin/RolesAdminTab";
 import PantallasAdminTab from "../../components/admin/PantallasAdminTab";

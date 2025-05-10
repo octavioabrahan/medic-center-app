@@ -3,8 +3,7 @@ import axios from "axios";
 import HorarioForm from "../../components/admin/HorarioForm";
 import ExcepcionesPage from "./ExcepcionesPage";
 import AdminFilterBar from "../../components/admin/AdminFilterBar"; // Importamos el componente de barra de filtros
-import "./HorariosPage.css";
-import "../../components/admin/AdminCommon.css"; // Importamos los estilos comunes
+// Eliminadas las importaciones CSS redundantes que ahora están en main.css
 
 function HorariosPage() {
   const [horarios, setHorarios] = useState([]);

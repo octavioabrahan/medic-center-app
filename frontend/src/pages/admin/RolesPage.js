@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import "../../components/admin/AdminCommon.css"; // Importamos los estilos comunes
+// Eliminada la importación CSS redundante que ahora está en main.css
+// import "../../components/admin/AdminCommon.css";
 import AdminFilterBar from "../../components/admin/AdminFilterBar"; // Importamos el nuevo componente
 
 function RolesPage() {
