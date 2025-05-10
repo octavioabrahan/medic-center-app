@@ -324,7 +324,7 @@ const ServiciosPage = () => {
               </div>
               
               <div className="form-group">
-                <div className="custom-checkbox-recomendado">
+                <div className="custom-checkbox-recomendado" style={{ display: 'flex', alignItems: 'center' }}>
                   <input
                     type="checkbox"
                     id="servicio_recomendado"
@@ -336,8 +336,7 @@ const ServiciosPage = () => {
                       height: '18px',
                       marginRight: '10px',
                       accentColor: '#3498db',
-                      cursor: 'pointer',
-                      verticalAlign: 'middle'
+                      cursor: 'pointer'
                     }}
                   />
                   <label htmlFor="servicio_recomendado" style={{ cursor: 'pointer', userSelect: 'none' }}>
