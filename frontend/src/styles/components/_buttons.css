@@ -1,6 +1,7 @@
 /* 
  * Estilos para botones
  * Actualizado para usar design tokens del sistema de diseño
+ * Incluye las variantes del nuevo diseño de Figma
  */
 
 /* 
@@ -9,6 +10,149 @@
  * Con estados: Default, Hover y Disabled
  * Y tamaños: Medium y Small
  */
+
+/* ======== NUEVO SISTEMA DE BOTONES ======== */
+
+/* Base común para ambos estilos de botones */
+.button,
+.button * {
+  box-sizing: border-box;
+}
+
+/* Nuevo estilo "button" basado en Figma */
+.button {
+  background: var(--color-primary, #20377a);
+  border-radius: var(--sds-size-radius-200, 8px);
+  border-style: solid;
+  border-color: var(--color-primary, #20377a);
+  border-width: 1px;
+  padding: var(--sds-size-space-300, 12px);
+  display: flex;
+  flex-direction: row;
+  gap: var(--sds-size-space-200, 8px);
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+  text-decoration: none;
+  font-family: var(--sds-typography-family-sans, "Inter", sans-serif);
+  font-size: var(--sds-typography-scale-03, 16px);
+  line-height: 140%;
+  font-weight: var(--sds-typography-weight-regular, 400);
+  color: white;
+  transition: all var(--transition-normal, 0.3s ease);
+}
+
+/* Icono dentro del botón */
+.button .heroicons-micro-plus {
+  flex-shrink: 0;
+  width: 16px;
+  height: 16px;
+  position: relative;
+  overflow: visible;
+}
+
+/* Texto dentro del botón */
+.button .button-text {
+  color: white;
+  position: relative;
+}
+
+/* Variante primaria (azul corporativo) */
+.button.variant-primary {
+  background: var(--color-primary, #20377a);
+  border-color: var(--color-primary, #20377a);
+}
+
+.button.variant-primary .button-text {
+  color: white;
+}
+
+.button.variant-primary:hover,
+.button.state-hover.variant-primary {
+  background: var(--color-primary-darker, #14214b);
+  border-color: var(--color-primary-darker, #14214b);
+}
+
+/* Variante neutral (gris) */
+.button.variant-neutral {
+  background: var(--color-gray-200, #e3e3e3);
+  border-color: var(--color-gray-600, #767676);
+}
+
+.button.variant-neutral .button-text {
+  color: var(--color-gray-900, #1e1e1e);
+}
+
+.button.variant-neutral:hover,
+.button.state-hover.variant-neutral {
+  background: var(--color-gray-300, #cdcdcd);
+}
+
+/* Variante subtle (transparente) */
+.button.variant-subtle {
+  background: unset;
+  border-style: unset;
+  border-color: unset;
+  border-width: unset;
+}
+
+.button.variant-subtle .button-text {
+  color: var(--color-gray-800, #303030);
+}
+
+.button.variant-subtle:hover,
+.button.state-hover.variant-subtle {
+  border-color: var(--color-gray-300, #d9d9d9);
+  background: unset;
+}
+
+/* Estado deshabilitado para todas las variantes */
+.button.state-disabled {
+  background: var(--color-gray-200, #dadada);
+  border-color: var(--color-gray-400, #9d9d9d);
+  cursor: not-allowed;
+}
+
+.button.state-disabled .button-text {
+  color: var(--color-gray-400, #9d9d9d);
+}
+
+/* Tamaño pequeño */
+.button.size-small {
+  padding: var(--sds-size-space-200, 8px);
+  font-size: var(--sds-typography-scale-02, 14px);
+}
+
+/* Estado de carga */
+.button.state-loading {
+  position: relative;
+  color: transparent !important;
+}
+
+.button.state-loading::after {
+  content: "";
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  top: 50%;
+  left: 50%;
+  margin-top: -8px;
+  margin-left: -8px;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top-color: white;
+  animation: spin 1s linear infinite;
+}
+
+.button.variant-neutral.state-loading::after,
+.button.variant-subtle.state-loading::after {
+  border: 2px solid rgba(0, 0, 0, 0.1);
+  border-top-color: #111827;
+}
+
+/* ======== SISTEMA DE BOTONES ACTUAL (MANTENIDO PARA COMPATIBILIDAD) ======== */
 
 /* Base de botones */
 .btn {
@@ -41,17 +185,17 @@
 
 /* Variantes de botones Primary */
 .btn-primary {
-  background-color: #2563EB;
+  background-color: var(--color-primary, #2563EB);
   color: white;
 }
 
 .btn-primary:hover {
-  background-color: #1D4ED8;
+  background-color: var(--color-primary-darker, #1D4ED8);
 }
 
 .btn-primary:disabled,
 .btn-primary.disabled {
-  background-color: #2563EB;
+  background-color: var(--color-primary, #2563EB);
   color: white;
   opacity: 0.5;
   cursor: not-allowed;
@@ -60,38 +204,38 @@
 /* Variantes de botones Neutral */
 .btn-neutral {
   background-color: white;
-  color: #111827;
-  border: var(--sds-size-stroke-border) solid #D1D5DB;
+  color: var(--color-gray-900, #111827);
+  border: var(--sds-size-stroke-border) solid var(--color-gray-300, #D1D5DB);
 }
 
 .btn-neutral:hover {
-  background-color: #F3F4F6;
-  border-color: #D1D5DB;
+  background-color: var(--color-gray-100, #F3F4F6);
+  border-color: var(--color-gray-300, #D1D5DB);
 }
 
 .btn-neutral:disabled,
 .btn-neutral.disabled {
-  color: #9CA3AF;
+  color: var(--color-gray-400, #9CA3AF);
   background-color: white;
-  border-color: #E5E7EB;
+  border-color: var(--color-gray-200, #E5E7EB);
   cursor: not-allowed;
 }
 
 /* Variantes de botones Subtle */
 .btn-subtle {
-  background-color: #F3F4F6;
-  color: #111827;
+  background-color: var(--color-gray-100, #F3F4F6);
+  color: var(--color-gray-900, #111827);
   border: none;
 }
 
 .btn-subtle:hover {
-  background-color: #E5E7EB;
+  background-color: var(--color-gray-200, #E5E7EB);
 }
 
 .btn-subtle:disabled,
 .btn-subtle.disabled {
-  color: #9CA3AF;
-  background-color: #F3F4F6;
+  color: var(--color-gray-400, #9CA3AF);
+  background-color: var(--color-gray-100, #F3F4F6);
   cursor: not-allowed;
 }
 
@@ -187,5 +331,10 @@
 /* Botones de bloque (width: 100%) */
 .btn-block {
   display: flex;
+  width: 100%;
+}
+
+/* También se puede aplicar a los nuevos botones */
+.button.width-full {
   width: 100%;
 }
