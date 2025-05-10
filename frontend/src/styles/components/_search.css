@@ -1,7 +1,15 @@
 /* 
  * Estilos para componentes de búsqueda
  * Basado en el sistema de diseño de Figma
+ * Actualizado según la referencia visual proporcionada
  */
+
+/* Contenedor para el componente de búsqueda */
+.search-container {
+  display: inline-flex;
+  width: 100%;
+  max-width: 300px;
+}
 
 /* Base para el componente de búsqueda */
 .search,
@@ -9,24 +17,49 @@
   box-sizing: border-box;
 }
 
+/* Estilos del componente de búsqueda */
 .search {
   background: var(--var-sds-color-background-default-default, #ffffff);
   border-radius: var(--var-sds-size-radius-full, 9999px);
   border-style: solid;
-  border-color: var(--var-sds-color-border-default-default, #d9d9d9);
   border-width: 1px;
-  padding: var(--var-sds-size-space-300, 12px)
-    var(--var-sds-size-space-400, 16px) var(--var-sds-size-space-300, 12px)
-    var(--var-sds-size-space-400, 16px);
   display: flex;
   flex-direction: row;
-  gap: var(--var-sds-size-space-200, 8px);
   align-items: center;
-  justify-content: flex-start;
-  width: 100%;
-  max-width: 300px;
   position: relative;
-  overflow: hidden;
+  width: 100%;
+  transition: all 0.2s ease-in-out;
+}
+
+/* Estado por defecto */
+.search.state-default {
+  border-color: var(--var-sds-color-border-default-default, #d9d9d9);
+}
+
+/* Estado cuando tiene focus */
+.search.state-default:focus-within {
+  border-color: var(--var-sds-color-border-brand-default, #20377a);
+  box-shadow: 0 0 0 2px rgba(32, 55, 122, 0.2);
+}
+
+/* Tamaño por defecto */
+.search.size-default {
+  height: 44px;
+  padding: 0 var(--sds-size-space-300, 12px);
+}
+
+/* Tamaño pequeño */
+.search.size-small {
+  height: 36px;
+  padding: 0 var(--sds-size-space-200, 8px);
+}
+
+/* Container para el icono de búsqueda */
+.search .search-icon-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: var(--sds-size-space-200, 8px);
 }
 
 /* Input de texto dentro del componente de búsqueda */
@@ -37,32 +70,34 @@
   font-size: var(--sds-typography-scale-03, 16px);
   line-height: 140%;
   font-weight: var(--sds-typography-weight-regular, 400);
-  position: relative;
   flex: 1;
   border: none;
   outline: none;
   background: transparent;
   padding: 0;
+  height: 100%;
 }
 
-/* Iconos dentro del componente de búsqueda */
-.search .heroicons-micro-x-mark {
-  flex-shrink: 0;
-  width: 16px;
-  height: 16px;
-  position: relative;
-  overflow: visible;
-  cursor: pointer;
+/* Estilos para el placeholder */
+.search .value::placeholder {
   color: var(--var-sds-color-text-default-secondary, #767676);
 }
 
+/* Container para el icono de limpiar */
+.search .clear-icon-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  margin-left: var(--sds-size-space-200, 8px);
+}
+
+/* Iconos dentro del componente de búsqueda */
+.search .heroicons-micro-x-mark,
 .search .heroicons-micro-magnifying-glass {
-  border-radius: 1.5px;
   flex-shrink: 0;
   width: 16px;
   height: 16px;
-  position: relative;
-  overflow: visible;
   color: var(--var-sds-color-text-default-secondary, #767676);
 }
 
@@ -79,6 +114,22 @@
   color: var(--var-sds-color-text-disabled-on-disabled, #9d9d9d);
 }
 
+/* Estado deshabilitado */
+.search.state-disabled {
+  background-color: var(--var-sds-color-background-default-disabled, #f5f5f5);
+  border-color: var(--var-sds-color-border-default-disabled, #e0e0e0);
+  cursor: not-allowed;
+}
+
+.search.state-disabled .value {
+  color: var(--var-sds-color-text-default-disabled, #a0a0a0);
+  cursor: not-allowed;
+}
+
+.search.state-disabled .heroicons-micro-magnifying-glass {
+  color: var(--var-sds-color-text-default-disabled, #a0a0a0);
+}
+
 /* Placeholder */
 .search.state-default.value-type-placeholder .value {
   color: var(--var-sds-color-text-default-tertiary, #b3b3b3);
@@ -86,6 +137,15 @@
 
 .search.state-default .value::placeholder {
   color: var(--var-sds-color-text-default-tertiary, #b3b3b3);
+}
+
+/* Estilos para cuando hay/no hay texto */
+.search.value-type-placeholder .value {
+  color: var(--var-sds-color-text-default-secondary, #767676);
+}
+
+.search.value-type-text .value {
+  color: var(--var-sds-color-text-default-default, #1e1e1e);
 }
 
 /* Estado de foco */
@@ -113,6 +173,23 @@
 
 .search-with-button .button {
   border-radius: 0 var(--sds-size-radius-200, 8px) var(--sds-size-radius-200, 8px) 0;
+}
+
+/* Estilos para el componente con botón */
+.search-with-button {
+  display: flex;
+  align-items: center;
+  gap: var(--sds-size-space-300, 12px);
+  width: 100%;
+}
+
+.search-with-button .search {
+  flex: 1;
+  max-width: none;
+}
+
+.search-with-button .button {
+  flex-shrink: 0;
 }
 
 /* Tamaños */
