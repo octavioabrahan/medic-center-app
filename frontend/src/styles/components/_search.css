@@ -11,6 +11,11 @@
   max-width: 300px;
 }
 
+/* En contextos de búsqueda con botón, permitir que ocupe el ancho completo */
+.search-with-button.search-container {
+  max-width: none;
+}
+
 /* Base para el componente de búsqueda */
 .search,
 .search * {
@@ -168,17 +173,17 @@
 }
 
 .search-with-button .search {
-  border-radius: var(--var-sds-size-radius-full, 9999px) 0 0 var(--var-sds-size-radius-full, 9999px);
+  border-radius: var(--var-sds-size-radius-full, 9999px);
 }
 
 .search-with-button .button {
-  border-radius: 0 var(--sds-size-radius-200, 8px) var(--sds-size-radius-200, 8px) 0;
+  border-radius: var(--sds-size-radius-200, 8px);
 }
 
 /* Estilos para el componente con botón */
 .search-with-button {
   display: flex;
-  align-items: center;
+  align-items: stretch;
   gap: var(--sds-size-space-300, 12px);
   width: 100%;
 }
@@ -190,6 +195,10 @@
 
 .search-with-button .button {
   flex-shrink: 0;
+  height: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 /* Tamaños */

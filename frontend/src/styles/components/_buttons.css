@@ -39,9 +39,10 @@
   font-family: var(--sds-typography-family-sans, "Inter", sans-serif);
   font-size: var(--sds-typography-scale-03, 16px);
   line-height: 140%;
-  font-weight: var(--sds-typography-weight-regular, 400);
+  font-weight: var(--sds-typography-weight-medium, 500);
   color: var(--var-sds-color-text-brand-on-brand, #ffffff);
   transition: all var(--transition-normal, 0.3s ease);
+  min-height: 44px;
 }
 
 /* Icono dentro del botón */

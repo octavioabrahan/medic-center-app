@@ -406,6 +406,16 @@
   align-items: center;
 }
 
+/* Contenedor específico para el campo de búsqueda */
+.appointments-filter-panel .search-field-container {
+  flex: 1;
+  min-width: 300px;
+}
+
+.appointments-filter-panel .search-field-container .search-container {
+  max-width: 100%;
+}
+
 @media (max-width: 768px) {
   .appointments-filter-panel {
     flex-direction: column;

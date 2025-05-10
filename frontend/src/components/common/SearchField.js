@@ -91,8 +91,8 @@ const SearchField = ({
         )}
       </div>
       {withButton && (
-        <button className="button button--primary" onClick={handleSearch}>
-          {buttonText}
+        <button className="button variant-primary" onClick={handleSearch}>
+          <span className="button-text">{buttonText}</span>
         </button>
       )}
     </div>

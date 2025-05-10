@@ -212,18 +212,20 @@ const CitasAgendadas = () => {
       <h1 className="admin-page-title">Citas agendadas</h1>
       
       <div className="appointments-filter-panel">
-        <SearchField 
-          placeholder="Buscar por nombre o cédula"
-          value={searchTerm}
-          onChange={(value) => setSearchTerm(value)}
-          onSearch={(value) => {
-            // Aquí puede ir la lógica de búsqueda si necesitas 
-            // hacer algo específico al presionar enter o el botón
-            console.log("Buscando:", value);
-          }}
-          withButton={true}
-          buttonText="Buscar"
-        />
+        <div className="search-field-container">
+          <SearchField 
+            placeholder="Buscar por nombre o cédula"
+            value={searchTerm}
+            onChange={(value) => setSearchTerm(value)}
+            onSearch={(value) => {
+              // Aquí puede ir la lógica de búsqueda si necesitas 
+              // hacer algo específico al presionar enter o el botón
+              console.log("Buscando:", value);
+            }}
+            withButton={true}
+            buttonText="Buscar"
+          />
+        </div>
         
         <div className="filter-group">
           <select 
