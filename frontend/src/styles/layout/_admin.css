@@ -1,0 +1,16 @@
+/* 
+ * Estilos para el layout de administración
+ * Migrado desde components/admin/AdminLayout.css
+ */
+
+.admin-layout {
+  display: flex;
+  min-height: 100vh;
+}
+
+.admin-content {
+  flex: 1;
+  padding: 2rem;
+  background-color: #FBFBFC;
+  overflow-y: auto;
+}

@@ -1,0 +1,29 @@
+/* 
+ * Archivo principal de estilos
+ * Importa todos los módulos CSS de la aplicación
+ */
+
+/* Base */
+@import './base/_variables.css';
+@import './base/_reset.css';
+@import './base/_typography.css';
+
+/* Layouts */
+@import './layout/_admin.css';
+@import './layout/_sidebar.css';
+/* @import './layout/_header.css'; */
+/* @import './layout/_footer.css'; */
+/* @import './layout/_grid.css'; */
+
+/* Components */
+@import './components/_calendar.css';
+@import './components/_forms.css';
+@import './components/_buttons.css';
+@import './components/_modal.css';
+
+/* Pages */
+@import './pages/_admin.css';
+/* @import './pages/_dashboard.css'; */
+
+/* Utils */
+@import './utils/_helpers.css';

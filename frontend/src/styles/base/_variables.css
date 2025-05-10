@@ -1,0 +1,53 @@
+/* 
+ * Variables globales de estilos
+ * Contiene colores, espaciados y otras variables de diseño
+ */
+
+:root {
+  /* Colores principales */
+  --color-primary: #61dafb; /* Tomado de .App-link en App.css */
+  --color-secondary: #282c34; /* Tomado de .App-header en App.css */
+  --color-white: #ffffff;
+  --color-black: #000000;
+  --color-gray-100: #f8f9fa;
+  --color-gray-200: #e9ecef;
+  --color-gray-300: #dee2e6;
+  --color-gray-400: #ced4da;
+  --color-gray-500: #adb5bd;
+  --color-gray-600: #6c757d;
+  --color-gray-700: #495057;
+  --color-gray-800: #343a40;
+  --color-gray-900: #212529;
+
+  /* Espaciados */
+  --spacing-xs: 0.25rem;  /* 4px */
+  --spacing-sm: 0.5rem;   /* 8px */
+  --spacing-md: 1rem;     /* 16px */
+  --spacing-lg: 1.5rem;   /* 24px */
+  --spacing-xl: 2rem;     /* 32px */
+  --spacing-2xl: 3rem;    /* 48px */
+
+  /* Bordes y radios */
+  --border-radius-sm: 0.25rem;  /* 4px */
+  --border-radius-md: 0.5rem;   /* 8px */
+  --border-radius-lg: 1rem;     /* 16px */
+  --border-radius-full: 9999px; /* Circular */
+
+  /* Sombras */
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.12);
+  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
+
+  /* Transiciones */
+  --transition-fast: 0.15s ease;
+  --transition-normal: 0.3s ease;
+  --transition-slow: 0.5s ease;
+
+  /* Z-index layers */
+  --z-index-base: 1;
+  --z-index-dropdown: 1000;
+  --z-index-sticky: 1020;
+  --z-index-fixed: 1030;
+  --z-index-modal: 1040;
+  --z-index-tooltip: 1050;
+}
