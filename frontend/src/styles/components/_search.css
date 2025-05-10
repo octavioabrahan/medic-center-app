@@ -53,8 +53,9 @@
 
 /* Tamaño por defecto */
 .search.size-default {
-  min-height: 38px;
   height: 38px;
+  min-height: 38px;
+  max-height: 38px;
   box-sizing: border-box;
 }
 
@@ -71,6 +72,7 @@
   justify-content: center;
   flex-shrink: 0;
   height: 100%;
+  margin-top: 1px; /* Ajuste fino para alineación vertical */
 }
 
 /* Input de texto dentro del componente de búsqueda */
@@ -79,7 +81,7 @@
   text-align: left;
   font-family: var(--body-base-font-family, "Inter-Regular", sans-serif);
   font-size: 14px;
-  line-height: 37px; /* Ajustado para centrado vertical perfecto */
+  line-height: 38px; /* Ajustado para centrado vertical perfecto */
   font-weight: var(--body-base-font-weight, 400);
   flex: 1;
   border: none;

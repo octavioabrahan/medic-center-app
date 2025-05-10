@@ -212,7 +212,7 @@ const CitasAgendadas = () => {
       <h1 className="admin-page-title">Citas agendadas</h1>
       
       <div className="appointments-filter-panel">
-        <div className="search-field-container">
+        <div className="filter-group search-field-container">
           <SearchField 
             placeholder="Buscar por nombre o cédula"
             value={searchTerm}

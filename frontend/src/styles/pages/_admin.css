@@ -403,20 +403,19 @@
   background-color: #f8fafc;
   border-radius: 8px;
   margin-bottom: 20px;
-  align-items: center;
+  align-items: stretch;
 }
 
 /* Contenedor específico para el campo de búsqueda */
 .appointments-filter-panel .search-field-container {
   flex: 1;
   min-width: 300px;
-  display: flex;
-  align-items: center;
 }
 
 .appointments-filter-panel .search-field-container .search-container {
   max-width: 100%;
   width: 100%;
+  height: 38px;
 }
 
 @media (max-width: 768px) {
@@ -461,6 +460,8 @@
 /* Selectores de filtro */
 .filter-group {
   min-width: 180px;
+  display: flex;
+  align-items: center;
 }
 
 /* Ajuste para alinear filtros */
