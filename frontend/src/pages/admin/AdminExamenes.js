@@ -456,15 +456,32 @@ const AdminExamenes = () => {
                   <option value="paquete">Paquete</option>
                 </select>
               </div>
-              <div className="form-group checkbox-group">
+              <div className="form-group custom-checkbox-container" style={{ display: 'flex', alignItems: 'center' }}>
                 <input 
                   type="checkbox" 
                   id="is_active_edit" 
                   name="is_active" 
                   checked={formData.is_active} 
-                  onChange={handleFormChange} 
+                  onChange={handleFormChange}
+                  style={{
+                    width: '18px',
+                    height: '18px',
+                    marginRight: '10px',
+                    accentColor: '#3498db',
+                    cursor: 'pointer'
+                  }}
                 />
-                <label htmlFor="is_active_edit">Activo</label>
+                <label 
+                  htmlFor="is_active_edit"
+                  style={{ 
+                    cursor: 'pointer',
+                    userSelect: 'none',
+                    display: 'inline-flex',
+                    alignItems: 'center' 
+                  }}
+                >
+                  Activo
+                </label>
               </div>
               <div className="modal-footer">
                 <button type="button" className="btn-secondary" onClick={() => setShowEditModal(false)}>
