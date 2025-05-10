@@ -588,7 +588,7 @@ const AgendamientoPrivadoForm = () => {
         {step === 3 && (
   <div className="form-step3-confirmacion">
     <button onClick={() => setStep(2)} className="volver-btn">
-      ← Volver al paso anterior
+      Volver al paso anterior
     </button>
 
     <h2 className="form-title">Revisa y confirma tu solicitud</h2>

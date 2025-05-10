@@ -391,11 +391,20 @@ const ServiciosPage = () => {
             <div className="admin-checkbox">
               <input 
                 type="checkbox"
-                id="entiendo"
+                id="confirmar_archivado"
+                name="confirmar_archivado"
                 checked={checkboxChecked}
                 onChange={(e) => setCheckboxChecked(e.target.checked)}
+                style={{
+                  width: '18px',
+                  height: '18px',
+                  marginRight: '10px',
+                  accentColor: '#3498db',
+                  cursor: 'pointer',
+                  verticalAlign: 'middle'
+                }}
               />
-              <label htmlFor="entiendo">
+              <label htmlFor="confirmar_archivado" style={{ cursor: 'pointer', userSelect: 'none' }}>
                 Entiendo que este servicio y los profesionales que solo lo ofrecen dejarán de mostrarse en el portal.
               </label>
             </div>
