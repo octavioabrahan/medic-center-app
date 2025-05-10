@@ -324,15 +324,23 @@ const ServiciosPage = () => {
               </div>
               
               <div className="form-group">
-                <div className="admin-checkbox">
+                <div className="custom-checkbox-recomendado">
                   <input
                     type="checkbox"
-                    id="is_recommended"
+                    id="servicio_recomendado"
                     name="is_recommended"
                     checked={nuevoServicio.is_recommended}
                     onChange={handleChange}
+                    style={{
+                      width: '18px',
+                      height: '18px',
+                      marginRight: '10px',
+                      accentColor: '#3498db',
+                      cursor: 'pointer',
+                      verticalAlign: 'middle'
+                    }}
                   />
-                  <label htmlFor="is_recommended">
+                  <label htmlFor="servicio_recomendado" style={{ cursor: 'pointer', userSelect: 'none' }}>
                     Recomendado para la primera consulta
                   </label>
                 </div>
