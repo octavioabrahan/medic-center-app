@@ -209,7 +209,7 @@ function ProfesionalesAdmin() {
 
     try {
       // 1. Crear el profesional
-      await axios.post('/api/profesionales', {
+      const responseProfesional = await axios.post('/api/profesionales', {
         cedula: nuevoProfesional.cedula,
         nombre: nuevoProfesional.nombre,
         apellido: nuevoProfesional.apellido,
@@ -217,6 +217,14 @@ function ProfesionalesAdmin() {
         telefono: nuevoProfesional.telefono,
         correo: nuevoProfesional.correo
       });
+
+      // 2. Si hay servicios seleccionados, asignarlos al profesional
+      if (nuevoProfesional.servicios.length > 0 && responseProfesional.data && responseProfesional.data.profesional_id) {
+        await axios.post("/api/profesionales/asignar-servicios", {
+          profesional_id: responseProfesional.data.profesional_id,
+          servicios: nuevoProfesional.servicios
+        });
+      }
 
       // Actualizar la lista de profesionales (siempre mostrando todos)
       const updatedProfesionales = await axios.get(`/api/profesionales?soloActivos=false`);
@@ -459,54 +467,39 @@ function ProfesionalesAdmin() {
               </div>
               
               <div className="form-group servicio-group">
-                <label>Servicio</label>
-                <div className="profesionales-checkbox-group">
-                  <div className="checkbox-item">
-                    <input 
-                      type="checkbox"
-                      id="eco-doppler"
-                      name="servicios"
-                      value="ECO-DOPPLER CAROTIDEO"
-                      onChange={(e) => {
-                        const { value } = e.target;
-                        if (e.target.checked) {
-                          setNuevoProfesional({
-                            ...nuevoProfesional,
-                            servicios: [...nuevoProfesional.servicios, value]
-                          });
-                        } else {
-                          setNuevoProfesional({
-                            ...nuevoProfesional,
-                            servicios: nuevoProfesional.servicios.filter(s => s !== value)
-                          });
-                        }
-                      }}
-                    />
-                    <label htmlFor="eco-doppler">ECO-DOPPLER CAROTIDEO</label>
-                  </div>
-                  <div className="checkbox-item">
-                    <input 
-                      type="checkbox"
-                      id="triplex-arterial"
-                      name="servicios"
-                      value="TRIPLEX ARTERIAL DE MIEMBROS INFERIOR"
-                      onChange={(e) => {
-                        const { value } = e.target;
-                        if (e.target.checked) {
-                          setNuevoProfesional({
-                            ...nuevoProfesional,
-                            servicios: [...nuevoProfesional.servicios, value]
-                          });
-                        } else {
-                          setNuevoProfesional({
-                            ...nuevoProfesional,
-                            servicios: nuevoProfesional.servicios.filter(s => s !== value)
-                          });
-                        }
-                      }}
-                    />
-                    <label htmlFor="triplex-arterial">TRIPLEX ARTERIAL DE MIEMBROS INFERIOR</label>
-                  </div>
+                <label>Servicios que ofrece el profesional</label>
+                <div className="servicios-container">
+                  {servicios.length > 0 ? (
+                    <div className="profesionales-checkbox-group">
+                      {servicios.map(servicio => (
+                        <div key={servicio.id_servicio} className="checkbox-item">
+                          <input
+                            type="checkbox"
+                            id={`nuevo-servicio-${servicio.id_servicio}`}
+                            checked={nuevoProfesional.servicios.includes(servicio.id_servicio)}
+                            onChange={(e) => {
+                              if (e.target.checked) {
+                                setNuevoProfesional({
+                                  ...nuevoProfesional,
+                                  servicios: [...nuevoProfesional.servicios, servicio.id_servicio]
+                                });
+                              } else {
+                                setNuevoProfesional({
+                                  ...nuevoProfesional,
+                                  servicios: nuevoProfesional.servicios.filter(id => id !== servicio.id_servicio)
+                                });
+                              }
+                            }}
+                          />
+                          <label htmlFor={`nuevo-servicio-${servicio.id_servicio}`}>
+                            {servicio.nombre_servicio}
+                          </label>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="no-servicios">No hay servicios disponibles</div>
+                  )}
                 </div>
               </div>
               
