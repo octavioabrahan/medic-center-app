@@ -222,8 +222,7 @@ const CitasAgendadas = () => {
               // hacer algo específico al presionar enter o el botón
               console.log("Buscando:", value);
             }}
-            withButton={true}
-            buttonText="Buscar"
+            withButton={false}
           />
         </div>
         
