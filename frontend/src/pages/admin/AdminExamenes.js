@@ -580,6 +580,9 @@ const AdminExamenes = () => {
           <button className="btn-add-main" onClick={openAddModal}>
             Agregar uno nuevo
           </button>
+          <button className="btn-add-main" style={{ marginLeft: '10px', backgroundColor: '#4CAF50' }}>
+            Carga Masiva
+          </button>
         </div>
       </div>
       
