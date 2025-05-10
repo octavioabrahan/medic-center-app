@@ -401,73 +401,85 @@ function ProfesionalesAdmin() {
           </div>
           <div className="modal-body">
             <form onSubmit={handleCreateProfesional}>
-              <div className="form-group">
-                <label htmlFor="cedula">Cédula</label>
-                <input
-                  id="cedula"
-                  type="text"
-                  value={nuevoProfesional.cedula}
-                  onChange={(e) => setNuevoProfesional({ ...nuevoProfesional, cedula: e.target.value })}
-                  required
-                />
-              </div>
-              <div className="form-group">
-                <label htmlFor="nombre">Nombre</label>
-                <input
-                  id="nombre"
-                  type="text"
-                  value={nuevoProfesional.nombre}
-                  onChange={(e) => setNuevoProfesional({ ...nuevoProfesional, nombre: e.target.value })}
-                  required
-                />
-              </div>
-              <div className="form-group">
-                <label htmlFor="apellido">Apellido</label>
-                <input
-                  id="apellido"
-                  type="text"
-                  value={nuevoProfesional.apellido}
-                  onChange={(e) => setNuevoProfesional({ ...nuevoProfesional, apellido: e.target.value })}
-                  required
-                />
-              </div>
-              <div className="form-group">
-                <label htmlFor="telefono">Teléfono</label>
-                <input
-                  id="telefono"
-                  type="text"
-                  value={nuevoProfesional.telefono}
-                  onChange={(e) => setNuevoProfesional({ ...nuevoProfesional, telefono: e.target.value })}
-                />
-              </div>
-              <div className="form-group">
-                <label htmlFor="correo">Correo electrónico</label>
-                <input
-                  id="correo"
-                  type="email"
-                  value={nuevoProfesional.correo}
-                  onChange={(e) => setNuevoProfesional({ ...nuevoProfesional, correo: e.target.value })}
-                />
-              </div>
-              <div className="form-group">
-                <label htmlFor="especialidad">Especialidad</label>
-                <select
-                  id="especialidad"
-                  value={nuevoProfesional.especialidad_id}
-                  onChange={(e) => setNuevoProfesional({ ...nuevoProfesional, especialidad_id: e.target.value })}
-                  required
-                >
-                  <option value="">Selecciona una especialidad</option>
-                  {especialidades.map((esp) => (
-                    <option key={esp.especialidad_id} value={esp.especialidad_id}>
-                      {esp.nombre}
-                    </option>
-                  ))}
-                </select>
+              <div className="detail-section">
+                <h3>Información personal</h3>
+                <div className="form-group">
+                  <label htmlFor="cedula">Cédula</label>
+                  <input
+                    id="cedula"
+                    type="text"
+                    value={nuevoProfesional.cedula}
+                    onChange={(e) => setNuevoProfesional({ ...nuevoProfesional, cedula: e.target.value })}
+                    required
+                  />
+                </div>
+                
+                <div className="form-row">
+                  <div className="form-group">
+                    <label htmlFor="nombre">Nombre</label>
+                    <input
+                      id="nombre"
+                      type="text"
+                      value={nuevoProfesional.nombre}
+                      onChange={(e) => setNuevoProfesional({ ...nuevoProfesional, nombre: e.target.value })}
+                      required
+                    />
+                  </div>
+                  
+                  <div className="form-group">
+                    <label htmlFor="apellido">Apellido</label>
+                    <input
+                      id="apellido"
+                      type="text"
+                      value={nuevoProfesional.apellido}
+                      onChange={(e) => setNuevoProfesional({ ...nuevoProfesional, apellido: e.target.value })}
+                      required
+                    />
+                  </div>
+                </div>
+                
+                <div className="form-row">
+                  <div className="form-group">
+                    <label htmlFor="telefono">Teléfono</label>
+                    <input
+                      id="telefono"
+                      type="text"
+                      value={nuevoProfesional.telefono}
+                      onChange={(e) => setNuevoProfesional({ ...nuevoProfesional, telefono: e.target.value })}
+                    />
+                  </div>
+                  
+                  <div className="form-group">
+                    <label htmlFor="correo">Correo electrónico</label>
+                    <input
+                      id="correo"
+                      type="email"
+                      value={nuevoProfesional.correo}
+                      onChange={(e) => setNuevoProfesional({ ...nuevoProfesional, correo: e.target.value })}
+                    />
+                  </div>
+                </div>
+                
+                <div className="form-group">
+                  <label htmlFor="especialidad">Especialidad</label>
+                  <select
+                    id="especialidad"
+                    value={nuevoProfesional.especialidad_id}
+                    onChange={(e) => setNuevoProfesional({ ...nuevoProfesional, especialidad_id: e.target.value })}
+                    required
+                  >
+                    <option value="">Selecciona una especialidad</option>
+                    {especialidades.map((esp) => (
+                      <option key={esp.especialidad_id} value={esp.especialidad_id}>
+                        {esp.nombre}
+                      </option>
+                    ))}
+                  </select>
+                </div>
               </div>
               
-              <div className="form-group servicio-group">
-                <label>Servicios que ofrece el profesional</label>
+              <div className="detail-section">
+                <h3>Servicios que ofrece el profesional</h3>
                 <div className="servicios-container">
                   {servicios.length > 0 ? (
                     <div className="profesionales-checkbox-group">
