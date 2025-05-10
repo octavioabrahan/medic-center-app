@@ -145,7 +145,7 @@ const CitasAgendadas = () => {
 
   const formatDateRange = () => {
     if (!startDate || !endDate) return "Seleccionar fechas";
-    return `${format(startDate, "dd/MM/yyyy")} - ${format(endDate, "dd/MM/yyyy")}`;
+    return `${format(startDate, "dd-MM-yyyy")} ${format(endDate, "dd-MM-yyyy")}`;
   };
 
   const formatearFecha = (fechaStr) => {
@@ -165,32 +165,44 @@ const CitasAgendadas = () => {
   // Handle date range change from the Calendar component
   const handleDateRangeChange = (newDateRange) => {
     setDateRange(newDateRange);
+    setShowDatePicker(false); // Cerrar el calendario después de seleccionar fechas
+  };
+
+  // Definir clases para los estados de las citas
+  const getStatusClass = (status) => {
+    switch(status) {
+      case 'confirmada': return 'status-confirmed';
+      case 'cancelada': return 'status-cancelled';
+      default: return 'status-pending';
+    }
   };
 
   return (
     <div className="admin-page-container">
       <h1 className="admin-page-title">Citas agendadas</h1>
       
-      <div className="admin-filters-bar">
-        <div className="admin-search">
+      <div className="appointments-filter-panel">
+        <div className="search-bar">
           <input 
             type="text" 
-            placeholder="Buscar por nombre o cédula..." 
+            placeholder="Buscar por nombre o cédula" 
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
+            className="search-input"
           />
-          <span className="search-icon">
+          <button className="search-button">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M21 21L15 15M17 10C17 13.866 13.866 17 10 17C6.13401 17 3 13.866 3 10C3 6.13401 6.13401 3 10 3C13.866 3 17 6.13401 17 10Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
             </svg>
-          </span>
+          </button>
         </div>
         
-        <div className="admin-filter-container">
+        <div className="filter-group">
           <select 
             name="status"
             value={status || ""}
             onChange={handleFiltro}
+            className="filter-select"
           >
             <option value="">Todos los estados</option>
             {TODOS_LOS_ESTADOS.map((s) => (
@@ -201,13 +213,19 @@ const CitasAgendadas = () => {
           </select>
         </div>
         
-        <div className="admin-date-picker">
-          <div className="date-input-wrapper" onClick={toggleDatePicker}>
-            <span className="calendar-icon">📅</span>
-            <span className="date-input">{formatDateRange()}</span>
+        <div className="date-range-picker">
+          <div className="date-input-container" onClick={toggleDatePicker}>
+            <div className="date-display">
+              {formatDateRange()}
+            </div>
+            <div className="date-icon">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M8 2V5M16 2V5M3.5 9.09H20.5M21 8.5V17C21 20 19.5 22 16 22H8C4.5 22 3 20 3 17V8.5C3 5.5 4.5 3.5 8 3.5H16C19.5 3.5 21 5.5 21 8.5Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+            </div>
           </div>
           {showDatePicker && (
-            <div className="admin-calendar-wrapper enhanced">
+            <div className="calendar-popup">
               <Calendar
                 initialDateRange={dateRange}
                 onDateRangeChange={handleDateRangeChange}
@@ -218,10 +236,11 @@ const CitasAgendadas = () => {
           )}
         </div>
         
-        <div className="admin-filter-container">
+        <div className="filter-group">
           <select 
             value={filtroProfesional} 
             onChange={(e) => setFiltroProfesional(e.target.value)}
+            className="filter-select"
           >
             <option value="todos">Todos los profesionales</option>
             {profesionales.map((prof, index) => (
@@ -232,12 +251,20 @@ const CitasAgendadas = () => {
       </div>
       
       {loading ? (
-        <div className="loading">Cargando citas...</div>
+        <div className="loading-container">
+          <div className="loading-spinner"></div>
+          <div className="loading-text">Cargando citas...</div>
+        </div>
       ) : agendamientosFiltrados.length === 0 ? (
-        <div className="no-results">No se encontraron citas con los filtros seleccionados</div>
+        <div className="empty-state">
+          <div className="empty-icon">📅</div>
+          <h3>Aún no hay citas agendadas</h3>
+          <p>Las citas que los pacientes registren desde el sitio de agendamiento aparecerán aquí.</p>
+          <p>Una vez se genere la primera cita, podrás gestionarla, filtrar por estado, y ver todos los detalles asociados.</p>
+        </div>
       ) : (
-        <div className="admin-table-container">
-          <table className="admin-table">
+        <div className="appointments-table-container">
+          <table className="appointments-table">
             <thead>
               <tr>
                 <th>Fecha cita</th>
@@ -246,7 +273,7 @@ const CitasAgendadas = () => {
                 <th>Categoría</th>
                 <th>Profesional</th>
                 <th>Estado</th>
-                <th></th>
+                <th>Acciones</th>
               </tr>
             </thead>
             <tbody>
@@ -255,11 +282,17 @@ const CitasAgendadas = () => {
                 
                 return (
                   <tr key={a.agendamiento_id}>
-                    <td className="fecha-cell">
-                      <div className="calendar-icon">📅</div>
-                      <div>
-                        <div>{formatoFecha.fecha}</div>
-                        <div className="hora">{formatoFecha.hora}</div>
+                    <td className="appointment-date-cell">
+                      <div className="appointment-date-container">
+                        <div className="appointment-date-icon">
+                          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M8 2V5M16 2V5M3.5 9.09H20.5M21 8.5V17C21 20 19.5 22 16 22H8C4.5 22 3 20 3 17V8.5C3 5.5 4.5 3.5 8 3.5H16C19.5 3.5 21 5.5 21 8.5Z" stroke="#4A5568" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                          </svg>
+                        </div>
+                        <div className="appointment-date-text">
+                          <div className="appointment-day">{formatoFecha.fecha}</div>
+                          <div className="appointment-time">{formatoFecha.hora}</div>
+                        </div>
                       </div>
                     </td>
                     <td>{a.paciente_nombre} {a.paciente_apellido}</td>
@@ -267,24 +300,30 @@ const CitasAgendadas = () => {
                     <td>{a.tipo_atencion}</td>
                     <td>{a.profesional_nombre} {a.profesional_apellido}</td>
                     <td>
-                      <span className={`status-badge status-${a.status}`}>
+                      <span className={`status-badge ${getStatusClass(a.status)}`}>
                         {a.status}
                       </span>
                     </td>
                     <td className="actions-cell">
                       <button
                         onClick={() => actualizarEstado(a.agendamiento_id, "confirmada")}
-                        className="btn-action btn-view"
+                        className="action-button confirm-button"
                         title="Confirmar"
+                        disabled={a.status === "confirmada"}
                       >
-                        ✓
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <path d="M20 6L9 17L4 12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                        </svg>
                       </button>
                       <button
                         onClick={() => actualizarEstado(a.agendamiento_id, "cancelada")}
-                        className="btn-action btn-delete"
+                        className="action-button cancel-button"
                         title="Cancelar"
+                        disabled={a.status === "cancelada"}
                       >
-                        ✕
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <path d="M18 6L6 18M6 6L18 18" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                        </svg>
                       </button>
                     </td>
                   </tr>
@@ -304,20 +343,28 @@ const CitasAgendadas = () => {
               <button className="close-btn" onClick={cerrarHistorial}>×</button>
             </div>
             <div className="modal-body">
-              <table className="admin-table">
+              <table className="history-table">
                 <thead>
                   <tr>
-                    <th>Anterior</th>
-                    <th>Nuevo</th>
-                    <th>Quién</th>
-                    <th>Cuándo</th>
+                    <th>Estado anterior</th>
+                    <th>Nuevo estado</th>
+                    <th>Modificado por</th>
+                    <th>Fecha de cambio</th>
                   </tr>
                 </thead>
                 <tbody>
                   {historial.map((h) => (
                     <tr key={h.historial_id}>
-                      <td>{h.estado_anterior}</td>
-                      <td>{h.estado_nuevo}</td>
+                      <td>
+                        <span className={`status-badge ${getStatusClass(h.estado_anterior)}`}>
+                          {h.estado_anterior}
+                        </span>
+                      </td>
+                      <td>
+                        <span className={`status-badge ${getStatusClass(h.estado_nuevo)}`}>
+                          {h.estado_nuevo}
+                        </span>
+                      </td>
                       <td>{h.cambiado_por}</td>
                       <td>{new Date(h.fecha).toLocaleString()}</td>
                     </tr>
