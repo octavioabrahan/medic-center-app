@@ -410,10 +410,13 @@
 .appointments-filter-panel .search-field-container {
   flex: 1;
   min-width: 300px;
+  display: flex;
+  align-items: center;
 }
 
 .appointments-filter-panel .search-field-container .search-container {
   max-width: 100%;
+  width: 100%;
 }
 
 @media (max-width: 768px) {
@@ -468,12 +471,14 @@
 
 .filter-select {
   width: 100%;
-  padding: 10px 16px;
+  padding: 8px 16px;
   border: 1px solid #e2e8f0;
   border-radius: 6px;
   background-color: #fff;
   font-size: 14px;
   color: #4a5568;
+  height: 38px;
+  box-sizing: border-box;
   appearance: none;
   background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg width='12' height='7' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23A0AEC0' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
