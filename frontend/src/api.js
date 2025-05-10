@@ -157,18 +157,43 @@ const auth = {
     if (!token) return false;
     
     try {
-      // Verificación básica de formato de token (esto es una verificación simple)
-      // No decodifica ni valida la firma, solo comprueba que tenga el formato esperado
+      // Asegurarnos de que axios siempre utilice el token en las peticiones
+      axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+      
+      // Verificación básica de formato de token
       const parts = token.split('.');
-      if (parts.length !== 3) return false;
+      if (parts.length !== 3) {
+        console.error("Token con formato inválido");
+        localStorage.removeItem("authToken");
+        return false;
+      }
       
       // Comprobar si tenemos datos de usuario
-      const user = localStorage.getItem("user");
-      if (!user) return false;
+      const userJson = localStorage.getItem("user");
+      if (!userJson) {
+        console.error("No hay datos de usuario en localStorage");
+        return false;
+      }
+      
+      try {
+        // Verificar que los datos de usuario sean JSON válido
+        const user = JSON.parse(userJson);
+        if (!user || !user.id || !user.email) {
+          console.error("Datos de usuario inválidos");
+          return false;
+        }
+      } catch (jsonError) {
+        console.error("Error al parsear datos de usuario", jsonError);
+        localStorage.removeItem("user");
+        return false;
+      }
       
       return true;
     } catch (error) {
       console.error("Error validando token:", error);
+      // Limpiar datos inválidos
+      localStorage.removeItem("authToken");
+      localStorage.removeItem("user");
       return false;
     }
   },

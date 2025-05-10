@@ -15,34 +15,48 @@ function Login() {
     setLoading(true);
 
     try {
-      // Primera intentamos con la función auth.login normal
+      console.log("Iniciando proceso de login con:", { email });
+      
+      // Limpiar cualquier token previo para evitar conflictos
+      localStorage.removeItem("authToken");
+      localStorage.removeItem("user");
+      
       try {
-        console.log("Intentando con auth.login:", { email });
+        // Intento de login usando la API configurada
+        console.log("Intentando con auth.login...");
         const userData = await auth.login(email, password);
         
-        // Verificar explícitamente que el token se guardó antes de redirigir
-        const token = localStorage.getItem("authToken");
-        if (!token) {
-          console.error("Token no guardado en localStorage después del login");
-          throw new Error("Error al guardar la sesión");
+        console.log("Respuesta de login:", userData);
+        if (!userData || !userData.token) {
+          throw new Error("La respuesta del servidor no contiene un token válido");
         }
         
-        console.log("Login exitoso, token almacenado correctamente");
-        setTimeout(() => {
-          // Usar setTimeout para asegurar que el token se guarda antes de redirigir
-          window.location.href = "/admin";
-        }, 100);
+        // Guardar el token explícitamente con el prefijo Bearer para uso posterior
+        localStorage.setItem("authToken", userData.token);
+        localStorage.setItem("user", JSON.stringify(userData.usuario));
+        
+        // Verificar que el token se guardó correctamente
+        const savedToken = localStorage.getItem("authToken");
+        console.log("Token guardado correctamente:", !!savedToken);
+        
+        if (!savedToken) {
+          throw new Error("No se pudo guardar el token en localStorage");
+        }
+        
+        // Configurar axios para que use el token en peticiones futuras
+        axios.defaults.headers.common['Authorization'] = `Bearer ${savedToken}`;
+        
+        console.log("Redirigiendo al panel de administración...");
+        window.location.href = "/admin";
         return;
-      } catch (error) {
-        console.log("Primer método falló, intentando directo con axios", error);
+      } catch (authError) {
+        console.error("Error con auth.login:", authError);
+        // Seguir con el siguiente método si este falla
       }
 
-      // Si falla, intentamos con axios directamente
-      console.log("Intentando login directo:", { email });
-      const response = await axios.post("/api/auth/login", { 
-        email, 
-        password 
-      }, {
+      // Intento alternativo con axios directo
+      console.log("Intentando login directo con axios...");
+      const response = await axios.post("/api/auth/login", { email, password }, {
         headers: {
           'Content-Type': 'application/json',
         }
@@ -50,27 +64,31 @@ function Login() {
       
       console.log("Respuesta login directo:", response.data);
       
-      if (response.data.token) {
+      if (response.data && response.data.token) {
+        // Guardar el token con el prefijo Bearer para uso posterior
         localStorage.setItem("authToken", response.data.token);
         localStorage.setItem("user", JSON.stringify(response.data.usuario));
         
-        // Verificar que se ha guardado
+        // Verificar que se guardó
         const token = localStorage.getItem("authToken");
         if (!token) {
-          throw new Error("Error al guardar la sesión");
+          throw new Error("Error al guardar la sesión en localStorage");
         }
         
-        // Usar setTimeout para asegurar que el token se guarda antes de redirigir
-        setTimeout(() => {
-          window.location.href = "/admin";
-        }, 100);
+        // Configurar axios para peticiones futuras
+        axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+        
+        console.log("Redirigiendo al panel de administración...");
+        window.location.href = "/admin";
+      } else {
+        throw new Error("La respuesta no contiene un token");
       }
     } catch (err) {
-      console.error("Error de login:", err);
+      console.error("Error durante el proceso de login:", err);
       if (err.response && err.response.data) {
         setError(err.response.data.error || "Error al iniciar sesión");
       } else {
-        setError("Error al conectar con el servidor");
+        setError(err.message || "Error al conectar con el servidor");
       }
     } finally {
       setLoading(false);
