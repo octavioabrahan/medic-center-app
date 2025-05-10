@@ -366,16 +366,6 @@ const AdminExamenes = () => {
                   <option value="paquete">Paquete</option>
                 </select>
               </div>
-              <div className="form-group checkbox-group">
-                <input 
-                  type="checkbox" 
-                  id="is_active" 
-                  name="is_active" 
-                  checked={formData.is_active} 
-                  onChange={handleFormChange} 
-                />
-                <label htmlFor="is_active">Activo</label>
-              </div>
               <div className="modal-footer">
                 <button type="button" className="btn-secondary" onClick={() => setShowAddModal(false)}>
                   Cancelar
