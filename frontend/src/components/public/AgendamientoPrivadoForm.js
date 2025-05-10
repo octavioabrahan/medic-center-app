@@ -511,7 +511,7 @@ const AgendamientoPrivadoForm = () => {
                     return profServicios.includes(s.id_servicio);
                   })
                   .map(s => (
-                    <div key={s.id_servicio} className="servicio-checkbox-item">
+                    <div key={s.id_servicio} className="custom-servicio-checkbox-item" style={{ display: 'flex', alignItems: 'center', marginBottom: '8px' }}>
                       <input
                         type="checkbox"
                         id={`servicio-${s.id_servicio}`}
@@ -525,8 +525,23 @@ const AgendamientoPrivadoForm = () => {
                             );
                           }
                         }}
+                        style={{
+                          width: '18px',
+                          height: '18px',
+                          marginRight: '10px',
+                          accentColor: '#3498db',
+                          cursor: 'pointer'
+                        }}
                       />
-                      <label htmlFor={`servicio-${s.id_servicio}`}>
+                      <label 
+                        htmlFor={`servicio-${s.id_servicio}`}
+                        style={{ 
+                          cursor: 'pointer',
+                          userSelect: 'none',
+                          display: 'inline-flex',
+                          alignItems: 'center' 
+                        }}
+                      >
                         {s.nombre_servicio} — USD {Number(s.price_usd).toFixed(2)}
                       </label>
                     </div>
