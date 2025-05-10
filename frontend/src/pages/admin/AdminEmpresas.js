@@ -3,6 +3,7 @@ import axios from "axios";
 // Eliminadas las importaciones CSS redundantes que ahora están en main.css
 import AdminFilterBar from "../../components/admin/AdminFilterBar"; // Importamos el nuevo componente
 import ArchivoAdjuntoForm from "../../components/common/ArchivoAdjuntoForm"; // Importamos el componente de archivos mejorado desde la ubicación común
+import FormField from "../../components/common/FormField"; // Importamos el nuevo componente de formulario
 
 const AdminEmpresas = () => {
   const [empresas, setEmpresas] = useState([]);
@@ -185,7 +186,7 @@ const AdminEmpresas = () => {
       <div className="admin-header">
         <h1>Gestión de Empresas</h1>
         <div className="admin-header-buttons">
-          <button className="btn-add-main" onClick={handleCreateEmpresa}>
+          <button className="button button--primary" onClick={handleCreateEmpresa}>
             Registrar empresa
           </button>
         </div>
@@ -243,27 +244,27 @@ const AdminEmpresas = () => {
                   </td>
                   <td className="actions-cell">
                     <button 
-                      className="btn-action btn-edit" 
+                      className="button button--subtle button--small" 
                       onClick={() => handleEditEmpresa(empresa)}
                       title="Editar"
                     >
-                      ✏️
+                      ✏️ Editar
                     </button>
                     {empresa.is_active ? (
                       <button
-                        className="btn-action btn-archive"
+                        className="button button--neutral button--small"
                         onClick={() => cambiarEstadoEmpresa(empresa.id_empresa, false)}
                         title="Desactivar"
                       >
-                        🚫
+                        🚫 Desactivar
                       </button>
                     ) : (
                       <button
-                        className="btn-action btn-activate"
+                        className="button button--neutral button--small"
                         onClick={() => cambiarEstadoEmpresa(empresa.id_empresa, true)}
                         title="Activar"
                       >
-                        ✓
+                        ✓ Activar
                       </button>
                     )}
                   </td>
@@ -280,33 +281,29 @@ const AdminEmpresas = () => {
           <div className="modal-content">
             <div className="modal-header">
               <h2>{currentEmpresa ? "Editar empresa" : "Registrar nueva empresa"}</h2>
-              <button className="close-btn" onClick={() => setShowModal(false)}>×</button>
+              <button className="button button--subtle button--icon-only" onClick={() => setShowModal(false)}>×</button>
             </div>
             <div className="modal-body">
               <form onSubmit={handleSubmit}>
-                <div className="form-group">
-                  <label htmlFor="nombre_empresa">Nombre de la empresa</label>
-                  <input
-                    id="nombre_empresa"
-                    type="text"
-                    name="nombre_empresa"
-                    value={formData.nombre_empresa}
-                    onChange={handleInputChange}
-                    required
-                  />
-                </div>
+                <FormField
+                  id="nombre_empresa"
+                  label="Nombre de la empresa"
+                  type="text"
+                  name="nombre_empresa"
+                  value={formData.nombre_empresa}
+                  onChange={handleInputChange}
+                  required
+                />
 
-                <div className="form-group">
-                  <label htmlFor="rif">RIF</label>
-                  <input
-                    id="rif"
-                    type="text"
-                    name="rif"
-                    value={formData.rif}
-                    onChange={handleInputChange}
-                    required
-                  />
-                </div>
+                <FormField
+                  id="rif"
+                  label="RIF"
+                  type="text"
+                  name="rif"
+                  value={formData.rif}
+                  onChange={handleInputChange}
+                  required
+                />
 
                 <div className="form-group">
                   <label>Logo de la empresa</label>
@@ -329,10 +326,10 @@ const AdminEmpresas = () => {
               </form>
             </div>
             <div className="modal-footer">
-              <button type="button" className="btn-secondary" onClick={() => setShowModal(false)}>
+              <button type="button" className="button button--neutral" onClick={() => setShowModal(false)}>
                 Cancelar
               </button>
-              <button type="button" className="btn-primary" onClick={handleSubmit}>
+              <button type="button" className="button button--primary" onClick={handleSubmit}>
                 {currentEmpresa ? "Actualizar" : "Registrar"}
               </button>
             </div>

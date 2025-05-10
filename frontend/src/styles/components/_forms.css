@@ -1,50 +1,134 @@
 /* 
  * Estilos para formularios
- * Extraídos de los diferentes componentes de la aplicación
+ * Actualizado para usar design tokens del sistema de diseño de Figma
  */
 
-/* Estilos para formularios */
-.form-group {
-  margin-bottom: 15px;
+/* Sistema de formularios basado en el diseño de Figma */
+
+/* ======== NUEVO SISTEMA DE FORMULARIOS ======== */
+
+/* Base común para campos de formulario */
+.form-field,
+.form-field * {
+  box-sizing: border-box;
 }
 
-.form-group label {
-  display: block;
-  margin-bottom: 5px;
-  font-weight: 500;
-  font-size: 14px;
-  color: #4a5568;
-}
-
-.form-group input[type="text"],
-.form-group input[type="email"],
-.form-group input[type="password"],
-.form-group input[type="number"],
-.form-group input[type="tel"],
-.form-group input[type="date"],
-.form-group input[type="time"],
-.form-group select,
-.form-group textarea {
+/* Contenedor del campo de formulario */
+.form-field {
+  margin-bottom: var(--sds-size-space-400, 16px);
   width: 100%;
-  padding: 8px 12px;
-  border: 1px solid #e2e8f0;
-  border-radius: 4px;
-  font-size: 14px;
 }
 
-.form-group input:focus,
-.form-group select:focus,
-.form-group textarea:focus {
-  border-color: #3182ce;
-  outline: none;
-  box-shadow: 0 0 0 1px rgba(49, 130, 206, 0.2);
+/* Etiqueta del campo */
+.form-field-label {
+  display: block;
+  margin-bottom: var(--sds-size-space-100, 4px);
+  font-family: var(--sds-typography-family-sans, "Inter", sans-serif);
+  font-size: var(--sds-typography-scale-02, 14px);
+  line-height: 140%;
+  font-weight: var(--sds-typography-weight-medium, 500);
+  color: var(--var-sds-color-text-default-default, #1e1e1e);
 }
 
-.form-buttons {
+/* Indicador de campo obligatorio */
+.form-field-required {
+  color: var(--var-sds-color-text-danger-default, #d92d20);
+}
+
+/* Contenedor del input */
+.form-field-container {
+  position: relative;
   display: flex;
-  justify-content: flex-end;
-  gap: 10px;
-  margin-top: 20px;
+  align-items: center;
+}
+
+/* Estilos base para los inputs */
+.form-field-input {
+  width: 100%;
+  background: var(--var-sds-color-background-default-default, #ffffff);
+  border-radius: var(--sds-size-radius-200, 8px);
+  border-style: solid;
+  border-color: var(--var-sds-color-border-default-default, #d9d9d9);
+  border-width: 1px;
+  padding: var(--sds-size-space-300, 12px) var(--sds-size-space-400, 16px);
+  font-family: var(--sds-typography-family-sans, "Inter", sans-serif);
+  font-size: var(--sds-typography-scale-03, 16px);
+  line-height: 140%;
+  font-weight: var(--sds-typography-weight-regular, 400);
+  color: var(--var-sds-color-text-default-default, #1e1e1e);
+  transition: all var(--transition-normal, 0.3s ease);
+}
+
+/* Estado focus */
+.form-field-input:focus {
+  outline: none;
+  border-color: var(--var-sds-color-border-brand-default, #20377a);
+  box-shadow: 0 0 0 2px rgba(32, 55, 122, 0.2);
+}
+
+/* Estado disabled */
+.form-field.state-disabled .form-field-input {
+  background-color: var(--var-sds-color-background-default-disabled, #f5f5f5);
+  border-color: var(--var-sds-color-border-default-disabled, #e0e0e0);
+  color: var(--var-sds-color-text-default-disabled, #a0a0a0);
+  cursor: not-allowed;
+}
+
+/* Estado error */
+.form-field.state-error .form-field-input {
+  border-color: var(--var-sds-color-border-danger-default, #d92d20);
+  background-color: var(--var-sds-color-background-danger-subtle, #fef3f2);
+}
+
+/* Mensaje de error */
+.form-field-error {
+  margin-top: var(--sds-size-space-100, 4px);
+  font-family: var(--sds-typography-family-sans, "Inter", sans-serif);
+  font-size: var(--sds-typography-scale-01, 12px);
+  line-height: 140%;
+  font-weight: var(--sds-typography-weight-regular, 400);
+  color: var(--var-sds-color-text-danger-default, #d92d20);
+}
+
+/* Texto de ayuda */
+.form-field-help {
+  margin-top: var(--sds-size-space-100, 4px);
+  font-family: var(--sds-typography-family-sans, "Inter", sans-serif);
+  font-size: var(--sds-typography-scale-01, 12px);
+  line-height: 140%;
+  font-weight: var(--sds-typography-weight-regular, 400);
+  color: var(--var-sds-color-text-default-subtle, #6c6c6c);
+}
+
+/* Icono dentro del input */
+.form-field-icon {
+  position: absolute;
+  right: var(--sds-size-space-300, 12px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Estilos para textarea */
+textarea.form-field-input {
+  min-height: 120px;
+  resize: vertical;
+}
+
+/* Estilos para select */
+select.form-field-input {
+  appearance: none;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right var(--sds-size-space-300, 12px) center;
+  background-size: 16px;
+  padding-right: var(--sds-size-space-800, 32px);
+}
+
+/* Estilos para elementos de fecha y hora */
+input[type="date"].form-field-input,
+input[type="time"].form-field-input {
+  min-height: 44px;
 }
 
 .btn-cancel {
@@ -154,4 +238,53 @@
   color: #e53e3e;
   font-size: 12px;
   margin-top: 4px;
+}
+
+/* ======== COMPATIBILIDAD CON SISTEMA ANTIGUO ======== */
+
+/* Estilos para formularios anteriores */
+.form-group {
+  margin-bottom: var(--sds-size-space-400, 16px);
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: var(--sds-size-space-100, 4px);
+  font-family: var(--sds-typography-family-sans, "Inter", sans-serif);
+  font-size: var(--sds-typography-scale-02, 14px);
+  line-height: 140%;
+  font-weight: var(--sds-typography-weight-medium, 500);
+  color: var(--var-sds-color-text-default-default, #1e1e1e);
+}
+
+.form-group input[type="text"],
+.form-group input[type="email"],
+.form-group input[type="password"],
+.form-group input[type="number"],
+.form-group input[type="tel"],
+.form-group input[type="date"],
+.form-group input[type="time"],
+.form-group select,
+.form-group textarea {
+  width: 100%;
+  padding: var(--sds-size-space-300, 12px) var(--sds-size-space-400, 16px);
+  border: 1px solid var(--var-sds-color-border-default-default, #d9d9d9);
+  border-radius: var(--sds-size-radius-200, 8px);
+  font-family: var(--sds-typography-family-sans, "Inter", sans-serif);
+  font-size: var(--sds-typography-scale-03, 16px);
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+  border-color: var(--var-sds-color-border-brand-default, #20377a);
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(32, 55, 122, 0.2);
+}
+
+.form-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--sds-size-space-300, 12px);
+  margin-top: var(--sds-size-space-600, 24px);
 }

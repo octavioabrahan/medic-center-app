@@ -34,6 +34,15 @@
   --var-sds-color-text-disabled-default: #9d9d9d; /* Color de texto para botones deshabilitados */
   --var-sds-color-border-default-default: #d9d9d9; /* Color de borde predeterminado */
 
+  /* Variables para componente de búsqueda */
+  --var-sds-color-background-default-default: #ffffff; /* Color de fondo para input de búsqueda */
+  --var-sds-color-text-default-tertiary: #b3b3b3; /* Color para placeholder */
+  --var-sds-color-text-default-secondary: #767676; /* Color para iconos */
+  --var-sds-color-text-disabled-on-disabled: #9d9d9d; /* Color de texto deshabilitado */
+  --var-sds-color-border-disabled-secondary: #b2b2b2; /* Color de borde deshabilitado secundario */
+  --var-sds-color-border-default-hover: #b3b3b3; /* Color de borde en hover */
+  --var-sds-size-radius-full: 9999px; /* Radio para formas circulares o píldoras */
+
   /* Espaciados */
   --spacing-xs: 0.25rem;  /* 4px */
   --spacing-sm: 0.5rem;   /* 8px */

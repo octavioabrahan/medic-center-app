@@ -1,4 +1,6 @@
 import React from 'react';
+import SearchField from '../common/SearchField';
+import FormField from '../common/FormField';
 // Eliminada la importación CSS redundante que ahora está en main.css
 
 /**
@@ -37,21 +39,23 @@ const AdminFilterBar = ({
   return (
     <div className="admin-filter-bar">
       <div className="filter-section">
-        {/* Componente de búsqueda */}
+        {/* Componente de búsqueda actualizado con el nuevo SearchField */}
         <div className="admin-search">
-          <input
-            type="text"
+          <SearchField
             placeholder={searchPlaceholder}
             value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
+            onChange={setSearchTerm}
+            onSearch={() => {}} // No es necesaria una acción específica al presionar Enter
+            small={true}
           />
-          <span className="search-icon">🔍</span>
         </div>
         
-        {/* Dropdown de filtro principal si está disponible */}
+        {/* Dropdown de filtro principal actualizado con FormField si está disponible */}
         {filterOptions.length > 0 && setFilterValue && (
           <div className="admin-dropdown">
-            <select 
+            <FormField
+              id="adminFilter"
+              type="select"
               value={filterValue}
               onChange={(e) => setFilterValue(e.target.value)}
             >
@@ -61,17 +65,18 @@ const AdminFilterBar = ({
                   {option.label}
                 </option>
               ))}
-            </select>
+            </FormField>
           </div>
         )}
         
-        {/* Botones de ordenamiento A-Z y Z-A */}
+        {/* Botones de ordenamiento A-Z y Z-A con estilo actualizado */}
         {setSortOrder && (
           <div className="admin-sort-buttons">
             <button 
               className={`sort-btn ${sortOrder === 'az' ? 'active' : ''}`}
               onClick={() => setSortOrder('az')}
               title="Ordenar de A a Z"
+              aria-label="Ordenar de A a Z"
             >
               A → Z
             </button>
@@ -79,23 +84,21 @@ const AdminFilterBar = ({
               className={`sort-btn ${sortOrder === 'za' ? 'active' : ''}`}
               onClick={() => setSortOrder('za')}
               title="Ordenar de Z a A"
+              aria-label="Ordenar de Z a A"
             >
               Z → A
             </button>
           </div>
         )}
 
-        {/* Checkbox para mostrar archivados */}
+        {/* Checkbox para mostrar archivados con estilo mejorado */}
         {setShowArchived && !isExcepciones && (
-          <div className="admin-checkbox">
+          <div className="show-archived">
             <input
               type="checkbox"
               id="showArchivedCheckbox"
               checked={showArchived}
-              onChange={(e) => {
-                console.log("Cambiando showArchived a:", e.target.checked);
-                setShowArchived(e.target.checked);
-              }}
+              onChange={(e) => setShowArchived(e.target.value)}
             />
             <label htmlFor="showArchivedCheckbox">Mostrar archivados</label>
           </div>

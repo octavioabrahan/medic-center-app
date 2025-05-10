@@ -8,6 +8,7 @@ import {
   startOfToday, endOfToday, startOfMonth, endOfMonth, 
 } from "date-fns";
 import Calendar from "../../components/common/Calendar";
+import SearchField from "../../components/common/SearchField";
 // No necesitamos importar AdminCommon.css ya que lo importamos en AdminLayout.js
 
 const TODOS_LOS_ESTADOS = ["pendiente", "confirmada", "cancelada"];
@@ -211,21 +212,18 @@ const CitasAgendadas = () => {
       <h1 className="admin-page-title">Citas agendadas</h1>
       
       <div className="appointments-filter-panel">
-        <div className="search-bar">
-          <input 
-            type="text" 
-            placeholder="Buscar por nombre o cédula" 
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="search-input"
-          />
-          <button className="button variant-primary size-small">
-            <svg className="heroicons-micro-plus" width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M21 21L15 15M17 10C17 13.866 13.866 17 10 17C6.13401 17 3 13.866 3 10C3 6.13401 6.13401 3 10 3C13.866 3 17 6.13401 17 10Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-            </svg>
-            <span className="button-text">Buscar</span>
-          </button>
-        </div>
+        <SearchField 
+          placeholder="Buscar por nombre o cédula"
+          value={searchTerm}
+          onChange={(value) => setSearchTerm(value)}
+          onSearch={(value) => {
+            // Aquí puede ir la lógica de búsqueda si necesitas 
+            // hacer algo específico al presionar enter o el botón
+            console.log("Buscando:", value);
+          }}
+          withButton={true}
+          buttonText="Buscar"
+        />
         
         <div className="filter-group">
           <select 
