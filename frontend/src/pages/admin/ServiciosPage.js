@@ -388,7 +388,7 @@ const ServiciosPage = () => {
               <li>Los profesionales que lo tienen asignado dejarán de mostrarse si no tienen otros servicios activos.</li>
               <li>Los agendamientos previamente generados no se eliminarán.</li>
             </ul>
-            <div className="admin-checkbox">
+            <div className="custom-checkbox-container">
               <input 
                 type="checkbox"
                 id="confirmar_archivado"
