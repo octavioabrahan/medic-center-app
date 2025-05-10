@@ -33,6 +33,10 @@ const CitasAgendadas = () => {
   const [mostrarHistorial, setMostrarHistorial] = useState(false);
   const [historial, setHistorial] = useState([]);
   const [historialDe, setHistorialDe] = useState(null);
+  
+  // Estado para el modal de detalle de cita
+  const [showModal, setShowModal] = useState(false);
+  const [selectedAppointment, setSelectedAppointment] = useState(null);
 
   const [agendamientos, setAgendamientos] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -63,7 +67,8 @@ const CitasAgendadas = () => {
     fetchAgendamientos();
   }, [status, desde, hasta]);
 
-  const actualizarEstado = async (id, nuevoEstado) => {
+  const actualizarEstado = async (id, nuevoEstado, e) => {
+    e.stopPropagation(); // Evitar propagación para que no abra el modal
     try {
       await fetch(`${process.env.REACT_APP_API_URL}/api/agendamiento/${id}`, {
         method: "PUT",
@@ -96,6 +101,30 @@ const CitasAgendadas = () => {
     setMostrarHistorial(false);
     setHistorial([]);
     setHistorialDe(null);
+  };
+  
+  // Función para abrir modal de detalle
+  const openAppointmentModal = (appointment) => {
+    setSelectedAppointment(appointment);
+    setShowModal(true);
+  };
+  
+  // Función para cerrar modal de detalle
+  const closeAppointmentModal = () => {
+    setShowModal(false);
+    setSelectedAppointment(null);
+  };
+
+  // Función para manejar el clic en una cita y mostrar sus detalles
+  const handleAppointmentClick = (appointment) => {
+    setSelectedAppointment(appointment);
+    setShowModal(true);
+  };
+
+  // Función para cerrar el modal
+  const handleCloseModal = () => {
+    setShowModal(false);
+    setSelectedAppointment(null);
   };
 
   // Filtrar agendamientos según el término de búsqueda y profesional seleccionado
@@ -213,16 +242,32 @@ const CitasAgendadas = () => {
           </select>
         </div>
         
-        <div className="date-range-picker">
-          <div className="date-input-container" onClick={toggleDatePicker}>
-            <div className="date-display">
-              {formatDateRange()}
-            </div>
-            <div className="date-icon">
+        <div className="filter-group date-filter">
+          <select 
+            value={filtroProfesional} 
+            onChange={(e) => setFiltroProfesional(e.target.value)}
+            className="filter-select"
+          >
+            <option value="todos">Todos los profesionales</option>
+            {profesionales.map((prof, index) => (
+              <option key={index} value={prof}>{prof}</option>
+            ))}
+          </select>
+        </div>
+        
+        <div className="filter-group date-filter">
+          <div className="date-input-wrapper" onClick={toggleDatePicker}>
+            <input 
+              type="text" 
+              value={formatDateRange()} 
+              readOnly 
+              className="filter-select date-input"
+            />
+            <span className="date-icon">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M8 2V5M16 2V5M3.5 9.09H20.5M21 8.5V17C21 20 19.5 22 16 22H8C4.5 22 3 20 3 17V8.5C3 5.5 4.5 3.5 8 3.5H16C19.5 3.5 21 5.5 21 8.5Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
               </svg>
-            </div>
+            </span>
           </div>
           {showDatePicker && (
             <div className="calendar-popup">
@@ -234,19 +279,6 @@ const CitasAgendadas = () => {
               />
             </div>
           )}
-        </div>
-        
-        <div className="filter-group">
-          <select 
-            value={filtroProfesional} 
-            onChange={(e) => setFiltroProfesional(e.target.value)}
-            className="filter-select"
-          >
-            <option value="todos">Todos los profesionales</option>
-            {profesionales.map((prof, index) => (
-              <option key={index} value={prof}>{prof}</option>
-            ))}
-          </select>
         </div>
       </div>
       
@@ -264,9 +296,10 @@ const CitasAgendadas = () => {
         </div>
       ) : (
         <div className="appointments-table-container">
-          <table className="appointments-table">
+          <table className="appointments-table with-horizontal-lines">
             <thead>
               <tr>
+                <th></th>
                 <th>Fecha cita</th>
                 <th>Paciente</th>
                 <th>Cédula</th>
@@ -279,9 +312,22 @@ const CitasAgendadas = () => {
             <tbody>
               {agendamientosFiltrados.map((a) => {
                 const formatoFecha = formatearFecha(a.fecha_agendada);
+                const esConvenio = a.tipo_paciente === 'empresa' || a.empresa_id;
                 
                 return (
-                  <tr key={a.agendamiento_id}>
+                  <tr key={a.agendamiento_id} onClick={() => openAppointmentModal(a)} className="appointment-row">
+                    <td className="empresa-cell">
+                      {esConvenio && (
+                        <div className="tooltip">
+                          <div className="empresa-icon">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                              <path d="M16 8V16M12 11V16M8 14V16M6 20H18C19.1046 20 20 19.1046 20 18V6C20 4.89543 19.1046 4 18 4H6C4.89543 4 4 4.89543 4 6V18C4 19.1046 4.89543 20 6 20Z" stroke="#4A5568" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                            </svg>
+                          </div>
+                          <span className="tooltip-text">Agendamiento con convenio</span>
+                        </div>
+                      )}
+                    </td>
                     <td className="appointment-date-cell">
                       <div className="appointment-date-container">
                         <div className="appointment-date-icon">
@@ -306,7 +352,7 @@ const CitasAgendadas = () => {
                     </td>
                     <td className="actions-cell">
                       <button
-                        onClick={() => actualizarEstado(a.agendamiento_id, "confirmada")}
+                        onClick={(e) => actualizarEstado(a.agendamiento_id, "confirmada", e)}
                         className="action-button confirm-button"
                         title="Confirmar"
                         disabled={a.status === "confirmada"}
@@ -316,7 +362,7 @@ const CitasAgendadas = () => {
                         </svg>
                       </button>
                       <button
-                        onClick={() => actualizarEstado(a.agendamiento_id, "cancelada")}
+                        onClick={(e) => actualizarEstado(a.agendamiento_id, "cancelada", e)}
                         className="action-button cancel-button"
                         title="Cancelar"
                         disabled={a.status === "cancelada"}
@@ -331,6 +377,108 @@ const CitasAgendadas = () => {
               })}
             </tbody>
           </table>
+        </div>
+      )}
+
+      {/* Modal de detalle de cita */}
+      {showModal && selectedAppointment && (
+        <div className="modal-overlay">
+          <div className="modal-content appointment-detail-modal">
+            <div className="modal-header">
+              <h2>Detalles de la Cita</h2>
+              <button className="close-btn" onClick={closeAppointmentModal}>×</button>
+            </div>
+            <div className="modal-body">
+              <div className="appointment-details">
+                <div className="detail-section">
+                  <h3>Información del Paciente</h3>
+                  <div className="detail-row">
+                    <div className="detail-label">Nombre:</div>
+                    <div className="detail-value">{selectedAppointment.paciente_nombre} {selectedAppointment.paciente_apellido}</div>
+                  </div>
+                  <div className="detail-row">
+                    <div className="detail-label">Cédula:</div>
+                    <div className="detail-value">{selectedAppointment.cedula}</div>
+                  </div>
+                  <div className="detail-row">
+                    <div className="detail-label">Teléfono:</div>
+                    <div className="detail-value">{selectedAppointment.telefono || 'No disponible'}</div>
+                  </div>
+                  <div className="detail-row">
+                    <div className="detail-label">Email:</div>
+                    <div className="detail-value">{selectedAppointment.email || 'No disponible'}</div>
+                  </div>
+                </div>
+                
+                <div className="detail-section">
+                  <h3>Información de la Cita</h3>
+                  <div className="detail-row">
+                    <div className="detail-label">Fecha:</div>
+                    <div className="detail-value">{formatearFecha(selectedAppointment.fecha_agendada).fecha}</div>
+                  </div>
+                  <div className="detail-row">
+                    <div className="detail-label">Hora:</div>
+                    <div className="detail-value">{formatearFecha(selectedAppointment.fecha_agendada).hora}</div>
+                  </div>
+                  <div className="detail-row">
+                    <div className="detail-label">Profesional:</div>
+                    <div className="detail-value">{selectedAppointment.profesional_nombre} {selectedAppointment.profesional_apellido}</div>
+                  </div>
+                  <div className="detail-row">
+                    <div className="detail-label">Tipo de atención:</div>
+                    <div className="detail-value">{selectedAppointment.tipo_atencion}</div>
+                  </div>
+                  <div className="detail-row">
+                    <div className="detail-label">Estado:</div>
+                    <div className="detail-value">
+                      <span className={`status-badge ${getStatusClass(selectedAppointment.status)}`}>
+                        {selectedAppointment.status}
+                      </span>
+                    </div>
+                  </div>
+                  {selectedAppointment.tipo_paciente === 'empresa' && (
+                    <div className="detail-row">
+                      <div className="detail-label">Empresa:</div>
+                      <div className="detail-value">{selectedAppointment.empresa_nombre || 'No especificada'}</div>
+                    </div>
+                  )}
+                </div>
+
+                {selectedAppointment.observaciones && (
+                  <div className="detail-section">
+                    <h3>Observaciones</h3>
+                    <div className="detail-text">{selectedAppointment.observaciones}</div>
+                  </div>
+                )}
+              </div>
+            </div>
+            <div className="modal-footer">
+              <button 
+                onClick={() => {
+                  actualizarEstado(selectedAppointment.agendamiento_id, 
+                    selectedAppointment.status === "confirmada" ? "pendiente" : "confirmada", 
+                    { stopPropagation: () => {} });
+                  closeAppointmentModal();
+                }}
+                className="btn-primary"
+                disabled={selectedAppointment.status === "cancelada"}
+              >
+                {selectedAppointment.status === "confirmada" ? "Marcar como Pendiente" : "Confirmar Cita"}
+              </button>
+              <button 
+                onClick={() => {
+                  actualizarEstado(selectedAppointment.agendamiento_id, "cancelada", 
+                    { stopPropagation: () => {} });
+                  closeAppointmentModal();
+                }}
+                className="btn-danger"
+                disabled={selectedAppointment.status === "cancelada"}
+              >
+                Cancelar Cita
+              </button>
+              <button onClick={closeAppointmentModal} className="btn-secondary">Cerrar</button>
+            </div>
+          </div>
         </div>
       )}
 
