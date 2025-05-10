@@ -22,6 +22,7 @@ import CotizacionesAdmin from './components/admin/CotizacionesAdmin';
 import AdminLayout from './components/admin/AdminLayout';
 import AdminExamenes from './pages/admin/AdminExamenes';
 import AdministracionPage from './pages/admin/AdministracionPage'; // Nueva página de administración
+import AdminAgendamientos from './pages/admin/AdminAgendamientos'; // Importando el componente AdminAgendamientos
 // Importar componentes de autenticación
 import LoginPage from './pages/auth/LoginPage';
 import ProtectedRoute from './components/auth/ProtectedRoute';
@@ -57,6 +58,7 @@ function App() {
           <Route path="roles" element={<RolesPage />} />
           <Route path="excepciones" element={<ExcepcionesPage />} />
           <Route path="citas" element={<AdminCitas />} />
+          <Route path="agendamientos" element={<AdminAgendamientos />} /> {/* Nueva ruta para la gestión de agendamientos */}
           <Route path="empresas" element={<AdminEmpresas />} />
           <Route path="convenios" element={<AdminConvenios />} />
           <Route path="cotizaciones" element={<CotizacionesAdmin />} />
