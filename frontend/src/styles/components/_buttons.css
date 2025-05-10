@@ -21,10 +21,10 @@
 
 /* Nuevo estilo "button" basado en Figma */
 .button {
-  background: var(--color-primary, #20377a);
+  background: var(--var-sds-color-background-brand-default, #20377a);
   border-radius: var(--sds-size-radius-200, 8px);
   border-style: solid;
-  border-color: var(--color-primary, #20377a);
+  border-color: var(--var-sds-color-border-brand-default, #20377a);
   border-width: 1px;
   padding: var(--sds-size-space-300, 12px);
   display: flex;
@@ -40,7 +40,7 @@
   font-size: var(--sds-typography-scale-03, 16px);
   line-height: 140%;
   font-weight: var(--sds-typography-weight-regular, 400);
-  color: white;
+  color: var(--var-sds-color-text-brand-on-brand, #ffffff);
   transition: all var(--transition-normal, 0.3s ease);
 }
 
@@ -61,18 +61,18 @@
 
 /* Variante primaria (azul corporativo) */
 .button.variant-primary {
-  background: var(--color-primary, #20377a);
-  border-color: var(--color-primary, #20377a);
+  background: var(--var-sds-color-background-brand-default, #20377a);
+  border-color: var(--var-sds-color-border-brand-default, #20377a);
 }
 
 .button.variant-primary .button-text {
-  color: white;
+  color: var(--var-sds-color-text-brand-on-brand, #ffffff);
 }
 
 .button.variant-primary:hover,
 .button.state-hover.variant-primary {
-  background: var(--color-primary-darker, #14214b);
-  border-color: var(--color-primary-darker, #14214b);
+  background: var(--var-sds-color-background-brand-hover, #14214b);
+  border-color: var(--var-sds-color-background-brand-hover, #14214b);
 }
 
 /* Variante neutral (gris) */
