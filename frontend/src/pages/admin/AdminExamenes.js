@@ -496,15 +496,6 @@ const AdminExamenes = () => {
                     Activar
                   </button>
                 )}
-                {formData.is_active && (
-                  <button 
-                    type="button" 
-                    className="btn-danger" 
-                    onClick={() => toggleActivo(currentExamen)}
-                  >
-                    Desactivar
-                  </button>
-                )}
                 <button type="submit" className="btn-primary">
                   Guardar
                 </button>
