@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import "./AdminConvenios.css";
-import "../../components/admin/AdminCommon.css"; // Importing common styles
+// Eliminadas las importaciones CSS redundantes que ahora están en main.css
+// import "./AdminConvenios.css";
+// import "../../components/admin/AdminCommon.css";
 import AdminFilterBar from "../../components/admin/AdminFilterBar"; // Importing the new component
 
 const LogoUploader = ({ onLogoUploaded, initialLogo }) => {

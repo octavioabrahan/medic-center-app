@@ -2,8 +2,9 @@
 import React from 'react';
 import { Outlet } from 'react-router-dom';
 import AdminSidebar from './AdminSidebar';
-import './AdminLayout.css';
-import './AdminCommon.css'; // Importamos los estilos comunes
+// Eliminadas las importaciones CSS redundantes que ahora están en main.css
+// import './AdminLayout.css';
+// import './AdminCommon.css'; 
 
 const AdminLayout = () => {
   return (

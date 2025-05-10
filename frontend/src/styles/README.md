@@ -39,6 +39,50 @@ src/styles/
 3. Se han extraído componentes comunes (botones, formularios, modales) a archivos separados
 4. Las clases utilitarias se han agrupado en un único archivo para facilitar su uso
 5. El archivo `main.css` centraliza todas las importaciones
+6. Se ha implementado el sistema de botones según las especificaciones de diseño de Figma
+
+## Sistema de Botones
+
+De acuerdo con el diseño de Figma, se ha implementado un sistema de botones con:
+
+### Variantes principales:
+- **Primary**: Botones azules, de mayor importancia visual (acción principal)
+- **Neutral**: Botones con borde y fondo blanco
+- **Subtle**: Botones con fondo gris suave
+- **Danger**: Botones rojos para acciones destructivas o de advertencia
+
+### Estados:
+- **Default**: Estado normal
+- **Hover**: Cuando el cursor está sobre el botón
+- **Disabled**: Estado deshabilitado
+
+### Tamaños:
+- **Medium**: Tamaño estándar (40px de altura)
+- **Small**: Tamaño pequeño (32px de altura)
+
+### Tipos:
+- Botones con texto
+- Botones con ícono y texto
+- Botones solo con ícono
+
+### Uso:
+
+```html
+<!-- Botón primario tamaño normal -->
+<button class="btn btn-medium btn-primary">Button</button>
+
+<!-- Botón neutral tamaño pequeño -->
+<button class="btn btn-small btn-neutral">Button</button>
+
+<!-- Botón sutil deshabilitado -->
+<button class="btn btn-medium btn-subtle" disabled>Button</button>
+
+<!-- Botón de peligro -->
+<button class="btn btn-medium btn-danger">Button</button>
+
+<!-- Botón con icono -->
+<button class="btn btn-medium btn-primary btn-icon">+</button>
+```
 
 ## Próximos pasos a completar
 
@@ -47,15 +91,28 @@ Para finalizar la migración de manera segura, se deben completar los siguientes
 1. **Eliminar las importaciones redundantes de CSS**: Varios componentes React están importando archivos CSS directamente. Estas importaciones ya no son necesarias, ya que todos los estilos se importan desde `index.js` a través de `main.css`.
 
    Ejemplos de importaciones que deben ser eliminadas:
-   - `import "./Calendar.css"` en `components/common/Calendar.js`
+   - ✅ `import "./Calendar.css"` en `components/common/Calendar.js` (COMPLETADO)
    - `import './AdminLayout.css'` en `components/admin/AdminLayout.js`
-   - Etc.
+   - `import './AdminCommon.css'` en `components/admin/AdminLayout.js`
+   - `import "./AdminComponents.css"` en `components/admin/UsuariosAdminTab.js`
+   - etc.
 
-2. **Probar exhaustivamente la aplicación**: Después de eliminar las importaciones redundantes, verificar que todos los estilos se aplican correctamente en todas las páginas.
+2. **Actualizar los componentes para usar el nuevo sistema de botones**: Reemplazar los botones actuales con las nuevas clases correspondientes.
 
-3. **Eliminar los archivos CSS antiguos**: Una vez que se confirme que todo funciona correctamente, se pueden eliminar los archivos CSS originales que ya no son necesarios.
+   Ejemplo:
+   ```jsx
+   // Antes
+   <button className="btn-agregar">Agregar</button>
+   
+   // Después
+   <button className="btn btn-medium btn-primary">Agregar</button>
+   ```
 
-4. **Actualizar las importaciones en componentes nuevos**: Asegurarse de que cualquier nuevo componente no importe archivos CSS individuales, sino que añada sus estilos a la estructura modular.
+3. **Probar exhaustivamente la aplicación**: Después de eliminar las importaciones redundantes, verificar que todos los estilos se aplican correctamente en todas las páginas.
+
+4. **Eliminar los archivos CSS antiguos**: Una vez que se confirme que todo funciona correctamente, se pueden eliminar los archivos CSS originales que ya no son necesarios.
+
+5. **Actualizar las importaciones en componentes nuevos**: Asegurarse de que cualquier nuevo componente no importe archivos CSS individuales, sino que añada sus estilos a la estructura modular.
 
 ## Beneficios de la nueva estructura
 

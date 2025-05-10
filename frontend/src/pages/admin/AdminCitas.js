@@ -3,8 +3,9 @@ import axios from "axios";
 import { format } from 'date-fns';
 import Calendar from '../../components/common/Calendar';
 import AdminFilterBar from "../../components/admin/AdminFilterBar"; // Importamos el componente de barra de filtros
-import "./AdminCitas.css";
-import "../../components/admin/AdminCommon.css"; // Importamos los estilos comunes
+// Eliminadas las importaciones CSS redundantes que ahora están en main.css
+// import "./AdminCitas.css";
+// import "../../components/admin/AdminCommon.css";
 
 const AdminCitas = () => {
   // Estados para almacenar los datos

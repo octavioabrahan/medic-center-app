@@ -1,7 +1,8 @@
 // frontend/src/pages/admin/AdminAgendamientosModificado.js
 import React, { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
-import "./CitasAgendadas.css";
+// Eliminada la importación CSS redundante que ahora está en main.css
+// import "./CitasAgendadas.css";
 import { 
   startOfWeek, endOfWeek, format, startOfDay, endOfDay,
   startOfToday, endOfToday, startOfMonth, endOfMonth, 

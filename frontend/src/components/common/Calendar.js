@@ -3,7 +3,6 @@ import {
   startOfDay, endOfDay,
   subDays, isBefore, isAfter, isSameDay
 } from "date-fns";
-import "./Calendar.css";
 
 const Calendar = ({ 
   onDateRangeChange, 

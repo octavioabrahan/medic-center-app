@@ -1,7 +1,8 @@
 // frontend/src/components/admin/AdminSidebar.js
 import React, { useState, useEffect } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
-import './AdminSidebar.css';
+// Eliminada la importación redundante que ahora está en main.css
+// import './AdminSidebar.css';
 import logo from '../../assets/logo_header.png'; // Asegúrate de que la ruta sea correcta
 import { auth } from '../../api';
 import api from '../../api';

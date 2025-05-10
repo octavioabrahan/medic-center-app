@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import api from "../../api"; // Cambiamos axios por nuestra instancia api configurada
-import "./AdminComponents.css"; // Importamos los nuevos estilos específicos
+// Eliminada la importación redundante que ahora está en main.css
 
 function RolesAdminTab() {
   const [roles, setRoles] = useState([]);
