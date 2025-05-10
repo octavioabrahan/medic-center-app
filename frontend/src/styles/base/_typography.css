@@ -1,5 +1,6 @@
 /* 
  * Definiciones de tipografía para la aplicación
+ * Actualizado para usar los design tokens de Figma
  */
 
 /* Familia de fuentes principal */
@@ -30,4 +31,143 @@
   --font-weight-medium: 500;
   --font-weight-semibold: 600;
   --font-weight-bold: 700;
+}
+
+/* Aplicación de la tipografía con los design tokens */
+body {
+  font-family: var(--sds-typography-family-sans);
+  font-size: var(--sds-responsive-root-font-size);
+  line-height: 1.5;
+  color: var(--color-gray-900);
+}
+
+/* Clases de tipografía basadas en los tokens de diseño */
+
+/* Títulos */
+.title-hero {
+  font-family: var(--sds-typography-title-hero-font-family);
+  font-weight: var(--sds-typography-title-hero-font-weight);
+  font-size: var(--sds-typography-title-hero-size);
+  line-height: 1.1;
+}
+
+.title-page {
+  font-family: var(--sds-typography-title-page-font-family);
+  font-weight: var(--sds-typography-title-page-font-weight);
+  font-size: var(--sds-typography-title-page-size-base);
+  line-height: 1.2;
+}
+
+.title-page-small {
+  font-family: var(--sds-typography-title-page-font-family);
+  font-weight: var(--sds-typography-title-page-font-weight);
+  font-size: var(--sds-typography-title-page-size-small);
+  line-height: 1.2;
+}
+
+/* Subtítulos */
+.subtitle {
+  font-family: var(--sds-typography-subtitle-font-family);
+  font-weight: var(--sds-typography-subtitle-font-weight);
+  font-size: var(--sds-typography-subtitle-size-base);
+  line-height: 1.3;
+}
+
+.subtitle-large {
+  font-family: var(--sds-typography-subtitle-font-family);
+  font-weight: var(--sds-typography-subtitle-font-weight);
+  font-size: var(--sds-typography-subtitle-size-large);
+  line-height: 1.3;
+}
+
+/* Encabezados */
+h1, .h1 {
+  font-family: var(--sds-typography-heading-font-family);
+  font-size: var(--sds-typography-heading-size-large);
+  font-weight: var(--sds-typography-weight-bold);
+  line-height: 1.2;
+  margin-bottom: var(--sds-size-space-400);
+}
+
+h2, .h2 {
+  font-family: var(--sds-typography-heading-font-family);
+  font-size: var(--sds-typography-heading-size-base);
+  font-weight: var(--sds-typography-weight-bold);
+  line-height: 1.2;
+  margin-bottom: var(--sds-size-space-300);
+}
+
+h3, .h3 {
+  font-family: var(--sds-typography-heading-font-family);
+  font-size: var(--sds-typography-subheading-size-medium);
+  font-weight: var(--sds-typography-weight-semibold);
+  line-height: 1.3;
+  margin-bottom: var(--sds-size-space-200);
+}
+
+h4, .h4 {
+  font-family: var(--sds-typography-heading-font-family);
+  font-size: var(--sds-typography-subheading-size-small);
+  font-weight: var(--sds-typography-weight-semibold);
+  line-height: 1.4;
+  margin-bottom: var(--sds-size-space-200);
+}
+
+/* Texto del cuerpo */
+.body-text {
+  font-family: var(--sds-typography-body-font-family);
+  font-size: var(--sds-typography-body-size-medium);
+  font-weight: var(--sds-typography-weight-regular);
+  line-height: 1.5;
+}
+
+.body-text-large {
+  font-family: var(--sds-typography-body-font-family);
+  font-size: var(--sds-typography-body-size-large);
+  font-weight: var (--sds-typography-weight-regular);
+  line-height: 1.5;
+}
+
+.body-text-small {
+  font-family: var(--sds-typography-body-font-family);
+  font-size: var(--sds-typography-scale-01);
+  font-weight: var(--sds-typography-weight-regular);
+  line-height: 1.5;
+}
+
+.body-text-strong {
+  font-weight: var(--sds-typography-body-font-weight-strong);
+}
+
+.body-text-italic {
+  font-style: var(--sds-typography-body-font-style-italic);
+}
+
+/* Código */
+code, .code {
+  font-family: var(--sds-typography-code-font-family);
+  font-size: var(--sds-typography-code-size-base);
+  font-weight: var(--sds-typography-weight-regular);
+  line-height: 1.5;
+}
+
+/* Mantener compatibilidad con las variables anteriores */
+:root {
+  --font-primary: var(--sds-typography-family-sans);
+  --font-code: var(--sds-typography-family-mono);
+  
+  --font-size-xs: var(--sds-typography-scale-01);   /* 12px */
+  --font-size-sm: var(--sds-typography-scale-02);  /* 14px */
+  --font-size-base: var(--sds-typography-scale-03);    /* 16px */
+  --font-size-lg: var(--sds-typography-scale-03);  /* 16px - ajustado */
+  --font-size-xl: var(--sds-typography-scale-04);   /* 20px */
+  --font-size-2xl: var(--sds-typography-scale-05);   /* 24px */
+  --font-size-3xl: var(--sds-typography-scale-06); /* 32px - ajustado */
+  --font-size-4xl: var(--sds-typography-scale-07);  /* 40px - ajustado */
+  
+  --font-weight-light: var(--sds-typography-weight-light);
+  --font-weight-normal: var(--sds-typography-weight-regular);
+  --font-weight-medium: var(--sds-typography-weight-medium);
+  --font-weight-semibold: var(--sds-typography-weight-semibold);
+  --font-weight-bold: var(--sds-typography-weight-bold);
 }

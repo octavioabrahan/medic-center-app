@@ -1,6 +1,6 @@
 /* 
  * Estilos para botones
- * Implementados según el diseño de Figma
+ * Actualizado para usar design tokens del sistema de diseño
  */
 
 /* 
@@ -15,10 +15,10 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  border-radius: 4px;
-  font-family: var(--font-primary);
-  font-weight: var(--font-weight-medium);
-  transition: all 0.2s ease;
+  border-radius: var(--sds-size-radius-100);
+  font-family: var(--sds-typography-family-sans);
+  font-weight: var(--sds-typography-weight-medium);
+  transition: all var(--transition-normal);
   cursor: pointer;
   border: none;
   text-decoration: none;
@@ -26,17 +26,17 @@
 
 /* Tamaños de botones */
 .btn-medium {
-  padding: 8px 16px;
-  font-size: 14px;
+  padding: var(--sds-size-space-200) var(--sds-size-space-400);
+  font-size: var(--sds-typography-scale-02);
   line-height: 140%;
-  height: 40px;
+  height: var(--sds-size-icon-medium);
 }
 
 .btn-small {
-  padding: 6px 12px;
-  font-size: 14px;
+  padding: var(--sds-size-space-150) var(--sds-size-space-300);
+  font-size: var(--sds-typography-scale-02);
   line-height: 140%;
-  height: 32px;
+  height: var(--sds-size-icon-small);
 }
 
 /* Variantes de botones Primary */
@@ -61,7 +61,7 @@
 .btn-neutral {
   background-color: white;
   color: #111827;
-  border: 1px solid #D1D5DB;
+  border: var(--sds-size-stroke-border) solid #D1D5DB;
 }
 
 .btn-neutral:hover {
@@ -115,24 +115,24 @@
 
 /* Botones con icono */
 .btn-icon {
-  padding: 8px;
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
+  padding: var(--sds-size-space-200);
+  width: var(--sds-size-icon-medium);
+  height: var(--sds-size-icon-medium);
+  border-radius: var(--sds-size-radius-full);
   display: inline-flex;
   align-items: center;
   justify-content: center;
 }
 
 .btn-icon.btn-small {
-  padding: 6px;
-  width: 32px;
-  height: 32px;
+  padding: var(--sds-size-space-150);
+  width: var(--sds-size-icon-small);
+  height: var(--sds-size-icon-small);
 }
 
 .btn-icon-text svg,
 .btn-icon-text i {
-  margin-right: 8px;
+  margin-right: var(--sds-size-space-200);
 }
 
 /* Estado de carga del botón */
@@ -144,13 +144,13 @@
 .btn-loading:after {
   content: "";
   position: absolute;
-  width: 16px;
-  height: 16px;
+  width: var(--sds-size-space-400);
+  height: var(--sds-size-space-400);
   top: 50%;
   left: 50%;
-  margin-top: -8px;
-  margin-left: -8px;
-  border-radius: 50%;
+  margin-top: var(--sds-size-space-negative-200);
+  margin-left: var(--sds-size-space-negative-200);
+  border-radius: var(--sds-size-radius-full);
   border: 2px solid rgba(255, 255, 255, 0.3);
   border-top-color: white;
   animation: spin 1s linear infinite;
@@ -181,7 +181,7 @@
 .btn-group .btn:not(:first-child) {
   border-top-left-radius: 0;
   border-bottom-left-radius: 0;
-  margin-left: -1px;
+  margin-left: calc(var(--sds-size-stroke-border) * -1);
 }
 
 /* Botones de bloque (width: 100%) */
