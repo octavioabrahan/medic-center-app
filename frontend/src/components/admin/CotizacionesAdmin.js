@@ -48,7 +48,7 @@ function CotizacionesAdmin() {
       }
       
       // Filtrar por estado
-      if (filterStatus !== 'todos') {
+      if (filterStatus !== '' && filterStatus !== 'todos') {
         results = results.filter(cot => cot.estado === filterStatus);
       }
       
