@@ -279,7 +279,7 @@ function HorarioForm({ onSuccess, horario }) {
         <label>Día de la semana</label>
         <div className="checkbox-group">
           {diasSemana.map((dia) => (
-            <div key={dia.valor} className="checkbox-item">
+            <div key={dia.valor} className="custom-day-checkbox-item">
               <input 
                 type="checkbox" 
                 id={`dia-${dia.valor}`} 
@@ -287,8 +287,26 @@ function HorarioForm({ onSuccess, horario }) {
                 value={dia.valor}
                 checked={form.dia_semana.includes(dia.valor)}
                 onChange={handleDayCheck}
+                style={{
+                  width: '18px',
+                  height: '18px',
+                  marginRight: '10px',
+                  accentColor: '#3498db',
+                  cursor: 'pointer',
+                  verticalAlign: 'middle'
+                }}
               />
-              <label htmlFor={`dia-${dia.valor}`}>{dia.nombre}</label>
+              <label 
+                htmlFor={`dia-${dia.valor}`}
+                style={{ 
+                  cursor: 'pointer',
+                  userSelect: 'none',
+                  display: 'inline-flex',
+                  alignItems: 'center' 
+                }}
+              >
+                {dia.nombre}
+              </label>
             </div>
           ))}
         </div>
