@@ -1,5 +1,5 @@
 import React from 'react';
-import './AdminCommon.css';
+// Eliminada la importación CSS redundante que ahora está en main.css
 
 /**
  * Componente reutilizable para la barra de filtros en las páginas de administración.
