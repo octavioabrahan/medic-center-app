@@ -28,11 +28,15 @@
   border-radius: var(--var-sds-size-radius-full, 9999px);
   border-style: solid;
   border-width: 1px;
+  padding: var(--var-sds-size-space-300, 12px) var(--var-sds-size-space-400, 16px);
   display: flex;
   flex-direction: row;
+  gap: var(--var-sds-size-space-200, 8px);
   align-items: center;
+  justify-content: flex-start;
   position: relative;
   width: 100%;
+  overflow: hidden;
   transition: all 0.2s ease-in-out;
 }
 
@@ -49,8 +53,7 @@
 
 /* Tamaño por defecto */
 .search.size-default {
-  height: 44px;
-  padding: 0 var(--sds-size-space-300, 12px);
+  min-height: 44px;
 }
 
 /* Tamaño pequeño */
@@ -64,28 +67,28 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-right: var(--sds-size-space-200, 8px);
+  flex-shrink: 0;
 }
 
 /* Input de texto dentro del componente de búsqueda */
 .search .value {
   color: var(--var-sds-color-text-default-default, #1e1e1e);
   text-align: left;
-  font-family: var(--sds-typography-family-sans, "Inter", sans-serif);
-  font-size: var(--sds-typography-scale-03, 16px);
-  line-height: 140%;
-  font-weight: var(--sds-typography-weight-regular, 400);
+  font-family: var(--body-base-font-family, "Inter-Regular", sans-serif);
+  font-size: var(--body-base-font-size, 16px);
+  line-height: var(--body-base-line-height, 140%);
+  font-weight: var(--body-base-font-weight, 400);
   flex: 1;
   border: none;
   outline: none;
   background: transparent;
   padding: 0;
-  height: 100%;
+  position: relative;
 }
 
 /* Estilos para el placeholder */
 .search .value::placeholder {
-  color: var(--var-sds-color-text-default-secondary, #767676);
+  color: var(--var-sds-color-text-default-tertiary, #b3b3b3);
 }
 
 /* Container para el icono de limpiar */
@@ -100,9 +103,12 @@
 /* Iconos dentro del componente de búsqueda */
 .search .heroicons-micro-x-mark,
 .search .heroicons-micro-magnifying-glass {
+  border-radius: 1.5px;
   flex-shrink: 0;
   width: 16px;
   height: 16px;
+  position: relative;
+  overflow: visible;
   color: var(--var-sds-color-text-default-secondary, #767676);
 }
 
@@ -146,7 +152,7 @@
 
 /* Estilos para cuando hay/no hay texto */
 .search.value-type-placeholder .value {
-  color: var(--var-sds-color-text-default-secondary, #767676);
+  color: var(--var-sds-color-text-default-tertiary, #b3b3b3);
 }
 
 .search.value-type-text .value {
