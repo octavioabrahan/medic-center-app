@@ -81,7 +81,6 @@
 }
 
 .admin-screen-checkbox:checked::after {
-  content: '✓';
   position: absolute;
   top: 0px;
   left: 3px;
