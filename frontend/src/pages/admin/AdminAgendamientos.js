@@ -24,8 +24,8 @@ const CitasAgendadas = () => {
   const hasta = searchParams.get("hasta") || null;
   
   const [dateRange, setDateRange] = useState({
-    from: desde ? new Date(desde) : startOfWeek(new Date()),
-    to: hasta ? new Date(hasta) : endOfWeek(new Date())
+    from: desde ? new Date(desde) : startOfWeek(new Date(), { weekStartsOn: 1 }),
+    to: hasta ? new Date(hasta) : endOfWeek(new Date(), { weekStartsOn: 1 })
   });
   const [startDate, setStartDate] = useState(dateRange?.from);
   const [endDate, setEndDate] = useState(dateRange?.to);
@@ -268,13 +268,16 @@ const CitasAgendadas = () => {
               </span>
             </div>
             {showDatePicker && (
-              <div className="calendar-popup">
-                <Calendar
-                  initialDateRange={dateRange}
-                  onDateRangeChange={handleDateRangeChange}
-                  onClose={() => setShowDatePicker(false)}
-                  showPresets={true}
-                />
+              // Fondo semitransparente y popup centrado
+              <div className="calendar-modal-overlay" onClick={() => setShowDatePicker(false)}>
+                <div className="calendar-popup-centered" onClick={e => e.stopPropagation()}>
+                  <Calendar
+                    initialDateRange={dateRange}
+                    onDateRangeChange={handleDateRangeChange}
+                    onClose={() => setShowDatePicker(false)}
+                    showPresets={true}
+                  />
+                </div>
               </div>
             )}
           </div>
