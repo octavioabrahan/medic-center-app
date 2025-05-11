@@ -32,6 +32,12 @@
   flex: 1;
 }
 
+/* Uniform height for filter controls */
+.admin-filter-bar .filter-section input,
+.admin-filter-bar .filter-section select {
+  height: 40px;
+}
+
 /* Componente de búsqueda dentro de la barra */
 .admin-filter-bar .admin-search {
   flex: 1;
