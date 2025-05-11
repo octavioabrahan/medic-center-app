@@ -211,74 +211,75 @@ const CitasAgendadas = () => {
     <div className="admin-page-container">
       <h1 className="admin-page-title">Citas agendadas</h1>
       
-      <div className="appointments-filter-panel">
-        <SearchField 
-          placeholder="Buscar por nombre o cédula"
-          value={searchTerm}
-          onChange={(value) => setSearchTerm(value)}
-          onSearch={(value) => {
-            // Aquí puede ir la lógica de búsqueda si necesitas 
-            // hacer algo específico al presionar enter o el botón
-            console.log("Buscando:", value);
-          }}
-          withButton={false}
-        />
-        
-        <div className="select-field">
-          <select 
-            name="status"
-            value={status || ""}
-            onChange={handleFiltro}
-            className="filter-select"
-          >
-            <option value="">Todos los estados</option>
-            {TODOS_LOS_ESTADOS.map((s) => (
-              <option key={s} value={s}>
-                {s.charAt(0).toUpperCase() + s.slice(1)}
-              </option>
-            ))}
-          </select>
-        </div>
-        
-        <div className="select-field">
-          <select 
-            value={filtroProfesional} 
-            onChange={(e) => setFiltroProfesional(e.target.value)}
-            className="filter-select"
-          >
-            <option value="todos">Todos los profesionales</option>
-            {profesionales.map((prof, index) => (
-              <option key={index} value={prof}>{prof}</option>
-            ))}
-          </select>
-        </div>
-        
-        <div className="select-field">
-          <div className="date-input-wrapper" onClick={toggleDatePicker}>
-            <input 
-              type="text" 
-              value={formatDateRange()} 
-              readOnly 
-              className="date-input"
+      <div className="admin-filter-bar">
+        <div className="filter-section">
+          <div className="admin-search">
+            <SearchField 
+              placeholder="Buscar por nombre o cédula"
+              value={searchTerm}
+              onChange={(value) => setSearchTerm(value)}
+              onSearch={(value) => {
+                // Aquí puede ir la lógica de búsqueda si necesitas 
+                // hacer algo específico al presionar enter o el botón
+                console.log("Buscando:", value);
+              }}
+              withButton={false}
             />
-            <span className="date-icon">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M8 2V5M16 2V5M3.5 9.09H20.5M21 8.5V17C21 20 19.5 22 16 22H8C4.5 22 3 20 3 17V8.5C3 5.5 4.5 3.5 8 3.5H16C19.5 3.5 21 5.5 21 8.5Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-              </svg>
-            </span>
           </div>
-          {showDatePicker && (
-            <div className="calendar-popup">
-              <Calendar
-                initialDateRange={dateRange}
-                onDateRangeChange={handleDateRangeChange}
-                onClose={() => setShowDatePicker(false)}
-                showPresets={true}
+          <div className="admin-dropdown">
+            <select 
+              name="status"
+              value={status || ""}
+              onChange={handleFiltro}
+              className="filter-select"
+            >
+              <option value="">Todos los estados</option>
+              {TODOS_LOS_ESTADOS.map((s) => (
+                <option key={s} value={s}>
+                  {s.charAt(0).toUpperCase() + s.slice(1)}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div className="admin-dropdown">
+            <select 
+              value={filtroProfesional} 
+              onChange={(e) => setFiltroProfesional(e.target.value)}
+              className="filter-select"
+            >
+              <option value="todos">Todos los profesionales</option>
+              {profesionales.map((prof, index) => (
+                <option key={index} value={prof}>{prof}</option>
+              ))}
+            </select>
+          </div>
+          <div className="admin-dropdown">
+            <div className="date-input-wrapper" onClick={toggleDatePicker}>
+              <input 
+                type="text" 
+                value={formatDateRange()} 
+                readOnly 
+                className="date-input"
               />
+              <span className="date-icon">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M8 2V5M16 2V5M3.5 9.09H20.5M21 8.5V17C21 20 19.5 22 16 22H8C4.5 22 3 20 3 17V8.5C3 5.5 4.5 3.5 8 3.5H16C19.5 3.5 21 5.5 21 8.5Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              </span>
             </div>
-          )}
-        </div>
-      </div>
+            {showDatePicker && (
+              <div className="calendar-popup">
+                <Calendar
+                  initialDateRange={dateRange}
+                  onDateRangeChange={handleDateRangeChange}
+                  onClose={() => setShowDatePicker(false)}
+                  showPresets={true}
+                />
+              </div>
+            )}
+          </div>
+        </div>  {/* .filter-section */}
+      </div>  {/* .admin-filter-bar */}
       
       {loading ? (
         <div className="loading-container">
