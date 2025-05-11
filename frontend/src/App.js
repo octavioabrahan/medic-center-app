@@ -23,6 +23,7 @@ import AdminLayout from './components/admin/AdminLayout';
 import AdminExamenes from './pages/admin/AdminExamenes';
 import AdministracionPage from './pages/admin/AdministracionPage'; // Nueva página de administración
 import AdminAgendamientos from './pages/admin/AdminAgendamientos'; // Importando el componente AdminAgendamientos
+import AdminHorarios from './pages/admin/AdminHorarios'; // Importando el nuevo componente AdminHorarios
 // Importar componentes de autenticación
 import LoginPage from './pages/auth/LoginPage';
 import ProtectedRoute from './components/auth/ProtectedRoute';
@@ -53,6 +54,7 @@ function App() {
           <Route path="profesionales" element={<ProfesionalesPage />} />
           <Route path="profesionales/:id/editar-servicios" element={<ProfesionalAsignarServicios />} />
           <Route path="horarios" element={<HorariosPage />} />
+          <Route path="horarios2" element={<AdminHorarios />} />
           <Route path="especialidades" element={<EspecialidadesPage />} />
           <Route path="tipo-atencion" element={<TipoAtencionPage />} />
           <Route path="roles" element={<RolesPage />} />

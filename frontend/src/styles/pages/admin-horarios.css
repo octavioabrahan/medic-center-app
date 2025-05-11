@@ -1,0 +1,271 @@
+/* 
+ * Estilos específicos para la página de Administración de Horarios
+ * Basado en el diseño de Figma proporcionado en horarios-full.json
+ */
+
+/* Contenedor principal para el componente AdminHorarios */
+.admin-page {
+  padding: var(--sds-size-space-500, 24px);
+}
+
+/* Tabs de navegación */
+.tabs {
+  display: flex;
+  margin-bottom: var(--sds-size-space-500, 24px);
+  border-bottom: 1px solid var(--var-sds-color-border-default-subtle, #E5E7EB);
+}
+
+.tab {
+  padding: var(--sds-size-space-300, 12px) var(--sds-size-space-400, 16px);
+  font-family: var(--sds-typography-family-sans, "Inter", sans-serif);
+  font-size: var(--sds-typography-scale-03, 16px);
+  font-weight: var(--sds-typography-weight-medium, 500);
+  color: var(--var-sds-color-text-default-subtle, #6B7280);
+  cursor: pointer;
+  position: relative;
+  transition: color 0.3s ease;
+}
+
+.tab.active {
+  color: var(--var-sds-color-text-brand-default, #20377A);
+  border-bottom: 2px solid var(--var-sds-color-border-brand-default, #20377A);
+}
+
+/* Barra de administración con búsqueda y botón de agregar */
+.admin-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--sds-size-space-500, 24px);
+}
+
+/* Contenedor de búsqueda */
+.search-container {
+  position: relative;
+  width: 300px;
+}
+
+.search-container input {
+  padding-left: 36px;
+}
+
+.search-icon {
+  position: absolute;
+  top: 50%;
+  left: 12px;
+  transform: translateY(-50%);
+  color: var(--var-sds-color-text-default-subtle, #6B7280);
+}
+
+/* Contenido principal */
+.main-content {
+  padding: var(--sds-size-space-400, 16px) 0;
+}
+
+/* Estados */
+.loading, .error-message, .empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 200px;
+  text-align: center;
+  padding: var(--sds-size-space-600, 32px);
+  background-color: var(--var-sds-color-background-default-subtle, #F9FAFB);
+  border-radius: var(--sds-size-radius-200, 8px);
+}
+
+.empty-state h3 {
+  font-size: var(--sds-typography-scale-04, 18px);
+  font-weight: var(--sds-typography-weight-semibold, 600);
+  margin-bottom: var(--sds-size-space-300, 12px);
+  color: var(--var-sds-color-text-default-default, #1E1E1E);
+}
+
+.empty-state p {
+  font-size: var(--sds-typography-scale-02, 14px);
+  color: var(--var-sds-color-text-default-subtle, #6B7280);
+}
+
+/* Modal */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  width: 90%;
+  max-width: 600px;
+  background-color: var(--var-sds-color-background-default-default, #FFFFFF);
+  border-radius: var(--sds-size-radius-300, 12px);
+  padding: var(--sds-size-space-500, 24px);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.modal-content h2 {
+  font-size: var(--sds-typography-scale-05, 20px);
+  font-weight: var(--sds-typography-weight-semibold, 600);
+  margin-bottom: var(--sds-size-space-400, 16px);
+  color: var(--var-sds-color-text-default-default, #1E1E1E);
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--sds-size-space-300, 12px);
+  margin-top: var(--sds-size-space-500, 24px);
+}
+
+/* Listado de profesionales */
+.profesionales-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sds-size-space-400, 16px);
+}
+
+/* Tarjeta de profesional */
+.profesional-card {
+  border: 1px solid var(--var-sds-color-border-default-default, #D9D9D9);
+  border-radius: var(--sds-size-radius-200, 8px);
+  padding: var(--sds-size-space-400, 16px);
+  background-color: var(--var-sds-color-background-default-default, #FFFFFF);
+}
+
+.profesional-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--sds-size-space-300, 12px);
+}
+
+.profesional-name {
+  font-size: var(--sds-typography-scale-04, 18px);
+  font-weight: var(--sds-typography-weight-semibold, 600);
+  color: var(--var-sds-color-text-default-default, #1E1E1E);
+}
+
+.horario-info {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: var(--sds-size-space-300, 12px);
+  margin-top: var(--sds-size-space-300, 12px);
+}
+
+/* Profesional info */
+.profesional-especialidad {
+  font-size: var(--sds-typography-scale-02, 14px);
+  color: var(--var-sds-color-text-default-subtle, #6B7280);
+  margin-bottom: var(--sds-size-space-300, 12px);
+}
+
+.profesional-especialidad .label {
+  font-weight: var(--sds-typography-weight-medium, 500);
+}
+
+/* Horario card styles */
+.horario-card {
+  border: 1px solid var(--var-sds-color-border-default-subtle, #E5E7EB);
+  border-radius: var(--sds-size-radius-200, 8px);
+  padding: var(--sds-size-space-300, 12px);
+  background-color: var(--var-sds-color-background-default-subtle, #F9FAFB);
+}
+
+.horario-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: var(--sds-size-space-200, 8px);
+}
+
+.horario-header .dia {
+  font-weight: var(--sds-typography-weight-medium, 500);
+  color: var(--var-sds-color-text-default-default, #1E1E1E);
+  text-transform: capitalize;
+}
+
+.horario-header .tipo-atencion {
+  font-size: var(--sds-typography-scale-01, 12px);
+  padding: 2px 8px;
+  background-color: var(--var-sds-color-background-info-subtle, #E0F2FE);
+  color: var(--var-sds-color-text-info-default, #0284C7);
+  border-radius: 100px;
+}
+
+.horario-tiempo {
+  font-size: var(--sds-typography-scale-02, 14px);
+  color: var(--var-sds-color-text-default-subtle, #6B7280);
+}
+
+.horario-validez {
+  font-size: var(--sds-typography-scale-01, 12px);
+  color: var(--var-sds-color-text-default-subtle, #6B7280);
+  margin-top: var(--sds-size-space-100, 4px);
+}
+
+.no-horarios {
+  font-style: italic;
+  color: var(--var-sds-color-text-default-subtle, #6B7280);
+  font-size: var(--sds-typography-scale-02, 14px);
+}
+
+/* No results message */
+.no-results {
+  padding: var(--sds-size-space-400, 16px);
+  background-color: var(--var-sds-color-background-default-subtle, #F9FAFB);
+  border-radius: var(--sds-size-radius-200, 8px);
+  text-align: center;
+  font-size: var(--sds-typography-scale-02, 14px);
+  color: var(--var-sds-color-text-default-subtle, #6B7280);
+}
+
+/* Modal header with close button */
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--sds-size-space-400, 16px);
+}
+
+.close-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--var-sds-color-text-default-subtle, #6B7280);
+  padding: 4px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s;
+}
+
+.close-button:hover {
+  background-color: var(--var-sds-color-background-default-subtle, #F9FAFB);
+}
+
+/* Button small variant for card actions */
+.button-subtle-sm {
+  padding: var(--sds-size-space-200, 8px);
+  font-size: var(--sds-typography-scale-02, 14px);
+  min-height: 32px;
+}
+
+/* Responsivo */
+@media (max-width: 768px) {
+  .admin-actions {
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--sds-size-space-300, 12px);
+  }
+  
+  .search-container {
+    width: 100%;
+  }
+}

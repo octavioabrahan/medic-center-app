@@ -49,6 +49,7 @@
 }
 
 /* Pages */
+@import './pages/admin-horarios.css';
 @import './pages/_admin.css';
 /* @import './pages/_dashboard.css'; */
 
