@@ -50,6 +50,7 @@
 
 /* Pages */
 @import './pages/admin-horarios.css';
+@import './pages/admin-horarios-new.css';
 @import './pages/_admin.css';
 /* @import './pages/_dashboard.css'; */
 
