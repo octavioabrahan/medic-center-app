@@ -40,9 +40,9 @@
 
 /* Componente de búsqueda dentro de la barra */
 .admin-filter-bar .admin-search {
-  flex: 1;
-  min-width: 200px;
-  max-width: 400px;
+  /* Ancho fijo para evitar que el search ocupe demasiado espacio */
+  flex: 0 0 250px;
+  max-width: 250px;
 }
 
 /* Dropdown dentro de la barra */
