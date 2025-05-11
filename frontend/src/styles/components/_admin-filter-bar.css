@@ -144,3 +144,23 @@
     min-width: 120px;
   }
 }
+
+/* Ajuste para resoluciones de 1366px de ancho */
+@media (max-width: 1366px) {
+  .admin-filter-bar .filter-section {
+    gap: 8px;
+  }
+  .admin-filter-bar .admin-search {
+    flex: 0 1 140px;
+    max-width: 140px;
+    min-width: 80px;
+  }
+  .admin-filter-bar .admin-dropdown {
+    min-width: 90px;
+    max-width: 120px;
+  }
+  .admin-filter-bar .filter-section > * {
+    flex-shrink: 1;
+    min-width: 0;
+  }
+}
