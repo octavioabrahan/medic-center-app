@@ -598,9 +598,6 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  border: 1px solid var(--var-sds-color-border-default-default, #d9d9d9);
-  border-radius: var(--var-sds-size-radius-200, 8px);
-  background-color: var(--var-sds-color-background-default-default, #ffffff);
   cursor: pointer;
   padding: 0;
   position: relative;
