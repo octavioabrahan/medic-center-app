@@ -397,16 +397,34 @@
 /* Panel de filtros - basado en el diseño de Figma */
 .appointments-filter-panel {
   display: flex;
-  flex-direction: row;
-  gap: var(--var-sds-size-space-600, 24px);
-  align-items: flex-start; /* Changed from center to flex-start for consistent alignment */
-  justify-content: flex-start;
-  position: relative;
-  padding: 16px;
-  background-color: var(--var-sds-color-background-subtle-default, #f8fafc);
-  border-radius: var(--var-sds-size-radius-300, 12px);
-  margin-bottom: 20px;
   flex-wrap: wrap;
+  gap: 20px;
+  align-items: flex-end;
+  justify-content: flex-start;
+  background: #f8fafc;
+  border-radius: 12px;
+  padding: 20px 16px 12px 16px;
+  margin-bottom: 24px;
+}
+
+.appointments-filter-panel > * {
+  min-width: 220px;
+  flex: 1 1 220px;
+  max-width: 350px;
+}
+
+@media (max-width: 900px) {
+  .appointments-filter-panel {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 16px;
+    padding: 16px 8px 8px 8px;
+  }
+  .appointments-filter-panel > * {
+    max-width: 100%;
+    min-width: 0;
+    flex: 1 1 100%;
+  }
 }
 
 /* Estilos para los componentes de búsqueda y selección según Figma */
