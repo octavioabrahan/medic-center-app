@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './CotizacionesAdmin.css';
+import '../admin/AdminCommon.css'
 import AdminFilterBar from '../admin/AdminFilterBar'; // Importamos el componente AdminFilterBar
 
 function CotizacionesAdmin() {
