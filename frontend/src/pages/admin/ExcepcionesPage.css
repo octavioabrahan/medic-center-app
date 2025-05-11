@@ -1,0 +1,99 @@
+/* Estilos específicos para ExcepcionesPage */
+
+/* Contenedor para los filtros y acciones en modo pestaña */
+.excepciones-filter-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+  padding: 0;
+}
+
+/* Sección de filtros y búsqueda */
+.filter-sort-actions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+/* Contenedor de búsqueda */
+.search-container {
+  position: relative;
+}
+
+.search-input {
+  padding: 8px 12px 8px 32px;
+  border: 1px solid #e2e8f0;
+  border-radius: 4px;
+  font-size: 14px;
+  min-width: 200px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%23718096' viewBox='0 0 16 16'%3E%3Cpath d='M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: 8px center;
+}
+
+/* Filtro A-Z / Z-A */
+.az-filter {
+  display: flex;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.az-button,
+.za-button {
+  border: none;
+  background-color: #f1f5f9;
+  padding: 8px 12px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  margin: 0 4px;
+  border-radius: 4px;
+}
+
+.az-button:hover,
+.za-button:hover,
+.az-button.active,
+.za-button.active {
+  background-color: #e2e8f0;
+}
+
+/* Contenedor de acciones/botones */
+.actions-container {
+  display: flex;
+  gap: 8px;
+}
+
+/* Scroll interno para la tabla */
+.appointments-table-container.with-scroll {
+  max-height: calc(100vh - 250px);
+  overflow-y: auto;
+  border: 1px solid #e2e8f0;
+  border-radius: 4px;
+}
+
+/* Asegurar que el encabezado permanezca fijo */
+.appointments-table thead {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background-color: #f8fafc;
+}
+
+/* Asegurar que los bordes se muestren correctamente */
+.appointments-table thead::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 1px;
+  background-color: #e2e8f0;
+}
+
+/* Para 1366x768 */
+@media (max-width: 1366px) {
+  .appointments-table-container.with-scroll {
+    max-height: 420px; /* Ajustar para pantallas más pequeñas */
+  }
+}

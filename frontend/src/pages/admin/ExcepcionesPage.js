@@ -4,10 +4,11 @@ import apiClient, { fetchWithCache } from "../../api"; // Importando nuestro cli
 // import "./HorariosPage.css";
 // import "../../components/admin/AdminCommon.css";
 import AdminFilterBar from "../../components/admin/AdminFilterBar"; // Importamos el nuevo componente
+import "./ExcepcionesPage.css"; // Importar estilos específicos para ExcepcionesPage
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
 
-function ExcepcionesPage() {
+function ExcepcionesPage({ isTab }) {
   // Estados para datos
   const [profesionales, setProfesionales] = useState([]);
   const [excepciones, setExcepciones] = useState([]);
@@ -460,7 +461,7 @@ function ExcepcionesPage() {
     if (filteredExcepciones.length === 0) return <div className="no-results">No se encontraron excepciones configuradas</div>;
 
     return (
-      <div className="appointments-table-container">
+      <div className="appointments-table-container with-scroll">
         <table className="appointments-table with-horizontal-lines">
           <thead>
             <tr>
@@ -499,45 +500,104 @@ function ExcepcionesPage() {
   // Estructura principal del componente
   return (
     <div className="admin-page-container">
-      {/* Eliminamos el h1 redundante para evitar duplicidad con el título principal */}
+      {/* Mostrar AdminFilterBar solo cuando no está en el modo de pestaña */}
+      {!isTab && (
+        <AdminFilterBar
+          isExcepciones={true} // Se pasa la prop para ocultar "Mostrar Archivados"
+          searchTerm={searchTerm}
+          setSearchTerm={setSearchTerm}
+          searchPlaceholder="Buscar por nombre..."
+          showArchived={showArchived}
+          setShowArchived={setShowArchived}
+          sortOrder={sortOrder}
+          setSortOrder={setSortOrder}
+        >
+          <div className="admin-actions">
+            <button
+              className="button variant-neutral"
+              onClick={() => {
+                resetCancelacion();
+                setShowCancelarModal(true);
+              }}
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24">
+                <path fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+              <span className="button-text" style={{ color: '#1e1e1e' }}>Cancelar día</span>
+            </button>
+            <button
+              className="button variant-primary"
+              onClick={() => {
+                resetNuevaExcepcion();
+                setShowAgregarModal(true);
+              }}
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24">
+                <path fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" d="M12 4v16m8-8H4" />
+              </svg>
+              <span className="button-text">Agregar día</span>
+            </button>
+          </div>
+        </AdminFilterBar>
+      )}
       
-      <AdminFilterBar
-        isExcepciones={true} // Se pasa la prop para ocultar "Mostrar Archivados"
-        searchTerm={searchTerm}
-        setSearchTerm={setSearchTerm}
-        searchPlaceholder="Buscar por nombre..."
-        showArchived={showArchived}
-        setShowArchived={setShowArchived}
-        sortOrder={sortOrder}
-        setSortOrder={setSortOrder}
-      >
-        <div className="admin-actions">
-          <button
-            className="button variant-neutral"
-            onClick={() => {
-              resetCancelacion();
-              setShowCancelarModal(true);
-            }}
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24">
-              <path fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" d="M6 18L18 6M6 6l12 12" />
-            </svg>
-            <span className="button-text" style={{ color: '#1e1e1e' }}>Cancelar día</span>
-          </button>
-          <button
-            className="button variant-primary"
-            onClick={() => {
-              resetNuevaExcepcion();
-              setShowAgregarModal(true);
-            }}
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24">
-              <path fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" d="M12 4v16m8-8H4" />
-            </svg>
-            <span className="button-text">Agregar día</span>
-          </button>
+      {/* Si está en modo pestaña, mostrar los botones de filtro y acciones directamente */}
+      {isTab && (
+        <div className="excepciones-filter-container">
+          <div className="filter-sort-actions">
+            <div className="search-container">
+              <input
+                type="text"
+                placeholder="Buscar por nombre..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="search-input"
+              />
+            </div>
+            <div className="az-filter">
+              <button 
+                className={`az-button ${sortOrder === 'az' ? 'active' : ''}`}
+                onClick={() => setSortOrder('az')}
+              >
+                A → Z
+              </button>
+              <button 
+                className={`za-button ${sortOrder === 'za' ? 'active' : ''}`}
+                onClick={() => setSortOrder('za')}
+              >
+                Z → A
+              </button>
+            </div>
+          </div>
+          
+          <div className="actions-container">
+            <button
+              className="button variant-neutral"
+              onClick={() => {
+                resetCancelacion();
+                setShowCancelarModal(true);
+              }}
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24">
+                <path fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+              <span className="button-text" style={{ color: '#1e1e1e' }}>Cancelar día</span>
+            </button>
+            <button
+              className="button variant-primary"
+              onClick={() => {
+                resetNuevaExcepcion();
+                setShowAgregarModal(true);
+              }}
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24">
+                <path fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" d="M12 4v16m8-8H4" />
+              </svg>
+              <span className="button-text">Agregar día</span>
+            </button>
+          </div>
         </div>
-      </AdminFilterBar>
+      )}
       
       {renderExcepcionesTable()}
       
