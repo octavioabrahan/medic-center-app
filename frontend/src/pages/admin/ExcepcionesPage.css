@@ -9,6 +9,67 @@
   padding: 0;
 }
 
+/* Barra de filtros personalizada para excepciones en modo tab */
+.excepciones-filter-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+  padding: 10px 16px;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  background-color: #f8fafc;
+}
+
+.excepciones-filter-bar .filter-section {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.excepciones-filter-bar .search-container {
+  width: 290px;
+}
+
+.excepciones-filter-bar .search-input {
+  padding: 8px 12px;
+  border-radius: 6px;
+  border: 1px solid #cbd5e0;
+  font-size: 14px;
+  width: 100%;
+}
+
+.excepciones-filter-bar .az-filter,
+.admin-filter-bar .az-filter {
+  display: flex;
+  border: 1px solid #cbd5e0;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.excepciones-filter-bar .az-button,
+.excepciones-filter-bar .za-button,
+.admin-filter-bar .az-button,
+.admin-filter-bar .za-button {
+  padding: 6px 12px;
+  background-color: white;
+  border: none;
+  cursor: pointer;
+  font-size: 13px;
+}
+
+.excepciones-filter-bar .az-button.active,
+.excepciones-filter-bar .za-button.active,
+.admin-filter-bar .az-button.active,
+.admin-filter-bar .za-button.active {
+  background-color: #e9ecef;
+}
+
+.excepciones-filter-bar .actions-container {
+  display: flex;
+  gap: 8px;
+}
+
 /* Scroll interno para la tabla */
 .appointments-table-container.with-scroll {
   max-height: calc(100vh - 250px);

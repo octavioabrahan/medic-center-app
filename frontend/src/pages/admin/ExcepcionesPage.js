@@ -500,7 +500,7 @@ function ExcepcionesPage({ isTab }) {
   // Estructura principal del componente
   return (
     <div className="admin-page-container">
-      {/* Mostrar AdminFilterBar solo cuando no está en el modo de pestaña */}
+      {/* Mostrar AdminFilterBar completo cuando no está en el modo de pestaña */}
       {!isTab && (
         <AdminFilterBar
           isExcepciones={true} // Se pasa la prop para ocultar "Mostrar Archivados"
@@ -541,9 +541,9 @@ function ExcepcionesPage({ isTab }) {
         </AdminFilterBar>
       )}
       
-      {/* Cuando está en modo pestaña, mostrar solo los botones de acción */}
+      {/* En modo pestaña, mostrar una barra de filtros personalizada */}
       {isTab && (
-        <div className="excepciones-actions-container">
+        <div className="actions-container" style={{ display: 'flex', justifyContent: 'flex-end', gap: '8px', marginBottom: '16px' }}>
           <button
             className="button variant-neutral"
             onClick={() => {

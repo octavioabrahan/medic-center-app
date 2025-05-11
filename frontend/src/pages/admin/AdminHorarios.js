@@ -169,7 +169,7 @@ function AdminHorarios() {
     }
 
     return (
-      <div className="appointments-table-container">
+      <div className="appointments-table-container with-scroll">
         <table className="appointments-table with-horizontal-lines">
           <thead>
             <tr>
@@ -233,19 +233,34 @@ function AdminHorarios() {
         </div>
       </div>
       
-      {/* Barra de búsqueda y botón de agregar - solo mostrar cuando estamos en la pestaña de profesionales */}
-      {activeTab === "profesionales" && (
-        <div className="admin-filter-bar">
-          <div className="filter-section">
-            <div className="admin-search">
-              <SearchField
-                placeholder="Buscar por nombre"
-                value={searchTerm}
-                onChange={handleSearchChange}
-              />
-            </div>
+      {/* Barra de filtros común para ambas pestañas */}
+      <div className="admin-filter-bar">
+        <div className="filter-section">
+          <div className="admin-search">
+            <SearchField
+              placeholder="Buscar por nombre"
+              value={searchTerm}
+              onChange={handleSearchChange}
+            />
           </div>
-          <div className="action-section">
+          {/* Ordenamiento A-Z/Z-A */}
+          <div className="az-filter">
+            <button 
+              className={`az-button ${sortOrder === 'az' ? 'active' : ''}`}
+              onClick={() => setSortOrder('az')}
+            >
+              A → Z
+            </button>
+            <button 
+              className={`za-button ${sortOrder === 'za' ? 'active' : ''}`}
+              onClick={() => setSortOrder('za')}
+            >
+              Z → A
+            </button>
+          </div>
+        </div>
+        <div className="action-section">
+          {activeTab === "profesionales" && (
             <button 
               className="button variant-primary"
               onClick={() => handleAddHorario()}
@@ -255,9 +270,9 @@ function AdminHorarios() {
               </svg>
               <span className="button-text">Agregar horario</span>
             </button>
-          </div>
+          )}
         </div>
-      )}
+      </div>
 
       {/* Contenido principal */}
       <div className="main-content" style={{ padding: 0, marginTop: 0 }}>
