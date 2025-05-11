@@ -142,20 +142,6 @@ function AdminHorarios() {
     setCurrentHorario(horario);
     setShowAddHorarioModal(true);
   };
-  
-  // Función para eliminar un horario
-  const handleDeleteHorario = async (horarioId) => {
-    if (window.confirm('¿Estás seguro de que deseas eliminar este horario?')) {
-      try {
-        await axios.delete(`/api/horarios/${horarioId}`);
-        fetchHorarios();
-        toast.success("Horario eliminado correctamente");
-      } catch (err) {
-        console.error('Error eliminando horario:', err);
-        toast.error('Hubo un error al eliminar el horario');
-      }
-    }
-  };
 
   // Función para manejar el guardado de horarios
   const handleHorarioSuccess = () => {
@@ -192,19 +178,17 @@ function AdminHorarios() {
               <th>Días</th>
               <th>Hora de inicio</th>
               <th>Hora de término</th>
-              <th>Consultorio</th>
               <th>Acciones</th>
             </tr>
           </thead>
           <tbody>
             {filteredHorarios.map((horario) => (
-              <tr key={horario.horario_id} className="appointment-row">
+              <tr key={horario.horario_id} className="appointment-row with-horizontal-divider">
                 <td>{horario.profesional_nombre} {horario.profesional_apellido}</td>
                 <td>{horario.tipo_atencion}</td>
                 <td>{formatHorarioSemanal(horario)}</td>
                 <td>{horario.hora_inicio?.slice(0, 5) || "-"}</td>
                 <td>{horario.hora_termino?.slice(0, 5) || "-"}</td>
-                <td>{horario.consultorio || "-"}</td>
                 <td className="actions-cell">
                   <button 
                     className="action-button edit-button" 
@@ -216,20 +200,6 @@ function AdminHorarios() {
                         fillRule="evenodd"
                         clipRule="evenodd"
                         d="M15.586 3.586a2 2 0 012.828 0l2 2a2 2 0 010 2.828l-11 11A2 2 0 018 20H4a1 1 0 01-1-1v-4a2 2 0 01.586-1.414l11-11zM19 8.414L20.414 7 17 3.586 15.586 5 19 8.414z"
-                        fill="currentColor"
-                      />
-                    </svg>
-                  </button>
-                  <button 
-                    className="action-button delete-button" 
-                    title="Eliminar horario"
-                    onClick={() => handleDeleteHorario(horario.horario_id)}
-                  >
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <path
-                        fillRule="evenodd"
-                        clipRule="evenodd"
-                        d="M9 5a2 2 0 012-2h2a2 2 0 012 2v1H9V5zm-5 3a1 1 0 011-1h14a1 1 0 110 2h-1v11a3 3 0 01-3 3H9a3 3 0 01-3-3V9H5a1 1 0 01-1-1zm3 1v11a1 1 0 001 1h6a1 1 0 001-1V9H7z"
                         fill="currentColor"
                       />
                     </svg>

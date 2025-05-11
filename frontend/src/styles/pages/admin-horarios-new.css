@@ -102,6 +102,24 @@
   background-color: #F7FAFC;
 }
 
+/* Añadir líneas horizontales entre filas */
+.with-horizontal-divider {
+  border-bottom: 1px solid #E2E8F0;
+}
+
+.with-horizontal-divider:last-child {
+  border-bottom: none;
+}
+
+/* Agregar estilo a la tabla con líneas horizontales */
+.appointments-table.with-horizontal-lines tbody tr {
+  border-bottom: 1px solid #E2E8F0;
+}
+
+.appointments-table.with-horizontal-lines tbody tr:last-child {
+  border-bottom: none;
+}
+
 /* Estilos para las celdas de acciones */
 .actions-cell {
   display: flex;
