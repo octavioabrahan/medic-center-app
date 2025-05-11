@@ -126,3 +126,21 @@
     margin-top: var(--sds-size-space-300, 12px);
   }
 }
+
+/* Ajustes específicos para pantallas de escritorio */
+@media (min-width: 769px) {
+  .admin-filter-bar {
+    flex-wrap: nowrap;
+    gap: 12px; /* reducir espacio entre grupos */
+  }
+  .admin-filter-bar .filter-section {
+    gap: 12px;
+  }
+  .admin-filter-bar .admin-search {
+    flex: 0 0 180px;
+    max-width: 180px;
+  }
+  .admin-filter-bar .admin-dropdown {
+    min-width: 120px;
+  }
+}
