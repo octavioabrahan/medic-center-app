@@ -1,0 +1,72 @@
+/* Estilos específicos para AdminHorarios */
+
+/* Estilo para el filtro de ordenamiento A-Z/Z-A */
+.admin-filter-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  background-color: #f8fafc;
+  margin-bottom: 16px;
+}
+
+.admin-filter-bar .filter-section {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.admin-filter-bar .filter-controls {
+  display: flex;
+  align-items: center;
+}
+
+.admin-filter-bar .az-filter {
+  display: flex;
+  gap: 8px;
+}
+
+.admin-filter-bar .az-button,
+.admin-filter-bar .za-button {
+  padding: 8px 16px;
+  background-color: white;
+  border: 1px solid #cbd5e0;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  height: 36px;
+  min-width: 70px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+.admin-filter-bar .az-button.active,
+.admin-filter-bar .za-button.active {
+  background-color: #e9ecef;
+  border-color: #adb5bd;
+}
+
+.admin-filter-bar .az-button:hover,
+.admin-filter-bar .za-button:hover {
+  background-color: #f1f3f5;
+}
+
+/* Estilo para la tabla con scroll interno */
+.appointments-table-container.with-scroll {
+  max-height: calc(100vh - 250px);
+  overflow-y: auto;
+  border: 1px solid #e2e8f0;
+  border-radius: 4px;
+}
+
+/* Para 1366x768 */
+@media (max-width: 1366px) {
+  .appointments-table-container.with-scroll {
+    max-height: 420px; /* Ajustado para pantallas más pequeñas */
+  }
+}

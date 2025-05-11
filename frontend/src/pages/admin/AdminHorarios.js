@@ -4,6 +4,7 @@ import { toast } from "react-toastify";
 import HorarioForm from "../../components/admin/HorarioForm";
 import ExcepcionesPage from "./ExcepcionesPage";
 import SearchField from "../../components/common/SearchField";
+import "./AdminHorarios.css"; // Importar estilos específicos
 
 /**
  * Componente AdminHorarios
@@ -244,19 +245,21 @@ function AdminHorarios() {
             />
           </div>
           {/* Ordenamiento A-Z/Z-A */}
-          <div className="az-filter">
-            <button 
-              className={`az-button ${sortOrder === 'az' ? 'active' : ''}`}
-              onClick={() => setSortOrder('az')}
-            >
-              A → Z
-            </button>
-            <button 
-              className={`za-button ${sortOrder === 'za' ? 'active' : ''}`}
-              onClick={() => setSortOrder('za')}
-            >
-              Z → A
-            </button>
+          <div className="filter-controls">
+            <div className="az-filter">
+              <button 
+                className={`az-button ${sortOrder === 'az' ? 'active' : ''}`}
+                onClick={() => setSortOrder('az')}
+              >
+                A → Z
+              </button>
+              <button 
+                className={`za-button ${sortOrder === 'za' ? 'active' : ''}`}
+                onClick={() => setSortOrder('za')}
+              >
+                Z → A
+              </button>
+            </div>
           </div>
         </div>
         <div className="action-section">
