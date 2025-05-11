@@ -460,8 +460,8 @@ function ExcepcionesPage() {
     if (filteredExcepciones.length === 0) return <div className="no-results">No se encontraron excepciones configuradas</div>;
 
     return (
-      <div className="admin-table-container">
-        <table className="admin-table">
+      <div className="appointments-table-container">
+        <table className="appointments-table with-horizontal-lines">
           <thead>
             <tr>
               <th>Profesional</th>
@@ -474,7 +474,7 @@ function ExcepcionesPage() {
           </thead>
           <tbody>
             {filteredExcepciones.map((excepcion) => (
-              <tr key={excepcion.excepcion_id}>
+              <tr key={excepcion.excepcion_id} className="appointment-row with-horizontal-divider">
                 <td>{excepcion.profesional_nombre} {excepcion.profesional_apellido}</td>
                 <td>
                     <span className={`status-badge ${excepcion.estado === "cancelado" ? "status-inactive" : "status-active"}`}>
@@ -505,24 +505,36 @@ function ExcepcionesPage() {
         isExcepciones={true} // Se pasa la prop para ocultar "Mostrar Archivados"
         searchTerm={searchTerm}
         setSearchTerm={setSearchTerm}
-        searchPlaceholder="Buscar por nombre de profesional..."
+        searchPlaceholder="Buscar por nombre..."
         showArchived={showArchived}
         setShowArchived={setShowArchived}
         sortOrder={sortOrder}
         setSortOrder={setSortOrder}
       >
         <div className="admin-actions">
-          <button className="btn-secondary" onClick={() => {
-            resetCancelacion();
-            setShowCancelarModal(true);
-          }}>
-            Cancelar día
+          <button
+            className="button variant-neutral"
+            onClick={() => {
+              resetCancelacion();
+              setShowCancelarModal(true);
+            }}
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24">
+              <path fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+            <span className="button-text" style={{ color: '#1e1e1e' }}>Cancelar día</span>
           </button>
-          <button className="btn-add" onClick={() => {
-            resetNuevaExcepcion();
-            setShowAgregarModal(true);
-          }}>
-            Agregar día
+          <button
+            className="button variant-primary"
+            onClick={() => {
+              resetNuevaExcepcion();
+              setShowAgregarModal(true);
+            }}
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24">
+              <path fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" d="M12 4v16m8-8H4" />
+            </svg>
+            <span className="button-text">Agregar día</span>
           </button>
         </div>
       </AdminFilterBar>
@@ -732,19 +744,20 @@ function ExcepcionesPage() {
                   />
                 </div>
                 
-                <div className="modal-footer">
+                <div className="form-actions">
                   <button 
                     type="button" 
-                    className="btn-secondary"
+                    className="button variant-neutral"
                     onClick={() => setShowAgregarModal(false)}
+                    style={{ color: '#1e1e1e' }}
                   >
-                    Cancelar
+                    <span className="button-text">Cancelar</span>
                   </button>
                   <button 
                     type="submit" 
-                    className="btn-primary"
+                    className="button variant-primary"
                   >
-                    Guardar
+                    <span className="button-text">Guardar</span>
                   </button>
                 </div>
               </form>
@@ -895,19 +908,20 @@ function ExcepcionesPage() {
                   />
                 </div>
                 
-                <div className="modal-footer">
+                <div className="form-actions">
                   <button 
                     type="button" 
-                    className="btn-secondary"
+                    className="button variant-neutral"
                     onClick={() => setShowCancelarModal(false)}
+                    style={{ color: '#1e1e1e' }}
                   >
-                    Cancelar
+                    <span className="button-text">Cancelar</span>
                   </button>
                   <button 
                     type="submit" 
-                    className="btn-primary"
+                    className="button variant-primary"
                   >
-                    Cancelar día
+                    <span className="button-text">Cancelar día</span>
                   </button>
                 </div>
               </form>
