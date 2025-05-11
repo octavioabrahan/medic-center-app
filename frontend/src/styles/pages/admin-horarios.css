@@ -62,7 +62,7 @@
 
 /* Contenido principal */
 .main-content {
-  padding: var(--sds-size-space-400, 16px) 0;
+  padding: 0;
 }
 
 /* Tabla de horarios según diseño de Figma */

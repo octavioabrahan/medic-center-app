@@ -57,7 +57,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 12px;
+  margin-bottom: 4px;
 }
 
 .filter-section {
@@ -88,6 +88,7 @@
 /* Estilos para la tabla de horarios */
 .appointments-table-container {
   overflow-x: auto;
+  margin-top: 0;
   margin-bottom: 24px;
   border-radius: 6px;
   border: 1px solid #E2E8F0;

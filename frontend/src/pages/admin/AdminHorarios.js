@@ -233,9 +233,6 @@ function AdminHorarios() {
         </div>
       </div>
       
-      {/* Separación sin línea */}
-      <div className="tab-spacing"></div>
-      
       {/* Barra de búsqueda y botón de agregar */}
       <div className="admin-filter-bar">
         <div className="filter-section">
@@ -261,7 +258,7 @@ function AdminHorarios() {
       </div>
 
       {/* Contenido principal */}
-      <div className="main-content">
+      <div className="main-content" style={{ padding: 0, marginTop: 0 }}>
         {activeTab === "profesionales" ? (
           renderProfesionalesTable()
         ) : (
