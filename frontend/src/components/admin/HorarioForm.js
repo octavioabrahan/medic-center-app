@@ -452,7 +452,7 @@ function HorarioForm({ onSuccess, horario }) {
       <div className="form-actions">
         <button 
           type="button" 
-          className="btn-cancelar"
+          className="button variant-neutral"
           onClick={onSuccess}
           disabled={loading}
         >
@@ -460,7 +460,7 @@ function HorarioForm({ onSuccess, horario }) {
         </button>
         <button 
           type="submit" 
-          className="btn-guardar"
+          className="button variant-primary"
           disabled={loading}
         >
           {loading ? "Guardando..." : "Guardar"}

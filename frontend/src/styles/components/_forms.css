@@ -282,7 +282,8 @@ input[type="time"].form-field-input {
   box-shadow: 0 0 0 2px rgba(32, 55, 122, 0.2);
 }
 
-.form-buttons {
+.form-buttons,
+.form-actions {
   display: flex;
   justify-content: flex-end;
   gap: var(--sds-size-space-300, 12px);

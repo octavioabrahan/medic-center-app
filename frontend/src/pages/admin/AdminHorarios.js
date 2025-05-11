@@ -215,7 +215,7 @@ function AdminHorarios() {
 
   return (
     <div className="admin-page">
-      <h1>Horario de atención</h1>
+      <h1 className="admin-page-title">Horario de atención</h1>
       
       {/* Línea horizontal */}
       <hr className="separator" />

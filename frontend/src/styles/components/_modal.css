@@ -61,6 +61,16 @@
   gap: 10px;
 }
 
+/* Estilos para acciones al final de un formulario dentro de un modal */
+.modal-content .form-actions {
+  padding: 16px;
+  margin-top: 20px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  border-top: 1px solid #e2e8f0;
+}
+
 /* Estilos específicos para modales administrativos */
 .admin-modal-overlay {
   position: fixed;
