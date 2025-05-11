@@ -212,7 +212,7 @@ const CitasAgendadas = () => {
       <h1 className="admin-page-title">Citas agendadas</h1>
       
       <div className="appointments-filter-panel">
-        <div className="filter-group search-field-container">
+        <div className="search">
           <SearchField 
             placeholder="Buscar por nombre o cédula"
             value={searchTerm}
@@ -226,7 +226,7 @@ const CitasAgendadas = () => {
           />
         </div>
         
-        <div className="filter-group">
+        <div className="select-field">
           <select 
             name="status"
             value={status || ""}
@@ -242,7 +242,7 @@ const CitasAgendadas = () => {
           </select>
         </div>
         
-        <div className="filter-group date-filter">
+        <div className="select-field">
           <select 
             value={filtroProfesional} 
             onChange={(e) => setFiltroProfesional(e.target.value)}
@@ -255,13 +255,13 @@ const CitasAgendadas = () => {
           </select>
         </div>
         
-        <div className="filter-group date-filter">
+        <div className="select-field">
           <div className="date-input-wrapper" onClick={toggleDatePicker}>
             <input 
               type="text" 
               value={formatDateRange()} 
               readOnly 
-              className="filter-select date-input"
+              className="date-input"
             />
             <span className="date-icon">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">

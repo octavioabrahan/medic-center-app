@@ -394,34 +394,78 @@
   font-weight: 600;
 }
 
-/* Panel de filtros */
+/* Panel de filtros - basado en el diseño de Figma */
 .appointments-filter-panel {
   display: flex;
-  flex-wrap: wrap;
-  gap: 12px;
+  flex-direction: row;
+  gap: var(--var-sds-size-space-600, 24px);
+  align-items: center;
+  justify-content: flex-start;
+  position: relative;
   padding: 16px;
-  background-color: #f8fafc;
-  border-radius: 8px;
+  background-color: var(--var-sds-color-background-subtle-default, #f8fafc);
+  border-radius: var(--var-sds-size-radius-300, 12px);
   margin-bottom: 20px;
-  align-items: stretch;
+  flex-wrap: wrap;
 }
 
-/* Contenedor específico para el campo de búsqueda */
-.appointments-filter-panel .search-field-container {
+/* Estilos para los componentes de búsqueda y selección según Figma */
+.appointments-filter-panel .search {
+  background: var(--var-sds-color-background-default-default, #ffffff);
+  border-radius: var(--var-sds-size-radius-full, 9999px);
+  border-style: solid;
+  border-color: var(--var-sds-color-border-default-default, #d9d9d9);
+  border-width: 1px;
+  padding: var(--var-sds-size-space-300, 12px) var(--var-sds-size-space-400, 16px);
+  display: flex;
+  flex-direction: row;
+  gap: var(--var-sds-size-space-200, 8px);
+  align-items: center;
+  justify-content: flex-start;
   flex: 1;
-  min-width: 300px;
+  position: relative;
+  overflow: hidden;
+  max-width: none;
+  min-width: 280px;
 }
 
-.appointments-filter-panel .search-field-container .search-container {
+.appointments-filter-panel .search-container {
   max-width: 100%;
   width: 100%;
-  height: 38px;
+  border: none;
+  flex: 1;
+  min-width: 280px;
+}
+
+/* Remove this rule to avoid conflicts */
+
+.select-field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--var-sds-size-space-200, 8px);
+  align-items: flex-start;
+  justify-content: flex-start;
+  flex: 1;
+  position: relative;
+  min-width: 200px;
+  max-width: 300px;
 }
 
 @media (max-width: 768px) {
   .appointments-filter-panel {
     flex-direction: column;
     align-items: stretch;
+    gap: var(--var-sds-size-space-400, 16px);
+  }
+  
+  .select-field,
+  .search {
+    width: 100%;
+  }
+  
+  .date-input-wrapper,
+  .filter-select {
+    width: 100%;
   }
 }
 
@@ -457,33 +501,41 @@
   padding: 4px;
 }
 
-/* Selectores de filtro */
+/* Selectores de filtro - basado en el diseño de Figma */
 .filter-group {
-  min-width: 180px;
   display: flex;
-  align-items: center;
+  flex-direction: column;
+  gap: var(--var-sds-size-space-200, 8px);
+  align-items: flex-start;
+  justify-content: flex-start;
+  flex: 1;
+  position: relative;
 }
 
 /* Ajuste para alinear filtros */
 .date-filter {
-  flex: 1;
-  max-width: 220px;
+  flex-shrink: 0;
+  width: 240px;
 }
 
 .filter-select {
   width: 100%;
-  padding: 8px 16px;
-  border: 1px solid #e2e8f0;
-  border-radius: 6px;
-  background-color: #fff;
-  font-size: 14px;
-  color: #4a5568;
-  height: 38px;
+  padding: var(--var-sds-size-space-300, 12px) var(--var-sds-size-space-300, 12px) var(--var-sds-size-space-300, 12px) var(--var-sds-size-space-400, 16px);
+  border: 1px solid var(--var-sds-color-border-default-default, #d9d9d9);
+  border-radius: var(--var-sds-size-radius-200, 8px);
+  background-color: var(--var-sds-color-background-default-default, #ffffff);
+  font-family: var(--single-line-body-base-font-family, "Inter-Regular", sans-serif);
+  font-size: var(--single-line-body-base-font-size, 16px);
+  line-height: var(--single-line-body-base-line-height, 100%);
+  font-weight: var(--single-line-body-base-font-weight, 400);
+  color: var(--var-sds-color-text-default-default, #1e1e1e);
+  height: 40px;
+  min-width: 240px;
   box-sizing: border-box;
   appearance: none;
-  background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg width='12' height='7' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23A0AEC0' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg width='16' height='16' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23A0AEC0' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
-  background-position: right 16px center;
+  background-position: right 12px center;
   cursor: pointer;
 }
 
@@ -497,13 +549,14 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  border: 1px solid #e2e8f0;
-  border-radius: 6px;
-  background-color: #fff;
+  border: 1px solid var(--var-sds-color-border-default-default, #d9d9d9);
+  border-radius: var(--var-sds-size-radius-200, 8px);
+  background-color: var(--var-sds-color-background-default-default, #ffffff);
   cursor: pointer;
   padding: 0;
   position: relative;
-  height: 41px;
+  height: 40px;
+  box-sizing: border-box;
 }
 
 .date-input-container {
@@ -521,7 +574,15 @@
   border: none;
   background: transparent;
   cursor: pointer;
-  padding-right: 30px;
+  padding: var(--var-sds-size-space-300, 12px) var(--var-sds-size-space-300, 12px) var(--var-sds-size-space-300, 12px) var(--var-sds-size-space-400, 16px);
+  width: 100%;
+  font-family: var(--single-line-body-base-font-family, "Inter-Regular", sans-serif);
+  font-size: var(--single-line-body-base-font-size, 16px);
+  line-height: var(--single-line-body-base-line-height, 100%);
+  font-weight: var(--single-line-body-base-font-weight, 400);
+  color: var(--var-sds-color-text-default-default, #1e1e1e);
+  outline: none;
+  box-sizing: border-box;
 }
 
 .date-display {
@@ -531,22 +592,25 @@
 
 .date-icon {
   position: absolute;
-  right: 15px;
+  right: 16px;
   top: 50%;
   transform: translateY(-50%);
-  color: #a0aec0;
-  margin-left: 8px;
+  color: var(--var-sds-color-text-default-secondary, #767676);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .calendar-popup {
   position: absolute;
   top: 100%;
   left: 0;
-  z-index: 10;
-  margin-top: 4px;
+  z-index: 100;
+  margin-top: 8px;
   background-color: #fff;
-  border-radius: 8px;
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  border-radius: var(--var-sds-size-radius-300, 12px);
+  box-shadow: var(--var-sds-shadow-300, 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05));
+  border: 1px solid var(--var-sds-color-border-default-default, #d9d9d9);
 }
 
 /* Estado de carga */
