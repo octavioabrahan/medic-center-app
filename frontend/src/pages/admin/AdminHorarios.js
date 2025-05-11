@@ -3,6 +3,7 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import HorarioForm from "../../components/admin/HorarioForm";
 import ExcepcionesPage from "./ExcepcionesPage";
+import SearchField from "../../components/common/SearchField";
 
 /**
  * Componente AdminHorarios
@@ -68,8 +69,8 @@ function AdminHorarios() {
   };
 
   // Función para manejar el cambio en la búsqueda
-  const handleSearchChange = (e) => {
-    setSearchTerm(e.target.value);
+  const handleSearchChange = (value) => {
+    setSearchTerm(value);
   };
 
   // Función para cambiar entre las pestañas
@@ -119,36 +120,34 @@ function AdminHorarios() {
     }
 
     return (
-      <div className="table-responsive">
-        <table className="admin-table">
+      <div className="appointments-table-container">
+        <table className="appointments-table with-horizontal-lines">
           <thead>
             <tr>
               <th>Profesional</th>
               <th>Tipo de atención</th>
               <th>Días</th>
               <th>Hora de inicio</th>
-              <th>Hora de termino</th>
+              <th>Hora de término</th>
               <th>Consultorio</th>
               <th>Precio USD</th>
             </tr>
           </thead>
           <tbody>
             {filteredProfesionales.map((profesional) => (
-              <tr key={`prof-${profesional.id}`}>
+              <tr key={`prof-${profesional.id}`} className="appointment-row">
                 <td>{profesional.nombre} {profesional.apellido}</td>
                 <td>{profesional.tipo_atencion}</td>
                 <td>{profesional.dia}</td>
                 <td>{profesional.hora_inicio}</td>
                 <td>{profesional.hora_fin}</td>
                 <td>{profesional.consultorio}</td>
-                <td>
-                  <div className="precio-container">
-                    <button className="square-button">
-                      <svg width="20" height="20" viewBox="0 0 20 20">
-                        <rect width="16.77" height="16.77" x="1.67" y="1.57" stroke="#1E1E1E" strokeWidth="2" fill="none" />
-                      </svg>
-                    </button>
-                  </div>
+                <td className="actions-cell">
+                  <button className="action-button edit-button" title="Editar precio">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <rect width="18" height="18" x="3" y="3" stroke="currentColor" strokeWidth="1.5" fill="none" />
+                    </svg>
+                  </button>
                 </td>
               </tr>
             ))}
@@ -185,26 +184,27 @@ function AdminHorarios() {
       <hr className="tab-separator" />
       
       {/* Barra de búsqueda y botón de agregar */}
-      <div className="admin-actions">
-        <div className="search-container">
-          <input
-            type="text"
-            placeholder="Buscar por nombre"
-            value={searchTerm}
-            onChange={handleSearchChange}
-            className="search-input"
-          />
+      <div className="admin-filter-bar">
+        <div className="filter-section">
+          <div className="admin-search">
+            <SearchField
+              placeholder="Buscar por nombre"
+              value={searchTerm}
+              onChange={handleSearchChange}
+            />
+          </div>
         </div>
-        
-        <button 
-          className="button variant-primary"
-          onClick={() => handleAddHorario()}
-        >
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" className="heroicons-micro-plus">
-            <path fill="currentColor" d="M12 4v16m8-8H4" strokeWidth="2" stroke="currentColor" strokeLinecap="round" />
-          </svg>
-          <span className="button-text">Agregar horario</span>
-        </button>
+        <div className="action-section">
+          <button 
+            className="button variant-primary"
+            onClick={() => handleAddHorario()}
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24">
+              <path fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" d="M12 4v16m8-8H4" />
+            </svg>
+            <span className="button-text">Agregar horario</span>
+          </button>
+        </div>
       </div>
 
       {/* Contenido principal */}
