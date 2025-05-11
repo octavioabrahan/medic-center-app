@@ -26,7 +26,8 @@
 /* Sección de filtros (búsqueda, select, etc.) */
 .admin-filter-bar .filter-section {
   display: flex;
-  flex-wrap: wrap;
+  /* Evitar que los filtros salten de línea en pantallas grandes */
+  flex-wrap: nowrap;
   align-items: center;
   gap: var(--sds-size-space-400, 16px);
   flex: 1;
