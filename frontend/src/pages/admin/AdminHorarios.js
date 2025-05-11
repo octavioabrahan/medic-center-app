@@ -12,49 +12,78 @@ import SearchField from "../../components/common/SearchField";
  */
 function AdminHorarios() {
   const [activeTab, setActiveTab] = useState("profesionales");
+  const [horarios, setHorarios] = useState([]);
+  const [filteredHorarios, setFilteredHorarios] = useState([]);
   const [profesionales, setProfesionales] = useState([]);
   const [tiposAtencion, setTiposAtencion] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
+  const [sortOrder, setSortOrder] = useState("az");
   const [showAddHorarioModal, setShowAddHorarioModal] = useState(false);
   const [selectedProfesional, setSelectedProfesional] = useState(null);
-
-  // Datos de ejemplo para mostrar en la interfaz en caso de que la API no esté disponible
-  const profesionalesEjemplo = [
-    { id: 1, nombre: "ENDHER", apellido: "CASTILLO", tipo_atencion: "Presencial", dia: "Martes", hora_inicio: "08:00 AM", hora_fin: "01:00 PM", consultorio: "9", precio_usd: "50" },
-    { id: 2, nombre: "BERENICE", apellido: "FIGUEREDO", tipo_atencion: "Previa cita", dia: "Sábado", hora_inicio: "-", hora_fin: "-", consultorio: "-", precio_usd: "40" },
-    { id: 3, nombre: "LUIS", apellido: "AMAYA", tipo_atencion: "Previa cita", dia: "Martes y miércoles", hora_inicio: "-", hora_fin: "-", consultorio: "-", precio_usd: "45" },
-    { id: 4, nombre: "YOHANKARELYS", apellido: "FERNANDEZ", tipo_atencion: "Previa cita", dia: "Lunes, martes, miércoles, jueves y viernes", hora_inicio: "-", hora_fin: "-", consultorio: "-", precio_usd: "60" },
-    { id: 5, nombre: "EVA", apellido: "PAEZ", tipo_atencion: "Presencial", dia: "Lunes", hora_inicio: "08:00 AM", hora_fin: "01:00 PM", consultorio: "3", precio_usd: "55" },
-    { id: 6, nombre: "MARIANGEL", apellido: "MONTES", tipo_atencion: "Presencial", dia: "Miércoles y jueves", hora_inicio: "07:30 AM", hora_fin: "01:00 PM", consultorio: "1", precio_usd: "50" },
-    { id: 7, nombre: "MARIANGEL", apellido: "MONTES", tipo_atencion: "Previa cita", dia: "Sábado", hora_inicio: "-", hora_fin: "-", consultorio: "-", precio_usd: "35" }
-  ];
+  const [currentHorario, setCurrentHorario] = useState(null);
 
   // Cargar datos al montar el componente
   useEffect(() => {
+    fetchHorarios();
     fetchProfesionales();
     fetchTiposAtencion();
   }, []);
+  
+  // Filtrar y ordenar horarios
+  useEffect(() => {
+    if (horarios.length > 0) {
+      let results = [...horarios];
+      
+      // Filtrar por término de búsqueda
+      if (searchTerm.trim() !== "") {
+        const term = searchTerm.toLowerCase();
+        results = results.filter(horario => 
+          `${horario.profesional_nombre} ${horario.profesional_apellido}`.toLowerCase().includes(term) ||
+          horario.tipo_atencion?.toLowerCase().includes(term)
+        );
+      }
+      
+      // Aplicar ordenamiento alfabético
+      if (sortOrder === 'az') {
+        results.sort((a, b) => 
+          `${a.profesional_nombre} ${a.profesional_apellido}`.localeCompare(`${b.profesional_nombre} ${b.profesional_apellido}`)
+        );
+      } else if (sortOrder === 'za') {
+        results.sort((a, b) => 
+          `${b.profesional_nombre} ${b.profesional_apellido}`.localeCompare(`${a.profesional_nombre} ${a.profesional_apellido}`)
+        );
+      }
+      
+      setFilteredHorarios(results);
+    }
+  }, [searchTerm, horarios, sortOrder]);
+  
+  // Función para obtener los horarios
+  const fetchHorarios = async () => {
+    setLoading(true);
+    try {
+      const response = await axios.get("/api/horarios");
+      const horarios = response.data;
+      
+      setHorarios(horarios);
+      setFilteredHorarios(horarios);
+    } catch (err) {
+      console.error('Error:', err);
+      setError('No se pudieron cargar los horarios. Por favor, intenta de nuevo.');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   // Función para obtener los profesionales
   const fetchProfesionales = async () => {
     try {
-      setLoading(true);
       const response = await axios.get("/api/profesionales");
-      
-      // Si la API devuelve datos, los usamos, de lo contrario, usamos los datos de ejemplo
-      if (response.data && response.data.length > 0) {
-        setProfesionales(response.data);
-      } else {
-        setProfesionales(profesionalesEjemplo);
-      }
+      setProfesionales(response.data);
     } catch (err) {
-      console.error("Error al obtener profesionales:", err);
-      // En caso de error, usamos los datos de ejemplo
-      setProfesionales(profesionalesEjemplo);
-    } finally {
-      setLoading(false);
+      console.error("Error cargando profesionales:", err);
     }
   };
   
@@ -66,6 +95,29 @@ function AdminHorarios() {
     } catch (err) {
       console.error("Error al obtener tipos de atención:", err);
     }
+  };
+
+  const formatHorarioSemanal = (horario) => {
+    const diasNombres = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'];
+    
+    // Si tenemos un array de días, lo formateamos
+    if (horario.dia_semana && Array.isArray(horario.dia_semana)) {
+      // Ordenamos los días de la semana (1=Lunes, 7=Domingo)
+      const diasOrdenados = [...horario.dia_semana].sort((a, b) => a - b);
+      
+      // Convertimos los números a nombres de días
+      const nombresOrdenados = diasOrdenados.map(dia => diasNombres[dia - 1]);
+      
+      // Unimos los nombres con comas
+      return nombresOrdenados.join(', ');
+    } 
+    
+    // Para compatibilidad con registros antiguos (valores únicos)
+    if (horario.dia_semana !== undefined && !Array.isArray(horario.dia_semana)) {
+      return diasNombres[horario.dia_semana - 1] || 'No especificado';
+    }
+    
+    return 'No especificado';
   };
 
   // Función para manejar el cambio en la búsqueda
@@ -80,41 +132,52 @@ function AdminHorarios() {
 
   // Función para abrir el modal de agregar horario
   const handleAddHorario = (profesional = null) => {
+    setCurrentHorario(null);
     setSelectedProfesional(profesional);
     setShowAddHorarioModal(true);
+  };
+  
+  // Función para editar un horario
+  const handleEditHorario = (horario) => {
+    setCurrentHorario(horario);
+    setShowAddHorarioModal(true);
+  };
+  
+  // Función para eliminar un horario
+  const handleDeleteHorario = async (horarioId) => {
+    if (window.confirm('¿Estás seguro de que deseas eliminar este horario?')) {
+      try {
+        await axios.delete(`/api/horarios/${horarioId}`);
+        fetchHorarios();
+        toast.success("Horario eliminado correctamente");
+      } catch (err) {
+        console.error('Error eliminando horario:', err);
+        toast.error('Hubo un error al eliminar el horario');
+      }
+    }
   };
 
   // Función para manejar el guardado de horarios
   const handleHorarioSuccess = () => {
-    fetchProfesionales();
+    fetchHorarios();
     setShowAddHorarioModal(false);
     toast.success("Horario guardado correctamente");
   };
 
-  // Filtrar profesionales según el término de búsqueda
-  const filteredProfesionales = searchTerm
-    ? profesionales.filter(
-        (prof) =>
-          `${prof.nombre} ${prof.apellido}`
-            .toLowerCase()
-            .includes(searchTerm.toLowerCase())
-      )
-    : profesionales;
-
   // Renderizado de la tabla de profesionales
   const renderProfesionalesTable = () => {
     if (loading) {
-      return <div className="loading-state">Cargando profesionales...</div>;
+      return <div className="loading-state">Cargando horarios...</div>;
     }
     
     if (error) {
       return <div className="error-state">{error}</div>;
     }
     
-    if (filteredProfesionales.length === 0) {
+    if (filteredHorarios.length === 0) {
       return (
         <div className="empty-state">
-          <p>No se encontraron profesionales que coincidan con la búsqueda</p>
+          <p>No se encontraron horarios que coincidan con la búsqueda</p>
         </div>
       );
     }
@@ -130,22 +193,45 @@ function AdminHorarios() {
               <th>Hora de inicio</th>
               <th>Hora de término</th>
               <th>Consultorio</th>
-              <th>Precio USD</th>
+              <th>Acciones</th>
             </tr>
           </thead>
           <tbody>
-            {filteredProfesionales.map((profesional) => (
-              <tr key={`prof-${profesional.id}`} className="appointment-row">
-                <td>{profesional.nombre} {profesional.apellido}</td>
-                <td>{profesional.tipo_atencion}</td>
-                <td>{profesional.dia}</td>
-                <td>{profesional.hora_inicio}</td>
-                <td>{profesional.hora_fin}</td>
-                <td>{profesional.consultorio}</td>
+            {filteredHorarios.map((horario) => (
+              <tr key={horario.horario_id} className="appointment-row">
+                <td>{horario.profesional_nombre} {horario.profesional_apellido}</td>
+                <td>{horario.tipo_atencion}</td>
+                <td>{formatHorarioSemanal(horario)}</td>
+                <td>{horario.hora_inicio?.slice(0, 5) || "-"}</td>
+                <td>{horario.hora_termino?.slice(0, 5) || "-"}</td>
+                <td>{horario.consultorio || "-"}</td>
                 <td className="actions-cell">
-                  <button className="action-button edit-button" title="Editar precio">
+                  <button 
+                    className="action-button edit-button" 
+                    title="Editar horario"
+                    onClick={() => handleEditHorario(horario)}
+                  >
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <rect width="18" height="18" x="3" y="3" stroke="currentColor" strokeWidth="1.5" fill="none" />
+                      <path
+                        fillRule="evenodd"
+                        clipRule="evenodd"
+                        d="M15.586 3.586a2 2 0 012.828 0l2 2a2 2 0 010 2.828l-11 11A2 2 0 018 20H4a1 1 0 01-1-1v-4a2 2 0 01.586-1.414l11-11zM19 8.414L20.414 7 17 3.586 15.586 5 19 8.414z"
+                        fill="currentColor"
+                      />
+                    </svg>
+                  </button>
+                  <button 
+                    className="action-button delete-button" 
+                    title="Eliminar horario"
+                    onClick={() => handleDeleteHorario(horario.horario_id)}
+                  >
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path
+                        fillRule="evenodd"
+                        clipRule="evenodd"
+                        d="M9 5a2 2 0 012-2h2a2 2 0 012 2v1H9V5zm-5 3a1 1 0 011-1h14a1 1 0 110 2h-1v11a3 3 0 01-3 3H9a3 3 0 01-3-3V9H5a1 1 0 01-1-1zm3 1v11a1 1 0 001 1h6a1 1 0 001-1V9H7z"
+                        fill="currentColor"
+                      />
                     </svg>
                   </button>
                 </td>
@@ -180,8 +266,8 @@ function AdminHorarios() {
         </div>
       </div>
       
-      {/* Línea horizontal para los tabs */}
-      <hr className="tab-separator" />
+      {/* Separación sin línea */}
+      <div className="tab-spacing"></div>
       
       {/* Barra de búsqueda y botón de agregar */}
       <div className="admin-filter-bar">
@@ -216,15 +302,17 @@ function AdminHorarios() {
         )}
       </div>
 
-      {/* Modal para agregar horario */}
+      {/* Modal para agregar o editar horario */}
       {showAddHorarioModal && (
         <div className="modal-overlay">
           <div className="modal-content">
             <div className="modal-header">
               <h2>
-                {selectedProfesional 
-                  ? `Agregar horario para ${selectedProfesional.nombre} ${selectedProfesional.apellido}` 
-                  : "Agregar horario"}
+                {currentHorario 
+                  ? "Editar horario" 
+                  : selectedProfesional 
+                    ? `Agregar horario para ${selectedProfesional.nombre} ${selectedProfesional.apellido}` 
+                    : "Agregar horario de atención"}
               </h2>
               <button 
                 className="close-button" 
@@ -237,6 +325,7 @@ function AdminHorarios() {
             </div>
             
             <HorarioForm 
+              horario={currentHorario}
               onSuccess={handleHorarioSuccess}
               profesional={selectedProfesional}
             />
