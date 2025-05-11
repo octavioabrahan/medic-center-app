@@ -6,6 +6,7 @@ import { useSearchParams } from "react-router-dom";
 import { 
   startOfWeek, endOfWeek, format, startOfDay, endOfDay,
   startOfToday, endOfToday, startOfMonth, endOfMonth, 
+  parse
 } from "date-fns";
 import Calendar from "../../components/common/Calendar";
 import SearchField from "../../components/common/SearchField";
@@ -23,9 +24,10 @@ const CitasAgendadas = () => {
   const desde = searchParams.get("desde") || null;
   const hasta = searchParams.get("hasta") || null;
   
+  // Usar parse para fechas yyyy-MM-dd y evitar desfase de zona horaria
   const [dateRange, setDateRange] = useState({
-    from: desde ? new Date(desde) : startOfWeek(new Date(), { weekStartsOn: 1 }),
-    to: hasta ? new Date(hasta) : endOfWeek(new Date(), { weekStartsOn: 1 })
+    from: desde ? parse(desde, 'yyyy-MM-dd', new Date()) : startOfWeek(new Date(), { weekStartsOn: 1 }),
+    to: hasta ? parse(hasta, 'yyyy-MM-dd', new Date()) : endOfWeek(new Date(), { weekStartsOn: 1 })
   });
   const [startDate, setStartDate] = useState(dateRange?.from);
   const [endDate, setEndDate] = useState(dateRange?.to);
