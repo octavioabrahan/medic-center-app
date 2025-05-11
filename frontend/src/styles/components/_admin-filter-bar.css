@@ -41,14 +41,15 @@
 
 /* Componente de búsqueda dentro de la barra */
 .admin-filter-bar .admin-search {
-  /* Ancho fijo para evitar que el search ocupe demasiado espacio */
-  flex: 0 0 250px;
-  max-width: 250px;
+  /* Ancho ajustado para resoluciones estándar 1366x768 */
+  flex: 0 0 200px;
+  max-width: 200px;
 }
 
 /* Dropdown dentro de la barra */
 .admin-filter-bar .admin-dropdown {
-  min-width: 180px;
+  /* Ancho reducido para ajustar más filtros */
+  min-width: 150px;
 }
 
 /* Botones de ordenamiento A-Z y Z-A */
