@@ -398,19 +398,29 @@
 .appointments-filter-panel {
   display: flex;
   flex-wrap: wrap;
-  gap: 20px;
+  gap: 24px;
   align-items: flex-end;
   justify-content: flex-start;
   background: #f8fafc;
   border-radius: 12px;
-  padding: 20px 16px 12px 16px;
+  padding: 12px 8px 8px 8px;
   margin-bottom: 24px;
 }
 
 .appointments-filter-panel > * {
-  min-width: 220px;
-  flex: 1 1 220px;
-  max-width: 350px;
+  min-width: 160px;
+  flex: 1 1 0;
+  max-width: 320px;
+  margin-right: 0;
+  margin-bottom: 0;
+}
+
+@media (max-width: 1200px) {
+  .appointments-filter-panel > * {
+    min-width: 140px;
+    max-width: 100%;
+    flex: 1 1 0;
+  }
 }
 
 @media (max-width: 900px) {
@@ -418,7 +428,7 @@
     flex-direction: column;
     align-items: stretch;
     gap: 12px;
-    padding: 12px 4px 4px 4px;
+    padding: 8px 2px 2px 2px;
   }
   .appointments-filter-panel > * {
     max-width: 100%;
