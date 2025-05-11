@@ -233,29 +233,31 @@ function AdminHorarios() {
         </div>
       </div>
       
-      {/* Barra de búsqueda y botón de agregar */}
-      <div className="admin-filter-bar">
-        <div className="filter-section">
-          <div className="admin-search">
-            <SearchField
-              placeholder="Buscar por nombre"
-              value={searchTerm}
-              onChange={handleSearchChange}
-            />
+      {/* Barra de búsqueda y botón de agregar - solo mostrar cuando estamos en la pestaña de profesionales */}
+      {activeTab === "profesionales" && (
+        <div className="admin-filter-bar">
+          <div className="filter-section">
+            <div className="admin-search">
+              <SearchField
+                placeholder="Buscar por nombre"
+                value={searchTerm}
+                onChange={handleSearchChange}
+              />
+            </div>
+          </div>
+          <div className="action-section">
+            <button 
+              className="button variant-primary"
+              onClick={() => handleAddHorario()}
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24">
+                <path fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" d="M12 4v16m8-8H4" />
+              </svg>
+              <span className="button-text">Agregar horario</span>
+            </button>
           </div>
         </div>
-        <div className="action-section">
-          <button 
-            className="button variant-primary"
-            onClick={() => handleAddHorario()}
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24">
-              <path fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" d="M12 4v16m8-8H4" />
-            </svg>
-            <span className="button-text">Agregar horario</span>
-          </button>
-        </div>
-      </div>
+      )}
 
       {/* Contenido principal */}
       <div className="main-content" style={{ padding: 0, marginTop: 0 }}>
