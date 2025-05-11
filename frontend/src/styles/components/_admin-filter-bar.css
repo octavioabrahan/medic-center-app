@@ -44,19 +44,6 @@
   /* Ancho ajustado para resoluciones estándar 1366x768 */
   flex: 0 0 200px;
   max-width: 200px;
-  display: flex;
-  align-items: center;
-  height: 40px;
-  margin-bottom: 0;
-  position: relative;
-  /* Soluciona alineación vertical y evita superposición */
-}
-
-.admin-filter-bar .admin-search input {
-  height: 40px;
-  margin: 0;
-  align-self: stretch;
-  /* Asegura que el input ocupe todo el alto del contenedor */
 }
 
 /* Dropdown dentro de la barra */
