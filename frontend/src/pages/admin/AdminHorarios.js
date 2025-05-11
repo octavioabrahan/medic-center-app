@@ -234,7 +234,7 @@ function AdminHorarios() {
         </div>
       </div>
       
-      {/* Barra de filtros común para ambas pestañas */}
+      /* Barra de filtros común para ambas pestañas */
       <div className="admin-filter-bar">
         <div className="filter-section">
           <div className="admin-search">
@@ -246,16 +246,18 @@ function AdminHorarios() {
           </div>
           {/* Ordenamiento A-Z/Z-A */}
           <div className="filter-controls">
-            <div className="az-filter">
-              <button 
+            <div className="az-filter" style={{ display: "flex", gap: "8px" }}>
+              <button
                 className={`az-button ${sortOrder === 'az' ? 'active' : ''}`}
                 onClick={() => setSortOrder('az')}
+                style={{ height: "40px" }}
               >
                 A → Z
               </button>
-              <button 
+              <button
                 className={`za-button ${sortOrder === 'za' ? 'active' : ''}`}
                 onClick={() => setSortOrder('za')}
+                style={{ height: "40px" }}
               >
                 Z → A
               </button>
@@ -264,9 +266,10 @@ function AdminHorarios() {
         </div>
         <div className="action-section">
           {activeTab === "profesionales" && (
-            <button 
+            <button
               className="button variant-primary"
               onClick={() => handleAddHorario()}
+              style={{ height: "40px", marginLeft: "8px" }}
             >
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24">
                 <path fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" d="M12 4v16m8-8H4" />
