@@ -150,11 +150,10 @@
   .admin-filter-bar .filter-section {
     display: flex;
     flex-direction: row;
-    align-items: center;
+    align-items: stretch;
     gap: var(--sds-size-space-400, 16px);
     justify-content: flex-start;
     flex-wrap: nowrap;
-    position: relative;
     width: 100%; /* Usar todo el espacio disponible */
     flex: 1 1 0;
   }
@@ -162,21 +161,31 @@
     flex: 1 1 0;
     min-width: 0;
     max-width: 100%;
+    height: 40px;
   }
   .admin-filter-bar .admin-search {
     flex: 1 1 0;
     min-width: 120px;
     max-width: 100%;
     width: unset;
+    height: 40px;
+    display: flex;
+    align-items: center;
   }
   .admin-filter-bar .admin-dropdown {
     flex: 1 1 0;
     min-width: 110px;
     max-width: 100%;
+    height: 40px;
+    display: flex;
+    align-items: center;
   }
   .admin-filter-bar .date-input-wrapper {
     flex: 1 1 0;
     min-width: 120px;
     max-width: 100%;
+    height: 40px;
+    display: flex;
+    align-items: center;
   }
 }
