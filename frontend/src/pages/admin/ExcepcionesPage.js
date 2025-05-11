@@ -216,7 +216,29 @@ function ExcepcionesPage({ isTab }) {
   useEffect(() => {
     fetchProfesionales();
     fetchExcepciones();
-  }, [fetchProfesionales, fetchExcepciones]);
+    
+    // Event listeners for tab mode button clicks from parent component
+    const handleCancelarDiaClick = () => {
+      resetCancelacion();
+      setShowCancelarModal(true);
+    };
+    
+    const handleAgregarDiaClick = () => {
+      resetNuevaExcepcion();
+      setShowAgregarModal(true);
+    };
+    
+    // Only add event listeners in tab mode
+    if (isTab) {
+      document.addEventListener('cancelar-dia-click', handleCancelarDiaClick);
+      document.addEventListener('agregar-dia-click', handleAgregarDiaClick);
+      
+      return () => {
+        document.removeEventListener('cancelar-dia-click', handleCancelarDiaClick);
+        document.removeEventListener('agregar-dia-click', handleAgregarDiaClick);
+      };
+    }
+  }, [fetchProfesionales, fetchExcepciones, isTab]);
 
   // Cargar fechas disponibles cuando cambia el profesional seleccionado o el mes/año
   useEffect(() => {
@@ -541,35 +563,8 @@ function ExcepcionesPage({ isTab }) {
         </AdminFilterBar>
       )}
       
-      {/* En modo pestaña, mostrar una barra de filtros personalizada */}
-      {isTab && (
-        <div className="actions-container" style={{ display: 'flex', justifyContent: 'flex-end', gap: '8px', marginBottom: '16px' }}>
-          <button
-            className="button variant-neutral"
-            onClick={() => {
-              resetCancelacion();
-              setShowCancelarModal(true);
-            }}
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24">
-              <path fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" d="M6 18L18 6M6 6l12 12" />
-            </svg>
-            <span className="button-text" style={{ color: '#1e1e1e' }}>Cancelar día</span>
-          </button>
-          <button
-            className="button variant-primary"
-            onClick={() => {
-              resetNuevaExcepcion();
-              setShowAgregarModal(true);
-            }}
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24">
-              <path fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" d="M12 4v16m8-8H4" />
-            </svg>
-            <span className="button-text">Agregar día</span>
-          </button>
-        </div>
-      )}
+      {/* En modo pestaña, no mostrar botones duplicados ya que están en el AdminHorarios */}
+      {/* Los botones se manejan a través de eventos personalizados */}
       
       {renderExcepcionesTable()}
       

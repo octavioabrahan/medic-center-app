@@ -98,6 +98,15 @@
   align-items: center;
 }
 
+/* Fix button alignment */
+.admin-filter-bar .button {
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+}
+
 /* Scroll interno para la tabla */
 .appointments-table-container.with-scroll {
   max-height: calc(100vh - 250px);

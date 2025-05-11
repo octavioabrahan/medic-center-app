@@ -234,7 +234,6 @@ function AdminHorarios() {
         </div>
       </div>
       
-      /* Barra de filtros común para ambas pestañas */
       <div className="admin-filter-bar">
         <div className="filter-section">
           <div className="admin-search">
@@ -265,17 +264,46 @@ function AdminHorarios() {
           </div>
         </div>
         <div className="action-section">
-          {activeTab === "profesionales" && (
+          {activeTab === "profesionales" ? (
             <button
               className="button variant-primary"
               onClick={() => handleAddHorario()}
-              style={{ height: "40px", marginLeft: "8px" }}
+              style={{ height: "36px" }}
             >
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24">
                 <path fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" d="M12 4v16m8-8H4" />
               </svg>
               <span className="button-text">Agregar horario</span>
             </button>
+          ) : (
+            <>
+              <button
+                className="button variant-neutral"
+                onClick={() => {
+                  // These will be handled in ExcepcionesPage
+                  document.dispatchEvent(new CustomEvent('cancelar-dia-click'));
+                }}
+                style={{ height: "36px" }}
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24">
+                  <path fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+                <span className="button-text" style={{ color: '#1e1e1e' }}>Cancelar día</span>
+              </button>
+              <button
+                className="button variant-primary"
+                onClick={() => {
+                  // These will be handled in ExcepcionesPage
+                  document.dispatchEvent(new CustomEvent('agregar-dia-click'));
+                }}
+                style={{ height: "36px", marginLeft: "8px" }}
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24">
+                  <path fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" d="M12 4v16m8-8H4" />
+                </svg>
+                <span className="button-text">Agregar día</span>
+              </button>
+            </>
           )}
         </div>
       </div>
