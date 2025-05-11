@@ -24,6 +24,7 @@ import AdminExamenes from './pages/admin/AdminExamenes';
 import AdministracionPage from './pages/admin/AdministracionPage'; // Nueva página de administración
 import AdminAgendamientos from './pages/admin/AdminAgendamientos'; // Importando el componente AdminAgendamientos
 import AdminHorarios from './pages/admin/AdminHorarios'; // Importando el nuevo componente AdminHorarios
+import ProfesionalesTest from './components/admin/ProfesionalesTest'; // Componente de prueba del diseño Figma
 // Importar componentes de autenticación
 import LoginPage from './pages/auth/LoginPage';
 import ProtectedRoute from './components/auth/ProtectedRoute';
@@ -72,6 +73,8 @@ function App() {
               <AdministracionPage />
             </ProtectedRoute>
           } />
+          {/* Ruta para el componente de prueba de diseño de Figma */}
+          <Route path="test" element={<ProfesionalesTest />} />
         </Route>
         
         {/* Ruta para acceso denegado */}

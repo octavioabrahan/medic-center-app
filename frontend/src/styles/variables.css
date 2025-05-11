@@ -1,0 +1,32 @@
+:root {
+  /* Colores de texto */
+  --Text-Default-Default: #1E1E1E;
+  --Text-Default-Tertiary: #B3B3B3;
+  --Text-Brand-On-Brand: #F0F3FF;
+  --Text-Brand-On-Brand-Secondary: #1E1E1E;
+  --Text-Brand-Tertiary: #757575;
+
+  /* Colores de fondo */
+  --Background-Default-Default: white;
+  --Background-Brand-Default: #20377A;
+  --Background-Brand-Secondary: #E6E6E6;
+  --Background-Brand-Tertiary: #F5F5F5;
+  --Background-Neutral-Tertiary: #E3E3E3;
+  --Background-Disabled-Default: #D9D9D9;
+
+  /* Colores de bordes */
+  --Border-Default-Default: #D9D9D9;
+  --Border-Default-Secondary: #757575;
+  --Border-Brand-Default: #20377A;
+  --Border-Neutral-Secondary: #767676;
+  --border-disabled-secondary: #B2B2B2;
+
+  /* Colores de iconos */
+  --Icon-Default-Default: #1E1E1E;
+  --Icon-Brand-On-Brand: #F0F3FF;
+  --Icon-Brand-On-Brand-Secondary: #1E1E1E;
+
+  /* Colores de esquemas */
+  --Schemes-Surface-Bright: #FAF8FF;
+  --Schemes-Surface-Container-Lowest: white;
+}

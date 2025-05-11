@@ -8,6 +8,7 @@
 @import './base/_variables.css';
 @import './base/_reset.css';
 @import './base/_typography.css';
+@import './variables.css'; /* Nuevas variables para componentes de Figma */
 
 /* Layouts */
 @import './layout/_admin.css';
