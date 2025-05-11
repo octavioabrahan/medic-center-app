@@ -455,15 +455,16 @@ function HorarioForm({ onSuccess, horario }) {
           className="button variant-neutral"
           onClick={onSuccess}
           disabled={loading}
+          style={{ color: '#1e1e1e' }}
         >
-          Cancelar
+          <span className="button-text">Cancelar</span>
         </button>
         <button 
           type="submit" 
           className="button variant-primary"
           disabled={loading}
         >
-          {loading ? "Guardando..." : "Guardar"}
+          <span className="button-text">{loading ? "Guardando..." : "Guardar"}</span>
         </button>
       </div>
     </form>

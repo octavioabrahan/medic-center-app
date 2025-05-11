@@ -217,9 +217,6 @@ function AdminHorarios() {
     <div className="admin-page">
       <h1 className="admin-page-title">Horario de atención</h1>
       
-      {/* Línea horizontal */}
-      <hr className="separator" />
-      
       {/* Tabs de navegación */}
       <div className="admin-tabs">
         <div 
