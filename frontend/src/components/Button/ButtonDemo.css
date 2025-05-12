@@ -1,0 +1,12 @@
+.ButtonDemo {
+  padding: 24px;
+}
+.demo-section {
+  margin-bottom: 32px;
+}
+.button-row {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  align-items: center;
+}

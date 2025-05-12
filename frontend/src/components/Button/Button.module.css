@@ -1,0 +1,79 @@
+.Button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-8) var(--spacing-16);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-gray-100);
+  background-color: var(--color-primary-500);
+  border: none;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.Button:hover {
+  background-color: var(--color-primary-300);
+}
+
+.Button:disabled {
+  background-color: var(--color-gray-100);
+  color: var(--color-gray-900);
+  cursor: not-allowed;
+}
+
+/* Semantic Variants */
+.Button--outline {
+  background-color: transparent;
+  border: 1px solid var(--color-primary-500);
+  color: var(--color-primary-500);
+}
+.Button--outline:hover {
+  background-color: var(--color-primary-300);
+  color: var(--color-gray-100);
+}
+
+.Button--danger {
+  background-color: var(--color-danger-500);
+  color: var(--color-gray-100);
+}
+.Button--danger:hover {
+  background-color: var(--color-danger-300);
+}
+
+.Button--warning {
+  background-color: var(--color-warning-500);
+  color: var(--color-gray-900);
+}
+.Button--warning:hover {
+  background-color: var(--color-warning-300);
+}
+
+.Button--success {
+  background-color: var(--color-success-500);
+  color: var(--color-gray-100);
+}
+.Button--success:hover {
+  background-color: var(--color-success-300);
+}
+
+.Button--info {
+  background-color: var(--color-info-500);
+  color: var(--color-gray-100);
+}
+.Button--info:hover {
+  background-color: var(--color-info-300);
+}
+
+/* Sizes */
+.Button--small {
+  padding: var(--spacing-4) var(--spacing-8);
+  font-size: 0.875rem;
+}
+
+.Button--large {
+  padding: var(--spacing-16) var(--spacing-24);
+  font-size: 1.125rem;
+}

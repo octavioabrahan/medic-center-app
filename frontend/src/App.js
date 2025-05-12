@@ -22,6 +22,7 @@ import CotizacionesAdmin from './components/admin/CotizacionesAdmin';
 import AdminLayout from './components/admin/AdminLayout';
 import AdminExamenes from './pages/admin/AdminExamenes';
 import AdministracionPage from './pages/admin/AdministracionPage'; // Nueva página de administración
+import ButtonDemo from './components/Button/ButtonDemo';
 // Importar componentes de autenticación
 import LoginPage from './pages/auth/LoginPage';
 import ProtectedRoute from './components/auth/ProtectedRoute';
@@ -38,6 +39,7 @@ function App() {
         <Route path="/agendamiento/privado" element={<AgendamientoPrivadoForm />} />
         <Route path="/agendamiento/convenio" element={<AgendamientoEmpresaForm />} />
         <Route path="/agendamiento" element={<AgendamientoIndex />} />
+        <Route path="/buttondemo" element={<ButtonDemo />} />
         
         {/* Ruta de login */}
         <Route path="/login" element={<LoginPage />} />
