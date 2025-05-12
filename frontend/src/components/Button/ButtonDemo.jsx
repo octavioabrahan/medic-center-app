@@ -6,37 +6,54 @@ import { PlusIcon } from '@heroicons/react/24/solid';
 
 const variants = ['primary', 'neutral', 'subtle'];
 const sizes    = ['small', 'medium'];
-const states   = ['default', 'hover', 'disabled'];
 
 export default function ButtonDemo() {
   return (
     <div style={{ padding: '2rem', fontFamily: 'sans-serif' }}>
       <h1>Button Component Demo</h1>
+      
       {sizes.map(size => (
         <div key={size} style={{ marginBottom: '2rem' }}>
           <h2 style={{ textTransform: 'capitalize' }}>{size}</h2>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, auto)', gap: '1rem', alignItems: 'start' }}>
+          <div
+            style={{
+              display: 'flex',
+              gap: '2rem',
+              flexWrap: 'wrap',
+              alignItems: 'flex-start'
+            }}
+          >
             {variants.map(variant => (
-              <div key={variant}>
-                <strong style={{ textTransform: 'capitalize' }}>{variant}</strong>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', marginTop: '0.5rem' }}>
-                  {states.map(state => {
-                    const isDisabled = state === 'disabled';
-                    // Para mostrar estado hover de forma forzada, usamos una clase auxiliar
-                    const hoverClass = state === 'hover' ? 'btn--hover' : '';
-                    return (
-                      <button
-                        key={state}
-                        className={`btn btn--${variant} btn--${size} ${hoverClass}`}
-                        disabled={isDisabled}
-                      >
-                        <PlusIcon className="btn__icon" />
-                        <span style={{ marginLeft: '0.5rem', textTransform: 'capitalize' }}>
-                          {state}
-                        </span>
-                      </button>
-                    );
-                  })}
+              <div key={variant} style={{ textAlign: 'center' }}>
+                <strong
+                  style={{
+                    textTransform: 'capitalize',
+                    display: 'block',
+                    marginBottom: '.5rem'
+                  }}
+                >
+                  {variant}
+                </strong>
+
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '.5rem' }}>
+                  {/* Default */}
+                  <button className={`btn btn--${variant} btn--${size}`}>
+                    <PlusIcon className="btn__icon" />
+                    <span style={{ marginLeft: '.5rem', textTransform: 'capitalize' }}>
+                      Default
+                    </span>
+                  </button>
+
+                  {/* Disabled */}
+                  <button
+                    className={`btn btn--${variant} btn--${size}`}
+                    disabled
+                  >
+                    <PlusIcon className="btn__icon" />
+                    <span style={{ marginLeft: '.5rem', textTransform: 'capitalize' }}>
+                      Disabled
+                    </span>
+                  </button>
                 </div>
               </div>
             ))}
