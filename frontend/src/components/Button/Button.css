@@ -18,8 +18,14 @@
 
 /* Disabled */
 .btn:disabled {
-  opacity: 0.5;
+  background-color: var(--sds-color-background-disabled);
+  color: var(--sds-color-text-disabled);
+  border-color: var(--sds-color-border-disabled);
   cursor: not-allowed;
+}
+
+.btn:disabled:hover {
+  filter: none;
 }
 
 /* Icon */
