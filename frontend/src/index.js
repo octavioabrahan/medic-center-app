@@ -1,8 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 
-// 1. Importa los tokens globales (design-tokens.css)
-import './styles/design-tokens.css';
+// Importa las variables generadas por Style Dictionary
+import './styles/tokens.css';
 
 // 2. Importa el CSS del demo de botones
 import './components/Button/ButtonDemo.css';
