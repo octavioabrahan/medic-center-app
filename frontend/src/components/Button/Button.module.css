@@ -2,78 +2,78 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: var(--spacing-8) var(--spacing-16);
-  font-family: var(--font-family-base);
-  font-size: var(--font-size-base);
-  font-weight: var(--font-weight-semibold);
-  color: var(--color-gray-100);
-  background-color: var(--color-primary-500);
+  padding: var(--sds-size-space-200) var(--sds-size-space-400);
+  font-family: var(--sds-typography-family-sans, Inter);
+  font-size: var(--sds-typography-scale-03, 16px);
+  font-weight: var(--sds-typography-weight-semibold, 600);
+  color: var(--sds-color-white-1000, #fff);
+  background-color: var(--sds-color-brand-500, #3356c0);
   border: none;
-  border-radius: var(--radius-md);
+  border-radius: var(--sds-size-radius-200, 8px);
   cursor: pointer;
   transition: background-color 0.2s ease;
 }
 
 .Button:hover {
-  background-color: var(--color-primary-300);
+  background-color: var(--sds-color-brand-400, #607ed5);
 }
 
 .Button:disabled {
-  background-color: var(--color-gray-100);
-  color: var(--color-gray-900);
+  background-color: var(--sds-color-gray-200, #e6e6e6);
+  color: var(--sds-color-gray-700, #383838);
   cursor: not-allowed;
 }
 
 /* Semantic Variants */
 .Button--outline {
   background-color: transparent;
-  border: 1px solid var(--color-primary-500);
-  color: var(--color-primary-500);
+  border: 1px solid var(--sds-color-brand-500, #3356c0);
+  color: var(--sds-color-brand-500, #3356c0);
 }
 .Button--outline:hover {
-  background-color: var(--color-primary-300);
-  color: var(--color-gray-100);
+  background-color: var(--sds-color-brand-100, #bcc8ed);
+  color: var(--sds-color-brand-700, #1b2e68);
 }
 
 .Button--danger {
-  background-color: var(--color-danger-500);
-  color: var(--color-gray-100);
+  background-color: var(--sds-color-red-500, #eb221e);
+  color: var(--sds-color-white-1000, #fff);
 }
 .Button--danger:hover {
-  background-color: var(--color-danger-300);
+  background-color: var(--sds-color-red-400, #f37669);
 }
 
 .Button--warning {
-  background-color: var(--color-warning-500);
-  color: var(--color-gray-900);
+  background-color: var(--sds-color-yellow-500, #e5a000);
+  color: var(--sds-color-gray-900, #1e1e1e);
 }
 .Button--warning:hover {
-  background-color: var(--color-warning-300);
+  background-color: var(--sds-color-yellow-400, #e8b931);
 }
 
 .Button--success {
-  background-color: var(--color-success-500);
-  color: var(--color-gray-100);
+  background-color: var(--sds-color-green-500, #14ae5c);
+  color: var(--sds-color-white-1000, #fff);
 }
 .Button--success:hover {
-  background-color: var(--color-success-300);
+  background-color: var(--sds-color-green-400, #85e0a3);
 }
 
 .Button--info {
-  background-color: var(--color-info-500);
-  color: var(--color-gray-100);
+  background-color: var(--sds-color-pink-500, #ea3fb8);
+  color: var(--sds-color-white-1000, #fff);
 }
 .Button--info:hover {
-  background-color: var(--color-info-300);
+  background-color: var(--sds-color-pink-400, #f19edc);
 }
 
 /* Sizes */
 .Button--small {
-  padding: var(--spacing-4) var(--spacing-8);
-  font-size: 0.875rem;
+  font-size: var(--sds-typography-scale-01, 12px);
+  padding: var(--sds-size-space-100, 4px) var(--sds-size-space-200, 8px);
 }
 
 .Button--large {
-  padding: var(--spacing-16) var(--spacing-24);
-  font-size: 1.125rem;
+  font-size: var(--sds-typography-scale-05, 24px);
+  padding: var(--sds-size-space-400, 16px) var(--sds-size-space-600, 24px);
 }
