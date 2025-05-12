@@ -1,14 +1,24 @@
+/* src/components/Button.css */
 .btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  border-radius: var(--sds-radius-full);
+  border: 1px solid transparent;
+  font-family: var(--sds-typography-family-sans, sans-serif);
   font-weight: 500;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
   cursor: pointer;
-  transition: background-color 0.2s ease;
-  padding: var(--sds-space-200) var(--sds-space-400);
-  border: var(--sds-stroke-border) solid transparent;
 }
+
+/* Icon dentro del botón */
+.btn__icon {
+  flex-shrink: 0;
+  width: 16px;
+  height: 16px;
+  color: inherit;
+}
+
+/* Variants */
 .btn--primary {
   background-color: var(--sds-color-background-brand-default);
   color: var(--sds-color-text-brand-on-brand);
@@ -24,12 +34,27 @@
   color: var(--sds-color-text-default-default);
   border-color: transparent;
 }
+
+/* Estados hover forzados para demo */
+.btn--hover:hover,
+.btn--hover {
+  filter: brightness(0.9);
+}
+
+/* Disabled */
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
 /* Tamaños */
 .btn--small {
-  font-size: 0.875rem; /* ejemplo */
-  padding: var(--sds-space-100) var(--sds-space-200);
+  border-radius: var(--sds-radius-100); /* 4px */
+  font-size: 0.875rem;
+  padding: var(--sds-space-100) var(--sds-space-200); /* 4px / 8px */
 }
 .btn--medium {
+  border-radius: var(--sds-radius-200); /* 8px */
   font-size: 1rem;
-  padding: var(--sds-space-200) var(--sds-space-400);
+  padding: var(--sds-space-200) var(--sds-space-400); /* 8px / 16px */
 }
