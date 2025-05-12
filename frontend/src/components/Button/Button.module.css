@@ -7,7 +7,7 @@
   font-size: var(--sds-typography-scale-03, 16px);
   font-weight: var(--sds-typography-weight-semibold, 600);
   color: var(--sds-color-white-1000, #fff);
-  background-color: var(--sds-color-brand-500, #3356c0);
+  background-color: var(--sds-color-background-brand-default, #20377a);
   border: none;
   border-radius: var(--sds-size-radius-200, 8px);
   cursor: pointer;
