@@ -1,76 +1,35 @@
-/* Button.css - Updated to use correct tokens and class naming */
 .btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   border-radius: var(--sds-radius-full);
-  font-weight: var(--sds-weight-medium);
-  font-family: var(--sds-typography-family-sans, sans-serif);
+  font-weight: 500;
   cursor: pointer;
   transition: background-color 0.2s ease;
-  border: none;
-  background: transparent;
-  color: inherit;
+  padding: var(--sds-space-200) var(--sds-space-400);
+  border: var(--sds-stroke-border) solid transparent;
 }
-
-/* Variants */
 .btn--primary {
   background-color: var(--sds-color-background-brand-default);
   color: var(--sds-color-text-brand-on-brand);
-  border: 1px solid var(--sds-color-border-brand-default);
-}
-.btn--secondary {
-  background-color: var(--sds-color-background-default-default);
-  color: var(--sds-color-text-default-default);
-  border: 1px solid var(--sds-color-border-default-secondary);
+  border-color: var(--sds-color-border-brand-default);
 }
 .btn--neutral {
   background-color: var(--sds-color-background-neutral-tertiary);
-  color: var(--sds-color-text-neutral-on-neutral);
-  border: 1px solid var(--sds-color-border-neutral-secondary);
+  color: var(--sds-color-text-neutral-default);
+  border-color: var(--sds-color-border-neutral-secondary);
 }
-.btn--danger {
-  background-color: var(--sds-color-background-danger-default);
-  color: var(--sds-color-text-danger-on-danger);
-  border: 1px solid var(--sds-color-border-danger-default);
-}
-.btn--text {
-  background: transparent;
+.btn--subtle {
+  background-color: transparent;
   color: var(--sds-color-text-default-default);
-  border: none;
+  border-color: transparent;
 }
-
-/* Hover states (only when not disabled) */
-.btn:not(.btn--disabled):hover.btn--primary {
-  background-color: var(--sds-color-background-brand-hover);
-}
-.btn:not(.btn--disabled):hover.btn--secondary {
-  background-color: var(--sds-color-background-default-secondary-hover);
-}
-.btn:not(.btn--disabled):hover.btn--neutral {
-  background-color: var(--sds-color-background-neutral-tertiary-hover);
-}
-.btn:not(.btn--disabled):hover.btn--danger {
-  background-color: var(--sds-color-background-danger-hover);
-}
-.btn:not(.btn--disabled):hover.btn--text {
-  background-color: var(--sds-color-background-default-tertiary-hover);
-}
-
-/* Disabled state */
-.btn--disabled,
-.btn.btn--disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-  pointer-events: none;
-}
-
-/* Sizes */
-.btn--medium {
-  font-size: var(--sds-heading-size-base);
-  padding: 0.5rem 1rem;
-}
+/* Tamaños */
 .btn--small {
-  font-size: var(--sds-subheading-size-small);
-  padding: 0.25rem 0.75rem;
+  font-size: 0.875rem; /* ejemplo */
+  padding: var(--sds-space-100) var(--sds-space-200);
+}
+.btn--medium {
+  font-size: 1rem;
+  padding: var(--sds-space-200) var(--sds-space-400);
 }
