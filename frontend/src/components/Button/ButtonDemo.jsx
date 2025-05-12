@@ -1,6 +1,6 @@
 // src/components/ButtonDemo.jsx
 import React from 'react';
-import '../tokens.css';
+import '../../styles/tokens.css';
 import './Button.css';
 import { PlusIcon } from '@heroicons/react/solid'; // o tu librería de íconos
 
