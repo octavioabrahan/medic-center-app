@@ -16,9 +16,9 @@
   border: 1px solid var(--color-sds-color-border-brand-default);
 }
 .btn--neutral {
-  background-color: var(--color-sds-color-background-default-default-hover);
+  background-color: var(--color-sds-color-background-neutral-tertiary);
   color: var(--color-sds-color-text-default-default);
-  border: 1px solid var(--color-sds-color-border-default-default);
+  border: 1px solid var(--color-sds-color-border-neutral-secondary);
 }
 .btn--subtle {
   background: transparent;
@@ -47,7 +47,7 @@
   background-color: var(--color-sds-color-background-brand-hover);
 }
 .btn:not(.btn--disabled):hover.btn--neutral {
-  background-color: var(--color-sds-color-background-default-default-hover);
+  background-color: var(--color-sds-color-background-neutral-tertiary-hover);
 }
 .btn:not(.btn--disabled):hover.btn--subtle {
   background-color: var(--color-sds-color-background-default-tertiary-hover);
