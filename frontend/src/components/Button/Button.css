@@ -1,5 +1,6 @@
 .btn {
   display: inline-flex;
+  border-radius: 9999px;
   align-items: center;
   justify-content: center;
   border-radius: var(--color-sds-size-radius-full, 4px);
@@ -25,7 +26,9 @@
   color: var(--color-sds-color-text-default-tertiary);
   border: none;
 }
-
+.btn--text {
+  border-radius: 8px;
+}
 /* Estados */
 .btn--disabled {
   opacity: 0.6;
