@@ -20,16 +20,16 @@
 }
 
 .Button:focus {
-  box-shadow: 0 0 0 2px var(--sds-color-brand-200, #a6b6e8);
+  box-shadow: 0 0 0 2px var(--sds-color-border-brand-default, #20377a);
 }
 
 .Button:hover:not(:disabled) {
-  background-color: var(--sds-color-brand-600, #20377a);
-  color: var(--sds-color-white-1000, #fff);
+  background-color: var(--sds-color-background-brand-hover, #14214b);
+  color: var(--sds-color-text-brand-on-brand, #f0f3ff);
 }
 
 .Button:active:not(:disabled) {
-  background-color: var(--sds-color-brand-700, #1b2e68);
+  background-color: var(--sds-color-text-brand-secondary, #1b2e68);
 }
 
 .Button:disabled {
@@ -42,15 +42,15 @@
 /* Outline Variant */
 .Button--outline {
   background-color: transparent;
-  border: 2px solid var(--sds-color-brand-500, #3356c0);
-  color: var(--sds-color-brand-500, #3356c0);
+  border: 2px solid var(--sds-color-border-brand-default, #20377a);
+  color: var(--sds-color-background-brand-default, #20377a);
 }
 .Button--outline:hover:not(:disabled) {
-  background-color: var(--sds-color-brand-100, #bcc8ed);
-  color: var(--sds-color-brand-700, #1b2e68);
+  background-color: var(--sds-color-background-brand-tertiary, #f0f3ff);
+  color: var(--sds-color-text-brand-secondary, #1b2e68);
 }
 .Button--outline:active:not(:disabled) {
-  background-color: var(--sds-color-brand-200, #a6b6e8);
+  background-color: var(--sds-color-background-brand-tertiary-hover, #ffffff);
 }
 .Button--outline:disabled {
   border-color: var(--sds-color-gray-200, #e6e6e6);
