@@ -2,7 +2,7 @@
 import React from 'react';
 import '../../styles/tokens.css';
 import './Button.css';
-import { PlusIcon } from '@heroicons/react/solid'; // o tu librería de íconos
+import { PlusIcon } from '@heroicons/react/24/solid';
 
 const variants = ['primary', 'neutral', 'subtle'];
 const sizes    = ['small', 'medium'];
