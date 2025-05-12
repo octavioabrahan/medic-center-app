@@ -1,27 +1,28 @@
 import React from 'react';
-import '../../styles/tokens.css';
-import './Button.css'; // your button styles
+import './Button.css';
 
-const ButtonDemo = () => (
-  <div style={{ display: 'grid', gap: '1rem', padding: '2rem', background: '#f5f5f5' }}>
-    <h1>Button Variants</h1>
-    <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
-      <button className="btn btn-primary">Primary</button>
-      <button className="btn btn-primary" disabled>Primary Disabled</button>
+const variants = [
+  { key: 'primary', label: 'Primary' },
+  { key: 'secondary', label: 'Secondary' },   // aquí podrías renombrar "danger" si en tu CSS lo llamas así
+  { key: 'neutral',   label: 'Neutral' },
+  { key: 'danger',    label: 'Danger' },
+  { key: 'text',      label: 'Text' },
+];
 
-      <button className="btn btn-secondary">Secondary</button>
-      <button className="btn btn-secondary" disabled>Secondary Disabled</button>
-
-      <button className="btn btn-neutral">Neutral</button>
-      <button className="btn btn-neutral" disabled>Neutral Disabled</button>
-
-      <button className="btn btn-danger">Danger</button>
-      <button className="btn btn-danger" disabled>Danger Disabled</button>
-
-      <button className="btn btn-text">Text</button>
-      <button className="btn btn-text" disabled>Text Disabled</button>
+export default function ButtonDemo() {
+  return (
+    <div style={{ padding: 20, fontFamily: 'sans-serif' }}>
+      <h1>Button Variants</h1>
+      <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap', alignItems: 'center' }}>
+        {variants.map(({ key, label }) => (
+          <React.Fragment key={key}>
+            <button className={`btn btn--${key}`}>{label}</button>
+            <button className={`btn btn--${key} btn--disabled`} disabled>
+              {label} Disabled
+            </button>
+          </React.Fragment>
+        ))}
+      </div>
     </div>
-  </div>
-);
-
-export default ButtonDemo;
+  );
+}
