@@ -1,5 +1,5 @@
 import React from 'react';
-import './tokens.css';
+import '../../styles/tokens.css';
 import './Button.css'; // your button styles
 
 const ButtonDemo = () => (
