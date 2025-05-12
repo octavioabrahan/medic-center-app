@@ -1,5 +1,5 @@
 import React from 'react';
-import Button from '../Button/Button';
+import Button from './Button';
 import './ButtonDemo.css';
 
 const variants = ['primary', 'outline', 'danger', 'warning', 'success', 'info'];
