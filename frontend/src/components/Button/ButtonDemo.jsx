@@ -1,32 +1,27 @@
 import React from 'react';
-import Button from './Button';
-import './ButtonDemo.css';
+import './tokens.css';
+import './Button.css'; // your button styles
 
-/**
- * ButtonDemo shows all combinations of Button variants, sizes, and states.
- */
-const variants = ['primary', 'neutral', 'subtle'];
-const sizes = ['medium', 'small'];
+const ButtonDemo = () => (
+  <div style={{ display: 'grid', gap: '1rem', padding: '2rem', background: '#f5f5f5' }}>
+    <h1>Button Variants</h1>
+    <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
+      <button className="btn btn-primary">Primary</button>
+      <button className="btn btn-primary" disabled>Primary Disabled</button>
 
-export default function ButtonDemo() {
-  return (
-    <div style={{ padding: '2rem', fontFamily: 'sans-serif' }}>
-      <h1>Button Component Demo</h1>
-      {sizes.map(size => (
-        <section key={size} style={{ marginBottom: '2rem' }}>
-          <h2>Size: {size}</h2>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(variants.length, auto)', gap: '1rem', alignItems: 'center' }}>
-            {variants.map(variant => (
-              <div key={`${size}-${variant}`} style={{ textAlign: 'center' }}>
-                <div style={{ marginBottom: '0.5rem' }}><strong>{variant}</strong></div>
-                <Button size={size} variant={variant}>Default</Button>
-                <Button size={size} variant={variant} disabled style={{ marginLeft: '0.5rem' }}>Disabled</Button>
-              </div>
-            ))}
-          </div>
-        </section>
-      ))}
-      <p>Hover over buttons to see hover styles in action.</p>
+      <button className="btn btn-secondary">Secondary</button>
+      <button className="btn btn-secondary" disabled>Secondary Disabled</button>
+
+      <button className="btn btn-neutral">Neutral</button>
+      <button className="btn btn-neutral" disabled>Neutral Disabled</button>
+
+      <button className="btn btn-danger">Danger</button>
+      <button className="btn btn-danger" disabled>Danger Disabled</button>
+
+      <button className="btn btn-text">Text</button>
+      <button className="btn btn-text" disabled>Text Disabled</button>
     </div>
-  );
-}
+  </div>
+);
+
+export default ButtonDemo;
