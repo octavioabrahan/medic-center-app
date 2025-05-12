@@ -1,5 +1,5 @@
 module.exports = {
-  source: ['tokens/**/*.json'],
+  source: ['tokens-sd/**/*.json'],
   platforms: {
     css: {
       transformGroup: 'css',

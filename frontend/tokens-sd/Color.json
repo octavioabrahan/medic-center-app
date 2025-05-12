@@ -1,0 +1,406 @@
+{
+  "color": {
+    "sds-color-text-brand-on-brand": {
+      "value": "#f0f3ff"
+    },
+    "sds-color-border-default-secondary": {
+      "value": "#757575"
+    },
+    "sds-color-background-danger-tertiary-hover": {
+      "value": "#fdd3d0"
+    },
+    "sds-color-icon-danger-on-danger-tertiary": {
+      "value": "#900b09"
+    },
+    "sds-color-background-brand-default": {
+      "value": "#20377a"
+    },
+    "sds-color-border-danger-secondary": {
+      "value": "#c00f0c"
+    },
+    "sds-color-text-danger-on-danger": {
+      "value": "#fee9e7"
+    },
+    "sds-color-icon-danger-on-danger": {
+      "value": "#fee9e7"
+    },
+    "sds-color-background-brand-hover": {
+      "value": "#14214b"
+    },
+    "sds-color-border-default-default": {
+      "value": "#d9d9d9"
+    },
+    "sds-color-background-default-default": {
+      "value": "#ffffff"
+    },
+    "sds-color-icon-brand-on-brand": {
+      "value": "#f0f3ff"
+    },
+    "sds-color-text-danger-on-danger-tertiary": {
+      "value": "#900b09"
+    },
+    "sds-color-border-danger-tertiary": {
+      "value": "#ec221f"
+    },
+    "sds-color-background-default-secondary-hover": {
+      "value": "#e6e6e6"
+    },
+    "sds-color-border-danger-default": {
+      "value": "#900b09"
+    },
+    "sds-color-background-danger-hover": {
+      "value": "#c00f0c"
+    },
+    "sds-color-background-danger-tertiary": {
+      "value": "#fee9e7"
+    },
+    "sds-color-text-disabled-on-disabled": {
+      "value": "#9d9d9d"
+    },
+    "sds-color-icon-danger-default": {
+      "value": "#900b09"
+    },
+    "sds-color-icon-brand-default": {
+      "value": "#20377a"
+    },
+    "sds-color-text-default-default": {
+      "value": "#1e1e1e"
+    },
+    "sds-color-background-default-default-hover": {
+      "value": "#f5f5f5"
+    },
+    "sds-color-border-brand-default": {
+      "value": "#20377a"
+    },
+    "sds-color-icon-disabled-on-disabled": {
+      "value": "#9d9d9d"
+    },
+    "sds-color-icon-default-default": {
+      "value": "#1e1e1e"
+    },
+    "sds-color-text-neutral-default": {
+      "value": "#303030"
+    },
+    "sds-color-border-disabled-default": {
+      "value": "#9d9d9d"
+    },
+    "sds-color-text-disabled-default": {
+      "value": "#9d9d9d"
+    },
+    "sds-color-icon-danger-on-danger-secondary": {
+      "value": "#900b09"
+    },
+    "sds-color-text-danger-default": {
+      "value": "#900b09"
+    },
+    "sds-color-background-neutral-tertiary": {
+      "value": "#e3e3e3"
+    },
+    "sds-color-background-neutral-tertiary-hover": {
+      "value": "#cdcdcd"
+    },
+    "sds-color-background-danger-secondary": {
+      "value": "#fdd3d0"
+    },
+    "sds-color-background-danger-default": {
+      "value": "#ec221f"
+    },
+    "sds-color-background-disabled-default": {
+      "value": "#dadada"
+    },
+    "sds-color-border-neutral-secondary": {
+      "value": "#767676"
+    },
+    "sds-color-background-default-secondary": {
+      "value": "#f5f5f5"
+    },
+    "sds-color-icon-disabled-default": {
+      "value": "#9d9d9d"
+    },
+    "sds-color-background-utilities-overlay": {
+      "value": "#00000080"
+    },
+    "sds-color-text-default-tertiary": {
+      "value": "#b3b3b3"
+    },
+    "sds-color-text-default-secondary": {
+      "value": "#757575"
+    },
+    "sds-color-text-neutral-on-neutral": {
+      "value": "#f3f3f3"
+    },
+    "sds-color-text-neutral-on-neutral-tertiary": {
+      "value": "#434343"
+    },
+    "sds-color-text-neutral-on-neutral-secondary": {
+      "value": "#303030"
+    },
+    "sds-color-text-neutral-tertiary": {
+      "value": "#767676"
+    },
+    "sds-color-text-neutral-secondary": {
+      "value": "#5a5a5a"
+    },
+    "sds-color-text-brand-on-brand-tertiary": {
+      "value": "#20377a"
+    },
+    "sds-color-text-brand-on-brand-secondary": {
+      "value": "#14214b"
+    },
+    "sds-color-text-brand-tertiary": {
+      "value": "#20377a"
+    },
+    "sds-color-text-brand-secondary": {
+      "value": "#1b2e68"
+    },
+    "sds-color-text-brand-default": {
+      "value": "#20377a"
+    },
+    "sds-color-text-positive-on-positive-tertiary": {
+      "value": "#02542d"
+    },
+    "sds-color-text-positive-on-positive-secondary": {
+      "value": "#02542d"
+    },
+    "sds-color-text-positive-default": {
+      "value": "#02542d"
+    },
+    "sds-color-text-positive-on-positive": {
+      "value": "#ebffee"
+    },
+    "sds-color-text-positive-tertiary": {
+      "value": "#14ae5c"
+    },
+    "sds-color-text-positive-secondary": {
+      "value": "#009951"
+    },
+    "sds-color-text-warning-on-warning-tertiary": {
+      "value": "#522504"
+    },
+    "sds-color-text-warning-default": {
+      "value": "#522504"
+    },
+    "sds-color-text-warning-on-warning-secondary": {
+      "value": "#682d03"
+    },
+    "sds-color-text-warning-on-warning": {
+      "value": "#401b01"
+    },
+    "sds-color-text-warning-tertiary": {
+      "value": "#bf6a02"
+    },
+    "sds-color-text-warning-secondary": {
+      "value": "#975102"
+    },
+    "sds-color-text-danger-tertiary": {
+      "value": "#ec221f"
+    },
+    "sds-color-text-danger-secondary": {
+      "value": "#c00f0c"
+    },
+    "sds-color-text-danger-on-danger-secondary": {
+      "value": "#900b09"
+    },
+    "sds-color-text-utilities-text-on-measurement": {
+      "value": "#8a226f"
+    },
+    "sds-color-text-utilities-text-on-overlay": {
+      "value": "#0c0c0d"
+    },
+    "sds-color-background-default-tertiary": {
+      "value": "#d9d9d9"
+    },
+    "sds-color-background-default-tertiary-hover": {
+      "value": "#b3b3b3"
+    },
+    "sds-color-background-neutral-secondary": {
+      "value": "#cdcdcd"
+    },
+    "sds-color-background-neutral-secondary-hover": {
+      "value": "#b2b2b2"
+    },
+    "sds-color-background-neutral-hover": {
+      "value": "#434343"
+    },
+    "sds-color-background-neutral-default": {
+      "value": "#5a5a5a"
+    },
+    "sds-color-background-brand-tertiary-hover": {
+      "value": "#ffffff"
+    },
+    "sds-color-background-brand-tertiary": {
+      "value": "#f0f3ff"
+    },
+    "sds-color-background-brand-secondary": {
+      "value": "#ffffff"
+    },
+    "sds-color-background-positive-tertiary-hover": {
+      "value": "#cff7d3"
+    },
+    "sds-color-background-positive-secondary-hover": {
+      "value": "#aff4c6"
+    },
+    "sds-color-background-positive-hover": {
+      "value": "#009951"
+    },
+    "sds-color-background-positive-tertiary": {
+      "value": "#ebffee"
+    },
+    "sds-color-background-positive-secondary": {
+      "value": "#cff7d3"
+    },
+    "sds-color-background-positive-default": {
+      "value": "#14ae5c"
+    },
+    "sds-color-background-warning-tertiary-hover": {
+      "value": "#fff1c2"
+    },
+    "sds-color-background-warning-hover": {
+      "value": "#e5a000"
+    },
+    "sds-color-background-warning-tertiary": {
+      "value": "#fffbeb"
+    },
+    "sds-color-background-warning-secondary-hover": {
+      "value": "#ffe8a3"
+    },
+    "sds-color-background-warning-secondary": {
+      "value": "#fff1c2"
+    },
+    "sds-color-background-warning-default": {
+      "value": "#e8b931"
+    },
+    "sds-color-background-utilities-measurement": {
+      "value": "#fae1fa"
+    },
+    "sds-color-background-utilities-blanket": {
+      "value": "#000000b2"
+    },
+    "sds-color-background-utilities-scrim": {
+      "value": "#ffffffcc"
+    },
+    "sds-color-border-default-tertiary": {
+      "value": "#383838"
+    },
+    "sds-color-border-neutral-tertiary": {
+      "value": "#b2b2b2"
+    },
+    "sds-color-border-neutral-default": {
+      "value": "#303030"
+    },
+    "sds-color-border-brand-secondary": {
+      "value": "#1b2e68"
+    },
+    "sds-color-border-brand-tertiary": {
+      "value": "#20377a"
+    },
+    "sds-color-border-positive-tertiary": {
+      "value": "#14ae5c"
+    },
+    "sds-color-border-positive-secondary": {
+      "value": "#009951"
+    },
+    "sds-color-border-positive-default": {
+      "value": "#02542d"
+    },
+    "sds-color-border-warning-tertiary": {
+      "value": "#bf6a02"
+    },
+    "sds-color-border-warning-secondary": {
+      "value": "#975102"
+    },
+    "sds-color-border-warning-default": {
+      "value": "#522504"
+    },
+    "sds-color-border-utilities-swatch": {
+      "value": "#0000003d"
+    },
+    "sds-color-border-utilities-measurement": {
+      "value": "#f19edc"
+    },
+    "sds-color-icon-default-tertiary": {
+      "value": "#b3b3b3"
+    },
+    "sds-color-icon-default-secondary": {
+      "value": "#757575"
+    },
+    "sds-color-icon-neutral-on-neutral-tertiary": {
+      "value": "#434343"
+    },
+    "sds-color-icon-neutral-on-neutral": {
+      "value": "#f3f3f3"
+    },
+    "sds-color-icon-neutral-tertiary": {
+      "value": "#767676"
+    },
+    "sds-color-icon-neutral-secondary": {
+      "value": "#5a5a5a"
+    },
+    "sds-color-icon-neutral-on-neutral-secondary": {
+      "value": "#303030"
+    },
+    "sds-color-icon-neutral-default": {
+      "value": "#303030"
+    },
+    "sds-color-icon-brand-on-brand-tertiary": {
+      "value": "#20377a"
+    },
+    "sds-color-icon-brand-tertiary": {
+      "value": "#20377a"
+    },
+    "sds-color-icon-brand-on-brand-secondary": {
+      "value": "#14214b"
+    },
+    "sds-color-icon-brand-secondary": {
+      "value": "#1b2e68"
+    },
+    "sds-color-icon-positive-on-positive-tertiary": {
+      "value": "#024023"
+    },
+    "sds-color-icon-positive-on-positive": {
+      "value": "#ebffee"
+    },
+    "sds-color-icon-positive-tertiary": {
+      "value": "#14ae5c"
+    },
+    "sds-color-icon-positive-default": {
+      "value": "#02542d"
+    },
+    "sds-color-icon-positive-secondary": {
+      "value": "#009951"
+    },
+    "sds-color-icon-positive-on-positive-secondary": {
+      "value": "#02542d"
+    },
+    "sds-color-icon-warning-tertiary": {
+      "value": "#bf6a02"
+    },
+    "sds-color-icon-warning-on-warning-tertiary": {
+      "value": "#522504"
+    },
+    "sds-color-icon-warning-secondary": {
+      "value": "#975102"
+    },
+    "sds-color-icon-warning-default": {
+      "value": "#522504"
+    },
+    "sds-color-icon-warning-on-warning-secondary": {
+      "value": "#682d03"
+    },
+    "sds-color-icon-warning-on-warning": {
+      "value": "#401b01"
+    },
+    "sds-color-icon-danger-tertiary": {
+      "value": "#ec221f"
+    },
+    "sds-color-icon-danger-secondary": {
+      "value": "#c00f0c"
+    },
+    "sds-color-icon-utilities-icon-on-measurement": {
+      "value": "#8a226f"
+    },
+    "sds-color-icon-utilities-icon": {
+      "value": "#d732a8"
+    }
+  }
+}

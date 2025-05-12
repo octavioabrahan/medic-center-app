@@ -1,0 +1,97 @@
+{
+  "color": {
+    "sds-typography-weight-thin": {
+      "value": "#NaNNaNNaN"
+    },
+    "sds-typography-weight-extra-light": {
+      "value": "#NaNNaNNaN"
+    },
+    "sds-typography-weight-light": {
+      "value": "#NaNNaNNaN"
+    },
+    "sds-typography-weight-regular": {
+      "value": "#NaNNaNNaN"
+    },
+    "sds-typography-weight-medium": {
+      "value": "#NaNNaNNaN"
+    },
+    "sds-typography-weight-semibold": {
+      "value": "#NaNNaNNaN"
+    },
+    "sds-typography-weight-bold": {
+      "value": "#NaNNaNNaN"
+    },
+    "sds-typography-weight-extra-bold": {
+      "value": "#NaNNaNNaN"
+    },
+    "sds-typography-weight-black": {
+      "value": "#NaNNaNNaN"
+    },
+    "sds-typography-scale-10": {
+      "value": "#NaNNaNNaN"
+    },
+    "sds-typography-scale-09": {
+      "value": "#NaNNaNNaN"
+    },
+    "sds-typography-scale-08": {
+      "value": "#NaNNaNNaN"
+    },
+    "sds-typography-scale-07": {
+      "value": "#NaNNaNNaN"
+    },
+    "sds-typography-scale-06": {
+      "value": "#NaNNaNNaN"
+    },
+    "sds-typography-scale-05": {
+      "value": "#NaNNaNNaN"
+    },
+    "sds-typography-scale-04": {
+      "value": "#NaNNaNNaN"
+    },
+    "sds-typography-scale-03": {
+      "value": "#NaNNaNNaN"
+    },
+    "sds-typography-scale-02": {
+      "value": "#NaNNaNNaN"
+    },
+    "sds-typography-scale-01": {
+      "value": "#NaNNaNNaN"
+    },
+    "sds-typography-family-sans": {
+      "value": "#NaNNaNNaN"
+    },
+    "sds-typography-family-serif": {
+      "value": "#NaNNaNNaN"
+    },
+    "sds-typography-family-mono": {
+      "value": "#NaNNaNNaN"
+    },
+    "sds-typography-weight-light-italic": {
+      "value": "#NaNNaNNaN"
+    },
+    "sds-typography-weight-regular-italic": {
+      "value": "#NaNNaNNaN"
+    },
+    "sds-typography-weight-bold-italic": {
+      "value": "#NaNNaNNaN"
+    },
+    "sds-typography-weight-thin-italic": {
+      "value": "#NaNNaNNaN"
+    },
+    "sds-typography-weight-extralight-italic": {
+      "value": "#NaNNaNNaN"
+    },
+    "sds-typography-weight-medium-italic": {
+      "value": "#NaNNaNNaN"
+    },
+    "sds-typography-weight-semibold-italic": {
+      "value": "#NaNNaNNaN"
+    },
+    "sds-typography-weight-extra-bold-italic": {
+      "value": "#NaNNaNNaN"
+    },
+    "sds-typography-weight-black-italic": {
+      "value": "#NaNNaNNaN"
+    }
+  }
+}

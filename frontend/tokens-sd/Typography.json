@@ -1,0 +1,109 @@
+{
+  "color": {
+    "sds-typography-title-page-font-family": {
+      "value": "#NaNNaNNaN"
+    },
+    "sds-typography-title-page-font-weight": {
+      "value": "#NaNNaNNaN"
+    },
+    "sds-typography-title-page-size-small": {
+      "value": "#NaNNaNNaN"
+    },
+    "sds-typography-subtitle-font-family": {
+      "value": "#NaNNaNNaN"
+    },
+    "sds-typography-subtitle-size-base": {
+      "value": "#NaNNaNNaN"
+    },
+    "sds-typography-subtitle-font-weight": {
+      "value": "#NaNNaNNaN"
+    },
+    "sds-typography-body-font-family": {
+      "value": "#NaNNaNNaN"
+    },
+    "sds-typography-body-size-medium": {
+      "value": "#NaNNaNNaN"
+    },
+    "sds-typography-body-font-weight-regular": {
+      "value": "#NaNNaNNaN"
+    },
+    "sds-typography-code-font-family": {
+      "value": "#NaNNaNNaN"
+    },
+    "sds-typography-code-size-base": {
+      "value": "#NaNNaNNaN"
+    },
+    "sds-typography-code-font-weight": {
+      "value": "#NaNNaNNaN"
+    },
+    "sds-typography-heading-font-family": {
+      "value": "#NaNNaNNaN"
+    },
+    "sds-typography-heading-size-base": {
+      "value": "#NaNNaNNaN"
+    },
+    "sds-typography-heading-font-weight": {
+      "value": "#NaNNaNNaN"
+    },
+    "sds-typography-title-hero-font-family": {
+      "value": "#NaNNaNNaN"
+    },
+    "sds-typography-title-hero-size": {
+      "value": "#NaNNaNNaN"
+    },
+    "sds-typography-title-hero-font-weight": {
+      "value": "#NaNNaNNaN"
+    },
+    "sds-typography-title-page-size-base": {
+      "value": "#NaNNaNNaN"
+    },
+    "sds-typography-title-page-size-large": {
+      "value": "#NaNNaNNaN"
+    },
+    "sds-typography-subtitle-size-large": {
+      "value": "#NaNNaNNaN"
+    },
+    "sds-typography-subtitle-size-small": {
+      "value": "#NaNNaNNaN"
+    },
+    "sds-typography-heading-size-large": {
+      "value": "#NaNNaNNaN"
+    },
+    "sds-typography-heading-size-small": {
+      "value": "#NaNNaNNaN"
+    },
+    "sds-typography-body-size-large": {
+      "value": "#NaNNaNNaN"
+    },
+    "sds-typography-body-size-small": {
+      "value": "#NaNNaNNaN"
+    },
+    "sds-typography-code-size-large": {
+      "value": "#NaNNaNNaN"
+    },
+    "sds-typography-code-size-small": {
+      "value": "#NaNNaNNaN"
+    },
+    "sds-typography-body-font-weight-strong": {
+      "value": "#NaNNaNNaN"
+    },
+    "sds-typography-body-font-style-italic": {
+      "value": "#NaNNaNNaN"
+    },
+    "sds-typography-subheading-font-family": {
+      "value": "#NaNNaNNaN"
+    },
+    "sds-typography-subheading-size-small": {
+      "value": "#NaNNaNNaN"
+    },
+    "sds-typography-subheading-size-medium": {
+      "value": "#NaNNaNNaN"
+    },
+    "sds-typography-subheading-size-large": {
+      "value": "#NaNNaNNaN"
+    },
+    "sds-typography-subheading-font-weight": {
+      "value": "#NaNNaNNaN"
+    }
+  }
+}
