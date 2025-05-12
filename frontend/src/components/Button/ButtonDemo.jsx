@@ -2,33 +2,31 @@ import React from 'react';
 import Button from './Button';
 import './ButtonDemo.css';
 
-const variants = ['primary', 'outline', 'danger', 'warning', 'success', 'info'];
-const sizes = ['small', 'medium', 'large'];
+/**
+ * ButtonDemo shows all combinations of Button variants, sizes, and states.
+ */
+const variants = ['primary', 'neutral', 'subtle'];
+const sizes = ['medium', 'small'];
 
 export default function ButtonDemo() {
   return (
-    <div className="ButtonDemo">
+    <div style={{ padding: '2rem', fontFamily: 'sans-serif' }}>
       <h1>Button Component Demo</h1>
-      {variants.map((variant) => (
-        <div key={variant} className="demo-section">
-          <h2>{variant.charAt(0).toUpperCase() + variant.slice(1)}</h2>
-          <div className="button-row">
-            {sizes.map((size) => (
-              <Button
-                key={`${variant}-${size}`}
-                variant={variant}
-                size={size}
-                onClick={() => alert(`${variant} ${size} clicked`)}
-              >
-                {`${variant} ${size}`}
-              </Button>
+      {sizes.map(size => (
+        <section key={size} style={{ marginBottom: '2rem' }}>
+          <h2>Size: {size}</h2>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(variants.length, auto)', gap: '1rem', alignItems: 'center' }}>
+            {variants.map(variant => (
+              <div key={`${size}-${variant}`} style={{ textAlign: 'center' }}>
+                <div style={{ marginBottom: '0.5rem' }}><strong>{variant}</strong></div>
+                <Button size={size} variant={variant}>Default</Button>
+                <Button size={size} variant={variant} disabled style={{ marginLeft: '0.5rem' }}>Disabled</Button>
+              </div>
             ))}
-            <Button variant={variant} size="medium" disabled>
-              {`${variant} disabled`}
-            </Button>
           </div>
-        </div>
+        </section>
       ))}
+      <p>Hover over buttons to see hover styles in action.</p>
     </div>
   );
 }
