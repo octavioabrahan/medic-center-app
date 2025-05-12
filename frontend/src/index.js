@@ -1,6 +1,5 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import './index.css';
 
 // 1. Importa los tokens globales (design-tokens.css)
 import './styles/design-tokens.css';
