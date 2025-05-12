@@ -18,10 +18,10 @@
 
 /* Disabled */
 .btn:disabled {
-  background-color: var(--sds-color-background-disabled);
-  color: var(--sds-color-text-disabled);
-  border-color: var(--sds-color-border-disabled);
-  cursor: not-allowed;
+  background-color: var(--sds-color-background-disabled-default);
+  color:            var(--sds-color-text-disabled-default);
+  border-color:     var(--sds-color-border-disabled-default);
+  cursor:           not-allowed;
 }
 
 .btn:disabled:hover {
