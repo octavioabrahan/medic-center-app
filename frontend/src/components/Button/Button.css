@@ -1,57 +1,76 @@
+/* Button.css - Updated to use correct tokens and class naming */
 .btn {
   display: inline-flex;
-  border-radius: 9999px;
   align-items: center;
   justify-content: center;
-  border-radius: var(--color-sds-size-radius-full, 4px);
-  font-weight: var(--color-sds-typography-weight-medium, 500);
-  font-family: var(--color-sds-typography-family-sans, sans-serif);
+  border-radius: var(--sds-radius-full);
+  font-weight: var(--sds-weight-medium);
+  font-family: var(--sds-typography-family-sans, sans-serif);
   cursor: pointer;
   transition: background-color 0.2s ease;
+  border: none;
+  background: transparent;
+  color: inherit;
 }
 
-/* Variantes */
+/* Variants */
 .btn--primary {
-  background-color: var(--color-sds-color-background-brand-default);
-  color: var(--color-sds-color-text-brand-on-brand);
-  border: 1px solid var(--color-sds-color-border-brand-default);
+  background-color: var(--sds-color-background-brand-default);
+  color: var(--sds-color-text-brand-on-brand);
+  border: 1px solid var(--sds-color-border-brand-default);
+}
+.btn--secondary {
+  background-color: var(--sds-color-background-default-default);
+  color: var(--sds-color-text-default-default);
+  border: 1px solid var(--sds-color-border-default-secondary);
 }
 .btn--neutral {
-  background-color: var(--color-sds-color-background-neutral-tertiary);
-  color: var(--color-sds-color-text-default-default);
-  border: 1px solid var(--color-sds-color-border-neutral-secondary);
+  background-color: var(--sds-color-background-neutral-tertiary);
+  color: var(--sds-color-text-neutral-on-neutral);
+  border: 1px solid var(--sds-color-border-neutral-secondary);
 }
-.btn--subtle {
-  background: transparent;
-  color: var(--color-sds-color-text-default-tertiary);
-  border: none;
+.btn--danger {
+  background-color: var(--sds-color-background-danger-default);
+  color: var(--sds-color-text-danger-on-danger);
+  border: 1px solid var(--sds-color-border-danger-default);
 }
 .btn--text {
-  border-radius: 8px;
-}
-/* Estados */
-.btn--disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
+  background: transparent;
+  color: var(--sds-color-text-default-default);
+  border: none;
 }
 
-/* Tamaños */
+/* Hover states (only when not disabled) */
+.btn:not(.btn--disabled):hover.btn--primary {
+  background-color: var(--sds-color-background-brand-hover);
+}
+.btn:not(.btn--disabled):hover.btn--secondary {
+  background-color: var(--sds-color-background-default-secondary-hover);
+}
+.btn:not(.btn--disabled):hover.btn--neutral {
+  background-color: var(--sds-color-background-neutral-tertiary-hover);
+}
+.btn:not(.btn--disabled):hover.btn--danger {
+  background-color: var(--sds-color-background-danger-hover);
+}
+.btn:not(.btn--disabled):hover.btn--text {
+  background-color: var(--sds-color-background-default-tertiary-hover);
+}
+
+/* Disabled state */
+.btn--disabled,
+.btn.btn--disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* Sizes */
 .btn--medium {
-  font-size: var(--color-sds-typography-scale-04, 1rem);
+  font-size: var(--sds-heading-size-base);
   padding: 0.5rem 1rem;
 }
 .btn--small {
-  font-size: var(--color-sds-typography-scale-03, 0.875rem);
+  font-size: var(--sds-subheading-size-small);
   padding: 0.25rem 0.75rem;
-}
-
-/* Hover (solo si no está disabled) */
-.btn:not(.btn--disabled):hover.btn--primary {
-  background-color: var(--color-sds-color-background-brand-hover);
-}
-.btn:not(.btn--disabled):hover.btn--neutral {
-  background-color: var(--color-sds-color-background-neutral-tertiary-hover);
-}
-.btn:not(.btn--disabled):hover.btn--subtle {
-  background-color: var(--color-sds-color-background-default-tertiary-hover);
 }
