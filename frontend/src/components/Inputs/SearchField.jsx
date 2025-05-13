@@ -44,7 +44,8 @@ export default function SearchField({
           aria-label="Limpiar"
           onClick={() => {
             onClear?.();
-            inputRef.current?.focus();
+            // Forzar un re-render para mantener el padding
+            setTimeout(() => { inputRef.current?.focus(); }, 0);
           }}
           style={{ position: 'absolute', right: 16, top: '50%', transform: 'translateY(-50%)' }}
         >
