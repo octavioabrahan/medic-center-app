@@ -5,6 +5,7 @@ import SwitchField from "./SwitchField";
 import InputField from "./InputField";
 import SelectField from "./SelectField";
 import SearchField from "./SearchField";
+import TextAreaField from "./TextAreaField";
 import './CheckboxFieldDemo.css';
 
 export default function InputDemo() {
@@ -46,6 +47,14 @@ export default function InputDemo() {
   // SearchField states
   const [searchValue, setSearchValue] = useState("");
   const [searchValueDisabled, setSearchValueDisabled] = useState("");
+
+  // TextAreaField states
+  const [textAreaDefault, setTextAreaDefault] = useState("Value");
+  const [textAreaPlaceholder, setTextAreaPlaceholder] = useState("");
+  const [textAreaFill, setTextAreaFill] = useState("Value");
+  const [textAreaPlaceholderFill, setTextAreaPlaceholderFill] = useState("");
+  const [textAreaError, setTextAreaError] = useState("Value");
+  const [textAreaErrorPlaceholder, setTextAreaErrorPlaceholder] = useState("");
 
   return (
     <section className="checkbox-demo-section">
@@ -395,6 +404,78 @@ export default function InputDemo() {
           <div className="checkbox-demo-label">Fill Container</div>
           <div style={{ border: '1px dashed gray', padding: '1rem', width: '100%', maxWidth: 300 }}>
             <SearchField value={searchValue} onChange={setSearchValue} placeholder="Buscar..." style={{ width: '100%' }} />
+          </div>
+        </div>
+      </div>
+
+      <h2>TextArea Field Demo</h2>
+      <div className="checkbox-demo-label">Default</div>
+      <div className="checkbox-demo-row">
+        <TextAreaField
+          label="Label"
+          value={textAreaDefault}
+          onChange={setTextAreaDefault}
+        />
+        <TextAreaField
+          label="Label"
+          value={textAreaPlaceholder}
+          placeholder="Value"
+          onChange={setTextAreaPlaceholder}
+        />
+      </div>
+      <div className="checkbox-demo-label">Disabled</div>
+      <div className="checkbox-demo-row">
+        <TextAreaField
+          label="Label"
+          value={textAreaDefault}
+          disabled={true}
+        />
+        <TextAreaField
+          label="Label"
+          value={textAreaPlaceholder}
+          placeholder="Value"
+          disabled={true}
+        />
+      </div>
+      <div className="checkbox-demo-label">Error</div>
+      <div className="checkbox-demo-row">
+        <TextAreaField
+          label="Label"
+          value={textAreaError}
+          error={true}
+          onChange={setTextAreaError}
+        />
+        <TextAreaField
+          label="Label"
+          value={textAreaErrorPlaceholder}
+          placeholder="Value"
+          error={true}
+          onChange={setTextAreaErrorPlaceholder}
+        />
+      </div>
+      <h2>Opciones de Ancho (Layout) TextArea</h2>
+      <div style={{ display: 'flex', gap: 48 }}>
+        {/* Hug content */}
+        <div style={{ minWidth: 0 }}>
+          <div className="checkbox-demo-label">Hug Content (Default)</div>
+          <div style={{ border: '1px dashed gray', padding: '1rem', width: 'fit-content', maxWidth: 300 }}>
+            <TextAreaField
+              label="Hug Content"
+              value={textAreaDefault}
+              onChange={setTextAreaDefault}
+            />
+          </div>
+        </div>
+        {/* Fill container */}
+        <div style={{ flex: 1 }}>
+          <div className="checkbox-demo-label">Fill Container</div>
+          <div style={{ border: '1px dashed gray', padding: '1rem', width: '100%', maxWidth: 300 }}>
+            <TextAreaField
+              label="Fill Container"
+              value={textAreaFill}
+              onChange={setTextAreaFill}
+              style={{ width: '100%' }}
+            />
           </div>
         </div>
       </div>
