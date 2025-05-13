@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef } from "react";
 import "./SelectField.css";
 import { ChevronDownIcon } from '@heroicons/react/20/solid';
 
@@ -23,6 +23,7 @@ export default function SelectField({
   onChange = () => {},
   style = {},
 }) {
+  const selectRef = useRef(null);
   const isPlaceholder = !value && placeholder;
   const state = disabled
     ? "state-disabled"
@@ -34,8 +35,12 @@ export default function SelectField({
   return (
     <div className={`select-field ${state} ${valueType}`} style={style}>
       <div className="label">{label}</div>
-      <div className="select">
+      <div className="select" onClick={disabled ? undefined : (e) => {
+        // Si el usuario hace click en el contenedor, enfoca el select
+        if (selectRef.current) selectRef.current.focus();
+      }} style={{ cursor: disabled ? 'not-allowed' : 'pointer' }}>
         <select
+          ref={selectRef}
           className="value"
           value={value}
           disabled={disabled}
