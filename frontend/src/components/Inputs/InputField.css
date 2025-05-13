@@ -1,0 +1,75 @@
+/* InputField styles using tokens from tokens.css */
+.input-field,
+.input-field * {
+  box-sizing: border-box;
+}
+.input-field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sds-space-200, 8px);
+  align-items: flex-start;
+  justify-content: flex-start;
+  position: relative;
+}
+.label {
+  color: var(--sds-color-text-default-default, #1e1e1e);
+  text-align: left;
+  font-family: "Inter", "Inter-Regular", sans-serif;
+  font-size: var(--sds-body-size-medium, 14px);
+  line-height: 140%;
+  font-weight: var(--sds-weight-regular, 400);
+  position: relative;
+  align-self: stretch;
+}
+.input {
+  background: var(--sds-color-background-default-default, #ffffff);
+  border-radius: var(--sds-radius-200, 8px);
+  border-style: solid;
+  border-color: var(--sds-color-border-default-default, #d9d9d9);
+  border-width: 1px;
+  padding: var(--sds-space-300, 12px) var(--sds-space-400, 16px);
+  display: flex;
+  flex-direction: row;
+  gap: 0px;
+  align-items: center;
+  justify-content: flex-start;
+  align-self: stretch;
+  flex-shrink: 0;
+  min-width: 240px;
+  position: relative;
+  overflow: hidden;
+}
+.value {
+  color: var(--sds-color-text-default-default, #1e1e1e);
+  text-align: left;
+  font-family: "Inter", "Inter-Regular", sans-serif;
+  font-size: var(--sds-body-size-medium, 14px);
+  line-height: 140%;
+  font-weight: var(--sds-weight-regular, 400);
+  position: relative;
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+}
+.input-field.state-default.value-type-placeholder .value,
+.input-field.state-error.value-type-placeholder .value {
+  color: var(--sds-color-text-default-tertiary, #b3b3b3);
+}
+.input-field.state-error .input {
+  border-color: var(--sds-color-border-danger-default, #900b09);
+}
+.input-field.state-disabled .label {
+  color: var(--sds-color-text-disabled-default, #9d9d9d);
+}
+.input-field.state-disabled .input {
+  background: var(--sds-color-background-disabled-default, #dadada);
+  border-color: var(--sds-color-border-disabled-secondary, #b2b2b2);
+}
+.input-field.state-disabled .value {
+  color: var(--sds-color-text-disabled-on-disabled, #9d9d9d);
+}
+.input-field[style*="width: 100%"],
+.input-field.fill-container {
+  width: 100% !important;
+}

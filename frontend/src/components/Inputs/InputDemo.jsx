@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import CheckboxField from "./CheckboxField";
 import RadioField from "./RadioField";
 import SwitchField from "./SwitchField";
+import InputField from "./InputField";
 import './CheckboxFieldDemo.css';
 
 export default function InputDemo() {
@@ -18,6 +19,14 @@ export default function InputDemo() {
   // Switch states
   const [switchDefault, setSwitchDefault] = useState(false);
   const [switchFill, setSwitchFill] = useState(false);
+
+  // InputField states
+  const [inputDefault, setInputDefault] = useState('Value');
+  const [inputPlaceholder, setInputPlaceholder] = useState('');
+  const [inputFill, setInputFill] = useState('Value');
+  const [inputPlaceholderFill, setInputPlaceholderFill] = useState('');
+  const [inputError, setInputError] = useState('Value');
+  const [inputErrorPlaceholder, setInputErrorPlaceholder] = useState('');
 
   return (
     <section className="checkbox-demo-section">
@@ -184,6 +193,78 @@ export default function InputDemo() {
               description="El switch ocupa todo el ancho"
               checked={switchFill}
               onChange={setSwitchFill}
+              style={{ width: '100%' }}
+            />
+          </div>
+        </div>
+      </div>
+
+      <h2>Input Field Demo</h2>
+      <div className="checkbox-demo-label">Default</div>
+      <div className="checkbox-demo-row">
+        <InputField
+          label="Label"
+          value={inputDefault}
+          onChange={setInputDefault}
+        />
+        <InputField
+          label="Label"
+          value={inputPlaceholder}
+          placeholder="Value"
+          onChange={setInputPlaceholder}
+        />
+      </div>
+      <div className="checkbox-demo-label">Disabled</div>
+      <div className="checkbox-demo-row">
+        <InputField
+          label="Label"
+          value={inputDefault}
+          disabled={true}
+        />
+        <InputField
+          label="Label"
+          value={inputPlaceholder}
+          placeholder="Value"
+          disabled={true}
+        />
+      </div>
+      <div className="checkbox-demo-label">Error</div>
+      <div className="checkbox-demo-row">
+        <InputField
+          label="Label"
+          value={inputError}
+          error={true}
+          onChange={setInputError}
+        />
+        <InputField
+          label="Label"
+          value={inputErrorPlaceholder}
+          placeholder="Value"
+          error={true}
+          onChange={setInputErrorPlaceholder}
+        />
+      </div>
+      <h2>Opciones de Ancho (Layout) Input</h2>
+      <div style={{ display: 'flex', gap: 48 }}>
+        {/* Hug content */}
+        <div style={{ minWidth: 0 }}>
+          <div className="checkbox-demo-label">Hug Content (Default)</div>
+          <div style={{ border: '1px dashed gray', padding: '1rem', width: 'fit-content', maxWidth: 300 }}>
+            <InputField
+              label="Hug Content"
+              value={inputDefault}
+              onChange={setInputDefault}
+            />
+          </div>
+        </div>
+        {/* Fill container */}
+        <div style={{ flex: 1 }}>
+          <div className="checkbox-demo-label">Fill Container</div>
+          <div style={{ border: '1px dashed gray', padding: '1rem', width: '100%', maxWidth: 300 }}>
+            <InputField
+              label="Fill Container"
+              value={inputFill}
+              onChange={setInputFill}
               style={{ width: '100%' }}
             />
           </div>
