@@ -83,7 +83,7 @@
 
 /* Hover real de Danger Subtle */
 .btn--danger.btn--subtle:not(:disabled):hover {
-  background-color: var(--sds-color-background-danger-subtle-hover);
+  background-color: var(--sds-color-background-danger-tertiary-hover);
 /* — si no tienes ese token, puedes usar filter: brightness(0.9) como fallback */
 }
 
