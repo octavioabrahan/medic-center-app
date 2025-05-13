@@ -31,7 +31,7 @@ export default function InputField({
   return (
     <div className={`input-field ${state} ${valueType}`} style={style}>
       <div className="label">{label}</div>
-      <div className="input">
+      <div className="inputField">
         <input
           className="value"
           type="text"

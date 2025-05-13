@@ -21,7 +21,7 @@
   position: relative;
   align-self: stretch;
 }
-.input {
+.inputField {
   background: var(--sds-color-background-default-default, #ffffff);
   border-radius: var(--sds-radius-200, 8px);
   border-style: solid;
@@ -55,13 +55,13 @@
 .input-field.state-error.value-type-placeholder .value {
   color: var(--sds-color-text-default-tertiary, #b3b3b3);
 }
-.input-field.state-error .input {
+.input-field.state-error .inputField {
   border-color: var(--sds-color-border-danger-default, #900b09);
 }
 .input-field.state-disabled .label {
   color: var(--sds-color-text-disabled-default, #9d9d9d);
 }
-.input-field.state-disabled .input {
+.input-field.state-disabled .inputField {
   background: var(--sds-color-background-disabled-default, #dadada);
   border-color: var(--sds-color-border-disabled-secondary, #b2b2b2);
 }
