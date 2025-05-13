@@ -17,16 +17,22 @@ import './Button.css';
  *   - 'medium' (default)
  *   - 'small'
  *
+ * Width:
+ *   - fullWidth: true | false (default) - Cuando es true, el botón ocupa todo el ancho del contenedor ("fill container")
+ *                                         Cuando es false, el botón se ajusta al contenido ("hug content")
+ *
  * Props:
  *   - variant: one of the above strings
  *   - size:    'medium' | 'small'
  *   - disabled:boolean
+ *   - fullWidth:boolean
  *   - children: JSX (text, icon, or both)
  */
 export const Button = ({
   variant = 'primary',
   size = 'medium',
   disabled = false,
+  fullWidth = false,
   children,
   ...props
 }) => {
@@ -34,7 +40,8 @@ export const Button = ({
     'btn',
     `btn--${variant}`,
     `btn--${size}`,
-    disabled && 'btn--disabled'
+    disabled && 'btn--disabled',
+    fullWidth && 'btn--full-width'
   ]
     .filter(Boolean)
     .join(' ');

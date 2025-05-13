@@ -14,6 +14,13 @@
   cursor: pointer;
   transition: background-color 0.2s ease, border-color 0.2s ease, filter 0.2s ease;
   /* No width:100% para permitir ajuste al contenido */
+  /* Por defecto, el botón se ajusta al contenido (hug content) */
+}
+
+/* Opción de ancho completo (fill container) */
+.btn--full-width {
+  width: 100%;
+  display: flex; /* Cambia a flex para ocupar todo el ancho */
 }
 
 .btn__icon {

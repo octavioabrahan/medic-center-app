@@ -3,6 +3,7 @@ import React from 'react';
 import '../../styles/tokens.css';
 import './Button.css';
 import { PlusIcon } from '@heroicons/react/24/solid';
+import Button from './Button'; // Importamos el componente Button
 
 const componentSets = [
   {
@@ -26,6 +27,7 @@ const states = ['default', 'disabled'];
 export default function ButtonDemo() {
   return (
     <div style={{ padding: '2rem', fontFamily: 'sans-serif' }}>
+      {/* Demo original */}
       {componentSets.map(set => (
         <section key={set.name} style={{ marginBottom: '3rem' }}>
           <h1>{set.name}</h1>
@@ -47,14 +49,6 @@ export default function ButtonDemo() {
                     </strong>
                   </div>
                 ))}
-
-                {/* filas de variantes */}
-                {set.variants.map(rawVariant => {
-                  // rawVariant puede ser "danger-subtle" o "icon-primary", etc.
-                  const parts = rawVariant.split('-'); 
-                  // e.g. ['danger','subtle']  o ['icon','primary']
-                  return parts.map((_, idx) => null), null; // just to clarify
-                })}
 
                 {/* Mejor: construimos por variante */}
                 {set.variants.map(rawVariant => {
@@ -108,6 +102,80 @@ export default function ButtonDemo() {
           ))}
         </section>
       ))}
+      
+      {/* Nueva sección de demostración para opciones de ancho (Hug Content vs Fill Container) */}
+      <section style={{ marginBottom: '3rem' }}>
+        <h1>Opciones de Ancho (Layout)</h1>
+        
+        <div style={{ marginBottom: '2rem' }}>
+          <h2>Hug Content (Default)</h2>
+          <div style={{ 
+            border: '1px dashed gray', 
+            padding: '1rem',
+            width: '100%',
+            maxWidth: '500px'
+          }}>
+            <Button variant="primary" size="medium">
+              <PlusIcon className="btn__icon" />
+              <span style={{ marginLeft: '.5rem' }}>Hug Content</span>
+            </Button>
+          </div>
+          <p style={{ marginTop: '0.5rem', color: '#666' }}>
+            El botón se ajusta al tamaño de su contenido
+          </p>
+        </div>
+        
+        <div style={{ marginBottom: '2rem' }}>
+          <h2>Fill Container (fullWidth=true)</h2>
+          <div style={{ 
+            border: '1px dashed gray', 
+            padding: '1rem',
+            width: '100%',
+            maxWidth: '500px'
+          }}>
+            <Button variant="primary" size="medium" fullWidth={true}>
+              <PlusIcon className="btn__icon" />
+              <span style={{ marginLeft: '.5rem' }}>Fill Container</span>
+            </Button>
+          </div>
+          <p style={{ marginTop: '0.5rem', color: '#666' }}>
+            El botón ocupa todo el ancho disponible del contenedor
+          </p>
+        </div>
+        
+        <div style={{ marginBottom: '2rem' }}>
+          <h2>Comparación de Variantes</h2>
+          <div style={{ 
+            display: 'grid',
+            gridTemplateColumns: '1fr',
+            gap: '1rem',
+            border: '1px dashed gray', 
+            padding: '1rem',
+            width: '100%',
+            maxWidth: '500px'
+          }}>
+            <Button variant="primary" fullWidth={true}>
+              <PlusIcon className="btn__icon" />
+              <span style={{ marginLeft: '.5rem' }}>Primary (Fill)</span>
+            </Button>
+            
+            <Button variant="neutral" fullWidth={true}>
+              <PlusIcon className="btn__icon" />
+              <span style={{ marginLeft: '.5rem' }}>Neutral (Fill)</span>
+            </Button>
+            
+            <Button variant="subtle" fullWidth={true}>
+              <PlusIcon className="btn__icon" />
+              <span style={{ marginLeft: '.5rem' }}>Subtle (Fill)</span>
+            </Button>
+            
+            <Button variant="danger" fullWidth={true}>
+              <PlusIcon className="btn__icon" />
+              <span style={{ marginLeft: '.5rem' }}>Danger (Fill)</span>
+            </Button>
+          </div>
+        </div>
+      </section>
     </div>
   );
 }
