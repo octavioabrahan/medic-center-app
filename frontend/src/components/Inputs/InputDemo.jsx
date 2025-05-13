@@ -4,6 +4,7 @@ import RadioField from "./RadioField";
 import SwitchField from "./SwitchField";
 import InputField from "./InputField";
 import SelectField from "./SelectField";
+import SearchField from "./SearchField";
 import './CheckboxFieldDemo.css';
 
 export default function InputDemo() {
@@ -41,6 +42,10 @@ export default function InputDemo() {
   const [selectPlaceholderFill, setSelectPlaceholderFill] = useState('');
   const [selectError, setSelectError] = useState('value');
   const [selectErrorPlaceholder, setSelectErrorPlaceholder] = useState('');
+
+  // SearchField states
+  const [searchValue, setSearchValue] = useState("");
+  const [searchValueDisabled, setSearchValueDisabled] = useState("");
 
   return (
     <section className="checkbox-demo-section">
@@ -361,6 +366,35 @@ export default function InputDemo() {
               onChange={setSelectFill}
               style={{ width: '100%' }}
             />
+          </div>
+        </div>
+      </div>
+
+      <h2>Search Field Demo</h2>
+      <div className="checkbox-demo-label">Default</div>
+      <div className="checkbox-demo-row">
+        <SearchField value={searchValue} onChange={setSearchValue} placeholder="Buscar..." onClear={() => setSearchValue("")} />
+        <SearchField value="" onChange={() => {}} placeholder="Placeholder" />
+      </div>
+      <div className="checkbox-demo-label">Disabled</div>
+      <div className="checkbox-demo-row">
+        <SearchField value={searchValueDisabled} onChange={setSearchValueDisabled} disabled placeholder="Buscar..." />
+        <SearchField value="" onChange={() => {}} disabled placeholder="Placeholder" />
+      </div>
+      <h2>Opciones de Ancho (Layout) Search</h2>
+      <div style={{ display: 'flex', gap: 48 }}>
+        {/* Hug content */}
+        <div style={{ minWidth: 0 }}>
+          <div className="checkbox-demo-label">Hug Content (Default)</div>
+          <div style={{ border: '1px dashed gray', padding: '1rem', width: 'fit-content', maxWidth: 300 }}>
+            <SearchField value={searchValue} onChange={setSearchValue} placeholder="Buscar..." />
+          </div>
+        </div>
+        {/* Fill container */}
+        <div style={{ flex: 1 }}>
+          <div className="checkbox-demo-label">Fill Container</div>
+          <div style={{ border: '1px dashed gray', padding: '1rem', width: '100%', maxWidth: 300 }}>
+            <SearchField value={searchValue} onChange={setSearchValue} placeholder="Buscar..." style={{ width: '100%' }} />
           </div>
         </div>
       </div>
