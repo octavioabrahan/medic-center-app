@@ -35,6 +35,9 @@ export default function SearchField({
         aria-label={placeholder}
         autoComplete="off"
       />
+      <span className="heroicons-micro-magnifying-glass" aria-hidden="true" style={{ position: 'absolute', right: 16, top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none' }}>
+        <MagnifyingGlassIcon width={16} height={16} style={{ color: '#000' }} />
+      </span>
       {showClear ? (
         <button
           type="button"
@@ -45,14 +48,11 @@ export default function SearchField({
             onClear?.();
             inputRef.current?.focus();
           }}
+          style={{ position: 'absolute', right: 16, top: '50%', transform: 'translateY(-50%)' }}
         >
           <XMarkIcon width={16} height={16} style={{ color: '#000' }} />
         </button>
-      ) : (
-        <span className="heroicons-micro-magnifying-glass" aria-hidden="true">
-          <MagnifyingGlassIcon width={16} height={16} style={{ color: '#000' }} />
-        </span>
-      )}
+      ) : null}
     </div>
   );
 }
