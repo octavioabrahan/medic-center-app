@@ -20,6 +20,10 @@
   transition: border-color 0.2s;
   min-height: unset;
   height: auto;
+  max-width: 100%;
+}
+.search[style*="width: 100%"] {
+  width: 100% !important;
 }
 .search.state-disabled {
   background: var(--sds-color-background-disabled-default, #dadada);

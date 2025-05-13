@@ -10,6 +10,8 @@
   align-items: flex-start;
   justify-content: flex-start;
   position: relative;
+  width: 240px;
+  max-width: 100%;
 }
 .label {
   color: var(--sds-color-text-default-default, #1e1e1e);
@@ -38,6 +40,7 @@
   min-width: 240px;
   position: relative;
   overflow: hidden;
+  width: 100%;
 }
 .value {
   color: var(--sds-color-text-default-default, #1e1e1e);
