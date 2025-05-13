@@ -3,6 +3,7 @@ import CheckboxField from "./CheckboxField";
 import RadioField from "./RadioField";
 import SwitchField from "./SwitchField";
 import InputField from "./InputField";
+import SelectField from "./SelectField";
 import './CheckboxFieldDemo.css';
 
 export default function InputDemo() {
@@ -27,6 +28,19 @@ export default function InputDemo() {
   const [inputPlaceholderFill, setInputPlaceholderFill] = useState('');
   const [inputError, setInputError] = useState('Value');
   const [inputErrorPlaceholder, setInputErrorPlaceholder] = useState('');
+
+  // SelectField states
+  const selectOptions = [
+    { label: 'Value', value: 'value' },
+    { label: 'Option 2', value: 'option2' },
+    { label: 'Option 3', value: 'option3' },
+  ];
+  const [selectDefault, setSelectDefault] = useState('value');
+  const [selectPlaceholder, setSelectPlaceholder] = useState('');
+  const [selectFill, setSelectFill] = useState('value');
+  const [selectPlaceholderFill, setSelectPlaceholderFill] = useState('');
+  const [selectError, setSelectError] = useState('value');
+  const [selectErrorPlaceholder, setSelectErrorPlaceholder] = useState('');
 
   return (
     <section className="checkbox-demo-section">
@@ -265,6 +279,86 @@ export default function InputDemo() {
               label="Fill Container"
               value={inputFill}
               onChange={setInputFill}
+              style={{ width: '100%' }}
+            />
+          </div>
+        </div>
+      </div>
+
+      <h2>Select Field Demo</h2>
+      <div className="checkbox-demo-label">Default</div>
+      <div className="checkbox-demo-row">
+        <SelectField
+          label="Label"
+          value={selectDefault}
+          options={selectOptions}
+          onChange={setSelectDefault}
+        />
+        <SelectField
+          label="Label"
+          value={selectPlaceholder}
+          placeholder="Value"
+          options={selectOptions}
+          onChange={setSelectPlaceholder}
+        />
+      </div>
+      <div className="checkbox-demo-label">Disabled</div>
+      <div className="checkbox-demo-row">
+        <SelectField
+          label="Label"
+          value={selectDefault}
+          options={selectOptions}
+          disabled={true}
+        />
+        <SelectField
+          label="Label"
+          value={selectPlaceholder}
+          placeholder="Value"
+          options={selectOptions}
+          disabled={true}
+        />
+      </div>
+      <div className="checkbox-demo-label">Error</div>
+      <div className="checkbox-demo-row">
+        <SelectField
+          label="Label"
+          value={selectError}
+          options={selectOptions}
+          error={true}
+          onChange={setSelectError}
+        />
+        <SelectField
+          label="Label"
+          value={selectErrorPlaceholder}
+          placeholder="Value"
+          options={selectOptions}
+          error={true}
+          onChange={setSelectErrorPlaceholder}
+        />
+      </div>
+      <h2>Opciones de Ancho (Layout) Select</h2>
+      <div style={{ display: 'flex', gap: 48 }}>
+        {/* Hug content */}
+        <div style={{ minWidth: 0 }}>
+          <div className="checkbox-demo-label">Hug Content (Default)</div>
+          <div style={{ border: '1px dashed gray', padding: '1rem', width: 'fit-content', maxWidth: 300 }}>
+            <SelectField
+              label="Hug Content"
+              value={selectDefault}
+              options={selectOptions}
+              onChange={setSelectDefault}
+            />
+          </div>
+        </div>
+        {/* Fill container */}
+        <div style={{ flex: 1 }}>
+          <div className="checkbox-demo-label">Fill Container</div>
+          <div style={{ border: '1px dashed gray', padding: '1rem', width: '100%', maxWidth: 300 }}>
+            <SelectField
+              label="Fill Container"
+              value={selectFill}
+              options={selectOptions}
+              onChange={setSelectFill}
               style={{ width: '100%' }}
             />
           </div>

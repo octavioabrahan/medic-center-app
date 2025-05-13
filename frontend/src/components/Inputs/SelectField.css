@@ -1,9 +1,9 @@
-/* InputField styles using tokens from tokens.css */
-.input-field,
-.input-field * {
+/* SelectField styles using tokens from tokens.css */
+.select-field,
+.select-field * {
   box-sizing: border-box;
 }
-.input-field {
+.select-field {
   display: flex;
   flex-direction: column;
   gap: var(--sds-space-200, 8px);
@@ -21,23 +21,23 @@
   position: relative;
   align-self: stretch;
 }
-.input {
+.select {
   background: var(--sds-color-background-default-default, #ffffff);
   border-radius: var(--sds-radius-200, 8px);
   border-style: solid;
   border-color: var(--sds-color-border-default-default, #d9d9d9);
   border-width: 1px;
-  padding: var(--sds-space-300, 12px) var(--sds-space-400, 16px);
+  padding: var(--sds-space-300, 12px) var(--sds-space-300, 12px) var(--sds-space-300, 12px) var(--sds-space-400, 16px);
   display: flex;
   flex-direction: row;
-  gap: 0px;
+  gap: var(--sds-space-200, 8px);
   align-items: center;
   justify-content: flex-start;
-  align-self: stretch;
   flex-shrink: 0;
-  min-width: 240px;
+  width: 240px;
+  height: 40px;
+  min-width: 100px;
   position: relative;
-  overflow: hidden;
 }
 .value {
   color: var(--sds-color-text-default-default, #1e1e1e);
@@ -51,28 +51,45 @@
   background: transparent;
   border: none;
   outline: none;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
 }
-.input-field.state-default.value-type-placeholder .value,
-.input-field.state-error.value-type-placeholder .value {
+.heroicons-micro-chevron-down {
+  flex-shrink: 0;
+  width: 16px;
+  height: 16px;
+  position: relative;
+  overflow: visible;
+  pointer-events: none;
   color: var(--sds-color-text-default-tertiary, #b3b3b3);
 }
-.input-field.state-error .input {
+.select-field.state-default.value-type-placeholder .value,
+.select-field.state-error.value-type-placeholder .value {
+  color: var(--sds-color-text-default-tertiary, #b3b3b3);
+}
+.select-field.state-error .select {
   border-color: var(--sds-color-border-danger-default, #900b09);
 }
-.input-field.state-disabled .label {
+.select-field.state-error .error {
+  color: var(--sds-color-text-danger-default, #900b09);
+  text-align: left;
+  font-family: "Inter", "Inter-Regular", sans-serif;
+  font-size: var(--sds-body-size-medium, 14px);
+  line-height: 140%;
+  font-weight: var(--sds-weight-regular, 400);
+  position: relative;
+  align-self: stretch;
+}
+.select-field.state-disabled .label,
+.select-field.state-disabled .value {
   color: var(--sds-color-text-disabled-default, #9d9d9d);
 }
-.input-field.state-disabled .input {
+.select-field.state-disabled .select {
   background: var(--sds-color-background-disabled-default, #dadada);
-  border-color: var(--sds-color-border-disabled-secondary, #b2b2b2);
+  border-color: #b2b2b2;
 }
-.input-field.state-disabled .value {
-  color: var(--sds-color-text-disabled-on-disabled, #9d9d9d);
-}
-.input-field.state-disabled.value-type-placeholder .value {
-  color: var(--sds-color-text-disabled-on-disabled, #9d9d9d);
-}
-.input-field[style*="width: 100%"],
-.input-field.fill-container {
+.select-field[style*="width: 100%"],
+.select-field.fill-container {
   width: 100% !important;
 }
