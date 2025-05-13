@@ -22,23 +22,17 @@
   align-self: stretch;
 }
 .select {
-  background: var(--sds-color-background-default-default, #ffffff);
-  border-radius: var(--sds-radius-200, 8px);
-  border-style: solid;
-  border-color: var(--sds-color-border-default-default, #d9d9d9);
-  border-width: 1px;
-  padding: var(--sds-space-300, 12px) var(--sds-space-300, 12px) var(--sds-space-300, 12px) var(--sds-space-400, 16px);
-  display: flex;
-  flex-direction: row;
-  gap: var(--sds-space-200, 8px);
-  align-items: center;
-  justify-content: flex-start;
-  flex-shrink: 0;
+  /* Elimina border y background del wrapper para evitar doble borde */
+  background: none;
+  border: none;
+  box-shadow: none;
+  padding: 0;
+  margin: 0;
   width: 240px;
   height: 40px;
-  min-width: 100px;
+  display: flex;
+  align-items: center;
   position: relative;
-  cursor: pointer;
 }
 .select-clickable {
   cursor: pointer;
@@ -156,6 +150,7 @@
   outline: none;
   cursor: pointer;
   box-sizing: border-box;
+  /* Elimina el border del wrapper para evitar doble borde */
 }
 .select-field.state-default.value-type-placeholder .select-native,
 .select-field.state-error.value-type-placeholder .select-native {
