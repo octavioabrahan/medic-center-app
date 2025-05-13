@@ -133,6 +133,7 @@
 
 /* Icon Button Hover & Disabled */
 .btn--icon:not(:disabled):hover {
+  background-color: var(--sds-color-background-default-secondary-hover);
   filter: brightness(0.9);
 }
 
