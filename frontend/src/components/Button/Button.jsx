@@ -1,14 +1,31 @@
+// src/components/Button.jsx
+
 import React from 'react';
 import './Button.css';
 
 /**
  * Button component leveraging CSS custom properties from tokens.css for consistent styling.
- * Variants: primary, neutral, subtle
- * Sizes: medium, small
+ *
+ * Variants:
+ *   - 'primary' (default)
+ *   - 'neutral'
+ *   - 'subtle'
+ *   - 'danger'
+ *   - 'icon'    (icon-only square buttons)
+ *
+ * Sizes:
+ *   - 'medium' (default)
+ *   - 'small'
+ *
+ * Props:
+ *   - variant: one of the above strings
+ *   - size:    'medium' | 'small'
+ *   - disabled:boolean
+ *   - children: JSX (text, icon, or both)
  */
 export const Button = ({
-  variant = 'primary',   // 'primary' | 'neutral' | 'subtle'
-  size = 'medium',       // 'medium' | 'small'
+  variant = 'primary',
+  size = 'medium',
   disabled = false,
   children,
   ...props
@@ -17,7 +34,7 @@ export const Button = ({
     'btn',
     `btn--${variant}`,
     `btn--${size}`,
-    disabled ? 'btn--disabled' : ''
+    disabled && 'btn--disabled'
   ]
     .filter(Boolean)
     .join(' ');
