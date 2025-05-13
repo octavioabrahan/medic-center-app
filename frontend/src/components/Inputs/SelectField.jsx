@@ -32,13 +32,23 @@ export default function SelectField({
     : "state-default";
   const valueType = isPlaceholder ? "value-type-placeholder" : "value-type-value";
 
+  // Al hacer click en el contenedor, dispara el click real del select
+  const handleContainerClick = (e) => {
+    if (disabled) return;
+    // Si el click fue en el icono, o en el contenedor, abre el select
+    if (selectRef.current) {
+      selectRef.current.focus();
+      // Para forzar el despliegue del menú en la mayoría de navegadores
+      const event = document.createEvent('MouseEvents');
+      event.initMouseEvent('mousedown', true, true, window);
+      selectRef.current.dispatchEvent(event);
+    }
+  };
+
   return (
     <div className={`select-field ${state} ${valueType}`} style={style}>
       <div className="label">{label}</div>
-      <div className="select" onClick={disabled ? undefined : (e) => {
-        // Si el usuario hace click en el contenedor, enfoca el select
-        if (selectRef.current) selectRef.current.focus();
-      }} style={{ cursor: disabled ? 'not-allowed' : 'pointer' }}>
+      <div className="select" onMouseDown={handleContainerClick} style={{ cursor: disabled ? 'not-allowed' : 'pointer' }}>
         <select
           ref={selectRef}
           className="value"
