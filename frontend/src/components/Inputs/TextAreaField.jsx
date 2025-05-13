@@ -26,10 +26,10 @@ export default function TextAreaField({
 
   return (
     <div className={`textarea-field ${state} ${valueType}`} style={style} {...props}>
-      <div className="label">{label}</div>
-      <div className="textarea">
+      <div className="label-textarea">{label}</div>
+      <div className="textarea-container">
         <textarea
-          className="valueTextField"
+          className="textarea-value"
           value={value}
           placeholder={placeholder}
           disabled={disabled}
@@ -42,7 +42,7 @@ export default function TextAreaField({
             font: "inherit",
             color: "inherit",
             padding: 0,
-            resize: "both", // Usamos el resize nativo del navegador
+            resize: disabled ? "none" : "both", // Desactivar resize cuando está disabled
             minHeight: 56,
           }}
         />

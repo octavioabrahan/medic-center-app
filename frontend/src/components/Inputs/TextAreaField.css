@@ -10,7 +10,7 @@
   justify-content: flex-start;
   position: relative;
 }
-.label {
+.textarea-field .label-textarea {
   color: var(--sds-color-text-default-default, #1e1e1e);
   text-align: left;
   font-family: var(--body-base-font-family, "Inter", sans-serif);
@@ -20,7 +20,7 @@
   position: relative;
   align-self: stretch;
 }
-.textarea {
+.textarea-field .textarea-container {
   background: var(--sds-color-background-default-default, #ffffff);
   border-radius: var(--sds-radius-200, 8px);
   border-style: solid;
@@ -39,7 +39,7 @@
   position: relative;
   overflow: visible; /* Mantener visible para permitir el crecimiento del textarea */
 }
-.valueTextField {
+.textarea-field .textarea-value {
   color: var(--sds-color-text-default-default, #1e1e1e);
   text-align: left;
   font-family: var(--body-base-font-family, "Inter", sans-serif);
@@ -54,19 +54,23 @@
   resize: both; /* Habilitamos el resize nativo del navegador */
   min-height: 56px;
 }
+
+.textarea-field.state-disabled .textarea-value {
+  resize: none; /* Desactivar resize cuando está en estado disabled */
+}
 /* Eliminamos los estilos del icono personalizado ya que usamos el resize nativo */
-.textarea-field.state-default.value-type-placeholder .valueTextField,
-.textarea-field.state-error.value-type-placeholder .valueTextField {
+.textarea-field.state-default.value-type-placeholder .textarea-value,
+.textarea-field.state-error.value-type-placeholder .textarea-value {
   color: var(--sds-color-text-default-tertiary, #b3b3b3);
 }
-.textarea-field.state-error .textarea {
+.textarea-field.state-error .textarea-container {
   border-color: var(--sds-color-border-danger-default, #900b09);
 }
-.textarea-field.state-disabled .label,
-.textarea-field.state-disabled .valueTextField {
+.textarea-field.state-disabled .label-textarea,
+.textarea-field.state-disabled .textarea-value {
   color: var(--sds-color-text-disabled-default, #9d9d9d);
 }
-.textarea-field.state-disabled .textarea {
+.textarea-field.state-disabled .textarea-container {
   background: var(--sds-color-background-disabled-default, #dadada);
   border-color: var(--sds-color-border-neutral-tertiary, #b2b2b2);
 }
