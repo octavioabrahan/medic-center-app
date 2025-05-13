@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Suspense, lazy } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import Home from './pages/Home';
 import AgendarHora from './pages/AgendarHora';
@@ -22,17 +22,28 @@ import CotizacionesAdmin from './components/admin/CotizacionesAdmin';
 import AdminLayout from './components/admin/AdminLayout';
 import AdminExamenes from './pages/admin/AdminExamenes';
 import AdministracionPage from './pages/admin/AdministracionPage'; // Nueva página de administración
-import ButtonDemo from './components/Button/ButtonDemo';
-import InputDemo from './components/Inputs/InputDemo';
-// Importar componentes de autenticación
 import LoginPage from './pages/auth/LoginPage';
 import ProtectedRoute from './components/auth/ProtectedRoute';
-// Eliminamos la importación no utilizada de 'auth'
+
+// Lazy load para los demos
+const ButtonDemo = lazy(() => import('./components/Button/ButtonDemo'));
+const InputDemo = lazy(() => import('./components/Inputs/InputDemo'));
 
 function App() {
   return (
     <Router>
       <Routes>
+        {/* Demo routes primero para evitar cargar el resto de la app innecesariamente */}
+        <Route path="/demo/button" element={
+          <Suspense fallback={<div>Cargando demo...</div>}>
+            <ButtonDemo />
+          </Suspense>
+        } />
+        <Route path="/demo/inputs" element={
+          <Suspense fallback={<div>Cargando demo...</div>}>
+            <InputDemo />
+          </Suspense>
+        } />
         {/* Rutas públicas */}
         <Route path="/" element={<Home />} />
         <Route path="/cotizar" element={<CotizadorExamenes />} />
@@ -40,11 +51,6 @@ function App() {
         <Route path="/agendamiento/privado" element={<AgendamientoPrivadoForm />} />
         <Route path="/agendamiento/convenio" element={<AgendamientoEmpresaForm />} />
         <Route path="/agendamiento" element={<AgendamientoIndex />} />
-        <Route path="/buttondemo" element={<ButtonDemo />} />
-        
-        {/* Demo routes */}
-        <Route path="/demo/button" element={<ButtonDemo />} />
-        <Route path="/demo/inputs" element={<InputDemo />} />
         
         {/* Ruta de login */}
         <Route path="/login" element={<LoginPage />} />
