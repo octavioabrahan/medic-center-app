@@ -18,6 +18,8 @@
   position: relative;
   overflow: hidden;
   transition: border-color 0.2s;
+  min-height: unset;
+  height: auto;
 }
 .search.state-disabled {
   background: var(--sds-color-background-disabled-default, #dadada);
