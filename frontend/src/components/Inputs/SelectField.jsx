@@ -34,9 +34,9 @@ export default function SelectField({
   return (
     <div className={`select-field ${state} ${valueType}`} style={style}>
       <div className="label">{label}</div>
-      <div className="select select-clickable">
+      <div className="select select-native-wrapper">
         <select
-          className="value select-overlay"
+          className="select-native"
           value={value}
           disabled={disabled}
           onChange={e => onChange(e.target.value)}
@@ -46,11 +46,6 @@ export default function SelectField({
             <option key={opt.value} value={opt.value}>{opt.label}</option>
           ))}
         </select>
-        <span className="select-value-text">
-          {value
-            ? (options.find(opt => opt.value === value)?.label || value)
-            : placeholder || ''}
-        </span>
         <ChevronDownIcon className="heroicons-micro-chevron-down" />
       </div>
     </div>

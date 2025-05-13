@@ -85,12 +85,13 @@
   -moz-appearance: none;
 }
 .heroicons-micro-chevron-down {
-  flex-shrink: 0;
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
   width: 16px;
   height: 16px;
-  position: relative;
-  overflow: visible;
-  pointer-events: none;
   color: var(--sds-color-text-default-tertiary, #b3b3b3);
 }
 .select-field.state-default.value-type-placeholder .value,
@@ -128,5 +129,51 @@
 }
 .select-field[style*="width: 100%"],
 .select-field.fill-container {
+  width: 100% !important;
+}
+.select-native-wrapper {
+  position: relative;
+  width: 240px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+}
+.select-native {
+  width: 100%;
+  height: 100%;
+  padding: var(--sds-space-300, 12px) var(--sds-space-300, 36px) var(--sds-space-300, 12px) var(--sds-space-400, 16px);
+  border-radius: var(--sds-radius-200, 8px);
+  border: 1px solid var(--sds-color-border-default-default, #d9d9d9);
+  background: var(--sds-color-background-default-default, #fff);
+  color: var(--sds-color-text-default-default, #1e1e1e);
+  font-family: "Inter", "Inter-Regular", sans-serif;
+  font-size: var(--sds-body-size-medium, 14px);
+  line-height: 140%;
+  font-weight: var(--sds-weight-regular, 400);
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  outline: none;
+  cursor: pointer;
+  box-sizing: border-box;
+}
+.select-field.state-default.value-type-placeholder .select-native,
+.select-field.state-error.value-type-placeholder .select-native {
+  color: var(--sds-color-text-default-tertiary, #b3b3b3);
+}
+.select-field.state-error .select-native {
+  border-color: var(--sds-color-border-danger-default, #900b09);
+}
+.select-field.state-disabled .label,
+.select-field.state-disabled .select-native {
+  color: var(--sds-color-text-disabled-default, #9d9d9d);
+}
+.select-field.state-disabled .select-native {
+  background: var(--sds-color-background-disabled-default, #dadada);
+  border-color: #b2b2b2;
+  cursor: not-allowed;
+}
+.select-field[style*="width: 100%"],
+.select-native-wrapper[style*="width: 100%"] {
   width: 100% !important;
 }
