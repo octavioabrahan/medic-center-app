@@ -54,7 +54,7 @@
 }
 
 .btn--subtle:hover {
-  background-color: var(--sds-color-border-default-default);
+  border-color: var(--sds-color-border-default-default);
 }
 
 .btn--danger {

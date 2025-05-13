@@ -4,14 +4,14 @@ import '../../styles/tokens.css';
 import './Button.css';
 import { PlusIcon } from '@heroicons/react/24/solid';
 
-const variants = ['primary', 'neutral', 'subtle'];
+const variants = ['primary', 'neutral', 'subtle', 'danger', 'icon'];
 const sizes    = ['small', 'medium'];
 
 export default function ButtonDemo() {
   return (
     <div style={{ padding: '2rem', fontFamily: 'sans-serif' }}>
       <h1>Button Component Demo</h1>
-      
+
       {sizes.map(size => (
         <div key={size} style={{ marginBottom: '2rem' }}>
           <h2 style={{ textTransform: 'capitalize' }}>{size}</h2>
