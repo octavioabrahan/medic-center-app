@@ -58,15 +58,15 @@
   border-color:     var(--sds-color-border-neutral-secondary);
 }
 
-.btn--neutral:hover {
-  border-color: var(--sds-color-border-default-default);
-}
-
 /* Subtle */
 .btn--subtle {
   background-color: transparent;
   color:            var(--sds-color-text-default-default);
   border-color:     transparent;
+}
+/* Subtle Hover*/
+.btn--subtle:hover {
+  border-color: var(--sds-color-border-default-default);
 }
 
 /* Danger */
