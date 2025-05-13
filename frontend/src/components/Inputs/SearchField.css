@@ -3,7 +3,7 @@
   box-sizing: border-box;
 }
 .search {
-  background: var(--sds-color-background-default-default, #fff);
+  background: var(--sds-color-background-default-default, #ffffff);
   border-radius: var(--sds-radius-full, 9999px);
   border-style: solid;
   border-color: var(--sds-color-border-default-default, #d9d9d9);
@@ -15,19 +15,16 @@
   align-items: center;
   justify-content: flex-start;
   width: 239px;
+  min-height: 44px;
   position: relative;
   overflow: hidden;
-  transition: border-color 0.2s;
-  min-height: unset;
-  height: auto;
-  max-width: 100%;
 }
 .search[style*="width: 100%"] {
   width: 100% !important;
 }
 .search.state-disabled {
   background: var(--sds-color-background-disabled-default, #dadada);
-  border-color: var(--sds-color-border-neutral-tertiary, #b2b2b2);
+  border-color: var(--sds-color-border-disabled-secondary, #b2b2b2);
 }
 .search.state-disabled .value {
   color: var(--sds-color-text-disabled-on-disabled, #9d9d9d);
@@ -38,15 +35,17 @@
 .value {
   color: var(--sds-color-text-default-default, #1e1e1e);
   text-align: left;
-  font-family: var(--body-base-font-family, "Inter", sans-serif);
-  font-size: var(--body-base-font-size, 16px);
-  line-height: var(--body-base-line-height, 140%);
-  font-weight: var(--body-base-font-weight, 400);
-  background: none;
+  font-family: var(--sds-body-base-font-family, "Inter", sans-serif);
+  font-size: var(--sds-body-base-font-size, 16px);
+  line-height: var(--sds-body-base-line-height, 140%);
+  font-weight: var(--sds-body-base-font-weight, 400);
+  position: relative;
+  flex: 1;
+  padding: 0;
+  height: 100%;
+  background: transparent;
   border: none;
   outline: none;
-  flex: 1;
-  min-width: 0;
 }
 .heroicons-micro-x-mark,
 .heroicons-micro-magnifying-glass {
@@ -76,4 +75,13 @@
 .heroicons-micro-x-mark:focus {
   outline: 2px solid var(--sds-color-border-brand-default, #20377a);
   outline-offset: 2px;
+}
+.search.state-default .heroicons-micro-magnifying-glass,
+.search.state-disabled .heroicons-micro-magnifying-glass {
+  border-radius: 1.5px;
+  flex-shrink: 0;
+  width: 16px;
+  height: 16px;
+  position: relative;
+  overflow: visible;
 }

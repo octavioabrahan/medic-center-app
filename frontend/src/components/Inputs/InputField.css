@@ -10,16 +10,14 @@
   align-items: flex-start;
   justify-content: flex-start;
   position: relative;
-  width: 240px;
-  max-width: 100%;
 }
 .label {
   color: var(--sds-color-text-default-default, #1e1e1e);
   text-align: left;
-  font-family: "Inter", "Inter-Regular", sans-serif;
-  font-size: var(--sds-body-size-medium, 14px);
-  line-height: 140%;
-  font-weight: var(--sds-weight-regular, 400);
+  font-family: var(--sds-body-base-font-family, "Inter", sans-serif);
+  font-size: var(--sds-body-base-font-size, 16px);
+  line-height: var(--sds-body-base-line-height, 140%);
+  font-weight: var(--sds-body-base-font-weight, 400);
   position: relative;
   align-self: stretch;
 }
@@ -32,25 +30,23 @@
   padding: var(--sds-space-300, 12px) var(--sds-space-400, 16px);
   display: flex;
   flex-direction: row;
-  gap: 0px;
   align-items: center;
-  justify-content: flex-start;
-  align-self: stretch;
-  flex-shrink: 0;
   min-width: 240px;
+  min-height: 44px;
   position: relative;
   overflow: hidden;
-  width: 100%;
 }
 .value {
   color: var(--sds-color-text-default-default, #1e1e1e);
   text-align: left;
-  font-family: "Inter", "Inter-Regular", sans-serif;
-  font-size: var(--sds-body-size-medium, 14px);
-  line-height: 140%;
-  font-weight: var(--sds-weight-regular, 400);
+  font-family: var(--sds-body-base-font-family, "Inter", sans-serif);
+  font-size: var(--sds-body-base-font-size, 16px);
+  line-height: var(--sds-body-base-line-height, 140%);
+  font-weight: var(--sds-body-base-font-weight, 400);
   position: relative;
   flex: 1;
+  padding: 0;
+  height: 100%;
   background: transparent;
   border: none;
   outline: none;
