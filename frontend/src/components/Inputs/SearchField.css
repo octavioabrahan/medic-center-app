@@ -41,6 +41,8 @@
   position: relative;
   flex: 1;
   padding: 0;
+  padding-right: 40px;
+  width: 100%;
   background: transparent;
   border: none;
   outline: none;
@@ -67,7 +69,9 @@
 }
 .search-x-mark svg,
 .search-magnifying-glass svg {
-  color: #000 !important;
+  color: var(--sds-color-icon-default-default, #1e1e1e) !important;
+  width: 16px;
+  height: 16px;
 }
 .search.state-disabled .search-x-mark,
 .search.state-disabled .search-magnifying-glass {
@@ -84,7 +88,16 @@
   flex-shrink: 0;
   width: 16px;
   height: 16px;
-  position: relative;
   overflow: visible;
+}
+
+/* Ajuste para fill container */
+.search[style*="width: 100%"] .search-value,
+.search.fill-container .search-value {
+  width: 100%;
+}
+
+.search.fill-container {
+  width: 100%;
 }
 /* Eliminar min-height y ajustar padding para tamaño compacto */

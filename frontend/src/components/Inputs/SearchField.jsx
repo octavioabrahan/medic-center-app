@@ -14,6 +14,7 @@ export default function SearchField({
   disabled = false,
   onClear,
   className = "",
+  fillContainer = false,
   ...props
 }) {
   const inputRef = useRef();
@@ -21,7 +22,7 @@ export default function SearchField({
 
   return (
     <div
-      className={`search state-${disabled ? "disabled" : "default"} ${!value ? "value-type-placeholder" : ""} ${className}`.trim()}
+      className={`search state-${disabled ? "disabled" : "default"} ${!value ? "value-type-placeholder" : ""} ${fillContainer ? "fill-container" : ""} ${className}`.trim()}
       {...props}
     >
       <input
@@ -34,7 +35,6 @@ export default function SearchField({
         disabled={disabled}
         aria-label={placeholder}
         autoComplete="off"
-        style={{ paddingRight: 40 }}
       />
       {showClear ? (
         <button
@@ -65,4 +65,5 @@ SearchField.propTypes = {
   disabled: PropTypes.bool,
   onClear: PropTypes.func,
   className: PropTypes.string,
+  fillContainer: PropTypes.bool,
 };
