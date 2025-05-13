@@ -73,6 +73,21 @@
 }
 
 /* ———————————————————————————————————————————
+   Danger Subtle (Background transparente + texto/borde en rojo)
+   ——————————————————————————————————————————— */
+.btn--danger.btn--subtle {
+  background-color: transparent;
+  color:            var(--sds-color-text-danger-default);
+  border-color:     var(--sds-color-border-danger-default);
+}
+
+/* Hover real de Danger Subtle */
+.btn--danger.btn--subtle:not(:disabled):hover {
+  background-color: var(--sds-color-background-danger-subtle-hover);
+/* — si no tienes ese token, puedes usar filter: brightness(0.9) como fallback */
+}
+
+/* ———————————————————————————————————————————
    Icon Variant
    ——————————————————————————————————————————— */
 
