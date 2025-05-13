@@ -38,6 +38,35 @@
   height: 40px;
   min-width: 100px;
   position: relative;
+  cursor: pointer;
+}
+.select-clickable {
+  cursor: pointer;
+}
+.select-overlay {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  z-index: 2;
+  cursor: pointer;
+}
+.select-value-text {
+  color: var(--sds-color-text-default-default, #1e1e1e);
+  font-family: "Inter", "Inter-Regular", sans-serif;
+  font-size: var(--sds-body-size-medium, 14px);
+  line-height: 140%;
+  font-weight: var(--sds-weight-regular, 400);
+  flex: 1;
+  pointer-events: none;
+  background: transparent;
+  border: none;
+  outline: none;
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .value {
   color: var(--sds-color-text-default-default, #1e1e1e);
@@ -68,6 +97,10 @@
 .select-field.state-error.value-type-placeholder .value {
   color: var(--sds-color-text-default-tertiary, #b3b3b3);
 }
+.select-field.state-default.value-type-placeholder .select-value-text,
+.select-field.state-error.value-type-placeholder .select-value-text {
+  color: var(--sds-color-text-default-tertiary, #b3b3b3);
+}
 .select-field.state-error .select {
   border-color: var(--sds-color-border-danger-default, #900b09);
 }
@@ -83,6 +116,10 @@
 }
 .select-field.state-disabled .label,
 .select-field.state-disabled .value {
+  color: var(--sds-color-text-disabled-default, #9d9d9d);
+}
+.select-field.state-disabled .label,
+.select-field.state-disabled .select-value-text {
   color: var(--sds-color-text-disabled-default, #9d9d9d);
 }
 .select-field.state-disabled .select {
