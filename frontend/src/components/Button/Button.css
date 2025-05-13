@@ -101,6 +101,7 @@
   /* width/height = padding*2 + icon size (16px) */
   width:  calc(var(--sds-space-200) * 2 + 16px);
   height: calc(var(--sds-space-200) * 2 + 16px);
+  border-radius: var(--sds-typography-scale-06);
 }
 
 /* Icon + Primary */
@@ -169,10 +170,12 @@
   padding: var(--sds-space-100);
   width:   calc(var(--sds-space-100) * 2 + 16px);
   height:  calc(var(--sds-space-100) * 2 + 16px);
+  border-radius: var(--sds-typography-scale-06);
 }
 
 .btn--icon.btn--medium {
   padding: var(--sds-space-200);
   width:   calc(var(--sds-space-200) * 2 + 16px);
   height:  calc(var(--sds-space-200) * 2 + 16px);
+  border-radius: var(--sds-typography-scale-06);
 }
