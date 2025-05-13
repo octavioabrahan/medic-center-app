@@ -1,7 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
 import "./TextAreaField.css";
-import { ArrowsPointingOutIcon } from '@heroicons/react/20/solid';
 
 /**
  * TextAreaField component for multi-line text input.
@@ -43,14 +42,11 @@ export default function TextAreaField({
             font: "inherit",
             color: "inherit",
             padding: 0,
-            resize: "both", // Permitir redimensionamiento en ambas direcciones
+            resize: "both", // Usamos el resize nativo del navegador
             minHeight: 56,
           }}
         />
-        {/* Drag icon (bottom right) */}
-        <span className="drag" aria-hidden="true">
-          <ArrowsPointingOutIcon width={10} height={10} />
-        </span>
+        {/* Utilizamos el resize nativo del navegador, sin icono personalizado */}
       </div>
     </div>
   );
