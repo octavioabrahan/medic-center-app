@@ -34,10 +34,8 @@ export default function SearchField({
         disabled={disabled}
         aria-label={placeholder}
         autoComplete="off"
+        style={{ paddingRight: 40 }}
       />
-      <span className="heroicons-micro-magnifying-glass" aria-hidden="true" style={{ position: 'absolute', right: 16, top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none' }}>
-        <MagnifyingGlassIcon width={16} height={16} style={{ color: '#000' }} />
-      </span>
       {showClear ? (
         <button
           type="button"
@@ -52,7 +50,11 @@ export default function SearchField({
         >
           <XMarkIcon width={16} height={16} style={{ color: '#000' }} />
         </button>
-      ) : null}
+      ) : (
+        <span className="heroicons-micro-magnifying-glass" aria-hidden="true" style={{ position: 'absolute', right: 16, top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none' }}>
+          <MagnifyingGlassIcon width={16} height={16} style={{ color: '#000' }} />
+        </span>
+      )}
     </div>
   );
 }
