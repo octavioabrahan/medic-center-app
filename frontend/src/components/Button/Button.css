@@ -154,7 +154,7 @@
 
 .btn--icon {
   background: var(--sds-color-background-brand-default, #20377a);
-  border-radius: var(--sds-typography-scale-06, 32px);
+  border-radius: var(--var-sds-size-radius-full, 9999px);
   border-style: solid;
   border-color: var(--sds-color-icon-brand-default, #20377a);
   border-width: 1px;
