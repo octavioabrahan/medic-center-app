@@ -19,14 +19,7 @@ import reportWebVitals from './reportWebVitals';
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    {/* Renderiza directamente el demo de botones */}
-    <ButtonDemo />
-
-    {/* O, para integrarlo junto a tu App:
-    <App>
-      <ButtonDemo />
-    </App>
-    */}
+    <App />
   </React.StrictMode>
 );
 
