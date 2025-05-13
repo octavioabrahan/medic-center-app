@@ -26,7 +26,7 @@ export default function SearchField({
     >
       <input
         ref={inputRef}
-        className="value"
+        className="search-value"
         type="text"
         value={value}
         onChange={e => onChange?.(e.target.value)}
@@ -39,21 +39,19 @@ export default function SearchField({
       {showClear ? (
         <button
           type="button"
-          className="heroicons-micro-x-mark"
+          className="search-x-mark"
           tabIndex={-1}
           aria-label="Limpiar"
           onClick={() => {
             onClear?.();
-            // Forzar un re-render para mantener el padding
             setTimeout(() => { inputRef.current?.focus(); }, 0);
           }}
-          style={{ position: 'absolute', right: 16, top: '50%', transform: 'translateY(-50%)' }}
         >
-          <XMarkIcon width={16} height={16} style={{ color: '#000' }} />
+          <XMarkIcon width={16} height={16} />
         </button>
       ) : (
-        <span className="heroicons-micro-magnifying-glass" aria-hidden="true" style={{ position: 'absolute', right: 16, top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none' }}>
-          <MagnifyingGlassIcon width={16} height={16} style={{ color: '#000' }} />
+        <span className="search-magnifying-glass" aria-hidden="true">
+          <MagnifyingGlassIcon width={16} height={16} />
         </span>
       )}
     </div>
