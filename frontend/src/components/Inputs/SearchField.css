@@ -15,7 +15,6 @@
   align-items: center;
   justify-content: flex-start;
   width: 239px;
-  min-height: 44px;
   position: relative;
   overflow: hidden;
 }
@@ -42,7 +41,6 @@
   position: relative;
   flex: 1;
   padding: 0;
-  height: 100%;
   background: transparent;
   border: none;
   outline: none;
@@ -85,3 +83,4 @@
   position: relative;
   overflow: visible;
 }
+/* Eliminar min-height y ajustar padding para tamaño compacto */
