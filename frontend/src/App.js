@@ -23,6 +23,7 @@ import AdminLayout from './components/admin/AdminLayout';
 import AdminExamenes from './pages/admin/AdminExamenes';
 import AdministracionPage from './pages/admin/AdministracionPage'; // Nueva página de administración
 import ButtonDemo from './components/Button/ButtonDemo';
+import InputDemo from './components/Inputs/InputDemo';
 // Importar componentes de autenticación
 import LoginPage from './pages/auth/LoginPage';
 import ProtectedRoute from './components/auth/ProtectedRoute';
@@ -40,6 +41,10 @@ function App() {
         <Route path="/agendamiento/convenio" element={<AgendamientoEmpresaForm />} />
         <Route path="/agendamiento" element={<AgendamientoIndex />} />
         <Route path="/buttondemo" element={<ButtonDemo />} />
+        
+        {/* Demo routes */}
+        <Route path="/demo/button" element={<ButtonDemo />} />
+        <Route path="/demo/inputs" element={<InputDemo />} />
         
         {/* Ruta de login */}
         <Route path="/login" element={<LoginPage />} />
