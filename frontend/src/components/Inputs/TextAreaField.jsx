@@ -29,7 +29,7 @@ export default function TextAreaField({
       <div className="label">{label}</div>
       <div className="textarea">
         <textarea
-          className="value"
+          className="valueTextField"
           value={value}
           placeholder={placeholder}
           disabled={disabled}
