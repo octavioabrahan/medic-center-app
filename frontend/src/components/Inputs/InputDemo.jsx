@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import CheckboxField from "./CheckboxField";
 import RadioField from "./RadioField";
+import SwitchField from "./SwitchField";
 import './CheckboxFieldDemo.css';
 
 export default function InputDemo() {
@@ -13,6 +14,10 @@ export default function InputDemo() {
   // Radio states
   const [radioDefault, setRadioDefault] = useState('a');
   const [radioFill, setRadioFill] = useState('a');
+
+  // Switch states
+  const [switchDefault, setSwitchDefault] = useState(false);
+  const [switchFill, setSwitchFill] = useState(false);
 
   return (
     <section className="checkbox-demo-section">
@@ -118,6 +123,67 @@ export default function InputDemo() {
               checked={radioFill === 'fill'}
               name="radio-hug"
               onChange={() => setRadioFill('fill')}
+              style={{ width: '100%' }}
+            />
+          </div>
+        </div>
+      </div>
+
+      <h2>Switch Field Demo</h2>
+      <div className="checkbox-demo-label">Default</div>
+      <div className="checkbox-demo-row">
+        <SwitchField
+          label="Label"
+          description="Description"
+          checked={switchDefault}
+          onChange={setSwitchDefault}
+        />
+        <SwitchField
+          label="Label"
+          description="Description"
+          checked={!switchDefault}
+          onChange={() => setSwitchDefault(v => !v)}
+        />
+      </div>
+      <div className="checkbox-demo-label">Disabled</div>
+      <div className="checkbox-demo-row">
+        <SwitchField
+          label="Label"
+          description="Description"
+          checked={true}
+          disabled={true}
+        />
+        <SwitchField
+          label="Label"
+          description="Description"
+          checked={false}
+          disabled={true}
+        />
+      </div>
+
+      <h2>Opciones de Ancho (Layout) Switch</h2>
+      <div style={{ display: 'flex', gap: 48 }}>
+        {/* Hug content */}
+        <div style={{ minWidth: 0 }}>
+          <div className="checkbox-demo-label">Hug Content (Default)</div>
+          <div style={{ border: '1px dashed gray', padding: '1rem', width: 'fit-content', maxWidth: 300 }}>
+            <SwitchField
+              label="Hug Content"
+              description="El switch se ajusta al contenido"
+              checked={switchDefault}
+              onChange={setSwitchDefault}
+            />
+          </div>
+        </div>
+        {/* Fill container */}
+        <div style={{ flex: 1 }}>
+          <div className="checkbox-demo-label">Fill Container</div>
+          <div style={{ border: '1px dashed gray', padding: '1rem', width: '100%', maxWidth: 300 }}>
+            <SwitchField
+              label="Fill Container"
+              description="El switch ocupa todo el ancho"
+              checked={switchFill}
+              onChange={setSwitchFill}
               style={{ width: '100%' }}
             />
           </div>
