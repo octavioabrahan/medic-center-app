@@ -128,7 +128,7 @@
 .btn--icon.btn--danger {
   background-color: var(--sds-color-background-danger-default);
   color:            var(--sds-color-text-danger-on-danger);
-  border-color:     var(--sds-color-border-danger-default);
+  border-color:     var (--sds-color-border-danger-default);
 }
 
 /* Icon Button Hover & Disabled */
@@ -156,12 +156,12 @@
   background: var(--sds-color-background-brand-default, #20377a);
   border-radius: var(--sds-radius-full, 9999px);
   border-style: solid;
-  border-color: var(--sds-color-icon-brand-default, #20377a);
+  border-color: var(--sds-color-border-brand-default, #20377a);
   border-width: 1px;
-  padding: var(--sds-size-space-300, 12px);
+  padding: var(--sds-space-300, 12px);
   display: flex;
   flex-direction: row;
-  gap: var(--sds-size-space-200, 8px);
+  gap: var(--sds-space-200, 8px);
   align-items: center;
   justify-content: center;
   position: relative;
@@ -181,7 +181,7 @@
 
 /* Tamaño small */
 .btn--icon.btn--small {
-  padding: var(--sds-size-space-200, 8px);
+  padding: var(--sds-space-200, 8px);
   gap: 0px;
   width: unset;
   height: unset;
@@ -195,7 +195,7 @@
 
 /* Neutral */
 .btn--icon.state-default.btn--neutral {
-  background: var(--sds-color-background-default-secondary, #f5f5f5);
+  background: var(--sds-color-background-neutral-tertiary, #f5f5f5);
   border-color: var(--sds-color-border-default-default, #d9d9d9);
 }
 
