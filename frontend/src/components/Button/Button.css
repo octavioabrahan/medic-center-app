@@ -58,6 +58,10 @@
   border-color:     var(--sds-color-border-neutral-secondary);
 }
 
+.btn--neutral:hover {
+  border-color: var(--sds-color-border-default-default);
+}
+
 /* Subtle */
 .btn--subtle {
   background-color: transparent;
