@@ -37,7 +37,7 @@
   min-width: 240px;
   min-height: 80px;
   position: relative;
-  overflow: hidden;
+  overflow: visible; /* Cambiado de hidden a visible para permitir el crecimiento del textarea */
 }
 .valueTextField {
   color: var(--sds-color-text-default-default, #1e1e1e);
@@ -51,18 +51,26 @@
   background: transparent;
   border: none;
   outline: none;
-  resize: none;
+  resize: both;
   min-height: 56px;
 }
 .drag {
   flex-shrink: 0;
-  width: 6.63px;
-  height: 6.63px;
+  width: 10px;
+  height: 10px;
   position: absolute;
-  right: 5.02px;
-  bottom: 6.02px;
+  right: 6px;
+  bottom: 6px;
   overflow: visible;
-  pointer-events: none;
+  pointer-events: none; /* Mantener como visual, ya que el resize será manejado por el textarea */
+  color: var(--sds-color-icon-default-tertiary, #b3b3b3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.drag svg {
+  color: var(--sds-color-icon-default-tertiary, #b3b3b3);
 }
 .textarea-field.state-default.value-type-placeholder .valueTextField,
 .textarea-field.state-error.value-type-placeholder .valueTextField {
@@ -78,4 +86,8 @@
 .textarea-field.state-disabled .textarea {
   background: var(--sds-color-background-disabled-default, #dadada);
   border-color: var(--sds-color-border-neutral-tertiary, #b2b2b2);
+}
+
+.textarea-field.state-disabled .drag svg {
+  color: var(--sds-color-icon-disabled-on-disabled, #9d9d9d);
 }

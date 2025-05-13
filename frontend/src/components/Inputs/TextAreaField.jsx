@@ -1,6 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import "./TextAreaField.css";
+import { ArrowsPointingOutIcon } from '@heroicons/react/20/solid';
 
 /**
  * TextAreaField component for multi-line text input.
@@ -42,20 +43,13 @@ export default function TextAreaField({
             font: "inherit",
             color: "inherit",
             padding: 0,
-            resize: "none",
+            resize: "both", // Permitir redimensionamiento en ambas direcciones
             minHeight: 56,
           }}
         />
         {/* Drag icon (bottom right) */}
         <span className="drag" aria-hidden="true">
-          <svg width="7" height="7" viewBox="0 0 7 7" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <rect x="0.5" y="5.5" width="1" height="1" rx="0.5" fill="#B3B3B3"/>
-            <rect x="2.5" y="5.5" width="1" height="1" rx="0.5" fill="#B3B3B3"/>
-            <rect x="4.5" y="5.5" width="1" height="1" rx="0.5" fill="#B3B3B3"/>
-            <rect x="2.5" y="3.5" width="1" height="1" rx="0.5" fill="#B3B3B3"/>
-            <rect x="4.5" y="3.5" width="1" height="1" rx="0.5" fill="#B3B3B3"/>
-            <rect x="4.5" y="1.5" width="1" height="1" rx="0.5" fill="#B3B3B3"/>
-          </svg>
+          <ArrowsPointingOutIcon width={10} height={10} />
         </span>
       </div>
     </div>
