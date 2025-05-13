@@ -1,7 +1,7 @@
 import React, { useRef } from "react";
 import PropTypes from "prop-types";
 import "./SearchField.css";
-import { MagnifyingGlassIcon } from '@heroicons/react/20/solid';
+import { MagnifyingGlassIcon, XMarkIcon } from '@heroicons/react/20/solid';
 
 /**
  * SearchField component for search input with clear button.
@@ -46,13 +46,11 @@ export default function SearchField({
             inputRef.current?.focus();
           }}
         >
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M4.47 4.47a.75.75 0 0 1 1.06 0L8 6.94l2.47-2.47a.75.75 0 1 1 1.06 1.06L9.06 8l2.47 2.47a.75.75 0 1 1-1.06 1.06L8 9.06l-2.47 2.47a.75.75 0 1 1-1.06-1.06L6.94 8 4.47 5.53a.75.75 0 0 1 0-1.06Z" fill="currentColor"/>
-          </svg>
+          <XMarkIcon width={16} height={16} style={{ color: '#000' }} />
         </button>
       ) : (
         <span className="heroicons-micro-magnifying-glass" aria-hidden="true">
-          <MagnifyingGlassIcon width={16} height={16} />
+          <MagnifyingGlassIcon width={16} height={16} style={{ color: '#000' }} />
         </span>
       )}
     </div>

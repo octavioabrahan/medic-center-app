@@ -58,6 +58,10 @@
   justify-content: center;
   cursor: pointer;
 }
+.heroicons-micro-x-mark svg,
+.heroicons-micro-magnifying-glass svg {
+  color: #000 !important;
+}
 .search.state-disabled .heroicons-micro-x-mark,
 .search.state-disabled .heroicons-micro-magnifying-glass {
   color: var(--sds-color-icon-disabled-on-disabled, #9d9d9d);
