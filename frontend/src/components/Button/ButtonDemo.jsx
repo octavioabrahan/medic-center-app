@@ -21,7 +21,7 @@ const componentSets = [
 ];
 
 const sizes  = ['medium', 'small'];
-const states = ['default', 'hover', 'disabled'];
+const states = ['default', 'disabled'];
 
 export default function ButtonDemo() {
   return (
