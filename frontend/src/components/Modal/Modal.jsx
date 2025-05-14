@@ -16,6 +16,9 @@ import Button from '../Button/Button';
  * @param {Function} props.onClose - Function to call when close button is clicked
  * @param {string} props.variant - Modal variant (default, sheet)
  * @param {boolean} props.isOpen - Controls if the modal is visible
+ * @param {boolean} props.noPadding - Remove padding from content area for custom components that need edge-to-edge layout
+ * @param {string} props.contentClassName - Additional className for the modal content container
+ * @param {string} props.size - Modal size (small, medium, large)
  */
 const Modal = ({
   heading,
@@ -28,40 +31,46 @@ const Modal = ({
   onClose,
   variant = 'default',
   isOpen = false,
+  noPadding = false,
+  contentClassName = '',
+  size = 'medium',
 }) => {
   if (!isOpen) return null;
 
   return (
-    <div className="modal-overlay" onClick={onClose}>
+    <div className="modal-overlay" onClick={onClose} role="dialog" aria-modal="true">
       <div 
-        className={`modal-body ${variant ? `type-${variant}` : ''}`}
+        className={`modal-body ${variant ? `type-${variant}` : ''} size-${size} ${noPadding ? 'no-padding' : ''}`}
         onClick={(e) => e.stopPropagation()}
+        aria-labelledby="modal-heading"
       >
         <div className="text">
-          <div className="text-heading">{heading}</div>
+          <div className="text-heading" id="modal-heading">{heading}</div>
           {bodyText && <div className="body-text">{bodyText}</div>}
-          {children && <div className="modal-content">{children}</div>}
+          {children && <div className={`modal-content ${contentClassName}`}>{children}</div>}
         </div>
         
-        <div className="button-group">
-          {secondaryButtonText && (
-            <Button 
-              variant="neutral" 
-              onClick={onSecondaryClick}
-            >
-              {secondaryButtonText}
-            </Button>
-          )}
-          
-          {primaryButtonText && (
-            <Button 
-              variant="primary" 
-              onClick={onPrimaryClick}
-            >
-              {primaryButtonText}
-            </Button>
-          )}
-        </div>
+        {(primaryButtonText || secondaryButtonText) && (
+          <div className="button-group">
+            {secondaryButtonText && (
+              <Button 
+                variant="neutral" 
+                onClick={onSecondaryClick}
+              >
+                {secondaryButtonText}
+              </Button>
+            )}
+            
+            {primaryButtonText && (
+              <Button 
+                variant="primary" 
+                onClick={onPrimaryClick}
+              >
+                {primaryButtonText}
+              </Button>
+            )}
+          </div>
+        )}
         
         {onClose && (
           <div className="icon-button" onClick={onClose} role="button" tabIndex={0}>

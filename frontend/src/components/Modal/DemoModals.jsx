@@ -10,8 +10,13 @@ const DemoModals = () => {
   const [showCustomModal, setShowCustomModal] = useState(false);
   const [showTwoButtonModal, setShowTwoButtonModal] = useState(true);
   const [showSingleButtonModal, setShowSingleButtonModal] = useState(false);
+  const [showSecondaryOnlyModal, setShowSecondaryOnlyModal] = useState(false);
+  const [showNoButtonsModal, setShowNoButtonsModal] = useState(false);
   const [showLongTextModal, setShowLongTextModal] = useState(false);
   const [showFormModal, setShowFormModal] = useState(false);
+  const [showNoPaddingModal, setShowNoPaddingModal] = useState(false);
+  const [showSmallModal, setShowSmallModal] = useState(false);
+  const [showLargeModal, setShowLargeModal] = useState(false);
   
   // Estado para el campo de entrada en el modal personalizado
   const [inputValue, setInputValue] = useState('');
@@ -26,8 +31,13 @@ const DemoModals = () => {
     setShowCustomModal(false);
     setShowTwoButtonModal(true);
     setShowSingleButtonModal(false);
+    setShowSecondaryOnlyModal(false);
+    setShowNoButtonsModal(false);
     setShowLongTextModal(false);
     setShowFormModal(false);
+    setShowNoPaddingModal(false);
+    setShowSmallModal(false);
+    setShowLargeModal(false);
   };
 
   return (
@@ -204,6 +214,99 @@ const DemoModals = () => {
                   style={{ width: '100%', marginBottom: '16px' }}
                 />
                 <p className="form-note">Todos los campos son obligatorios</p>
+              </div>
+            </div>
+          </Modal>
+        </div>
+
+        <div className="modal-group">
+          <h3>Modal solo con botón secundario</h3>
+          <button className="reset-button" onClick={() => setShowSecondaryOnlyModal(true)}>
+            Mostrar modal solo con botón secundario
+          </button>
+          <Modal 
+            heading="Solo botón secundario"
+            bodyText="Este modal solo tiene un botón secundario."
+            secondaryButtonText="Cancelar"
+            onSecondaryClick={() => setShowSecondaryOnlyModal(false)}
+            onClose={() => setShowSecondaryOnlyModal(false)}
+            isOpen={showSecondaryOnlyModal}
+          />
+        </div>
+        
+        <div className="modal-group">
+          <h3>Modal sin botones</h3>
+          <button className="reset-button" onClick={() => setShowNoButtonsModal(true)}>
+            Mostrar modal sin botones
+          </button>
+          <Modal 
+            heading="Sin botones"
+            bodyText="Este modal no tiene botones, solo puede cerrarse con el botón X."
+            onClose={() => setShowNoButtonsModal(false)}
+            isOpen={showNoButtonsModal}
+          />
+        </div>
+      </section>
+      
+      <section className="demo-section">
+        <h2>Tamaños de Modal</h2>
+        
+        <div className="modal-group">
+          <h3>Modal pequeño</h3>
+          <button className="reset-button" onClick={() => setShowSmallModal(true)}>
+            Mostrar modal pequeño
+          </button>
+          <Modal 
+            heading="Modal pequeño"
+            bodyText="Este es un ejemplo de un modal de tamaño pequeño (max-width: 400px)."
+            primaryButtonText="Aceptar"
+            onPrimaryClick={() => setShowSmallModal(false)}
+            onClose={() => setShowSmallModal(false)}
+            isOpen={showSmallModal}
+            size="small"
+          />
+        </div>
+        
+        <div className="modal-group">
+          <h3>Modal grande</h3>
+          <button className="reset-button" onClick={() => setShowLargeModal(true)}>
+            Mostrar modal grande
+          </button>
+          <Modal 
+            heading="Modal grande"
+            bodyText="Este es un ejemplo de un modal de tamaño grande (max-width: 800px). Es útil para mostrar mayor cantidad de contenido o formularios más complejos."
+            primaryButtonText="Aceptar"
+            onPrimaryClick={() => setShowLargeModal(false)}
+            onClose={() => setShowLargeModal(false)}
+            isOpen={showLargeModal}
+            size="large"
+          />
+        </div>
+      </section>
+      
+      <section className="demo-section">
+        <h2>Modal sin padding</h2>
+        
+        <div className="modal-group">
+          <h3>Modal sin padding para contenido personalizado</h3>
+          <button className="reset-button" onClick={() => setShowNoPaddingModal(true)}>
+            Mostrar modal sin padding
+          </button>
+          <Modal 
+            heading="Contenido sin padding"
+            primaryButtonText="Cerrar"
+            onPrimaryClick={() => setShowNoPaddingModal(false)}
+            onClose={() => setShowNoPaddingModal(false)}
+            isOpen={showNoPaddingModal}
+            noPadding={true}
+          >
+            <div className="custom-edge-to-edge-container">
+              <div className="custom-image-container">
+                <div className="image-placeholder">Imagen / Contenido sin padding</div>
+              </div>
+              <div className="content-padding">
+                <p>Este modal muestra contenido personalizado que llega hasta los bordes del modal, sin padding interno adicional.</p>
+                <p>Es útil para mostrar imágenes, mapas o cualquier contenido que necesite aprovechar el espacio completo.</p>
               </div>
             </div>
           </Modal>
