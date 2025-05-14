@@ -298,12 +298,25 @@ const DemoTags = () => {
         <h2>Variaciones</h2>
         
         <div className="tag-group">
-          <h3>Tag sin botón de cierre</h3>
+          <h3>Tag sin función de cierre</h3>
           <div className="tag-example">
             <Tag 
-              text="Sin botón de cierre"
+              text="Sin función de cierre"
               scheme="brand"
               variant="primary"
+            />
+          </div>
+        </div>
+
+        <div className="tag-group">
+          <h3>Tag con función de cierre pero sin botón X</h3>
+          <div className="tag-example">
+            <Tag 
+              text="Closeable = false"
+              scheme="brand"
+              variant="primary"
+              onClose={() => alert('Esta función no se llamará porque closeable=false')}
+              closeable={false}
             />
           </div>
         </div>
@@ -316,6 +329,17 @@ const DemoTags = () => {
             <Tag text="Confirmado" scheme="positive" onClose={() => {}} />
             <Tag text="Pendiente" scheme="warning" onClose={() => {}} />
             <Tag text="Neutral" scheme="neutral" onClose={() => {}} />
+          </div>
+        </div>
+        
+        <div className="tag-group">
+          <h3>Múltiples Tags no cerrables</h3>
+          <div className="tag-example tags-container">
+            <Tag text="Medicina" scheme="brand" closeable={false} />
+            <Tag text="Urgente" scheme="danger" closeable={false} />
+            <Tag text="Confirmado" scheme="positive" closeable={false} />
+            <Tag text="Pendiente" scheme="warning" closeable={false} />
+            <Tag text="Neutral" scheme="neutral" closeable={false} />
           </div>
         </div>
       </section>

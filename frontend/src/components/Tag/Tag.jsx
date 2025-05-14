@@ -1,4 +1,5 @@
 import React from 'react';
+import { XMarkIcon } from '@heroicons/react/20/solid';
 import './Tag.css';
 
 /**
@@ -8,13 +9,16 @@ import './Tag.css';
  * @param {Function} props.onClose - Function to call when close button is clicked
  * @param {string} props.scheme - Tag color scheme (brand, danger, positive, warning, neutral)
  * @param {string} props.variant - Tag variant (primary, secondary)
+ * @param {boolean} props.hover - If true, shows hover state
+ * @param {boolean} props.closeable - If false, hides the close button regardless of onClose function
  */
 const Tag = ({ 
   text, 
   onClose,
   scheme = 'brand',
   variant = 'primary',
-  hover = false
+  hover = false,
+  closeable = true
 }) => {
   // Create classes based on props
   const tagClasses = [
@@ -27,16 +31,11 @@ const Tag = ({
   return (
     <div className={tagClasses}>
       <div className="tag2">{text}</div>
-      {onClose && (
-        <svg 
-          xmlns="http://www.w3.org/2000/svg" 
-          viewBox="0 0 20 20" 
-          fill="currentColor" 
+      {onClose && closeable && (
+        <XMarkIcon 
           className="heroicons-mini-x-mark"
           onClick={onClose}
-        >
-          <path d="M6.28 5.22a.75.75 0 00-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 101.06 1.06L10 11.06l3.72 3.72a.75.75 0 101.06-1.06L11.06 10l3.72-3.72a.75.75 0 00-1.06-1.06L10 8.94 6.28 5.22z" />
-        </svg>
+        />
       )}
     </div>
   );
