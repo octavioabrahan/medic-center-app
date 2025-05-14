@@ -89,7 +89,7 @@
 .checkbox-field.state-default.value-type-indeterminate .heroicons-micro-minus {
   color: #fff;
 }
-.label {
+.checkbox-field .checkbox-label {
   color: var(--sds-color-text-default-default, #1e1e1e);
   text-align: left;
   font-family: "Inter", "Inter-Regular", sans-serif;

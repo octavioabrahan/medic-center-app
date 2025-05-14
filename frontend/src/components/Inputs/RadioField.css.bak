@@ -1,6 +1,22 @@
-/* filepath: /home/octavio-romero/Documents/medic-center-app/frontend/src/components/Inputs/RadioField.css */
-/* RadioField styles using tokens from tokens.css */
-.radio-field,
+/* RadioField styles using tokens from tokens.css */s using tokens from tokens.radio-field .radio-label {
+  color: .radio-field .radio-description {
+  color: var(--sds-color-text-default-secondary, #757575);
+  text-align: left;
+  font-family: "Inter", "Inter-Regular", sans-serif;
+  font-size: var(--sds-body-size-medium, 14px);
+  line-height: 140%;
+  font-weight: var(--sds-weight-regular, 400);
+  position: relative;
+  flex: 1;-color-text-default-default, #1e1e1e);
+  text-align: left;
+  font-family: "Inter", "Inter-Regular", sans-serif;
+  font-size: var(--sds-body-size-medium, 14px);
+  line-height: 140%;
+  font-weight: var(--sds-weight-regular, 400);
+  position: relative;
+  flex: 1;
+  user-select: none;
+}dio-field,
 .radio-field * {
   box-sizing: border-box;
 }
@@ -44,7 +60,7 @@
   top: 50%;
   transform: translate(-50%, -50%);
 }
-.radio-field .radio-label {
+.label {
   color: var(--sds-color-text-default-default, #1e1e1e);
   text-align: left;
   font-family: "Inter", "Inter-Regular", sans-serif;
