@@ -1,33 +1,4 @@
-/* InputField styles us.input-field .input-container {
-  background:.input-field.state-default.value-type-placeholder .input-value,
-.input-field.state-error.value-type-placeholder .input-value {
-  color: var(--sds-color-text-default-tertiary, #b3b3b3);
-}
-.input-field.state-error .input-container {
-  border-color: var(--sds-color-border-danger-default, #900b09);
-}
-.input-field.state-disabled .input-label {
-  color: var(--sds-color-text-disabled-default, #9d9d9d);
-}
-.input-field.state-disabled .input-container {
-  background: var(--sds-color-background-disabled-default, #dadada);
-  border-color: var(--sds-color-border-disabled-secondary, #b2b2b2);
-}
-.input-field.state-disabled .input-value {r-background-default-default, #ffffff);
-  border-radius: var(--sds-radius-200, 8px);
-  border-style: solid;
-  border-color: var(--sds-color-border-default-default, #d9d9d9);
-  border-width: 1px;
-  padding: var(--sds-space-300, 12px) var(--sds-space-400, 16px);
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  min-width: 240px;
-  min-height: 44px;
-  position: relative;
-  overflow: hidden;
-}
-.input-field .input-value {tokens.css */
+/* InputField styles using tokens from tokens.css */
 .input-field,
 .input-field * {
   box-sizing: border-box;
@@ -65,7 +36,7 @@
   position: relative;
   overflow: hidden;
 }
-.input-field .input-value {
+.value {
   color: var(--sds-color-text-default-default, #1e1e1e);
   text-align: left;
   font-family: var(--sds-body-base-font-family, "Inter", sans-serif);
@@ -80,8 +51,8 @@
   border: none;
   outline: none;
 }
-.input-field.state-default.value-type-placeholder .input-value,
-.input-field.state-error.value-type-placeholder .input-value {
+.input-field.state-default.value-type-placeholder .value,
+.input-field.state-error.value-type-placeholder .value {
   color: var(--sds-color-text-default-tertiary, #b3b3b3);
 }
 .input-field.state-error .inputField {
