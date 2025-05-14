@@ -1,6 +1,7 @@
 import React from 'react';
 import './Modal.css';
 import { XMarkIcon } from '@heroicons/react/24/solid';
+import Button from '../Button/Button';
 
 /**
  * Modal component for displaying dialogs and alerts
@@ -44,15 +45,21 @@ const Modal = ({
         
         <div className="button-group">
           {secondaryButtonText && (
-            <div className="button" onClick={onSecondaryClick} role="button" tabIndex={0}>
-              <div className="button2">{secondaryButtonText}</div>
-            </div>
+            <Button 
+              variant="neutral" 
+              onClick={onSecondaryClick}
+            >
+              {secondaryButtonText}
+            </Button>
           )}
           
           {primaryButtonText && (
-            <div className="button3" onClick={onPrimaryClick} role="button" tabIndex={0}>
-              <div className="button4">{primaryButtonText}</div>
-            </div>
+            <Button 
+              variant="primary" 
+              onClick={onPrimaryClick}
+            >
+              {primaryButtonText}
+            </Button>
           )}
         </div>
         
