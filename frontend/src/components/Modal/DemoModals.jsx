@@ -1,6 +1,12 @@
 import React, { useState } from 'react';
 import Modal from './Modal';
 import InputField from '../Inputs/InputField';
+import TextAreaField from '../Inputs/TextAreaField';
+import SelectField from '../Inputs/SelectField';
+import CheckboxField from '../Inputs/CheckboxField';
+import RadioField from '../Inputs/RadioField';
+import SwitchField from '../Inputs/SwitchField';
+import SearchField from '../Inputs/SearchField';
 import './DemoModals.css';
 
 const DemoModals = () => {
@@ -17,12 +23,28 @@ const DemoModals = () => {
   const [showNoPaddingModal, setShowNoPaddingModal] = useState(false);
   const [showSmallModal, setShowSmallModal] = useState(false);
   const [showLargeModal, setShowLargeModal] = useState(false);
+  const [showAllInputsModal, setShowAllInputsModal] = useState(false);
   
   // Estado para el campo de entrada en el modal personalizado
   const [inputValue, setInputValue] = useState('');
   const [nombreValue, setNombreValue] = useState('');
   const [apellidoValue, setApellidoValue] = useState('');
   const [emailValue, setEmailValue] = useState('');
+  
+  // Estado para componentes de entrada adicionales
+  const [textAreaValue, setTextAreaValue] = useState('');
+  const [searchValue, setSearchValue] = useState('');
+  const [selectValue, setSelectValue] = useState('');
+  const [checkboxValue, setCheckboxValue] = useState(false);
+  const [radioValue, setRadioValue] = useState('opcion1');
+  const [switchValue, setSwitchValue] = useState(false);
+  
+  // Opciones para el SelectField
+  const selectOptions = [
+    { label: 'Opción 1', value: 'opcion1' },
+    { label: 'Opción 2', value: 'opcion2' },
+    { label: 'Opción 3', value: 'opcion3' },
+  ];
   
   // Función para restablecer la visibilidad de todos los modales
   const resetModals = () => {
@@ -38,6 +60,7 @@ const DemoModals = () => {
     setShowNoPaddingModal(false);
     setShowSmallModal(false);
     setShowLargeModal(false);
+    setShowAllInputsModal(false);
   };
 
   return (
@@ -122,6 +145,14 @@ const DemoModals = () => {
                   onChange={setInputValue}
                   placeholder="Escribe aquí..."
                   style={{ width: '100%' }}
+                />
+                <SearchField
+                  value={searchValue}
+                  onChange={setSearchValue}
+                  placeholder="Buscar..."
+                  onClear={() => setSearchValue("")}
+                  fillContainer={true}
+                  style={{ marginTop: '16px' }}
                 />
               </div>
             </div>
@@ -211,6 +242,13 @@ const DemoModals = () => {
                   value={emailValue}
                   onChange={setEmailValue}
                   placeholder="ejemplo@correo.com"
+                  style={{ width: '100%', marginBottom: '16px' }}
+                />
+                <SelectField
+                  label="Tipo de identificación"
+                  value={selectValue}
+                  options={selectOptions}
+                  onChange={setSelectValue}
                   style={{ width: '100%', marginBottom: '16px' }}
                 />
                 <p className="form-note">Todos los campos son obligatorios</p>
@@ -307,6 +345,111 @@ const DemoModals = () => {
               <div className="content-padding">
                 <p>Este modal muestra contenido personalizado que llega hasta los bordes del modal, sin padding interno adicional.</p>
                 <p>Es útil para mostrar imágenes, mapas o cualquier contenido que necesite aprovechar el espacio completo.</p>
+              </div>
+            </div>
+          </Modal>
+        </div>
+      </section>
+      
+      <section className="demo-section">
+        <h2>Modal con todos los tipos de inputs</h2>
+        
+        <div className="modal-group">
+          <h3>Modal con todos los componentes de entrada</h3>
+          <button className="reset-button" onClick={() => setShowAllInputsModal(true)}>
+            Mostrar modal con todos los inputs
+          </button>
+          <Modal 
+            heading="Formulario completo"
+            primaryButtonText="Guardar"
+            secondaryButtonText="Cancelar"
+            onPrimaryClick={() => setShowAllInputsModal(false)}
+            onSecondaryClick={() => setShowAllInputsModal(false)}
+            onClose={() => setShowAllInputsModal(false)}
+            isOpen={showAllInputsModal}
+            size="large"
+          >
+            <div className="custom-content">
+              <p>Este modal incluye ejemplos de todos los componentes de entrada disponibles:</p>
+              <div className="form-container">
+                <div className="form-row">
+                  <InputField
+                    label="Campo de texto"
+                    value={inputValue}
+                    onChange={setInputValue}
+                    placeholder="Escribe aquí..."
+                    style={{ width: '100%', marginBottom: '16px' }}
+                  />
+                </div>
+                
+                <div className="form-row">
+                  <TextAreaField
+                    label="Área de texto"
+                    value={textAreaValue}
+                    onChange={setTextAreaValue}
+                    placeholder="Escribe un comentario..."
+                    style={{ width: '100%', marginBottom: '16px' }}
+                  />
+                </div>
+                
+                <div className="form-row">
+                  <SelectField
+                    label="Menú desplegable"
+                    value={selectValue}
+                    options={selectOptions}
+                    onChange={setSelectValue}
+                    style={{ width: '100%', marginBottom: '16px' }}
+                  />
+                </div>
+                
+                <div className="form-row">
+                  <SearchField
+                    value={searchValue}
+                    onChange={setSearchValue}
+                    placeholder="Buscar..."
+                    onClear={() => setSearchValue("")}
+                    fillContainer={true}
+                    style={{ marginBottom: '16px' }}
+                  />
+                </div>
+                
+                <div className="form-row checkbox-row">
+                  <CheckboxField
+                    label="Acepto los términos y condiciones"
+                    checked={checkboxValue}
+                    onChange={setCheckboxValue}
+                    style={{ width: '100%', marginBottom: '16px' }}
+                  />
+                </div>
+                
+                <div className="form-row">
+                  <div className="form-section-title">Opciones disponibles:</div>
+                  <div className="radio-group-container">
+                    <RadioField
+                      label="Opción 1"
+                      checked={radioValue === 'opcion1'}
+                      onChange={() => setRadioValue('opcion1')}
+                      name="opciones-radio"
+                      style={{ width: '100%', marginBottom: '8px' }}
+                    />
+                    <RadioField
+                      label="Opción 2"
+                      checked={radioValue === 'opcion2'}
+                      onChange={() => setRadioValue('opcion2')}
+                      name="opciones-radio"
+                      style={{ width: '100%', marginBottom: '16px' }}
+                    />
+                  </div>
+                </div>
+                
+                <div className="form-row">
+                  <SwitchField
+                    label="Activar notificaciones"
+                    checked={switchValue}
+                    onChange={setSwitchValue}
+                    style={{ width: '100%', marginBottom: '16px' }}
+                  />
+                </div>
               </div>
             </div>
           </Modal>

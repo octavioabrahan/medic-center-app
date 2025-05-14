@@ -130,3 +130,24 @@ h1 {
 .content-padding {
   padding: 24px 32px;
 }
+
+.form-row {
+  width: 100%;
+  margin-bottom: 8px;
+}
+
+.form-section-title {
+  font-weight: 600;
+  margin-bottom: 12px;
+  color: var(--sds-color-text-default-secondary, #757575);
+}
+
+.radio-group-container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.checkbox-row {
+  margin-top: 8px;
+}
