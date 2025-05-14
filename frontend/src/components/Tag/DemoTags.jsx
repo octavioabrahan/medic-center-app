@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import Tag from './Tag';
+import TagToggle from './TagToggle';
 import './DemoTags.css';
 
 const DemoTags = () => {
@@ -14,6 +15,14 @@ const DemoTags = () => {
     warning: true,
     neutral: true,
     neutralSecondary: true,
+  });
+  
+  // Estado para los TagToggles
+  const [activeToggle1, setActiveToggle1] = useState(true);
+  const [activeToggle2, setActiveToggle2] = useState(false);
+  const [activeToggles, setActiveToggles] = useState({
+    active: true,
+    inactive: false,
   });
 
   // Función para cerrar un tag específico
@@ -37,6 +46,14 @@ const DemoTags = () => {
       neutral: true,
       neutralSecondary: true,
     });
+  };
+  
+  // Función para manejar cambios en los TagToggles de grupo
+  const handleActiveToggleChange = (name) => (active) => {
+    setActiveToggles(prev => ({
+      ...prev,
+      [name]: active
+    }));
   };
 
   return (
@@ -340,6 +357,61 @@ const DemoTags = () => {
             <Tag text="Confirmado" scheme="positive" closeable={false} />
             <Tag text="Pendiente" scheme="warning" closeable={false} />
             <Tag text="Neutral" scheme="neutral" closeable={false} />
+          </div>
+        </div>
+      </section>
+
+      <section className="demo-section">
+        <h2>Tag Toggle</h2>
+        <p>Componente para selección de estado activo/inactivo</p>
+        
+        <div className="tag-group">
+          <h3>Estados básicos</h3>
+          <div className="tag-example">
+            <TagToggle 
+              label="Active" 
+              active={activeToggle1}
+              onChange={setActiveToggle1}
+            />
+          </div>
+          <p>Estado actual: {activeToggle1 ? 'Activo' : 'Inactivo'}</p>
+        </div>
+        
+        <div className="tag-group">
+          <h3>Estado inactivo</h3>
+          <div className="tag-example">
+            <TagToggle 
+              label="Inactive" 
+              active={activeToggle2}
+              onChange={setActiveToggle2}
+            />
+          </div>
+          <p>Estado actual: {activeToggle2 ? 'Activo' : 'Inactivo'}</p>
+        </div>
+        
+        <div className="tag-group">
+          <h3>Grupos de toggles</h3>
+          <div className="tag-example tags-container">
+            <TagToggle 
+              label="Active" 
+              active={activeToggles.active}
+              onChange={handleActiveToggleChange('active')}
+            />
+            <TagToggle 
+              label="Inactive" 
+              active={activeToggles.inactive}
+              onChange={handleActiveToggleChange('inactive')}
+            />
+          </div>
+        </div>
+        
+        <div className="tag-group">
+          <h3>Estados estáticos (para referencia)</h3>
+          <div className="tag-example">
+            <TagToggle label="Siempre activo" active={true} />
+          </div>
+          <div className="tag-example" style={{ marginTop: '8px' }}>
+            <TagToggle label="Siempre inactivo" active={false} />
           </div>
         </div>
       </section>

@@ -1,0 +1,61 @@
+.tag-toggle,
+.tag-toggle * {
+  box-sizing: border-box;
+}
+
+.tag-toggle {
+  background: var(--sds-color-background-brand-default, #20377a);
+  border-radius: var(--sds-size-radius-200, 8px);
+  padding: var(--sds-size-space-200, 8px);
+  display: flex;
+  flex-direction: row;
+  gap: var(--sds-size-space-200, 8px);
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  cursor: pointer;
+  user-select: none;
+}
+
+.heroicons-mini-check {
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+  position: relative;
+  overflow: visible;
+  color: var(--sds-color-text-brand-on-brand, #f0f3ff);
+}
+
+.title {
+  color: var(--sds-color-text-brand-on-brand, #f0f3ff);
+  text-align: left;
+  font-family: var(--single-line-body-base-font-family, "Inter-Regular", sans-serif);
+  font-size: var(--single-line-body-base-font-size, 16px);
+  line-height: var(--single-line-body-base-line-height, 100%);
+  font-weight: var(--single-line-body-base-font-weight, 400);
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+/* variant styles */
+.tag-toggle.state-off {
+  background: var(--sds-color-background-brand-tertiary, #f0f3ff);
+}
+
+.tag-toggle.state-off .title {
+  color: var(--sds-color-text-brand-tertiary, #20377a);
+}
+
+/* hover states */
+.tag-toggle.state-on:hover {
+  background: var(--sds-color-background-brand-hover, #14214b);
+}
+
+.tag-toggle.state-off:hover {
+  background: var(--sds-color-background-brand-tertiary-hover, #ffffff);
+  box-shadow: 0 0 0 1px var(--sds-color-border-brand-default, #20377a);
+}
+
+/* additional schemes could be added here */
