@@ -5,6 +5,7 @@ import Home from './pages/Home';
 // Lazy load para los demos
 const ButtonDemo = lazy(() => import('./components/Button/ButtonDemo'));
 const InputDemo = lazy(() => import('./components/Inputs/InputDemo'));
+const DemoBanners = lazy(() => import('./components/Banner/DemoBanners'));
 
 function App() {
   return (
@@ -19,6 +20,11 @@ function App() {
         <Route path="/demo/inputs" element={
           <Suspense fallback={<div>Cargando demo...</div>}>
             <InputDemo />
+          </Suspense>
+        } />
+        <Route path="/demo/banners" element={
+          <Suspense fallback={<div>Cargando demo...</div>}>
+            <DemoBanners />
           </Suspense>
         } />
         {/* Rutas públicas mínimas */}
