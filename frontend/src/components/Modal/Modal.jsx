@@ -40,7 +40,7 @@ const Modal = ({
         <div className="text">
           <div className="text-heading">{heading}</div>
           {bodyText && <div className="body-text">{bodyText}</div>}
-          {children}
+          {children && <div className="modal-content">{children}</div>}
         </div>
         
         <div className="button-group">

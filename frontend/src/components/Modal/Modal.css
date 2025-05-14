@@ -28,11 +28,15 @@
   gap: var(--sds-space-600, 24px);
   align-items: flex-start;
   justify-content: flex-start;
+  min-width: 320px;
+  width: calc(100% - 48px);
   max-width: 600px;
+  max-height: calc(100vh - 80px);
   position: relative;
   box-shadow: 
     0px 4px 4px -4px rgba(12, 12, 13, 0.05),
     0px 16px 32px -4px rgba(12, 12, 13, 0.1);
+  overflow: hidden;
 }
 
 .text {
@@ -42,8 +46,15 @@
   align-items: flex-start;
   justify-content: flex-start;
   align-self: stretch;
-  flex-shrink: 0;
+  width: 100%;
   position: relative;
+  overflow-y: auto;
+  max-height: calc(100vh - 200px); /* Reservar espacio para botones y padding */
+}
+
+.modal-content {
+  width: 100%;
+  overflow-x: hidden;
 }
 
 .text-heading {
@@ -120,4 +131,31 @@
 
 .modal-body.type-sheet .text {
   min-height: 160px;
+}
+
+/* Estilos responsivos para pantallas pequeñas */
+@media (max-width: 600px) {
+  .modal-body {
+    padding: var(--sds-space-600, 24px);
+    min-width: 280px;
+    width: calc(100% - 32px);
+    max-height: calc(100vh - 64px);
+  }
+  
+  .text-heading {
+    font-size: 20px;
+  }
+  
+  .body-text {
+    font-size: 14px;
+  }
+  
+  .button-group {
+    flex-direction: column-reverse;
+    gap: var(--sds-space-300, 12px);
+  }
+  
+  .button-group > button {
+    width: 100%;
+  }
 }

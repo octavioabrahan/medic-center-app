@@ -68,20 +68,40 @@ h1 {
 
 .custom-form {
   margin-top: 1rem;
-}
-
-.custom-input {
-  display: block;
   width: 100%;
-  margin-top: 0.5rem;
-  padding: 0.75rem;
-  border: 1px solid var(--sds-color-border-default-default, #d9d9d9);
-  border-radius: var(--sds-radius-200, 8px);
-  font-size: 1rem;
 }
 
-.custom-input:focus {
-  outline: none;
-  border-color: var(--sds-color-border-brand-default, #20377a);
-  box-shadow: 0 0 0 2px rgba(32, 55, 122, 0.2);
+.custom-content h4 {
+  color: var(--sds-color-text-default-default, #1e1e1e);
+  font-size: 1rem;
+  margin: 1.2rem 0 0.5rem;
+  font-weight: 600;
+}
+
+.custom-content ul {
+  margin: 0.5rem 0;
+  padding-left: 1.5rem;
+}
+
+.custom-content li {
+  margin-bottom: 0.5rem;
+  line-height: 1.4;
+}
+
+.custom-content p {
+  margin: 0.5rem 0;
+  line-height: 1.5;
+  color: var(--sds-color-text-default-secondary, #757575);
+}
+
+.form-container {
+  width: 100%;
+  margin-top: 1rem;
+}
+
+.form-note {
+  font-size: 0.85rem;
+  color: var(--sds-color-text-default-tertiary, #b3b3b3);
+  margin-top: 0.5rem;
+  font-style: italic;
 }
