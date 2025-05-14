@@ -11,7 +11,7 @@
   justify-content: flex-start;
   position: relative;
 }
-.select-field .select-label {
+.label {
   color: var(--sds-color-text-default-default, #1e1e1e);
   text-align: left;
   font-family: "Inter", "Inter-Regular", sans-serif;
@@ -62,7 +62,7 @@
   overflow: hidden;
   text-overflow: ellipsis;
 }
-.select-field .select-value {
+.value {
   color: var(--sds-color-text-default-default, #1e1e1e);
   text-align: left;
   font-family: "Inter", "Inter-Regular", sans-serif;
@@ -78,7 +78,7 @@
   -webkit-appearance: none;
   -moz-appearance: none;
 }
-.select-field .select-chevron-icon {
+.heroicons-micro-chevron-down {
   position: absolute;
   right: 12px;
   top: 50%;
@@ -88,8 +88,8 @@
   height: 16px;
   color: var(--sds-color-text-default-tertiary, #b3b3b3);
 }
-.select-field.state-default.value-type-placeholder .select-value,
-.select-field.state-error.value-type-placeholder .select-value {
+.select-field.state-default.value-type-placeholder .value,
+.select-field.state-error.value-type-placeholder .value {
   color: var(--sds-color-text-default-tertiary, #b3b3b3);
 }
 .select-field.state-default.value-type-placeholder .select-value-text,
