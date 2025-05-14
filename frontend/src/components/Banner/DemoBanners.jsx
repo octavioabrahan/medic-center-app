@@ -6,11 +6,13 @@ const DemoBanners = () => {
   // Estado para controlar la visibilidad de los banners
   const [showInfoBanner, setShowInfoBanner] = useState(true);
   const [showDangerBanner, setShowDangerBanner] = useState(true);
+  const [showWarningBanner, setShowWarningBanner] = useState(true);
   
   // Función para restablecer la visibilidad de todos los banners
   const resetBanners = () => {
     setShowInfoBanner(true);
     setShowDangerBanner(true);
+    setShowWarningBanner(true);
   };
 
   return (
@@ -54,6 +56,24 @@ const DemoBanners = () => {
             </button>
           )}
         </div>
+        
+        <div className="banner-group">
+          <h3>Banner de Advertencia</h3>
+          {showWarningBanner ? (
+            <Banner 
+              title="Title"
+              text="Body text."
+              buttonText="Button"
+              variant="warning"
+              onButtonClick={() => alert('Botón de advertencia clickeado')}
+              onClose={() => setShowWarningBanner(false)}
+            />
+          ) : (
+            <button className="reset-button" onClick={() => setShowWarningBanner(true)}>
+              Mostrar banner de advertencia
+            </button>
+          )}
+        </div>
       </section>
       
       <section className="demo-section">
@@ -83,6 +103,17 @@ const DemoBanners = () => {
           <Banner 
             title="Solo título" 
             variant="danger"
+          />
+        </div>
+        
+        <div className="banner-group">
+          <h3>Banner de advertencia sin cierre</h3>
+          <Banner 
+            title="Advertencia importante" 
+            text="Este es un mensaje de advertencia que no puede cerrarse."
+            buttonText="Entiendo"
+            variant="warning"
+            onButtonClick={() => alert('Acción de entendimiento confirmada')}
           />
         </div>
       </section>
