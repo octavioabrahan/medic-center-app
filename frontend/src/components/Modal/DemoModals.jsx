@@ -4,15 +4,19 @@ import './DemoModals.css';
 
 const DemoModals = () => {
   // Estado para controlar la visibilidad de los modales
-  const [showDefaultModal, setShowDefaultModal] = useState(true);
+  const [showDefaultModal, setShowDefaultModal] = useState(false);
   const [showSheetModal, setShowSheetModal] = useState(false);
   const [showCustomModal, setShowCustomModal] = useState(false);
+  const [showTwoButtonModal, setShowTwoButtonModal] = useState(true);
+  const [showSingleButtonModal, setShowSingleButtonModal] = useState(false);
   
   // Función para restablecer la visibilidad de todos los modales
   const resetModals = () => {
-    setShowDefaultModal(true);
+    setShowDefaultModal(false);
     setShowSheetModal(false);
     setShowCustomModal(false);
+    setShowTwoButtonModal(true);
+    setShowSingleButtonModal(false);
   };
 
   return (
@@ -23,9 +27,9 @@ const DemoModals = () => {
         <h2>Tipos de Modal</h2>
         
         <div className="modal-group">
-          <h3>Modal Estándar</h3>
-          <button className="reset-button" onClick={() => setShowDefaultModal(true)}>
-            Mostrar modal estándar
+          <h3>Modal Estándar con Dos Botones</h3>
+          <button className="reset-button" onClick={() => setShowTwoButtonModal(true)}>
+            Mostrar modal estándar con dos botones
           </button>
           <Modal 
             heading="Text Heading"
@@ -34,6 +38,21 @@ const DemoModals = () => {
             secondaryButtonText="Button"
             onPrimaryClick={() => alert('Botón primario clickeado')}
             onSecondaryClick={() => alert('Botón secundario clickeado')}
+            onClose={() => setShowTwoButtonModal(false)}
+            isOpen={showTwoButtonModal}
+          />
+        </div>
+        
+        <div className="modal-group">
+          <h3>Modal Estándar</h3>
+          <button className="reset-button" onClick={() => setShowDefaultModal(true)}>
+            Mostrar modal estándar
+          </button>
+          <Modal 
+            heading="Text Heading"
+            bodyText="Body text"
+            primaryButtonText="Button"
+            onPrimaryClick={() => alert('Botón primario clickeado')}
             onClose={() => setShowDefaultModal(false)}
             isOpen={showDefaultModal}
           />
@@ -90,23 +109,16 @@ const DemoModals = () => {
         
         <div className="modal-group">
           <h3>Modal sin botón secundario</h3>
-          <button className="reset-button" onClick={() => {
-            setShowDefaultModal(false);
-            setShowSheetModal(false);
-            setShowCustomModal(false);
-            setTimeout(() => {
-              setShowDefaultModal(true);
-            }, 100);
-          }}>
+          <button className="reset-button" onClick={() => setShowSingleButtonModal(true)}>
             Mostrar modal sin botón secundario
           </button>
           <Modal 
             heading="Text Heading"
             bodyText="Este modal solo tiene un botón principal."
             primaryButtonText="Entendido"
-            onPrimaryClick={() => setShowDefaultModal(false)}
-            onClose={() => setShowDefaultModal(false)}
-            isOpen={showDefaultModal}
+            onPrimaryClick={() => setShowSingleButtonModal(false)}
+            onClose={() => setShowSingleButtonModal(false)}
+            isOpen={showSingleButtonModal}
           />
         </div>
       </section>
