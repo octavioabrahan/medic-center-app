@@ -11,7 +11,7 @@
   justify-content: flex-start;
   position: relative;
 }
-.input-field .input-label {
+.label {
   color: var(--sds-color-text-default-default, #1e1e1e);
   text-align: left;
   font-family: var(--sds-body-base-font-family, "Inter", sans-serif);
@@ -21,7 +21,7 @@
   position: relative;
   align-self: stretch;
 }
-.input-field .input-container {
+.inputField {
   background: var(--sds-color-background-default-default, #ffffff);
   border-radius: var(--sds-radius-200, 8px);
   border-style: solid;
