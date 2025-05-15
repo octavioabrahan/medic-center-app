@@ -404,7 +404,6 @@ const AdminCitasAgendadas = () => {
                     return (
                       <div className="fecha-hora-container">
                         <div className="fecha">{fecha.fecha}</div>
-                        <div className="hora">{fecha.hora}</div>
                       </div>
                     );
                   }
@@ -412,7 +411,7 @@ const AdminCitasAgendadas = () => {
                   // Columna de icono de empresa (primera columna)
                   if (column === "iconoEmpresa") {
                     return (
-                      <div className="empresa-cell">
+                      <div className="empresa-cell" style={{ width: 'auto' }}>
                         {row.id_empresa && (
                           <div className="empresa-icon" title="Agendamiento con convenio">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="building-icon">
@@ -469,10 +468,13 @@ const AdminCitasAgendadas = () => {
                     else if (status === 'cancelada') scheme = 'danger';
                     else if (status === 'pendiente') scheme = 'warning';
                     
+                    // Convertir primera letra a mayúscula
+                    const statusText = row.status ? row.status.charAt(0).toUpperCase() + row.status.slice(1).toLowerCase() : 'Sin estado';
+                    
                     return (
                       <div className="text">
                         <Tag 
-                          text={row.status || 'Sin estado'} 
+                          text={statusText} 
                           scheme={scheme}
                           closeable={false}
                         />
@@ -485,10 +487,11 @@ const AdminCitasAgendadas = () => {
                     return (
                       <div className="actions-container">
                         <Button
-                          variant="icon" 
+                          variant="subtle" 
                           size="small"
                           onClick={() => mostrarDetalles(row)}
                           title="Ver detalles"
+                          style={{ backgroundColor: 'transparent', color: 'var(--sds-color-icon-brand-default)' }}
                         >
                           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
                             <path strokeLinecap="round" strokeLinejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z" />
@@ -545,19 +548,19 @@ const AdminCitasAgendadas = () => {
                       </div>
                       <div>
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" style={{ width: '16px', height: '16px', marginRight: '4px', color: 'var(--var-sds-color-text-default-subdued, #707070)' }}>
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5" />
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M6.75 3V5.25M17.25 3V5.25M3 18.75V7.5A2.25 2.25 0 0 1 5.25 5.25H18.75A2.25 2.25 0 0 1 21 7.5V18.75M3 18.75A2.25 2.25 0 0 0 5.25 21H18.75A2.25 2.25 0 0 0 21 18.75V11.25A2.25 2.25 0 0 1 18.75 9H5.25A2.25 2.25 0 0 1 3 11.25V18.75" />
                         </svg>
                         <strong>Fecha:</strong> {formatearFecha(currentAgendamiento.fecha_agendada).fecha}
                       </div>
                       <div>
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" style={{ width: '16px', height: '16px', marginRight: '4px', color: 'var(--var-sds-color-text-default-subdued, #707070)' }}>
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M12 6V12H16.5M21 12A9 9 0 1 1 3 12A9 9 0 0 1 21 12Z" />
                         </svg>
                         <strong>Hora:</strong> {formatearFecha(currentAgendamiento.fecha_agendada).hora}
                       </div>
                       <div>
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" style={{ width: '16px', height: '16px', marginRight: '4px', color: 'var(--var-sds-color-text-default-subdued, #707070)' }}>
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15L15 9.75M21 12A9 9 0 1 1 3 12A9 9 0 0 1 21 12Z" />
                         </svg>
                         <strong>Estado:</strong> 
                         {(() => {
@@ -568,9 +571,14 @@ const AdminCitasAgendadas = () => {
                           else if (status === 'cancelada') scheme = 'danger';
                           else if (status === 'pendiente') scheme = 'warning';
                           
+                          // Convertir primera letra a mayúscula
+                          const statusText = currentAgendamiento.status 
+                            ? currentAgendamiento.status.charAt(0).toUpperCase() + currentAgendamiento.status.slice(1).toLowerCase() 
+                            : 'Sin estado';
+                          
                           return (
                             <Tag 
-                              text={currentAgendamiento.status || 'Sin estado'} 
+                              text={statusText} 
                               scheme={scheme}
                               closeable={false}
                             />
@@ -579,15 +587,15 @@ const AdminCitasAgendadas = () => {
                       </div>
                       <div>
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" style={{ width: '16px', height: '16px', marginRight: '4px', color: 'var(--var-sds-color-text-default-subdued, #707070)' }}>
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M9.568 3H5.25A2.25 2.25 0 0 0 3 5.25v4.318c0 .597.237 1.17.659 1.591l9.581 9.581c.699.699 1.78.872 2.607.33a18.095 18.095 0 0 0 5.223-5.223c.542-.827.369-1.908-.33-2.607L11.16 3.66A2.25 2.25 0 0 0 9.568 3Z" />
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M6 6h.008v.008H6V6Z" />
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M9.568 3H5.25A2.25 2.25 0 0 0 3 5.25V9.568C3 10.165 3.237 10.738 3.659 11.159L13.24 20.74C13.939 21.439 15.02 21.612 15.847 21.07A18.095 18.095 0 0 0 21.07 15.847C21.612 15.02 21.439 13.939 20.74 13.24L11.16 3.66A2.25 2.25 0 0 0 9.568 3Z" />
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M6 6H6.008V6.008H6V6Z" />
                         </svg>
                         <strong>Tipo:</strong> {currentAgendamiento.tipo_atencion}
                       </div>
                       {currentAgendamiento.id_empresa && (
                         <div>
                           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" style={{ width: '16px', height: '16px', marginRight: '4px', color: 'var(--var-sds-color-text-default-subdued, #707070)' }}>
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 21h19.5m-18-18v18m10.5-18v18m6-13.5V21M6.75 6.75h.75m-.75 3h.75m-.75 3h.75m3-6h.75m-.75 3h.75m-.75 3h.75M6.75 21v-3.375c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21M3 3h12m-.75 4.5H21m-3.75 3.75h.008v.008h-.008v-.008Zm0 3h.008v.008h-.008v-.008Zm0 3h.008v.008h-.008v-.008Z" />
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 21H21.75M3.75 3V21M14.25 3V21M20.25 7.5V21M6.75 6.75H7.5M6.75 9.75H7.5M6.75 12.75H7.5M9.75 6.75H10.5M9.75 9.75H10.5M9.75 12.75H10.5M6.75 21V17.625C6.75 17.004 7.254 16.5 7.875 16.5H10.125C10.746 16.5 11.25 17.004 11.25 17.625V21M3 3H15M14.25 7.5H21M17.25 11.25H17.258V11.258H17.25V11.25ZM17.25 14.25H17.258V14.258H17.25V14.25ZM17.25 17.25H17.258V17.258H17.25V17.25Z" />
                           </svg>
                           <strong>Empresa:</strong> {currentAgendamiento.nombre_empresa || 'Convenio empresarial'}
                         </div>
