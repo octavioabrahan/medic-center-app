@@ -23,26 +23,30 @@
 
 .menu-header {
   padding: var(--sds-space-200, 8px)
-    var(--sds-space-400, 16px) var(--sds-space-100, 4px)
-    var(--sds-space-400, 16px);
+    var(--sds-space-200, 8px) var(--sds-space-100, 4px)
+    var(--sds-space-200, 8px);
   display: flex;
   flex-direction: column;
   gap: 0px;
   align-items: center;
-  justify-content: flex-start;
+  justify-content: center;
   align-self: stretch;
   flex-shrink: 0;
   position: relative;
   overflow: hidden;
+  width: 100%;
+  text-align: center;
 }
 
 .logo-1 {
   flex-shrink: 0;
-  width: 168px;
-  height: 60px;
+  width: 80px;  /* Reducido para un mejor ajuste */
+  height: auto; /* Height automático para mantener proporciones */
   position: relative;
-  object-fit: cover;
-  aspect-ratio: 168/60;
+  object-fit: contain;
+  margin: 0 auto;
+  display: block;
+  padding: 8px 0; /* Espacio adicional arriba y abajo */
 }
 
 .menu-group {
