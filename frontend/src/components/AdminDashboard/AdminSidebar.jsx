@@ -3,7 +3,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import './AdminSidebar.css';
 import { ArrowLeftOnRectangleIcon } from '@heroicons/react/24/outline';
-import logo from '../../assets/images/logo.png';
+import logo from '.../../assets/logo_header.png';
 
 /**
  * AdminSidebar component that provides navigation for the admin dashboard.

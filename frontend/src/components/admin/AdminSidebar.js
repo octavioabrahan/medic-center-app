@@ -1,8 +1,8 @@
 // frontend/src/components/admin/AdminSidebar.js
 import React, { useState, useEffect } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
-import './AdminSidebar.css';
-import logo from '../../assets/logo.svg'; // Asegúrate de que la ruta sea correcta
+//import './AdminSidebar.css';
+//import logo from '../../assets/logo.svg'; // Asegúrate de que la ruta sea correcta
 import { auth } from '../../api';
 import api from '../../api';
 

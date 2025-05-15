@@ -1,5 +1,5 @@
 import React from 'react';
-import './AdminCommon.css';
+//import './AdminCommon.css';
 
 /**
  * Componente reutilizable para la barra de filtros en las páginas de administración.

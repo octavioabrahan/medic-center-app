@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import { startOfDay } from "date-fns";
-import Calendar from "../../components/common/Calendar";
-import "./HorarioForm.css";
+//import Calendar from "../../components/common/Calendar";
+//import "./HorarioForm.css";
 
 function HorarioForm({ onSuccess, horario }) {
   const [form, setForm] = useState({

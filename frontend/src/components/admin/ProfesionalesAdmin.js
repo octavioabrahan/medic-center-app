@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import './ProfesionalesAdmin.css';
-import './AdminCommon.css'; // Importamos los estilos comunes
-import AdminFilterBar from './AdminFilterBar'; // Importamos el nuevo componente
+//import './ProfesionalesAdmin.css';
+//import './AdminCommon.css'; // Importamos los estilos comunes
+//import AdminFilterBar from './AdminFilterBar'; // Importamos el nuevo componente
 
 function ProfesionalesAdmin() {
   // Estados para datos

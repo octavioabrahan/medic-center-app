@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { format, startOfWeek, endOfWeek, startOfToday, endOfToday } from 'date-fns';
-import Calendar from '../../components/common/Calendar';
-import './AgendamientoAdmin.css';
+//import Calendar from '../../components/common/Calendar';
+//import './AgendamientoAdmin.css';
 
 function AgendamientoAdmin() {
   // Estados para almacenar los datos
