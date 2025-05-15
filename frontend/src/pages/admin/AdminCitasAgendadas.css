@@ -83,6 +83,31 @@
   max-width: 240px;
 }
 
+.admin-citas-agendadas__date-picker-wrapper {
+  position: relative;
+}
+
+.admin-citas-agendadas__date-input {
+  background: var(--var-sds-color-background-default-default, #ffffff);
+  border-radius: var(--var-sds-size-radius-200, 8px);
+  border-style: solid;
+  border-color: var(--var-sds-color-border-default-default, #d9d9d9);
+  border-width: 1px;
+  padding: var(--var-sds-size-space-300, 12px) var(--var-sds-size-space-300, 12px) var(--var-sds-size-space-300, 12px) var(--var-sds-size-space-400, 16px);
+  display: flex;
+  flex-direction: row;
+  gap: var(--var-sds-size-space-200, 8px);
+  align-items: center;
+  justify-content: flex-start;
+  width: 100%;
+  height: 40px;
+  cursor: pointer;
+  color: var(--var-sds-color-text-default-default, #1e1e1e);
+  font-family: var(--body-base-font-family, "Inter-Regular", sans-serif);
+  font-size: var(--body-base-font-size, 16px);
+  line-height: var(--body-base-line-height, 140%);
+}
+
 .admin-citas-agendadas__body {
   display: flex;
   flex-direction: column;
@@ -124,6 +149,255 @@
   width: 100%;
 }
 
+/* Estilos de la tabla */
+.admin-citas-agendadas__table-container {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.admin-citas-agendadas__table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.admin-citas-agendadas__table th {
+  background-color: #f5f5f5;
+  padding: 10px;
+  text-align: left;
+  font-weight: 600;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.admin-citas-agendadas__table td {
+  padding: 12px 10px;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.admin-citas-agendadas__empresa-cell {
+  width: 40px;
+  text-align: center;
+}
+
+.admin-citas-agendadas__empresa-icon {
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.admin-citas-agendadas__tooltip {
+  position: relative;
+  display: inline-block;
+}
+
+.admin-citas-agendadas__tooltip-text {
+  visibility: hidden;
+  width: 180px;
+  background-color: #333;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px;
+  position: absolute;
+  z-index: 1;
+  bottom: 125%;
+  left: 50%;
+  margin-left: -90px;
+  opacity: 0;
+  transition: opacity 0.3s;
+  font-size: 12px;
+}
+
+.admin-citas-agendadas__tooltip:hover .admin-citas-agendadas__tooltip-text {
+  visibility: visible;
+  opacity: 1;
+}
+
+.admin-citas-agendadas__actions-cell {
+  white-space: nowrap;
+  text-align: center;
+}
+
+.admin-citas-agendadas__btn-action {
+  margin: 0 3px;
+  cursor: pointer;
+  background: none;
+  border: none;
+  font-size: 16px;
+}
+
+.admin-citas-agendadas__btn-view:hover {
+  color: #0077cc;
+}
+
+.admin-citas-agendadas__btn-confirm:hover {
+  color: #00aa55;
+}
+
+.admin-citas-agendadas__status-badge {
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 500;
+  text-transform: uppercase;
+}
+
+.admin-citas-agendadas__status-confirmada {
+  background-color: #e9f7ef;
+  color: #27ae60;
+}
+
+.admin-citas-agendadas__status-pendiente {
+  background-color: #fef9e7;
+  color: #f39c12;
+}
+
+.admin-citas-agendadas__status-cancelada {
+  background-color: #f9ebeb;
+  color: #c0392b;
+}
+
+.admin-citas-agendadas__loading,
+.admin-citas-agendadas__error {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 200px;
+  color: var(--var-sds-color-text-default-secondary, #757575);
+  text-align: center;
+  width: 100%;
+}
+
+/* Estilos del modal */
+.admin-citas-agendadas__modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.admin-citas-agendadas__modal-content {
+  background-color: #fff;
+  border-radius: 8px;
+  width: 90%;
+  max-width: 700px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.admin-citas-agendadas__modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 24px;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.admin-citas-agendadas__modal-header h2 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.admin-citas-agendadas__close-btn {
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  color: #757575;
+}
+
+.admin-citas-agendadas__modal-body {
+  padding: 20px 24px;
+}
+
+.admin-citas-agendadas__detail-section {
+  margin-bottom: 24px;
+}
+
+.admin-citas-agendadas__detail-section:last-child {
+  margin-bottom: 0;
+}
+
+.admin-citas-agendadas__detail-section h3 {
+  margin-top: 0;
+  margin-bottom: 12px;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.admin-citas-agendadas__detail-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 16px;
+}
+
+.admin-citas-agendadas__modal-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 24px;
+  border-top: 1px solid #e0e0e0;
+}
+
+.admin-citas-agendadas__modal-estado-selector {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.admin-citas-agendadas__estado-buttons {
+  display: flex;
+  gap: 8px;
+}
+
+.admin-citas-agendadas__estado-btn {
+  padding: 6px 12px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 13px;
+}
+
+.admin-citas-agendadas__estado-btn.active {
+  font-weight: 600;
+}
+
+.admin-citas-agendadas__estado-pendiente {
+  background-color: #fef9e7;
+  color: #f39c12;
+}
+
+.admin-citas-agendadas__estado-confirmada {
+  background-color: #e9f7ef;
+  color: #27ae60;
+}
+
+.admin-citas-agendadas__estado-cancelada {
+  background-color: #f9ebeb;
+  color: #c0392b;
+}
+
+.admin-citas-agendadas__btn-secondary {
+  padding: 8px 16px;
+  background-color: #f5f5f5;
+  border: 1px solid #d9d9d9;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  color: #333;
+}
+
+.admin-citas-agendadas__btn-secondary:hover {
+  background-color: #e0e0e0;
+}
+
 /* Estilos responsive */
 @media (max-width: 768px) {
   .admin-citas-agendadas__filter-bar {
@@ -147,5 +421,25 @@
   
   .admin-citas-agendadas__body {
     margin: 16px;
+  }
+  
+  .admin-citas-agendadas__detail-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .admin-citas-agendadas__modal-footer {
+    flex-direction: column;
+    gap: 16px;
+  }
+  
+  .admin-citas-agendadas__modal-estado-selector {
+    flex-direction: column;
+    align-items: flex-start;
+    width: 100%;
+  }
+  
+  .admin-citas-agendadas__estado-buttons {
+    width: 100%;
+    justify-content: space-between;
   }
 }
