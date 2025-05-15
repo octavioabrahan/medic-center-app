@@ -663,7 +663,7 @@ const AdminCitasAgendadas = () => {
                 
                 {/* Botón de cerrar */}
                 <div className="icon-button" onClick={() => setShowDetailModal(false)}>
-                  <XMarkIcon className="x" />
+                  <XMarkIcon width={20} height={20} />
                 </div>
                 
                 {/* Botones de acción */}

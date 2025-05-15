@@ -212,22 +212,12 @@
   padding: var(--var-sds-size-space-200, 8px);
   display: flex;
   flex-direction: row;
-  gap: 0px;
   align-items: center;
   justify-content: center;
-  flex-shrink: 0;
   position: absolute;
   right: 8px;
   top: 8px;
-  overflow: hidden;
-}
-
-.modal-appointment-detail .x {
-  flex-shrink: 0;
-  width: 20px;
-  height: 20px;
-  position: relative;
-  overflow: visible;
+  cursor: pointer;
 }
 
 .modal-appointment-detail .button-group {
@@ -236,24 +226,9 @@
   align-items: center;
   justify-content: space-between;
   align-self: stretch;
-  flex-shrink: 0;
   position: relative;
   width: 100%;
   margin-top: 8px;
-}
-
-/* Estilos para adaptarse a los botones del componente Button */
-.modal-appointment-detail .button-group .btn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  min-width: 140px;
-}
-
-.modal-appointment-detail .button-group .btn svg {
-  flex-shrink: 0;
-  position: relative;
 }
 
 /* Asegurar que cuando solo hay un botón se ubique correctamente */
