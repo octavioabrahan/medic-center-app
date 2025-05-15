@@ -106,42 +106,7 @@
   width: 300px;
 }
 
-.button {
-  background: var(--var-sds-color-background-brand-default, #20377a);
-  border-radius: var(--var-sds-size-radius-200, 8px);
-  border-style: solid;
-  border-color: var(--var-sds-color-border-brand-default, #20377a);
-  border-width: 1px;
-  padding: var(--var-sds-size-space-300, 12px);
-  display: flex;
-  flex-direction: row;
-  gap: var(--var-sds-size-space-200, 8px);
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  position: relative;
-  overflow: hidden;
-  cursor: pointer;
-}
 
-.calendar {
-  flex-shrink: 0;
-  width: 16px;
-  height: 16px;
-  position: relative;
-  overflow: visible;
-  color: var(--var-sds-color-text-brand-on-brand, #f0f3ff);
-}
-
-.button2 {
-  color: var(--var-sds-color-text-brand-on-brand, #f0f3ff);
-  text-align: left;
-  font-family: var(--body-base-font-family, "Inter-Regular", sans-serif);
-  font-size: var(--body-base-font-size, 16px);
-  line-height: var(--body-base-line-height, 140%);
-  font-weight: var(--body-base-font-weight, 400);
-  position: relative;
-}
 
 .admin-horarios__body {
   display: flex;
