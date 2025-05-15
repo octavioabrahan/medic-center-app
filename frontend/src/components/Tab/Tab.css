@@ -1,0 +1,54 @@
+.tab-component,
+.tab-component * {
+  box-sizing: border-box;
+}
+
+.tab-component {
+  border-radius: var(--sds-size-radius-100, 4px)
+    var(--sds-size-radius-100, 4px) 0px 0px;
+  border-style: solid;
+  border-color: var(--sds-color-border-neutral-secondary, #767676);
+  border-width: 0px 0px 1px 0px;
+  padding: var(--sds-size-space-100, 4px)
+    var(--sds-size-space-300, 12px) var(--sds-size-space-100, 4px)
+    var(--sds-size-space-300, 12px);
+  display: flex;
+  flex-direction: row;
+  gap: 0px;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.tab-label {
+  color: var(--sds-color-text-neutral-tertiary, #767676);
+  text-align: left;
+  font-family: var(--body-base-font-family, "Inter-Regular", sans-serif);
+  font-size: var(--body-base-font-size, 16px);
+  line-height: var(--body-base-line-height, 140%);
+  font-weight: var(--body-base-font-weight, 400);
+  position: relative;
+}
+
+/* Hover state */
+.tab-component:hover,
+.tab-component.state-hover {
+  background: var(--sds-color-background-default-default-hover, #f5f5f5);
+}
+
+/* Active state */
+.tab-component.active-on {
+  border-color: var(--sds-color-border-neutral-default, #303030);
+}
+
+.tab-component.active-on .tab-label {
+  color: var(--sds-color-text-neutral-default, #303030);
+}
+
+/* Inactive/disabled state */
+.tab-component.inactive {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
