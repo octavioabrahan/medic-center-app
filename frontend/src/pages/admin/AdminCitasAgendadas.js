@@ -14,6 +14,7 @@ import { format } from 'date-fns';
 import './AdminCitasAgendadas.css';
 import './AdminCitasAgendadasModal.css';
 import './forcedStyles.css';
+import './ModalAppointmentDetail.css';
 
 /**
  * Componente para la gestión de citas agendadas en el panel de administración
@@ -522,142 +523,165 @@ const AdminCitasAgendadas = () => {
           
           {/* Modal para detalles */}
           {showDetailModal && currentAgendamiento && (
-            <div className="admin-citas-agendadas__modal-overlay">
-              <div className="admin-citas-agendadas__modal-content">
-                <div className="admin-citas-agendadas__modal-header">
-                  <h2>Detalles del Agendamiento</h2>
-                  <button className="admin-citas-agendadas__close-btn" onClick={() => setShowDetailModal(false)}>×</button>
-                </div>
-                <div className="admin-citas-agendadas__modal-body">
-                  <div className="admin-citas-agendadas__detail-section">
-                    <h3>Información General</h3>
-                    <div className="admin-citas-agendadas__detail-grid">
-                      <div>
-                        <strong>ID:</strong> {currentAgendamiento.agendamiento_id}
+            <div className="admin-citas-agendadas__modal-overlay modal-appointment-detail">
+              <div className="modal-body">
+                <div className="text">
+                  <div className="detalle-de-la-cita">Detalle de la cita</div>
+                  
+                  {/* Información del paciente */}
+                  <div className="paciente">
+                    <div className="frame-88">
+                      <div className="informaci-n-del-paciente">Información del paciente</div>
+                      <div className="line-6"></div>
+                    </div>
+                    <div className="frame-78">
+                      <div className="nombre">Nombre</div>
+                      <div className="sarai-suarez">{currentAgendamiento.paciente_nombre} {currentAgendamiento.paciente_apellido}</div>
+                    </div>
+                    <div className="frame-79">
+                      <div className="c-dula">Cédula</div>
+                      <div className="_21125920-1">{currentAgendamiento.cedula}</div>
+                    </div>
+                    <div className="frame-90">
+                      <div className="tel-fono">Teléfono</div>
+                      <div className="no-aplica">{currentAgendamiento.paciente_telefono || 'No aplica'}</div>
+                    </div>
+                    <div className="frame-81">
+                      <div className="correo-electr-nico">Correo electrónico</div>
+                      <div className="no-aplica">{currentAgendamiento.paciente_email || 'No aplica'}</div>
+                    </div>
+                    {currentAgendamiento.fecha_nacimiento && (
+                      <div className="frame-80">
+                        <div className="fecha-de-nacimiento">Fecha de nacimiento</div>
+                        <div className="_14-02-1994">{new Date(currentAgendamiento.fecha_nacimiento).toLocaleDateString()}</div>
                       </div>
-                      <div>
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" style={{ width: '16px', height: '16px', marginRight: '4px', color: 'var(--var-sds-color-text-default-subdued, #707070)' }}>
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M6.75 3V5.25M17.25 3V5.25M3 18.75V7.5A2.25 2.25 0 0 1 5.25 5.25H18.75A2.25 2.25 0 0 1 21 7.5V18.75M3 18.75A2.25 2.25 0 0 0 5.25 21H18.75A2.25 2.25 0 0 0 21 18.75V11.25A2.25 2.25 0 0 1 18.75 9H5.25A2.25 2.25 0 0 1 3 11.25V18.75" />
-                        </svg>
-                        <strong>Fecha:</strong> {formatearFecha(currentAgendamiento.fecha_agendada).fecha}
+                    )}
+                    {currentAgendamiento.sexo && (
+                      <div className="frame-89">
+                        <div className="sexo">Sexo</div>
+                        <div className="femenino">{currentAgendamiento.sexo}</div>
                       </div>
-                      <div>
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" style={{ width: '16px', height: '16px', marginRight: '4px', color: 'var(--var-sds-color-text-default-subdued, #707070)' }}>
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M12 6V12H16.5M21 12A9 9 0 1 1 3 12A9 9 0 0 1 21 12Z" />
-                        </svg>
-                        <strong>Hora:</strong> {formatearFecha(currentAgendamiento.fecha_agendada).hora}
+                    )}
+                  </div>
+                  
+                  {/* Información del representante legal (si aplica) */}
+                  {currentAgendamiento.representante_nombre && (
+                    <div className="paciente">
+                      <div className="frame-88">
+                        <div className="informaci-n-del-representante-legal">
+                          Información del representante legal
+                        </div>
+                        <div className="line-6"></div>
                       </div>
-                      <div>
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" style={{ width: '16px', height: '16px', marginRight: '4px', color: 'var(--var-sds-color-text-default-subdued, #707070)' }}>
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15L15 9.75M21 12A9 9 0 1 1 3 12A9 9 0 0 1 21 12Z" />
-                        </svg>
-                        <strong>Estado:</strong> 
-                        {(() => {
-                          const status = currentAgendamiento.status?.toLowerCase() || 'pendiente';
-                          let scheme = 'neutral';
-                          
-                          if (status === 'confirmada') scheme = 'positive';
-                          else if (status === 'cancelada') scheme = 'danger';
-                          else if (status === 'pendiente') scheme = 'warning';
-                          
-                          // Convertir primera letra a mayúscula
-                          const statusText = currentAgendamiento.status 
-                            ? currentAgendamiento.status.charAt(0).toUpperCase() + currentAgendamiento.status.slice(1).toLowerCase() 
-                            : 'Sin estado';
-                          
-                          return (
-                            <Tag 
-                              text={statusText} 
-                              scheme={scheme}
-                              closeable={false}
-                            />
-                          );
-                        })()}
+                      <div className="frame-78">
+                        <div className="nombre">Nombre</div>
+                        <div className="sarai-suarez">{currentAgendamiento.representante_nombre} {currentAgendamiento.representante_apellido}</div>
                       </div>
-                      <div>
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" style={{ width: '16px', height: '16px', marginRight: '4px', color: 'var(--var-sds-color-text-default-subdued, #707070)' }}>
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M9.568 3H5.25A2.25 2.25 0 0 0 3 5.25V9.568C3 10.165 3.237 10.738 3.659 11.159L13.24 20.74C13.939 21.439 15.02 21.612 15.847 21.07A18.095 18.095 0 0 0 21.07 15.847C21.612 15.02 21.439 13.939 20.74 13.24L11.16 3.66A2.25 2.25 0 0 0 9.568 3Z" />
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M6 6H6.008V6.008H6V6Z" />
-                        </svg>
-                        <strong>Tipo:</strong> {currentAgendamiento.tipo_atencion}
-                      </div>
-                      {currentAgendamiento.id_empresa && (
-                        <div>
-                          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" style={{ width: '16px', height: '16px', marginRight: '4px', color: 'var(--var-sds-color-text-default-subdued, #707070)' }}>
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 21H21.75M3.75 3V21M14.25 3V21M20.25 7.5V21M6.75 6.75H7.5M6.75 9.75H7.5M6.75 12.75H7.5M9.75 6.75H10.5M9.75 9.75H10.5M9.75 12.75H10.5M6.75 21V17.625C6.75 17.004 7.254 16.5 7.875 16.5H10.125C10.746 16.5 11.25 17.004 11.25 17.625V21M3 3H15M14.25 7.5H21M17.25 11.25H17.258V11.258H17.25V11.25ZM17.25 14.25H17.258V14.258H17.25V14.25ZM17.25 17.25H17.258V17.258H17.25V17.25Z" />
-                          </svg>
-                          <strong>Empresa:</strong> {currentAgendamiento.nombre_empresa || 'Convenio empresarial'}
+                      {currentAgendamiento.representante_cedula && (
+                        <div className="frame-79">
+                          <div className="c-dula">Cédula</div>
+                          <div className="_21125920">{currentAgendamiento.representante_cedula}</div>
+                        </div>
+                      )}
+                      {currentAgendamiento.representante_sexo && (
+                        <div className="frame-80">
+                          <div className="sexo">Sexo</div>
+                          <div className="femenino">{currentAgendamiento.representante_sexo}</div>
+                        </div>
+                      )}
+                      {currentAgendamiento.representante_telefono && (
+                        <div className="frame-89">
+                          <div className="tel-fono">Teléfono</div>
+                          <div className="_0414-1234567">{currentAgendamiento.representante_telefono}</div>
+                        </div>
+                      )}
+                      {currentAgendamiento.representante_email && (
+                        <div className="frame-81">
+                          <div className="correo-electr-nico">Correo electrónico</div>
+                          <div className="ssb-correo-com">{currentAgendamiento.representante_email}</div>
                         </div>
                       )}
                     </div>
-                  </div>
-
-                  <div className="admin-citas-agendadas__detail-section">
-                    <h3>Información del Paciente</h3>
-                    <div className="admin-citas-agendadas__detail-grid">
-                      <div>
-                        <strong>Nombre:</strong> {currentAgendamiento.paciente_nombre} {currentAgendamiento.paciente_apellido}
-                      </div>
-                      <div>
-                        <strong>Cédula:</strong> {currentAgendamiento.cedula}
-                      </div>
-                      <div>
-                        <strong>Email:</strong> {currentAgendamiento.paciente_email || 'No disponible'}
-                      </div>
-                      <div>
-                        <strong>Teléfono:</strong> {currentAgendamiento.paciente_telefono || 'No disponible'}
+                  )}
+                  
+                  {/* Información de la cita */}
+                  <div className="booking">
+                    <div className="frame-902">
+                      <div className="informaci-n-de-la-cita">Información de la cita</div>
+                      <div className="line-4"></div>
+                    </div>
+                    <div className="frame-82">
+                      <div className="fecha">Fecha</div>
+                      <div className="jueves-8-mayo-2025">{formatearFecha(currentAgendamiento.fecha_agendada).fecha}</div>
+                    </div>
+                    <div className="frame-83">
+                      <div className="hora">Hora</div>
+                      <div className="_12-00-am">{formatearFecha(currentAgendamiento.fecha_agendada).hora}</div>
+                    </div>
+                    <div className="frame-84">
+                      <div className="profesional">Profesional</div>
+                      <div className="leonardo-brasil">{currentAgendamiento.profesional_nombre} {currentAgendamiento.profesional_apellido}</div>
+                    </div>
+                    
+                    <div className="frame-86">
+                      <div className="servicios">Servicios</div>
+                      <div className="frame-892">
+                        {currentAgendamiento.observaciones ? (
+                          currentAgendamiento.observaciones.split(',').map((servicio, index) => (
+                            <div key={index} className="ecografia-abdominal">{servicio.trim()}</div>
+                          ))
+                        ) : (
+                          <div className="ecografia-abdominal">No se especificaron servicios</div>
+                        )}
                       </div>
                     </div>
-                  </div>
-
-                  <div className="admin-citas-agendadas__detail-section">
-                    <h3>Profesional</h3>
-                    <div className="admin-citas-agendadas__detail-grid">
-                      <div>
-                        <strong>Nombre:</strong> {currentAgendamiento.profesional_nombre} {currentAgendamiento.profesional_apellido}
+                    
+                    <div className="frame-85">
+                      <div className="tipo-de-atenci-n">Tipo de atención</div>
+                      <div className="presencial">{currentAgendamiento.tipo_atencion}</div>
+                    </div>
+                    
+                    <div className="frame-87">
+                      <div className="estado">Estado</div>
+                      <div className="tag" data-status={currentAgendamiento.status?.toLowerCase() || 'pendiente'}>
+                        <div className="tag2">
+                          {currentAgendamiento.status 
+                            ? currentAgendamiento.status.charAt(0).toUpperCase() + currentAgendamiento.status.slice(1).toLowerCase() 
+                            : 'Pendiente'}
+                        </div>
                       </div>
                     </div>
-                  </div>
-
-                  <div className="admin-citas-agendadas__detail-section">
-                    <h3>Servicios</h3>
-                    <p>{currentAgendamiento.observaciones || 'No se especificaron servicios'}</p>
+                    
+                    {currentAgendamiento.id_empresa && (
+                      <div className="frame-85">
+                        <div className="tipo-de-atenci-n">Empresa</div>
+                        <div className="presencial">{currentAgendamiento.nombre_empresa || 'Convenio empresarial'}</div>
+                      </div>
+                    )}
                   </div>
                 </div>
-                <div className="admin-citas-agendadas__modal-footer">
-                  <div className="admin-citas-agendadas__modal-estado-selector">
-                    <label>Cambiar estado:</label>
-                    <div className="admin-citas-agendadas__estado-buttons">
-                      {/* Usar los componentes Button en lugar de botones personalizados */}
-                      <Button 
-                        variant={currentAgendamiento.status?.toLowerCase() === 'pendiente' ? 'primary' : 'subtle'}
-                        onClick={() => actualizarEstado(currentAgendamiento.agendamiento_id, "pendiente")}
-                        size="small"
-                      >
-                        Pendiente
-                      </Button>
-                      <Button 
-                        variant={currentAgendamiento.status?.toLowerCase() === 'confirmada' ? 'primary' : 'subtle'}
-                        onClick={() => actualizarEstado(currentAgendamiento.agendamiento_id, "confirmada")}
-                        size="small"
-                      >
-                        Confirmada
-                      </Button>
-                      <Button 
-                        variant={currentAgendamiento.status?.toLowerCase() === 'cancelada' ? 'danger' : 'subtle'}
-                        onClick={() => actualizarEstado(currentAgendamiento.agendamiento_id, "cancelada")}
-                        size="small"
-                      >
-                        Cancelada
-                      </Button>
-                    </div>
-                  </div>
-                  <Button 
-                    variant="neutral" 
-                    onClick={() => setShowDetailModal(false)}
+                
+                {/* Botón de cerrar */}
+                <div className="icon-button" onClick={() => setShowDetailModal(false)}>
+                  <XMarkIcon className="x" />
+                </div>
+                
+                {/* Botones de acción */}
+                <div className="button-group">
+                  <div 
+                    className="button-danger"
+                    onClick={() => actualizarEstado(currentAgendamiento.agendamiento_id, "cancelada")}
                   >
-                    Cerrar
-                  </Button>
+                    <XMarkIcon className="heroicons-mini-x-mark" />
+                    <div className="button">Cancelar cita</div>
+                  </div>
+                  <div 
+                    className="button2"
+                    onClick={() => actualizarEstado(currentAgendamiento.agendamiento_id, "confirmada")}
+                  >
+                    <CheckIcon className="check" />
+                    <div className="button">Confirmar cita</div>
+                  </div>
                 </div>
               </div>
             </div>

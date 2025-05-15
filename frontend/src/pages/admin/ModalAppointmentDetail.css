@@ -1,0 +1,314 @@
+/* Estilos para el modal de detalle de cita */
+.modal-appointment-detail .modal-body {
+  background: var(--var-sds-color-background-default-default, #ffffff);
+  border-radius: var(--var-sds-size-radius-200, 8px);
+  border-style: solid;
+  border-color: var(--var-sds-color-border-default-default, #d9d9d9);
+  border-width: 1px;
+  padding: var(--var-sds-size-space-800, 32px);
+  display: flex;
+  flex-direction: column;
+  gap: var(--var-sds-size-space-600, 24px);
+  align-items: flex-start;
+  justify-content: flex-start;
+  width: 100%;
+  flex-shrink: 0;
+  max-width: 600px;
+  position: relative;
+  box-shadow: var(
+    --drop-shadow-400-box-shadow,
+    0px 4px 4px -4px rgba(12, 12, 13, 0.05),
+    0px 16px 32px -4px rgba(12, 12, 13, 0.1)
+  );
+}
+
+.modal-appointment-detail .text {
+  display: flex;
+  flex-direction: column;
+  gap: var(--var-sds-size-space-600, 24px);
+  align-items: flex-start;
+  justify-content: flex-start;
+  align-self: stretch;
+  flex-shrink: 0;
+  position: relative;
+}
+
+.modal-appointment-detail .detalle-de-la-cita {
+  color: var(--var-sds-color-text-default-default, #1e1e1e);
+  text-align: left;
+  font-family: var(--heading-font-family, "Inter-SemiBold", sans-serif);
+  font-size: var(--heading-font-size, 24px);
+  line-height: var(--heading-line-height, 120%);
+  letter-spacing: var(--heading-letter-spacing, -0.02em);
+  font-weight: var(--heading-font-weight, 600);
+  position: relative;
+  align-self: stretch;
+}
+
+.modal-appointment-detail .paciente {
+  display: flex;
+  flex-direction: column;
+  gap: var(--var-sds-size-space-200, 8px);
+  align-items: flex-start;
+  justify-content: flex-start;
+  align-self: stretch;
+  flex-shrink: 0;
+  position: relative;
+}
+
+.modal-appointment-detail .frame-88,
+.modal-appointment-detail .frame-902 {
+  display: flex;
+  flex-direction: column;
+  gap: var(--var-sds-size-space-100, 4px);
+  align-items: flex-start;
+  justify-content: flex-start;
+  align-self: stretch;
+  flex-shrink: 0;
+  position: relative;
+}
+
+.modal-appointment-detail .informaci-n-del-paciente,
+.modal-appointment-detail .informaci-n-del-representante-legal,
+.modal-appointment-detail .informaci-n-de-la-cita {
+  color: var(--var-sds-color-text-default-secondary, #757575);
+  text-align: left;
+  font-family: var(--body-strong-font-family, "Inter-SemiBold", sans-serif);
+  font-size: var(--body-strong-font-size, 16px);
+  line-height: var(--body-strong-line-height, 140%);
+  font-weight: var(--body-strong-font-weight, 600);
+  position: relative;
+  align-self: stretch;
+}
+
+.modal-appointment-detail .line-6,
+.modal-appointment-detail .line-4 {
+  border-style: solid;
+  border-color: var(--var-sds-color-border-neutral-tertiary, #b2b2b2);
+  border-width: 1px 0 0 0;
+  width: 100%;
+  height: 0px;
+  position: relative;
+}
+
+.modal-appointment-detail .frame-78,
+.modal-appointment-detail .frame-79,
+.modal-appointment-detail .frame-80,
+.modal-appointment-detail .frame-81,
+.modal-appointment-detail .frame-82,
+.modal-appointment-detail .frame-83,
+.modal-appointment-detail .frame-84,
+.modal-appointment-detail .frame-85,
+.modal-appointment-detail .frame-86,
+.modal-appointment-detail .frame-87,
+.modal-appointment-detail .frame-89,
+.modal-appointment-detail .frame-90 {
+  display: flex;
+  flex-direction: row;
+  gap: 12px;
+  align-items: flex-start;
+  justify-content: flex-start;
+  align-self: stretch;
+  flex-shrink: 0;
+  position: relative;
+}
+
+.modal-appointment-detail .frame-87 {
+  align-items: center;
+}
+
+.modal-appointment-detail [class^="nombre"],
+.modal-appointment-detail [class^="c-dula"],
+.modal-appointment-detail [class^="tel-fono"],
+.modal-appointment-detail [class^="correo-electr-nico"],
+.modal-appointment-detail [class^="sexo"],
+.modal-appointment-detail [class^="fecha"],
+.modal-appointment-detail [class^="fecha-de-nacimiento"],
+.modal-appointment-detail [class^="hora"],
+.modal-appointment-detail [class^="profesional"],
+.modal-appointment-detail [class^="tipo-de-atenci-n"],
+.modal-appointment-detail [class^="estado"],
+.modal-appointment-detail [class^="servicios"] {
+  color: var(--var-sds-color-text-default-secondary, #757575);
+  text-align: left;
+  font-family: var(--body-base-font-family, "Inter-Regular", sans-serif);
+  font-size: var(--body-base-font-size, 16px);
+  line-height: var(--body-base-line-height, 140%);
+  font-weight: var(--body-base-font-weight, 400);
+  position: relative;
+  min-width: 140px;
+}
+
+.modal-appointment-detail [class^="_"] {
+  color: var(--var-sds-color-text-default-default, #1e1e1e);
+  text-align: left;
+  font-family: var(--body-base-font-family, "Inter-Regular", sans-serif);
+  font-size: var(--body-base-font-size, 16px);
+  line-height: var(--body-base-line-height, 140%);
+  font-weight: var(--body-base-font-weight, 400);
+  position: relative;
+}
+
+.modal-appointment-detail .booking {
+  display: flex;
+  flex-direction: column;
+  gap: var(--var-sds-size-space-200, 8px);
+  align-items: flex-start;
+  justify-content: flex-start;
+  align-self: stretch;
+  flex-shrink: 0;
+  position: relative;
+}
+
+.modal-appointment-detail .frame-892 {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  align-items: flex-start;
+  justify-content: center;
+  flex-shrink: 0;
+  position: relative;
+}
+
+.modal-appointment-detail .ecografia-abdominal {
+  color: var(--var-sds-color-text-default-default, #1e1e1e);
+  text-align: left;
+  font-family: var(--body-base-font-family, "Inter-Regular", sans-serif);
+  font-size: var(--body-base-font-size, 16px);
+  line-height: var(--body-base-line-height, 140%);
+  font-weight: var(--body-base-font-weight, 400);
+  position: relative;
+}
+
+.modal-appointment-detail .tag {
+  background: var(--var-sds-color-background-warning-default, #e8b931);
+  border-radius: var(--var-sds-size-radius-200, 8px);
+  padding: var(--var-sds-size-space-200, 8px);
+  display: flex;
+  flex-direction: row;
+  gap: var(--var-sds-size-space-200, 8px);
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  position: relative;
+}
+
+.modal-appointment-detail .tag2 {
+  color: var(--var-sds-color-text-warning-on-warning, #401b01);
+  text-align: left;
+  font-family: var(
+    --single-line-body-base-font-family,
+    "Inter-Regular",
+    sans-serif
+  );
+  font-size: var(--single-line-body-base-font-size, 16px);
+  line-height: var(--single-line-body-base-line-height, 100%);
+  font-weight: var(--single-line-body-base-font-weight, 400);
+  position: relative;
+}
+
+.modal-appointment-detail .icon-button {
+  border-radius: var(--var-sds-size-radius-full, 9999px);
+  padding: var(--var-sds-size-space-200, 8px);
+  display: flex;
+  flex-direction: row;
+  gap: 0px;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  position: absolute;
+  right: 8px;
+  top: 8px;
+  overflow: hidden;
+}
+
+.modal-appointment-detail .x {
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+  position: relative;
+  overflow: visible;
+}
+
+.modal-appointment-detail .button-group {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  align-self: stretch;
+  flex-shrink: 0;
+  position: relative;
+  gap: 12px;
+}
+
+.modal-appointment-detail .button-danger {
+  background: var(--var-sds-color-background-danger-default, #ec221f);
+  border-radius: var(--var-sds-size-radius-200, 8px);
+  border-style: solid;
+  border-color: var(--var-sds-color-border-danger-secondary, #c00f0c);
+  border-width: 1px;
+  padding: var(--var-sds-size-space-200, 8px);
+  display: flex;
+  flex-direction: row;
+  gap: var(--var-sds-size-space-200, 8px);
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.modal-appointment-detail .button {
+  color: var(--var-sds-color-text-brand-on-brand, #f0f3ff);
+  text-align: left;
+  font-family: var(--body-base-font-family, "Inter-Regular", sans-serif);
+  font-size: var(--body-base-font-size, 16px);
+  line-height: var(--body-base-line-height, 140%);
+  font-weight: var(--body-base-font-weight, 400);
+  position: relative;
+}
+
+.modal-appointment-detail .button2 {
+  background: var(--var-sds-color-background-brand-default, #20377a);
+  border-radius: var(--var-sds-size-radius-200, 8px);
+  border-style: solid;
+  border-color: var(--var-sds-color-border-brand-default, #20377a);
+  border-width: 1px;
+  padding: var(--var-sds-size-space-200, 8px);
+  display: flex;
+  flex-direction: row;
+  gap: var(--var-sds-size-space-200, 8px);
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.modal-appointment-detail .check,
+.modal-appointment-detail .heroicons-mini-x-mark {
+  flex-shrink: 0;
+  width: 16px;
+  height: 16px;
+  position: relative;
+  overflow: visible;
+}
+
+/* Adaptación para elementos específicos */
+.modal-appointment-detail .tag[data-status="confirmada"] {
+  background: var(--var-sds-color-background-positive-default, #2ECC71);
+}
+
+.modal-appointment-detail .tag[data-status="confirmada"] .tag2 {
+  color: var(--var-sds-color-text-positive-on-positive, #0F5132);
+}
+
+.modal-appointment-detail .tag[data-status="cancelada"] {
+  background: var(--var-sds-color-background-danger-default, #ec221f);
+}
+
+.modal-appointment-detail .tag[data-status="cancelada"] .tag2 {
+  color: var(--var-sds-color-text-danger-on-danger, #FFFFFF);
+}
