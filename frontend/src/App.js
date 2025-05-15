@@ -11,11 +11,19 @@ const DemoModals = lazy(() => import('./components/Modal/DemoModals'));
 const DemoTabs = lazy(() => import('./components/Tab/DemoTabs'));
 const DemoText = lazy(() => import('./components/Text/DemoText'));
 const DemoSiteFrame = lazy(() => import('./components/SiteFrame/DemoSiteFrame'));
+const DemoIndex = lazy(() => import('./components/Demo/DemoIndex'));
 
 function App() {
   return (
     <Router>
       <Routes>
+        {/* Ruta principal para el índice de demos */}
+        <Route path="/demo" element={
+          <Suspense fallback={<div>Cargando demo...</div>}>
+            <DemoIndex />
+          </Suspense>
+        } />
+        
         {/* Demo routes primero para evitar cargar el resto de la app innecesariamente */}
         <Route path="/demo/button" element={
           <Suspense fallback={<div>Cargando demo...</div>}>
