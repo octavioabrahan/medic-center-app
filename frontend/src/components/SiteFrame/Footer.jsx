@@ -1,7 +1,7 @@
 // src/components/SiteFrame/Footer.jsx
 import React from 'react';
 import './SiteFrame.css';
-import logoOficial from '../../assets/logo_savio.svg'; // Asegúrate de tener esta imagen en assets
+import logoOficial from '../../assets/logo_savio.png'; // Asegúrate de tener esta imagen en assets
 
 /**
  * Footer component for the SiteFrame
