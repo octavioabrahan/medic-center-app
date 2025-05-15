@@ -36,6 +36,45 @@ TextContentHeading.propTypes = {
 };
 
 /**
+ * TextPrice component for displaying a price with currency symbol and period
+ * 
+ * @param {Object} props - Component props
+ * @param {string|number} props.price - The price amount
+ * @param {string} props.currency - The currency symbol
+ * @param {string} props.period - The time period for the price
+ * @param {string} props.className - Additional CSS classes
+ * @param {boolean} props.small - Whether to use small size variant
+ */
+export const TextPrice = ({
+  price,
+  currency = '$',
+  period = '/ mo',
+  className = '',
+  small = false,
+  ...otherProps
+}) => {
+  const sizeClass = small ? 'size-small' : '';
+  
+  return (
+    <div className={`text-price ${sizeClass} ${className}`} {...otherProps}>
+      <div className="price">
+        <div className="div">{currency}</div>
+        <div className="_50">{price}</div>
+      </div>
+      <div className="mo">{period}</div>
+    </div>
+  );
+};
+
+TextPrice.propTypes = {
+  price: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+  currency: PropTypes.string,
+  period: PropTypes.string,
+  className: PropTypes.string,
+  small: PropTypes.bool
+};
+
+/**
  * Text component for displaying content with consistent styling
  * 
  * @param {Object} props - Component props

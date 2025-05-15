@@ -1,5 +1,5 @@
 import React from 'react';
-import Text, { TextContentHeading } from './Text';
+import Text, { TextContentHeading, TextPrice } from './Text';
 import './DemoText.css';
 
 const DemoText = () => {
@@ -153,6 +153,52 @@ const DemoText = () => {
             <TextContentHeading 
               heading="Servicios médicos" 
               subheading="Profesionales altamente calificados en diversas especialidades" 
+            />
+          </div>
+        </div>
+      </section>
+
+      <section className="demo-section">
+        <h2>TextPrice</h2>
+        
+        <div className="text-example-grid">
+          <div className="text-example">
+            <h3>Default</h3>
+            <TextPrice
+              price="50"
+            />
+          </div>
+          
+          <div className="text-example">
+            <h3>Custom Currency</h3>
+            <TextPrice 
+              price="100"
+              currency="€"
+            />
+          </div>
+          
+          <div className="text-example">
+            <h3>Custom Period</h3>
+            <TextPrice 
+              price="199"
+              period="/ año"
+            />
+          </div>
+
+          <div className="text-example">
+            <h3>Small Variant</h3>
+            <TextPrice 
+              price="25"
+              small={true}
+            />
+          </div>
+
+          <div className="text-example">
+            <h3>Custom Example</h3>
+            <TextPrice 
+              price="350"
+              currency="MXN$"
+              period="/ consulta"
             />
           </div>
         </div>

@@ -26,7 +26,9 @@
 .text-link-list-item,
 .text-link-list-item *,
 .text-content-heading,
-.text-content-heading * {
+.text-content-heading *,
+.text-price,
+.text-price * {
   box-sizing: border-box;
 }
 
@@ -342,4 +344,73 @@
 .text-content-heading.align-center .subheading {
   text-align: center;
   justify-content: center;
+}
+
+/* TextPrice Component */
+.text-price {
+  display: flex;
+  flex-direction: row;
+  gap: 0px;
+  align-items: flex-end;
+  justify-content: center;
+  position: relative;
+}
+
+.text-price .price {
+  display: flex;
+  flex-direction: row;
+  gap: 0px;
+  align-items: flex-start;
+  justify-content: flex-start;
+  flex-shrink: 0;
+  position: relative;
+}
+
+.text-price .div {
+  color: var(--sds-color-text-default-default, #1e1e1e);
+  text-align: left;
+  font-family: var(--title-page-font-family, "Inter-Bold", sans-serif);
+  font-size: var(--subtitle-font-size, 24px);
+  line-height: 100%;
+  letter-spacing: -0.02em;
+  font-weight: var(--title-page-font-weight, 700);
+  position: relative;
+}
+
+.text-price ._50 {
+  color: var(--sds-color-text-default-default, #1e1e1e);
+  text-align: left;
+  font-family: var(--title-page-font-family, "Inter-Bold", sans-serif);
+  font-size: var(--title-page-font-size, 48px);
+  line-height: 100%;
+  letter-spacing: -0.02em;
+  font-weight: var(--title-page-font-weight, 700);
+  position: relative;
+}
+
+.text-price .mo {
+  color: var(--sds-color-text-default-default, #1e1e1e);
+  text-align: left;
+  font-family: var(--body-base-font-family, "Inter-Regular", sans-serif);
+  font-size: var(--body-small-font-size, 14px);
+  line-height: 180%;
+  font-weight: var(--body-base-font-weight, 400);
+  position: relative;
+}
+
+/* variant styles */
+.text-price.size-small .div {
+  font-family: var(--body-strong-font-family, "Inter-SemiBold", sans-serif);
+  font-size: var(--body-base-font-size, 16px);
+  font-weight: var(--body-strong-font-weight, 600);
+}
+
+.text-price.size-small ._50 {
+  font-family: var(--heading-font-family, "Inter-SemiBold", sans-serif);
+  font-size: var(--heading-font-size, 24px);
+  font-weight: var(--heading-font-weight, 600);
+}
+
+.text-price.size-small .mo {
+  line-height: 120%;
 }
