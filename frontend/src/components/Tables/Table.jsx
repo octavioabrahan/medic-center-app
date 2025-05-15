@@ -32,9 +32,19 @@ const Table = ({
         </div>
         <div className="table-body">
           {data.map((row, rowIndex) => (
-            <div key={`row-${rowIndex}`} className="table-row">
+            <div 
+              key={`row-${rowIndex}`} 
+              className="table-row" 
+              onClick={row.onRowClick ? () => row.onRowClick(row) : undefined}
+              style={row.onRowClick ? { cursor: 'pointer' } : {}}
+            >
               {columns.map((column, colIndex) => (
-                <div key={`cell-${rowIndex}-${colIndex}`} className="cell" style={{ flex: 1 }}>
+                <div 
+                  key={`cell-${rowIndex}-${colIndex}`} 
+                  className="cell" 
+                  style={{ flex: 1 }}
+                  onClick={(e) => column === 'acciones' && e.stopPropagation()} // Evita que los clicks en acciones propaguen al row
+                >
                   {renderCustomCell ? (
                     renderCustomCell(row, column, colIndex)
                   ) : (

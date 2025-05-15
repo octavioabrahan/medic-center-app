@@ -4,10 +4,15 @@ import { AdminLayout } from '../../components/AdminDashboard';
 import SearchField from '../../components/Inputs/SearchField';
 import SelectField from '../../components/Inputs/SelectField';
 import Calendar from '../../components/common/Calendar';
+import Table from '../../components/Tables/Table';
+import Tag from '../../components/Tag/Tag';
+import Button from '../../components/Button/Button';
+import { CheckIcon, XMarkIcon } from '@heroicons/react/24/outline';
 import { useLocation } from 'react-router-dom';
 import axios from 'axios';
 import { format } from 'date-fns';
 import './AdminCitasAgendadas.css';
+import './AdminCitasAgendadasModal.css';
 
 /**
  * Componente para la gestión de citas agendadas en el panel de administración
@@ -227,6 +232,17 @@ const AdminCitasAgendadas = () => {
   // Cambiar estado de agendamiento
   const actualizarEstado = async (id, nuevoEstado) => {
     try {
+      // Variable para mostrar mensajes de estado
+      let statusMessage;
+      
+      if (nuevoEstado === 'confirmada') {
+        statusMessage = 'Cita confirmada exitosamente';
+      } else if (nuevoEstado === 'cancelada') {
+        statusMessage = 'Cita cancelada correctamente';
+      } else if (nuevoEstado === 'pendiente') {
+        statusMessage = 'Cita marcada como pendiente';
+      }
+      
       await axios.put(`/api/agendamiento/${id}`, { status: nuevoEstado });
       
       // Actualizar estado en la lista local
@@ -243,9 +259,16 @@ const AdminCitasAgendadas = () => {
       if (currentAgendamiento && currentAgendamiento.agendamiento_id === id) {
         setCurrentAgendamiento({...currentAgendamiento, status: nuevoEstado});
       }
+      
+      // Aquí podemos mostrar un mensaje de éxito al usuario (por ejemplo usando un sistema de notificaciones)
+      console.log(statusMessage);
+      // Si hay un sistema de notificaciones, podríamos usar algo como:
+      // toast.success(statusMessage);
     } catch (err) {
       console.error('Error:', err);
       setError('Error al actualizar el estado del agendamiento.');
+      // Si hay un sistema de notificaciones:
+      // toast.error('Error al actualizar el estado del agendamiento.');
     }
   };
 
@@ -367,72 +390,141 @@ const AdminCitasAgendadas = () => {
             </div>
           ) : (
             <div className="admin-citas-agendadas__table-container">
-              <table className="admin-citas-agendadas__table">
-                <thead>
-                  <tr>
-                    <th></th>
-                    <th>Fecha cita</th>
-                    <th>Paciente</th>
-                    <th>Cédula</th>
-                    <th>Categoría</th>
-                    <th>Profesional</th>
-                    <th>Estado</th>
-                    <th>Acciones</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {filteredAgendamientos.map(agendamiento => {
-                    // Simplificar formato de fecha para mostrar
-                    const fecha = new Date(agendamiento.fecha_agendada);
-                    const formatoFecha = fecha.toLocaleDateString('es-ES', {
-                      day: '2-digit',
-                      month: '2-digit',
-                      year: 'numeric'
-                    });
+              <Table 
+                headers={["", "Fecha cita", "Paciente", "Cédula", "Categoría", "Profesional", "Estado", "Acciones"]} 
+                data={filteredAgendamientos.map(agendamiento => ({
+                  ...agendamiento,
+                  onRowClick: () => mostrarDetalles(agendamiento)
+                }))}
+                columns={["iconoEmpresa", "fecha", "paciente", "cedula", "categoria", "profesional", "estado", "acciones"]}
+                renderCustomCell={(row, column, colIndex) => {
+                  // Formatear la fecha según especificaciones
+                  if (column === "fecha") {
+                    const fecha = formatearFecha(row.fecha_agendada);
+                    return (
+                      <div className="fecha-hora-container">
+                        <div className="fecha">{fecha.fecha}</div>
+                        <div className="hora">{fecha.hora}</div>
+                      </div>
+                    );
+                  }
+                  
+                  // Columna de icono de empresa (primera columna)
+                  if (column === "iconoEmpresa") {
+                    return (
+                      <div className="empresa-cell">
+                        {row.id_empresa && (
+                          <div className="empresa-icon" title="Agendamiento con convenio">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="building-icon">
+                              <path strokeLinecap="round" strokeLinejoin="round" d="M20.25 14.15v4.25c0 1.094-.787 2.036-1.872 2.18-2.087.277-4.216.42-6.378.42s-4.291-.143-6.378-.42c-1.085-.144-1.872-1.086-1.872-2.18v-4.25m16.5 0a2.18 2.18 0 0 0 .75-1.661V8.706c0-1.081-.768-2.015-1.837-2.175a48.114 48.114 0 0 0-3.413-.387m4.5 8.006c-.194.165-.42.295-.673.38A23.978 23.978 0 0 1 12 15.75c-2.648 0-5.195-.429-7.577-1.22a2.016 2.016 0 0 1-.673-.38m0 0A2.18 2.18 0 0 1 3 12.489V8.706c0-1.081.768-2.015 1.837-2.175a48.111 48.111 0 0 1 3.413-.387m7.5 0V5.25A2.25 2.25 0 0 0 13.5 3h-3a2.25 2.25 0 0 0-2.25 2.25v.894m7.5 0a48.667 48.667 0 0 0-7.5 0M12 12.75h.008v.008H12v-.008Z" />
+                            </svg>
+                          </div>
+                        )}
+                      </div>
+                    );
+                  }
+                  
+                  // Columna de paciente
+                  if (column === "paciente") {
+                    return (
+                      <div className="text">
+                        <div className="text2">{row.paciente_nombre} {row.paciente_apellido}</div>
+                      </div>
+                    );
+                  }
+                  
+                  // Columna de cédula
+                  if (column === "cedula") {
+                    return (
+                      <div className="text">
+                        <div className="text2">{row.cedula}</div>
+                      </div>
+                    );
+                  }
+                  
+                  // Columna de categoría
+                  if (column === "categoria") {
+                    return (
+                      <div className="text">
+                        <div className="text2">{row.tipo_atencion}</div>
+                      </div>
+                    );
+                  }
+                  
+                  // Columna de profesional
+                  if (column === "profesional") {
+                    return (
+                      <div className="text">
+                        <div className="text2">{row.profesional_nombre} {row.profesional_apellido}</div>
+                      </div>
+                    );
+                  }
+                  
+                  // Columna de estado
+                  if (column === "estado") {
+                    const status = row.status?.toLowerCase() || 'pendiente';
+                    let scheme = 'neutral';
+                    
+                    if (status === 'confirmada') scheme = 'positive';
+                    else if (status === 'cancelada') scheme = 'danger';
+                    else if (status === 'pendiente') scheme = 'warning';
                     
                     return (
-                      <tr key={agendamiento.agendamiento_id}>
-                        <td className="admin-citas-agendadas__empresa-cell">
-                          {agendamiento.id_empresa && (
-                            <div className="admin-citas-agendadas__tooltip">
-                              <div className="admin-citas-agendadas__empresa-icon">💼</div>
-                              <span className="admin-citas-agendadas__tooltip-text">Agendamiento con convenio</span>
-                            </div>
-                          )}
-                        </td>
-                        <td>{formatoFecha}</td>
-                        <td>{agendamiento.paciente_nombre} {agendamiento.paciente_apellido}</td>
-                        <td>{agendamiento.cedula}</td>
-                        <td>{agendamiento.tipo_atencion}</td>
-                        <td>{agendamiento.profesional_nombre} {agendamiento.profesional_apellido}</td>
-                        <td>
-                          <span className={`admin-citas-agendadas__status-badge admin-citas-agendadas__status-${agendamiento.status ? agendamiento.status.toLowerCase() : 'pendiente'}`}>
-                            {agendamiento.status || 'Sin estado'}
-                          </span>
-                        </td>
-                        <td className="admin-citas-agendadas__actions-cell">
-                          <button 
-                            className="admin-citas-agendadas__btn-action admin-citas-agendadas__btn-view" 
-                            onClick={() => mostrarDetalles(agendamiento)}
-                            title="Ver detalles"
-                          >
-                            👁️
-                          </button>
-                          {agendamiento.status && agendamiento.status.toLowerCase() === 'pendiente' && (
-                            <button
-                              onClick={() => actualizarEstado(agendamiento.agendamiento_id, "confirmada")}
-                              className="admin-citas-agendadas__btn-action admin-citas-agendadas__btn-confirm"
-                              title="Confirmar"
-                            >
-                              ✓
-                            </button>
-                          )}
-                        </td>
-                      </tr>
+                      <div className="text">
+                        <Tag 
+                          text={row.status || 'Sin estado'} 
+                          scheme={scheme}
+                          closeable={false}
+                        />
+                      </div>
                     );
-                  })}
-                </tbody>
-              </table>
+                  }
+                  
+                  // Columna de acciones
+                  if (column === "acciones") {
+                    return (
+                      <div className="actions-container">
+                        <Button
+                          variant="icon" 
+                          size="small"
+                          onClick={() => mostrarDetalles(row)}
+                          title="Ver detalles"
+                        >
+                          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z" />
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+                          </svg>
+                        </Button>
+                        
+                        {row.status?.toLowerCase() !== 'cancelada' && (
+                          <Button
+                            variant="icon" 
+                            size="small"
+                            onClick={() => actualizarEstado(row.agendamiento_id, "confirmada")}
+                            title="Confirmar cita"
+                          >
+                            <CheckIcon className="w-5 h-5" />
+                          </Button>
+                        )}
+                        
+                        {row.status?.toLowerCase() !== 'cancelada' && (
+                          <Button
+                            variant="icon" 
+                            size="small"
+                            onClick={() => actualizarEstado(row.agendamiento_id, "cancelada")}
+                            title="Cancelar cita"
+                          >
+                            <XMarkIcon className="w-5 h-5" />
+                          </Button>
+                        )}
+                      </div>
+                    );
+                  }
+                  
+                  return <div>{row[column]}</div>;
+                }}
+                className="admin-citas-table"
+              />
             </div>
           )}
           
@@ -452,22 +544,51 @@ const AdminCitasAgendadas = () => {
                         <strong>ID:</strong> {currentAgendamiento.agendamiento_id}
                       </div>
                       <div>
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" style={{ width: '16px', height: '16px', marginRight: '4px', color: 'var(--var-sds-color-text-default-subdued, #707070)' }}>
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5" />
+                        </svg>
                         <strong>Fecha:</strong> {formatearFecha(currentAgendamiento.fecha_agendada).fecha}
                       </div>
                       <div>
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" style={{ width: '16px', height: '16px', marginRight: '4px', color: 'var(--var-sds-color-text-default-subdued, #707070)' }}>
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                        </svg>
                         <strong>Hora:</strong> {formatearFecha(currentAgendamiento.fecha_agendada).hora}
                       </div>
                       <div>
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" style={{ width: '16px', height: '16px', marginRight: '4px', color: 'var(--var-sds-color-text-default-subdued, #707070)' }}>
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                        </svg>
                         <strong>Estado:</strong> 
-                        <span className={`admin-citas-agendadas__status-badge admin-citas-agendadas__status-${currentAgendamiento.status ? currentAgendamiento.status.toLowerCase() : 'pendiente'}`}>
-                          {currentAgendamiento.status || 'Sin estado'}
-                        </span>
+                        {(() => {
+                          const status = currentAgendamiento.status?.toLowerCase() || 'pendiente';
+                          let scheme = 'neutral';
+                          
+                          if (status === 'confirmada') scheme = 'positive';
+                          else if (status === 'cancelada') scheme = 'danger';
+                          else if (status === 'pendiente') scheme = 'warning';
+                          
+                          return (
+                            <Tag 
+                              text={currentAgendamiento.status || 'Sin estado'} 
+                              scheme={scheme}
+                              closeable={false}
+                            />
+                          );
+                        })()}
                       </div>
                       <div>
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" style={{ width: '16px', height: '16px', marginRight: '4px', color: 'var(--var-sds-color-text-default-subdued, #707070)' }}>
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M9.568 3H5.25A2.25 2.25 0 0 0 3 5.25v4.318c0 .597.237 1.17.659 1.591l9.581 9.581c.699.699 1.78.872 2.607.33a18.095 18.095 0 0 0 5.223-5.223c.542-.827.369-1.908-.33-2.607L11.16 3.66A2.25 2.25 0 0 0 9.568 3Z" />
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M6 6h.008v.008H6V6Z" />
+                        </svg>
                         <strong>Tipo:</strong> {currentAgendamiento.tipo_atencion}
                       </div>
                       {currentAgendamiento.id_empresa && (
                         <div>
+                          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" style={{ width: '16px', height: '16px', marginRight: '4px', color: 'var(--var-sds-color-text-default-subdued, #707070)' }}>
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 21h19.5m-18-18v18m10.5-18v18m6-13.5V21M6.75 6.75h.75m-.75 3h.75m-.75 3h.75m3-6h.75m-.75 3h.75m-.75 3h.75M6.75 21v-3.375c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21M3 3h12m-.75 4.5H21m-3.75 3.75h.008v.008h-.008v-.008Zm0 3h.008v.008h-.008v-.008Zm0 3h.008v.008h-.008v-.008Z" />
+                          </svg>
                           <strong>Empresa:</strong> {currentAgendamiento.nombre_empresa || 'Convenio empresarial'}
                         </div>
                       )}
@@ -510,29 +631,36 @@ const AdminCitasAgendadas = () => {
                   <div className="admin-citas-agendadas__modal-estado-selector">
                     <label>Cambiar estado:</label>
                     <div className="admin-citas-agendadas__estado-buttons">
-                      <button 
-                        className={`admin-citas-agendadas__estado-btn admin-citas-agendadas__estado-pendiente ${currentAgendamiento.status === 'pendiente' ? 'active' : ''}`}
+                      {/* Usar los componentes Button en lugar de botones personalizados */}
+                      <Button 
+                        variant={currentAgendamiento.status?.toLowerCase() === 'pendiente' ? 'primary' : 'subtle'}
                         onClick={() => actualizarEstado(currentAgendamiento.agendamiento_id, "pendiente")}
+                        size="small"
                       >
                         Pendiente
-                      </button>
-                      <button 
-                        className={`admin-citas-agendadas__estado-btn admin-citas-agendadas__estado-confirmada ${currentAgendamiento.status === 'confirmada' ? 'active' : ''}`}
+                      </Button>
+                      <Button 
+                        variant={currentAgendamiento.status?.toLowerCase() === 'confirmada' ? 'primary' : 'subtle'}
                         onClick={() => actualizarEstado(currentAgendamiento.agendamiento_id, "confirmada")}
+                        size="small"
                       >
                         Confirmada
-                      </button>
-                      <button 
-                        className={`admin-citas-agendadas__estado-btn admin-citas-agendadas__estado-cancelada ${currentAgendamiento.status === 'cancelada' ? 'active' : ''}`}
+                      </Button>
+                      <Button 
+                        variant={currentAgendamiento.status?.toLowerCase() === 'cancelada' ? 'danger' : 'subtle'}
                         onClick={() => actualizarEstado(currentAgendamiento.agendamiento_id, "cancelada")}
+                        size="small"
                       >
                         Cancelada
-                      </button>
+                      </Button>
                     </div>
                   </div>
-                  <button className="admin-citas-agendadas__btn-secondary" onClick={() => setShowDetailModal(false)}>
+                  <Button 
+                    variant="neutral" 
+                    onClick={() => setShowDetailModal(false)}
+                  >
                     Cerrar
-                  </button>
+                  </Button>
                 </div>
               </div>
             </div>

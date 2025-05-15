@@ -112,6 +112,64 @@
 
 /* Los estilos del selector de fechas ahora usan los mismos estilos que el componente SelectField */
 
+/* Estilos para la tabla de citas agendadas */
+.admin-citas-table {
+  margin-top: 20px;
+}
+
+/* Estilo para la celda de fecha */
+.fecha-hora-container {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.fecha {
+  font-weight: 500;
+  color: var(--var-sds-color-text-default-default, #1e1e1e);
+}
+
+.hora {
+  font-size: 14px;
+  color: var(--var-sds-color-text-default-subdued, #707070);
+}
+
+/* Estilo para la celda de empresa */
+.empresa-cell {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.empresa-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.building-icon {
+  width: 20px;
+  height: 20px;
+  color: var(--var-sds-color-text-default-subdued, #707070);
+}
+
+/* Estilo para los botones de acción */
+.actions-container {
+  display: flex;
+  gap: 4px;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+/* Estilos para las filas de la tabla */
+.table-row {
+  transition: background-color 0.2s ease;
+}
+
+.table-row:hover {
+  background-color: var(--var-sds-color-background-hover, rgba(0,0,0,0.04));
+}
+
 .admin-citas-agendadas__body {
   display: flex;
   flex-direction: column;
