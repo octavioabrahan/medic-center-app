@@ -1,0 +1,84 @@
+/* src/components/SiteFrame/SiteFrame.css */
+
+/* Estilos generales del SiteFrame */
+.site-frame {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.site-frame__content {
+  flex: 1;
+  padding: var(--sds-size-space-600, 24px);
+}
+
+/* Estilos del Header */
+.site-frame__header {
+  width: 100%;
+}
+
+.site-frame__top-bar {
+  background: var(--sds-color-background-default-default, #ffffff);
+  border-style: solid;
+  border-color: var(--sds-color-border-default-default, #d9d9d9);
+  border-width: 0px 0px 1px 0px;
+  padding: var(--sds-size-space-600, 24px);
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  align-items: center;
+  justify-content: center;
+  height: 80px;
+  position: relative;
+}
+
+.site-frame__logo {
+  flex-shrink: 0;
+  width: 169px;
+  height: 60px;
+  position: relative;
+  object-fit: cover;
+}
+
+/* Estilos del Footer */
+.site-frame__footer {
+  padding: var(--sds-size-space-100, 4px)
+    var(--sds-size-space-600, 24px)
+    var(--sds-size-space-100, 4px)
+    var(--sds-size-space-600, 24px);
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.site-frame__footer-content {
+  display: flex;
+  flex-direction: row;
+  gap: var(--sds-size-space-200, 8px);
+  align-items: center;
+  justify-content: flex-start;
+  flex-shrink: 0;
+  position: relative;
+}
+
+.site-frame__powered-by {
+  color: #000000;
+  text-align: left;
+  font-family: var(--body-small-font-family, "Inter-Regular", sans-serif);
+  font-size: var(--body-small-font-size, 14px);
+  line-height: var(--body-small-line-height, 140%);
+  font-weight: var(--body-small-font-weight, 400);
+  position: relative;
+}
+
+.site-frame__logo-oficial {
+  flex-shrink: 0;
+  width: 114.25px;
+  height: 20px;
+  position: relative;
+  overflow: visible;
+  aspect-ratio: 114.25/20;
+}
