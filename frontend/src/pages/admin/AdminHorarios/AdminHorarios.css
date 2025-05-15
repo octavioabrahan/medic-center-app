@@ -109,7 +109,7 @@
 .admin-horarios__button-content {
   display: flex;
   align-items: center;
-  gap: var(--sds-size-space-200);
+  gap: var(--sds-size-space-200) !important;
 }
 
 
