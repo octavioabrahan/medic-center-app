@@ -79,6 +79,20 @@ const DemoTabs = () => {
         <h2>Grupo de Pestañas</h2>
         <TabGroup tabs={tabsWithContent} defaultActiveTab={0} />
       </section>
+
+      <section className="demo-section">
+        <h2>Pestañas en Fila (como en Figma)</h2>
+        <div className="tabs-row-example">
+          <div className="tabs-container">
+            <Tab label="Label" active={true} />
+            <Tab label="Label" />
+            <Tab label="Label" />
+            <Tab label="Label" />
+            <Tab label="Label" />
+            <Tab label="Label" />
+          </div>
+        </div>
+      </section>
     </div>
   );
 };
