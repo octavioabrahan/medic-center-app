@@ -9,6 +9,7 @@ const DemoBanners = lazy(() => import('./components/Banner/DemoBanners'));
 const DemoTags = lazy(() => import('./components/Tag/DemoTags'));
 const DemoModals = lazy(() => import('./components/Modal/DemoModals'));
 const DemoTabs = lazy(() => import('./components/Tab/DemoTabs'));
+const DemoText = lazy(() => import('./components/Text/DemoText'));
 
 function App() {
   return (
@@ -43,6 +44,11 @@ function App() {
         <Route path="/demo/tabs" element={
           <Suspense fallback={<div>Cargando demo...</div>}>
             <DemoTabs />
+          </Suspense>
+        } />
+        <Route path="/demo/texts" element={
+          <Suspense fallback={<div>Cargando demo...</div>}>
+            <DemoText />
           </Suspense>
         } />
         {/* Rutas públicas mínimas */}
