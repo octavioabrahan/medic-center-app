@@ -1,5 +1,8 @@
 import React from 'react';
 import Menu from './Menu';
+import MenuHeader from './MenuHeader';
+import MenuHeading from './MenuHeading';
+import MenuSeparator from './MenuSeparator';
 import { SiteFrame } from '../SiteFrame';
 import './DemoMenus.css';
 
@@ -95,6 +98,55 @@ const DemoMenus = () => {
               description="Ver y editar información personal"
               onClick={() => handleMenuClick("Mi Perfil")}
             />
+          </div>
+        </section>
+        
+        <section className="demo-section">
+          <h2>Componentes de Menú Adicionales</h2>
+          
+          <div className="demo-menu-components">
+            <h3>MenuHeader</h3>
+            <MenuHeader 
+              subheading="Subencabezado"
+              heading="Encabezado Principal"
+            />
+            
+            <h3>MenuHeading</h3>
+            <MenuHeading 
+              heading="Título de Sección"
+            />
+            
+            <h3>MenuSeparator</h3>
+            <MenuSeparator />
+            
+            <h3>Ejemplo de Menú Completo</h3>
+            <div className="menu-full-example">
+              <MenuHeader 
+                subheading="Mi cuenta"
+                heading="Perfil de Usuario"
+              />
+              <MenuSeparator />
+              <MenuHeading heading="Configuración" />
+              <Menu 
+                icon={<UserIcon />}
+                label="Información Personal"
+                description="Actualizar datos personales"
+                onClick={() => handleMenuClick("Información Personal")}
+              />
+              <Menu 
+                icon={<CalendarIcon />}
+                label="Agenda"
+                description="Administrar citas y eventos"
+                onClick={() => handleMenuClick("Agenda")}
+              />
+              <MenuSeparator />
+              <Menu 
+                icon={<HomeIcon />}
+                label="Volver al inicio"
+                description="Ir a la página de inicio"
+                onClick={() => handleMenuClick("Inicio")}
+              />
+            </div>
           </div>
         </section>
       </div>
