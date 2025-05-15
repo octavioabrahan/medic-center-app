@@ -290,7 +290,7 @@ const AdminCitasAgendadas = () => {
           <div className="admin-citas-agendadas__search-container">
             <SearchField 
               value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
+              onChange={(value) => setSearchTerm(value)}
               placeholder="Buscar por nombre o cédula"
               className="admin-citas-agendadas__search"
             />
