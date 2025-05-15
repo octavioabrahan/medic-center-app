@@ -110,8 +110,10 @@ const AdminHorarios = () => {
             variant="primary" 
             onClick={handleAddSchedule}
           >
-            <CalendarIcon width={16} height={16} />
-            Agregar horario
+            <span className="admin-horarios__button-content">
+              <CalendarIcon width={16} height={16} />
+              Agregar horario
+            </span>
           </Button>
         </div>
         
