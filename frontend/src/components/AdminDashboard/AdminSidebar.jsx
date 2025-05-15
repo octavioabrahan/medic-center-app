@@ -2,8 +2,9 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import './AdminSidebar.css';
-import { ArrowLeftOnRectangleIcon } from '@heroicons/react/24/outline';
-import logo from '../../assets/logo_header.png';
+import { Menu, MenuHeader, MenuHeading, MenuSeparator } from '../Menu';
+import logo from '../../assets/images/logo.png';
+import logoutIcon from '../../assets/icons/log-out.svg';
 
 /**
  * AdminSidebar component that provides navigation for the admin dashboard.
@@ -16,21 +17,7 @@ import logo from '../../assets/logo_header.png';
 const AdminSidebar = ({ username = 'Usuario', role = 'Administrador', activePage = '' }) => {
   const navigate = useNavigate();
 
-  // Define menu items for easier management
-  const menuItems = [
-    { label: 'Resumen general', path: '/admin/dashboard' },
-    { separator: true },
-    { label: 'Citas agendadas', path: '/admin/citas' },
-    { label: 'Horarios de atención', path: '/admin/horarios' },
-    { label: 'Especialidades y profesionales', path: '/admin/especialidades' },
-    { label: 'Servicios', path: '/admin/servicios' },
-    { label: 'Convenios', path: '/admin/convenios' },
-    { separator: true },
-    { label: 'Cotizaciones enviadas', path: '/admin/cotizaciones' },
-    { label: 'Exámenes y servicios', path: '/admin/examenes' },
-    { separator: true },
-    { label: 'Usuarios y roles', path: '/admin/usuarios' },
-  ];
+  // No necesitamos definir los items del menú aquí ya que los definimos directamente en el render
 
   const handleNavigation = (path) => {
     navigate(path);
@@ -43,52 +30,125 @@ const AdminSidebar = ({ username = 'Usuario', role = 'Administrador', activePage
     navigate('/login');
   };
 
+  // Función para determinar si un ítem está activo
+  const isActive = (path) => activePage === path;
+  
   return (
     <div className="menu">
       <div className="menu-header">
         <img className="logo-1" src={logo} alt="Logo" />
       </div>
       <div className="menu-group">
-        {menuItems.map((item, index) => {
-          if (item.separator) {
-            return (
-              <div key={`separator-${index}`} className="menu-separator">
-                <div className="rule"></div>
-              </div>
-            );
-          }
-          
-          const isActive = activePage === item.path;
-          return (
-            <div 
-              key={item.label}
-              className={isActive ? "menu-item2" : "menu-item"}
-              onClick={() => handleNavigation(item.path)}
-            >
-              <div className="body">
-                <div className="row">
-                  <div className={isActive ? "label2" : "label"}>{item.label}</div>
-                </div>
-              </div>
+        <div 
+          className={isActive('/admin/dashboard') ? "menu-item2" : "menu-item"}
+          onClick={() => handleNavigation('/admin/dashboard')}
+        >
+          <div className="body">
+            <div className="row">
+              <div className={isActive('/admin/dashboard') ? "label2" : "label"}>Resumen general</div>
             </div>
-          );
-        })}
-      </div>
-      <div className="menu-heading">
-        <div className="text-strong">
-          <div className="text-strong2">
-            <span>
-              <span className="text-strong-2-span">
-                {username}
-              </span>
-              {' '}
-              <span className="text-strong-2-span2">{role}</span>
-            </span>
+          </div>
+        </div>
+        
+        <MenuSeparator />
+        
+        <div 
+          className={isActive('/admin/citas') ? "menu-item2" : "menu-item"}
+          onClick={() => handleNavigation('/admin/citas')}
+        >
+          <div className="body">
+            <div className="row">
+              <div className={isActive('/admin/citas') ? "label2" : "label"}>Citas agendadas</div>
+            </div>
+          </div>
+        </div>
+        
+        <div 
+          className={isActive('/admin/horarios') ? "menu-item2" : "menu-item"}
+          onClick={() => handleNavigation('/admin/horarios')}
+        >
+          <div className="body">
+            <div className="row">
+              <div className={isActive('/admin/horarios') ? "label2" : "label"}>Horarios de atención</div>
+            </div>
+          </div>
+        </div>
+        
+        <div 
+          className={isActive('/admin/especialidades') ? "menu-item2" : "menu-item"}
+          onClick={() => handleNavigation('/admin/especialidades')}
+        >
+          <div className="body">
+            <div className="row">
+              <div className={isActive('/admin/especialidades') ? "label2" : "label"}>Especialidades y profesionales</div>
+            </div>
+          </div>
+        </div>
+        
+        <div 
+          className={isActive('/admin/servicios') ? "menu-item2" : "menu-item"}
+          onClick={() => handleNavigation('/admin/servicios')}
+        >
+          <div className="body">
+            <div className="row">
+              <div className={isActive('/admin/servicios') ? "label2" : "label"}>Servicios</div>
+            </div>
+          </div>
+        </div>
+        
+        <div 
+          className={isActive('/admin/convenios') ? "menu-item2" : "menu-item"}
+          onClick={() => handleNavigation('/admin/convenios')}
+        >
+          <div className="body">
+            <div className="row">
+              <div className={isActive('/admin/convenios') ? "label2" : "label"}>Convenios</div>
+            </div>
+          </div>
+        </div>
+        
+        <MenuSeparator />
+        
+        <div 
+          className={isActive('/admin/cotizaciones') ? "menu-item2" : "menu-item"}
+          onClick={() => handleNavigation('/admin/cotizaciones')}
+        >
+          <div className="body">
+            <div className="row">
+              <div className={isActive('/admin/cotizaciones') ? "label2" : "label"}>Cotizaciones enviadas</div>
+            </div>
+          </div>
+        </div>
+        
+        <div 
+          className={isActive('/admin/examenes') ? "menu-item2" : "menu-item"}
+          onClick={() => handleNavigation('/admin/examenes')}
+        >
+          <div className="body">
+            <div className="row">
+              <div className={isActive('/admin/examenes') ? "label2" : "label"}>Exámenes y servicios</div>
+            </div>
+          </div>
+        </div>
+        
+        <MenuSeparator />
+        
+        <div 
+          className={isActive('/admin/usuarios') ? "menu-item2" : "menu-item"}
+          onClick={() => handleNavigation('/admin/usuarios')}
+        >
+          <div className="body">
+            <div className="row">
+              <div className={isActive('/admin/usuarios') ? "label2" : "label"}>Usuarios y roles</div>
+            </div>
           </div>
         </div>
       </div>
+      
+      <MenuHeading heading={`${username} ${role}`} />
+      
       <div className="menu-item" onClick={handleLogout}>
-        <ArrowLeftOnRectangleIcon className="log-out" />
+        <img className="log-out" src={logoutIcon} alt="Cerrar sesión" />
         <div className="body">
           <div className="row">
             <div className="label">Cerrar sesión</div>
