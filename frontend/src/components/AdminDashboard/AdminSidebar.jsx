@@ -3,8 +3,8 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import './AdminSidebar.css';
 import { Menu, MenuHeader, MenuHeading, MenuSeparator } from '../Menu';
-import logo from '../../assets/images/logo.png';
-import logoutIcon from '../../assets/icons/log-out.svg';
+import { ArrowLeftOnRectangleIcon } from '@heroicons/react/24/outline';
+import logo from '../../assets/logo_header.png';
 
 /**
  * AdminSidebar component that provides navigation for the admin dashboard.
@@ -148,7 +148,7 @@ const AdminSidebar = ({ username = 'Usuario', role = 'Administrador', activePage
       <MenuHeading heading={`${username} ${role}`} />
       
       <div className="menu-item" onClick={handleLogout}>
-        <img className="log-out" src={logoutIcon} alt="Cerrar sesión" />
+        <ArrowLeftOnRectangleIcon className="log-out" />
         <div className="body">
           <div className="row">
             <div className="label">Cerrar sesión</div>
