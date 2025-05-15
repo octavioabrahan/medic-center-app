@@ -506,22 +506,46 @@
   }
 }
 
-/* Nuevos estilos para la columna de icono */
+/* Nuevos estilos para la columna de icono - más agresivos para forzar el ancho */
+.admin-citas-table table {
+  table-layout: fixed !important;
+  border-collapse: collapse !important;
+}
+
 .admin-citas-table th:first-child,
 .admin-citas-table td:first-child {
   width: 40px !important;
   min-width: 40px !important;
   max-width: 40px !important;
-  padding: 8px 4px !important;
+  padding: 4px !important;
+  box-sizing: border-box !important;
+}
+
+.admin-citas-table th:last-child,
+.admin-citas-table td:last-child {
+  width: 90px !important;
 }
 
 .empresa-cell {
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  width: 40px !important; 
+  padding: 0 !important;
+  overflow: hidden !important;
 }
 
-/* Estilos para los iconos de los botones de acción */
-.admin-citas-table .actions-container svg {
+/* Estilos para el contenedor de acciones e iconos */
+.actions-container {
+  display: flex !important;
+  gap: 10px !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+}
+
+.action-icon {
+  width: 24px !important;
+  height: 24px !important;
+  cursor: pointer !important;
   color: var(--sds-color-icon-brand-default) !important;
 }

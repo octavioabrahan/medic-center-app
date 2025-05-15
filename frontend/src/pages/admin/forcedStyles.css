@@ -1,0 +1,50 @@
+/* Estilos personalizados para forzar el tamaño de columnas específicas */
+/* Primera columna (icono) */
+.admin-citas-table th:first-child,
+.admin-citas-table td:first-child {
+    width: 40px !important;
+    max-width: 40px !important;
+    min-width: 40px !important;
+    padding: 4px !important;
+    box-sizing: content-box !important;
+}
+
+/* Estilos para la celda del icono de empresa */
+.empresa-cell {
+    width: 40px !important;
+    max-width: 40px !important;
+    min-width: 40px !important;
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+}
+
+/* Asegurarnos que la tabla respeta los anchos de columna */
+.admin-citas-table table {
+    table-layout: fixed !important;
+}
+
+/* Estilos para el contenedor de acciones e iconos */
+.actions-container {
+    display: flex !important;
+    gap: 10px !important;
+    align-items: center !important;
+}
+
+/* Estilos para los iconos de acción */
+.action-icon {
+    width: 24px !important;
+    height: 24px !important;
+    cursor: pointer !important;
+    color: var(--sds-color-icon-brand-default) !important;
+    transition: transform 0.2s !important;
+}
+
+.action-icon:hover {
+    transform: scale(1.1) !important;
+}
+
+/* Forzar hidden overflow en todas las celdas de la tabla */
+.admin-citas-table td {
+    overflow: hidden !important;
+}
