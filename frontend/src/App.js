@@ -3,13 +3,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import Home from './pages/Home';
 
 // Lazy load para páginas de administración
-const AdminDashboard = lazy(() => import('./pages/admin/AdminDashboard'));
-const AdminCitas = lazy(() => import('./pages/admin/AdminCitas'));
-const AdminConvenios = lazy(() => import('./pages/admin/AdminConvenios'));
-const EspecialidadesPage = lazy(() => import('./pages/admin/EspecialidadesPage'));
-const HorariosPage = lazy(() => import('./pages/admin/HorariosPage'));
-const ServiciosPage = lazy(() => import('./pages/admin/ServiciosPage'));
-const AdminExamenes = lazy(() => import('./pages/admin/AdminExamenes'));
+const AdminDummy = lazy(() => import('./pages/admin/AdminDummy'));
 
 // Lazy load para los demos
 const ButtonDemo = lazy(() => import('./components/Button/ButtonDemo'));
@@ -75,42 +69,52 @@ function App() {
           </Suspense>
         } />
         {/* Rutas públicas mínimas */}
-        <Route path="/" element={<Home />} />
+        <Route path="/" element={<Navigate to="/admin/dashboard" replace />} />
 
         {/* Rutas de administración */}
         <Route path="/admin/dashboard" element={
           <Suspense fallback={<div>Cargando...</div>}>
-            <AdminDashboard />
+            <AdminDummy />
           </Suspense>
         } />
         <Route path="/admin/citas" element={
           <Suspense fallback={<div>Cargando...</div>}>
-            <AdminCitas />
+            <AdminDummy />
           </Suspense>
         } />
         <Route path="/admin/horarios" element={
           <Suspense fallback={<div>Cargando...</div>}>
-            <HorariosPage />
+            <AdminDummy />
           </Suspense>
         } />
         <Route path="/admin/especialidades" element={
           <Suspense fallback={<div>Cargando...</div>}>
-            <EspecialidadesPage />
+            <AdminDummy />
           </Suspense>
         } />
         <Route path="/admin/servicios" element={
           <Suspense fallback={<div>Cargando...</div>}>
-            <ServiciosPage />
+            <AdminDummy />
           </Suspense>
         } />
         <Route path="/admin/convenios" element={
           <Suspense fallback={<div>Cargando...</div>}>
-            <AdminConvenios />
+            <AdminDummy />
           </Suspense>
         } />
         <Route path="/admin/examenes" element={
           <Suspense fallback={<div>Cargando...</div>}>
-            <AdminExamenes />
+            <AdminDummy />
+          </Suspense>
+        } />
+        <Route path="/admin/cotizaciones" element={
+          <Suspense fallback={<div>Cargando...</div>}>
+            <AdminDummy />
+          </Suspense>
+        } />
+        <Route path="/admin/usuarios" element={
+          <Suspense fallback={<div>Cargando...</div>}>
+            <AdminDummy />
           </Suspense>
         } />
         
