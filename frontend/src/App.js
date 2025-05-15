@@ -90,11 +90,7 @@ function App() {
             <AdminDummy />
           </Suspense>
         } />
-        <Route path="/admin/citas" element={
-          <Suspense fallback={<div>Cargando...</div>}>
-            <AdminDummy />
-          </Suspense>
-        } />
+        <Route path="/admin/citas" element={<Navigate to="/admin/citas-agendadas" replace />} />
         <Route path="/admin/citas-agendadas" element={
           <Suspense fallback={<div>Cargando...</div>}>
             <AdminCitasAgendadas />

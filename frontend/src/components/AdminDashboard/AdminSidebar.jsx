@@ -53,12 +53,12 @@ const AdminSidebar = ({ username = 'Usuario', role = 'Administrador', activePage
         <MenuSeparator />
         
         <div 
-          className={isActive('/admin/citas') ? "menu-item2" : "menu-item"}
-          onClick={() => handleNavigation('/admin/citas')}
+          className={isActive('/admin/citas-agendadas') ? "menu-item2" : "menu-item"}
+          onClick={() => handleNavigation('/admin/citas-agendadas')}
         >
           <div className="body">
             <div className="row">
-              <div className={isActive('/admin/citas') ? "label2" : "label"}>Citas agendadas</div>
+              <div className={isActive('/admin/citas-agendadas') ? "label2" : "label"}>Citas agendadas</div>
             </div>
           </div>
         </div>
