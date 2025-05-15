@@ -3,6 +3,9 @@
   flex-direction: column;
   gap: 16px;
   width: 100%;
+  box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.1);
+  border-radius: 4px;
+  overflow: hidden;
 }
 
 .table {
@@ -86,4 +89,87 @@
 .table-row {
   display: flex;
   flex-direction: row;
+}
+
+/* Estilos para indicadores de estado */
+.estado-badge {
+  display: inline-flex;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-family: var(--body-small-font-family, "Inter-Regular", sans-serif);
+  font-size: var(--body-small-font-size, 12px);
+  line-height: var(--body-small-line-height, 140%);
+  font-weight: var(--body-small-strong-font-weight, 600);
+}
+
+.estado-confirmada {
+  background-color: #E7F6E7;
+  color: #1B5E20;
+}
+
+.estado-pendiente {
+  background-color: #FFF8E1;
+  color: #F57C00;
+}
+
+.estado-cancelada {
+  background-color: #FFEBEE;
+  color: #C62828;
+}
+
+/* Estilos para los botones de acción */
+.acciones-container {
+  display: flex;
+  gap: 8px;
+  flex-direction: row;
+  justify-content: flex-start;
+}
+
+.accion-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 4px;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.accion-btn.editar {
+  background-color: #E3F2FD;
+  color: #1565C0;
+}
+
+.accion-btn.eliminar {
+  background-color: #FFEBEE;
+  color: #C62828;
+}
+
+.accion-btn:hover {
+  opacity: 0.9;
+}
+
+/* Estilos para la página de demo */
+.demo-page {
+  padding: 24px;
+}
+
+.demo-descripcion {
+  margin-bottom: 24px;
+}
+
+.demo-section {
+  margin-bottom: 32px;
+}
+
+.demo-component {
+  margin-top: 16px;
+}
+
+.tabla-ejemplo-individual {
+  border: 1px solid var(--var-sds-color-border-default-default, #d9d9d9);
+  border-radius: 4px;
+  overflow: hidden;
 }
