@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
-import { AdminLayout } from "../../components/AdminDashboard";
-import "./AdminDashboard.css";
+//import { AdminLayout } from "../../components/AdminDashboard";
+//import "./AdminDashboard.css";
 
 function AdminDashboard() {
   return (

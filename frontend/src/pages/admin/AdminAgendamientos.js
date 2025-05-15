@@ -1,12 +1,12 @@
 // frontend/src/pages/admin/AdminAgendamientosModificado.js
 import React, { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
-import "./CitasAgendadas.css";
+//import "./CitasAgendadas.css";
 import { 
   startOfWeek, endOfWeek, format, startOfDay, endOfDay,
   startOfToday, endOfToday, startOfMonth, endOfMonth, 
 } from "date-fns";
-import Calendar from "../../components/common/Calendar";
+//import Calendar from "../../components/common/Calendar";
 // No necesitamos importar AdminCommon.css ya que lo importamos en AdminLayout.js
 
 const TODOS_LOS_ESTADOS = ["pendiente", "confirmada", "cancelada"];

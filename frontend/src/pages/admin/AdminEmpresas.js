@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import "../../components/admin/AdminCommon.css"; // Importamos los estilos comunes
-import AdminFilterBar from "../../components/admin/AdminFilterBar"; // Importamos el nuevo componente
-import ArchivoAdjuntoForm from "../../components/public/ArchivoAdjuntoForm"; // Importamos el componente de archivos mejorado
-import "./AdminEmpresas.css"; // Importamos los estilos específicos
+//import "../../components/admin/AdminCommon.css"; // Importamos los estilos comunes
+//import AdminFilterBar from "../../components/admin/AdminFilterBar"; // Importamos el nuevo componente
+//import ArchivoAdjuntoForm from "../../components/public/ArchivoAdjuntoForm"; // Importamos el componente de archivos mejorado
+//import "./AdminEmpresas.css"; // Importamos los estilos específicos
 
 const AdminEmpresas = () => {
   const [empresas, setEmpresas] = useState([]);

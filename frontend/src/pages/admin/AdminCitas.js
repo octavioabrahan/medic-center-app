@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import { format } from 'date-fns';
-import Calendar from '../../components/common/Calendar';
-import AdminFilterBar from "../../components/admin/AdminFilterBar"; // Importamos el componente de barra de filtros
-import { AdminLayout } from "../../components/AdminDashboard"; // Importamos el layout de administración
-import "./AdminCitas.css";
-import "../../components/admin/AdminCommon.css"; // Importamos los estilos comunes
+//import Calendar from '../../components/common/Calendar';
+//mport AdminFilterBar from "../../components/admin/AdminFilterBar"; // Importamos el componente de barra de filtros
+//import { AdminLayout } from "../../components/AdminDashboard"; // Importamos el layout de administración
+//import "./AdminCitas.css";
+//import "../../components/admin/AdminCommon.css"; // Importamos los estilos comunes
 
 const AdminCitas = () => {
   // Estados para almacenar los datos
