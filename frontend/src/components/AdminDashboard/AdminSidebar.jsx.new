@@ -1,0 +1,134 @@
+// src/components/AdminDashboard/AdminSidebar.jsx
+import React from 'react';
+import { useNavigate } from 'react-router-dom';
+import './AdminSidebar.css';
+import logo from '../../assets/images/logo.png';
+import logoutIcon from '../../assets/icons/log-out.svg';
+
+/**
+ * AdminSidebar component that provides navigation for the admin dashboard.
+ * 
+ * Props:
+ *   - username: The name of the current logged in user
+ *   - role: The role of the current logged in user
+ *   - activePage: The current active page
+ */
+const AdminSidebar = ({ username = 'Usuario', role = 'Administrador', activePage = '' }) => {
+  const navigate = useNavigate();
+
+  const handleNavigation = (path) => {
+    navigate(path);
+  };
+
+  const handleLogout = () => {
+    // Implementation for logout
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    navigate('/login');
+  };
+
+  return (
+    <div className="menu">
+      <div className="menu-header">
+        <img className="logo-1" src={logo} alt="Logo" />
+      </div>
+      <div className="menu-group">
+        <div className={activePage === '/admin/dashboard' ? "menu-item2" : "menu-item"} onClick={() => handleNavigation('/admin/dashboard')}>
+          <div className="body">
+            <div className="row">
+              <div className={activePage === '/admin/dashboard' ? "label2" : "label"}>Resumen general</div>
+            </div>
+          </div>
+        </div>
+        <div className="menu-separator">
+          <div className="rule"></div>
+        </div>
+        <div className={activePage === '/admin/citas' ? "menu-item2" : "menu-item"} onClick={() => handleNavigation('/admin/citas')}>
+          <div className="body">
+            <div className="row">
+              <div className={activePage === '/admin/citas' ? "label2" : "label"}>Citas agendadas</div>
+            </div>
+          </div>
+        </div>
+        <div className={activePage === '/admin/horarios' ? "menu-item2" : "menu-item"} onClick={() => handleNavigation('/admin/horarios')}>
+          <div className="body">
+            <div className="row">
+              <div className={activePage === '/admin/horarios' ? "label2" : "label"}>Horarios de atención</div>
+            </div>
+          </div>
+        </div>
+        <div className={activePage === '/admin/especialidades' ? "menu-item2" : "menu-item"} onClick={() => handleNavigation('/admin/especialidades')}>
+          <div className="body">
+            <div className="row">
+              <div className={activePage === '/admin/especialidades' ? "label2" : "label"}>Especialidades y profesionales</div>
+            </div>
+          </div>
+        </div>
+        <div className={activePage === '/admin/servicios' ? "menu-item2" : "menu-item"} onClick={() => handleNavigation('/admin/servicios')}>
+          <div className="body">
+            <div className="row">
+              <div className={activePage === '/admin/servicios' ? "label2" : "label"}>Servicios</div>
+            </div>
+          </div>
+        </div>
+        <div className={activePage === '/admin/convenios' ? "menu-item2" : "menu-item"} onClick={() => handleNavigation('/admin/convenios')}>
+          <div className="body">
+            <div className="row">
+              <div className={activePage === '/admin/convenios' ? "label2" : "label"}>Convenios</div>
+            </div>
+          </div>
+        </div>
+        <div className="menu-separator">
+          <div className="rule"></div>
+        </div>
+        <div className={activePage === '/admin/cotizaciones' ? "menu-item2" : "menu-item"} onClick={() => handleNavigation('/admin/cotizaciones')}>
+          <div className="body">
+            <div className="row">
+              <div className={activePage === '/admin/cotizaciones' ? "label2" : "label"}>Cotizaciones enviadas</div>
+            </div>
+          </div>
+        </div>
+        <div className={activePage === '/admin/examenes' ? "menu-item2" : "menu-item"} onClick={() => handleNavigation('/admin/examenes')}>
+          <div className="body">
+            <div className="row">
+              <div className={activePage === '/admin/examenes' ? "label2" : "label"}>Exámenes y servicios</div>
+            </div>
+          </div>
+        </div>
+        <div className="menu-separator">
+          <div className="rule"></div>
+        </div>
+        <div className={activePage === '/admin/usuarios' ? "menu-item2" : "menu-item"} onClick={() => handleNavigation('/admin/usuarios')}>
+          <div className="body">
+            <div className="row">
+              <div className={activePage === '/admin/usuarios' ? "label2" : "label"}>Usuarios y roles</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className="menu-heading">
+        <div className="text-strong">
+          <div className="text-strong2">
+            <span>
+              <span className="text-strong-2-span">
+                {username}
+              </span>
+              {' '}
+              <span className="text-strong-2-span2">{role}</span>
+            </span>
+          </div>
+        </div>
+      </div>
+      <div className="menu-item" onClick={handleLogout}>
+        <img className="log-out" src={logoutIcon} alt="Cerrar sesión" />
+        <div className="body">
+          <div className="row">
+            <div className="label">Cerrar sesión</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default AdminSidebar;

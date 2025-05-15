@@ -2,6 +2,10 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import './AdminSidebar.css';
+import { ArrowLeftOnRectangleIcon } from '@heroicons/react/24/outline';/components/AdminDashboard/AdminSidebar.jsx
+import React from 'react';
+import { useNavigate } from 'react-router-dom';
+import './AdminSidebar.css';
 import { ArrowLeftOnRectangleIcon } from '@heroicons/react/24/outline';
 import logo from '../../assets/logo_header.png';
 
@@ -46,7 +50,7 @@ const AdminSidebar = ({ username = 'Usuario', role = 'Administrador', activePage
   return (
     <div className="menu">
       <div className="menu-header">
-        <img className="logo-1" src={logo} alt="Logo" />
+        <img className="logo-1" src="/logo192.png" alt="Logo Centro Médico" />
       </div>
       <div className="menu-group">
         {menuItems.map((item, index) => {
@@ -76,18 +80,20 @@ const AdminSidebar = ({ username = 'Usuario', role = 'Administrador', activePage
       </div>
       <div className="menu-heading">
         <div className="text-strong">
-          <div className="text-strong2">
-            <span>
+          <div className="user-info">
+            <div className="user-avatar">
+              {username.charAt(0)}
+            </div>
+            <div className="user-details">
               <span className="text-strong-2-span">
                 {username}
               </span>
-              {' '}
               <span className="text-strong-2-span2">{role}</span>
-            </span>
+            </div>
           </div>
         </div>
       </div>
-      <div className="menu-item" onClick={handleLogout}>
+      <div className="menu-item logout" onClick={handleLogout}>
         <ArrowLeftOnRectangleIcon className="log-out" />
         <div className="body">
           <div className="row">
