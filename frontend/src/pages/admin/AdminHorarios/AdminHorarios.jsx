@@ -106,14 +106,10 @@ const AdminHorarios = () => {
               className="admin-horarios__search"
             />
           </div>
-          <Button 
-            variant="primary" 
-            onClick={handleAddSchedule}
-            className="admin-horarios__add-button"
-          >
-            <CalendarIcon width={16} height={16} className="admin-horarios__icon" />
-            Agregar horario
-          </Button>
+          <div className="button">
+            <CalendarIcon width={16} height={16} className="calendar" />
+            <div className="button2">Agregar horario</div>
+          </div>
         </div>
         
         <div className="admin-horarios__body">
