@@ -2,6 +2,15 @@ import React, { Suspense, lazy } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import Home from './pages/Home';
 
+// Lazy load para páginas de administración
+const AdminDashboard = lazy(() => import('./pages/admin/AdminDashboard'));
+const AdminCitas = lazy(() => import('./pages/admin/AdminCitas'));
+const AdminConvenios = lazy(() => import('./pages/admin/AdminConvenios'));
+const EspecialidadesPage = lazy(() => import('./pages/admin/EspecialidadesPage'));
+const HorariosPage = lazy(() => import('./pages/admin/HorariosPage'));
+const ServiciosPage = lazy(() => import('./pages/admin/ServiciosPage'));
+const AdminExamenes = lazy(() => import('./pages/admin/AdminExamenes'));
+
 // Lazy load para los demos
 const ButtonDemo = lazy(() => import('./components/Button/ButtonDemo'));
 const InputDemo = lazy(() => import('./components/Inputs/InputDemo'));
@@ -67,6 +76,44 @@ function App() {
         } />
         {/* Rutas públicas mínimas */}
         <Route path="/" element={<Home />} />
+
+        {/* Rutas de administración */}
+        <Route path="/admin/dashboard" element={
+          <Suspense fallback={<div>Cargando...</div>}>
+            <AdminDashboard />
+          </Suspense>
+        } />
+        <Route path="/admin/citas" element={
+          <Suspense fallback={<div>Cargando...</div>}>
+            <AdminCitas />
+          </Suspense>
+        } />
+        <Route path="/admin/horarios" element={
+          <Suspense fallback={<div>Cargando...</div>}>
+            <HorariosPage />
+          </Suspense>
+        } />
+        <Route path="/admin/especialidades" element={
+          <Suspense fallback={<div>Cargando...</div>}>
+            <EspecialidadesPage />
+          </Suspense>
+        } />
+        <Route path="/admin/servicios" element={
+          <Suspense fallback={<div>Cargando...</div>}>
+            <ServiciosPage />
+          </Suspense>
+        } />
+        <Route path="/admin/convenios" element={
+          <Suspense fallback={<div>Cargando...</div>}>
+            <AdminConvenios />
+          </Suspense>
+        } />
+        <Route path="/admin/examenes" element={
+          <Suspense fallback={<div>Cargando...</div>}>
+            <AdminExamenes />
+          </Suspense>
+        } />
+        
         {/* Ruta para redirigir 404 */}
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>

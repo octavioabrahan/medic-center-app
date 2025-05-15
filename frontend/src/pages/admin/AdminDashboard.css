@@ -1,0 +1,74 @@
+/* Admin Dashboard styles */
+.admin-dashboard-content {
+  padding: var(--sds-space-400, 16px);
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.admin-dashboard-content h1 {
+  color: var(--sds-color-text-default-default, #1e1e1e);
+  margin-bottom: var(--sds-space-600, 24px);
+  font-size: var(--sds-title-page-size-small, 48px);
+  font-weight: var(--sds-title-page-font-weight, 700);
+}
+
+.dashboard-summary {
+  background-color: var(--sds-color-background-brand-tertiary, #f0f3ff);
+  border-radius: var(--sds-radius-200, 8px);
+  padding: var(--sds-space-600, 24px);
+  margin-bottom: var(--sds-space-600, 24px);
+}
+
+.dashboard-summary h2 {
+  color: var(--sds-color-text-brand-default, #20377a);
+  margin-bottom: var(--sds-space-300, 12px);
+  font-size: var(--sds-subtitle-size-base, 24px);
+  font-weight: var(--sds-subtitle-font-weight, 600);
+}
+
+.dashboard-summary p {
+  color: var(--sds-color-text-default-default, #1e1e1e);
+  font-size: var(--sds-body-size-medium, 16px);
+  line-height: 1.5;
+}
+
+.dashboard-quick-links {
+  margin-top: var(--sds-space-800, 32px);
+}
+
+.dashboard-quick-links h3 {
+  color: var(--sds-color-text-default-default, #1e1e1e);
+  margin-bottom: var(--sds-space-400, 16px);
+  font-size: var(--sds-heading-size-base, 20px);
+  font-weight: var(--sds-heading-font-weight, 600);
+}
+
+.links-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: var(--sds-space-400, 16px);
+}
+
+.quick-link-card {
+  background-color: var(--sds-color-background-default-default, #ffffff);
+  border: 1px solid var(--sds-color-border-default-default, #d9d9d9);
+  border-radius: var(--sds-radius-200, 8px);
+  padding: var(--sds-space-600, 24px);
+  text-decoration: none;
+  color: var(--sds-color-text-default-default, #1e1e1e);
+  font-weight: 500;
+  text-align: center;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100px;
+}
+
+.quick-link-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+  border-color: var(--sds-color-border-brand-tertiary, #20377a);
+  color: var(--sds-color-text-brand-default, #20377a);
+  background-color: var(--sds-color-background-default-default-hover, #f5f5f5);
+}

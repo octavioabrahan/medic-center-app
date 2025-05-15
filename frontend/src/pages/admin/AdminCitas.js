@@ -3,6 +3,7 @@ import axios from "axios";
 import { format } from 'date-fns';
 import Calendar from '../../components/common/Calendar';
 import AdminFilterBar from "../../components/admin/AdminFilterBar"; // Importamos el componente de barra de filtros
+import { AdminLayout } from "../../components/AdminDashboard"; // Importamos el layout de administración
 import "./AdminCitas.css";
 import "../../components/admin/AdminCommon.css"; // Importamos los estilos comunes
 
@@ -493,19 +494,20 @@ const AdminCitas = () => {
   };
 
   return (
-    <div className="admin-page-container">
-      <h1 className="admin-page-title">Citas agendadas</h1>
-      
-      <div className="admin-filter-section">
-        <div className="admin-search">
-          <input
-            type="text"
-            placeholder="Buscar por nombre o cédula..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
-          <span className="search-icon">🔍</span>
-        </div>
+    <AdminLayout activePage="/admin/citas" username="Dr. Juan Pérez" role="Administrador">
+      <div className="admin-page-container">
+        <h1 className="admin-page-title">Citas agendadas</h1>
+        
+        <div className="admin-filter-section">
+          <div className="admin-search">
+            <input
+              type="text"
+              placeholder="Buscar por nombre o cédula..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+            <span className="search-icon">🔍</span>
+          </div>
         
         <div className="admin-filter-controls">
           <select 
@@ -602,6 +604,7 @@ const AdminCitas = () => {
       {renderAgendamientosTable()}
       {renderDetailModal()}
     </div>
+    </AdminLayout>
   );
 };
 

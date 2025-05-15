@@ -1,0 +1,12 @@
+/* src/components/AdminDashboard/AdminLayout.css */
+.admin-layout {
+  display: flex;
+  height: 100%;
+  width: 100%;
+}
+
+.admin-layout__content {
+  flex: 1;
+  padding: var(--sds-space-400, 16px);
+  overflow-y: auto;
+}
