@@ -1,5 +1,5 @@
 // src/pages/admin/AdminCitasAgendadas.js
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { AdminLayout } from '../../components/AdminDashboard';
 import SearchField from '../../components/Inputs/SearchField';
 import SelectField from '../../components/Inputs/SelectField';
@@ -68,7 +68,7 @@ const AdminCitasAgendadas = () => {
   ];
   
   // Obtener agendamientos desde la API
-  const fetchAgendamientos = async () => {
+  const fetchAgendamientos = useCallback(async () => {
     setLoading(true);
     try {
       // Agregar un pequeño retraso para evitar múltiples llamadas
@@ -101,7 +101,7 @@ const AdminCitasAgendadas = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [dateRange.from, dateRange.to]);
 
   // Cargar profesionales al montar el componente
   const fetchProfesionales = async () => {
@@ -117,11 +117,10 @@ const AdminCitasAgendadas = () => {
   useEffect(() => {
     fetchAgendamientos();
     fetchProfesionales();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [fetchAgendamientos]);
 
   // Aplicar filtros cuando cambian los criterios
-  const applyFilters = (data = agendamientos) => {
+  const applyFilters = useCallback((data = agendamientos) => {
     // Si no hay datos, establecer una lista vacía y retornar
     if (!data || data.length === 0) {
       setFilteredAgendamientos([]);
@@ -171,7 +170,7 @@ const AdminCitasAgendadas = () => {
     
     console.log("Resultados filtrados:", results.length);
     setFilteredAgendamientos(results);
-  };
+  }, [agendamientos, searchTerm, selectedStatus, selectedProfessional, sortOrder]);
 
   // Reaccionar a cambios en los filtros
   useEffect(() => {
@@ -179,8 +178,7 @@ const AdminCitasAgendadas = () => {
     if (agendamientos.length > 0) {
       applyFilters();
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchTerm, selectedStatus, selectedProfessional, sortOrder]);
+  }, [agendamientos, applyFilters]);
   
   // Detectar clics fuera del selector de fechas para cerrarlo
   useEffect(() => {
@@ -311,9 +309,12 @@ const AdminCitasAgendadas = () => {
             <div className="admin-citas-agendadas__date-picker-wrapper" ref={datePickerRef}>
               <div 
                 className="admin-citas-agendadas__date-input"
-                onClick={() => setShowDatePicker(prev => !prev)}
+                onClick={() => {
+                  setShowDatePicker(!showDatePicker);
+                }}
               >
-                {format(dateRange.from, 'dd/MM/yyyy')} - {format(dateRange.to, 'dd/MM/yyyy')}
+                <span>{format(dateRange.from, 'dd/MM/yyyy')} - {format(dateRange.to, 'dd/MM/yyyy')}</span>
+                <span role="img" aria-label="calendar">📅</span>
               </div>
               
               {showDatePicker && (
