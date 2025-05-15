@@ -505,3 +505,23 @@
     justify-content: space-between;
   }
 }
+
+/* Nuevos estilos para la columna de icono */
+.admin-citas-table th:first-child,
+.admin-citas-table td:first-child {
+  width: 40px !important;
+  min-width: 40px !important;
+  max-width: 40px !important;
+  padding: 8px 4px !important;
+}
+
+.empresa-cell {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Estilos para los iconos de los botones de acción */
+.admin-citas-table .actions-container svg {
+  color: var(--sds-color-icon-brand-default) !important;
+}
