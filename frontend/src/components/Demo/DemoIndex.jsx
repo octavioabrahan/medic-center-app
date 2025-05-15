@@ -19,6 +19,7 @@ const DemoIndex = () => {
     <Link to="/demo/tabs">Tabs</Link>,
     <Link to="/demo/texts">Textos</Link>,
     <Link to="/demo/siteframe">Site Frame</Link>,
+    <Link to="/demo/menus">Menús</Link>,
   ];
 
   return (
