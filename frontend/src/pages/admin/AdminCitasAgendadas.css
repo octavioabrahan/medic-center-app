@@ -1,0 +1,151 @@
+/* src/pages/admin/AdminCitasAgendadas.css */
+
+.admin-citas-agendadas {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.admin-citas-agendadas__page-header {
+  border-style: solid;
+  border-color: var(--var-sds-color-border-default-default, #d9d9d9);
+  border-width: 0px 0px 1px 0px;
+  padding: 0px 0px 12px 0px;
+  display: flex;
+  flex-direction: row;
+  gap: 4px;
+  align-items: center;
+  justify-content: flex-start;
+  margin: 32px;
+}
+
+.admin-citas-agendadas__menu-header {
+  border-radius: 8px;
+  padding: 8px 16px 4px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 0px;
+  align-items: flex-start;
+  justify-content: flex-start;
+  flex-shrink: 0;
+  position: relative;
+}
+
+.admin-citas-agendadas__text-strong {
+  display: flex;
+  flex-direction: row;
+  gap: 0px;
+  align-items: flex-start;
+  justify-content: flex-start;
+  flex-shrink: 0;
+  position: relative;
+}
+
+.admin-citas-agendadas__title {
+  color: var(--var-sds-color-text-default-default, #1e1e1e);
+  text-align: left;
+  font-family: var(--body-strong-font-family, "Inter-SemiBold", sans-serif);
+  font-size: var(--body-strong-font-size, 16px);
+  line-height: var(--body-strong-line-height, 140%);
+  font-weight: var(--body-strong-font-weight, 600);
+  position: relative;
+}
+
+.admin-citas-agendadas__filter-bar {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  margin: 0 32px;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.admin-citas-agendadas__search-container {
+  flex: 1;
+  min-width: 250px;
+  max-width: 300px;
+}
+
+.admin-citas-agendadas__search {
+  width: 100%;
+  background: var(--var-sds-color-background-default-default, #ffffff);
+  border-radius: var(--var-sds-size-radius-full, 9999px);
+  border-style: solid;
+  border-color: var(--var-sds-color-border-default-default, #d9d9d9);
+  border-width: 1px;
+}
+
+.admin-citas-agendadas__select-container {
+  flex: 1;
+  min-width: 200px;
+  max-width: 240px;
+}
+
+.admin-citas-agendadas__body {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  align-items: center;
+  justify-content: center;
+  flex-grow: 1;
+  margin: 32px;
+  min-height: 500px;
+}
+
+.admin-citas-agendadas__text {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  max-width: 600px;
+}
+
+.admin-citas-agendadas__no-citas {
+  color: var(--var-sds-color-text-default-secondary, #757575);
+  text-align: center;
+  font-family: var(--body-strong-font-family, "Inter-SemiBold", sans-serif);
+  font-size: var(--body-strong-font-size, 16px);
+  line-height: var(--body-strong-line-height, 140%);
+  font-weight: var(--body-strong-font-weight, 600);
+  width: 100%;
+}
+
+.admin-citas-agendadas__description {
+  color: var(--var-sds-color-text-default-secondary, #757575);
+  text-align: center;
+  font-family: var(--body-base-font-family, "Inter-Regular", sans-serif);
+  font-size: var(--body-base-font-size, 16px);
+  line-height: var(--body-base-line-height, 140%);
+  font-weight: var(--body-base-font-weight, 400);
+  width: 100%;
+}
+
+/* Estilos responsive */
+@media (max-width: 768px) {
+  .admin-citas-agendadas__filter-bar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .admin-citas-agendadas__search-container,
+  .admin-citas-agendadas__select-container {
+    max-width: 100%;
+    width: 100%;
+  }
+  
+  .admin-citas-agendadas__page-header {
+    margin: 16px;
+  }
+  
+  .admin-citas-agendadas__filter-bar {
+    margin: 0 16px;
+  }
+  
+  .admin-citas-agendadas__body {
+    margin: 16px;
+  }
+}
