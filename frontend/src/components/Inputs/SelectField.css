@@ -156,6 +156,16 @@
 .select-field.state-error.value-type-placeholder .select-native {
   color: var(--sds-color-text-default-tertiary, #b3b3b3);
 }
+
+/* Asegurarse que el elemento seleccionado tenga el color correcto */
+.select-field .select-native option:not([disabled]) {
+  color: var(--sds-color-text-default-default, #1e1e1e);
+}
+
+.select-field .select-native option:checked {
+  color: var(--sds-color-text-default-default, #1e1e1e);
+  font-weight: var(--sds-weight-medium, 500);
+}
 .select-field.state-error .select-native {
   border-color: var(--sds-color-border-danger-default, #900b09);
 }

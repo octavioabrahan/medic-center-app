@@ -125,8 +125,10 @@
 }
 
 .fecha {
-  font-weight: 500;
+  font-weight: 400;
   color: var(--var-sds-color-text-default-default, #1e1e1e);
+  font-family: var(--sds-body-base-font-family, "Inter", sans-serif);
+  font-size: var(--sds-body-base-font-size, 16px);
 }
 
 .hora {

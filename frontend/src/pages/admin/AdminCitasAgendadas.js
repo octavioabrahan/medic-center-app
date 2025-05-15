@@ -407,7 +407,7 @@ const AdminCitasAgendadas = () => {
                     const fecha = formatearFecha(row.fecha_agendada);
                     return (
                       <div className="fecha-hora-container">
-                        <div className="fecha">{fecha.fecha}</div>
+                        <div className="fecha text2">{fecha.fecha}</div>
                       </div>
                     );
                   }

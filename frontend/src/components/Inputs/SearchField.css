@@ -14,7 +14,7 @@
   gap: var(--sds-space-200, 8px);
   align-items: center;
   justify-content: flex-start;
-  width: 239px;
+  min-width: 239px;
   position: relative;
   overflow: hidden;
 }
@@ -46,6 +46,7 @@
   background: transparent;
   border: none;
   outline: none;
+  text-overflow: ellipsis;
 }
 .search-x-mark,
 .search-magnifying-glass {
