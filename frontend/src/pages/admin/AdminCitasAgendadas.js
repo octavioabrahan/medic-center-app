@@ -668,20 +668,31 @@ const AdminCitasAgendadas = () => {
                 
                 {/* Botones de acción */}
                 <div className="button-group">
-                  <div 
-                    className="button-danger"
-                    onClick={() => actualizarEstado(currentAgendamiento.agendamiento_id, "cancelada")}
-                  >
-                    <XMarkIcon className="heroicons-mini-x-mark" />
-                    <div className="button">Cancelar cita</div>
-                  </div>
-                  <div 
-                    className="button2"
-                    onClick={() => actualizarEstado(currentAgendamiento.agendamiento_id, "confirmada")}
-                  >
-                    <CheckIcon className="check" />
-                    <div className="button">Confirmar cita</div>
-                  </div>
+                  {currentAgendamiento.status?.toLowerCase() === 'cancelada' ? (
+                    <Button 
+                      variant="neutral" 
+                      onClick={() => setShowDetailModal(false)}
+                    >
+                      Cerrar
+                    </Button>
+                  ) : (
+                    <>
+                      <Button 
+                        variant="danger" 
+                        onClick={() => actualizarEstado(currentAgendamiento.agendamiento_id, "cancelada")}
+                      >
+                        <XMarkIcon width={16} height={16} style={{marginRight: '8px'}} />
+                        Cancelar cita
+                      </Button>
+                      <Button 
+                        variant="primary" 
+                        onClick={() => actualizarEstado(currentAgendamiento.agendamiento_id, "confirmada")}
+                      >
+                        <CheckIcon width={16} height={16} style={{marginRight: '8px'}} />
+                        Confirmar cita
+                      </Button>
+                    </>
+                  )}
                 </div>
               </div>
             </div>
