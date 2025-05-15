@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { CalendarIcon } from '@heroicons/react/20/solid';
+import { CalendarIcon, XMarkIcon, PlusIcon } from '@heroicons/react/20/solid';
 import AdminLayout from '../../../components/AdminDashboard/AdminLayout';
 import Button from '../../../components/Button/Button';
 import Tab from '../../../components/Tab/Tab';
@@ -71,6 +71,16 @@ const AdminHorarios = () => {
     // Lógica para agregar nuevo horario
     console.log('Agregar nuevo horario');
   };
+  
+  const handleCancelDay = () => {
+    // Lógica para cancelar día
+    console.log('Cancelar día');
+  };
+  
+  const handleAddDay = () => {
+    // Lógica para agregar día
+    console.log('Agregar día');
+  };
 
   return (
     <AdminLayout activePage="horarios">
@@ -96,35 +106,80 @@ const AdminHorarios = () => {
           />
         </div>
         
-        <div className="admin-horarios__filter-bar">
-          <div className="admin-horarios__search-container">
-            <SearchField
-              value={searchValue}
-              onChange={handleSearchChange}
-              onClear={handleSearchClear}
-              placeholder="Buscar por profesional"
-              className="admin-horarios__search"
-            />
-          </div>
-          <Button 
-            variant="primary" 
-            onClick={handleAddSchedule}
-          >
-            <CalendarIcon className="btn__icon" />
-            <span style={{ marginLeft: '.5rem' }}>Agregar horario</span>
-          </Button>
-        </div>
-        
-        <div className="admin-horarios__body">
-          <div className="admin-horarios__empty-state">
-            <div className="admin-horarios__empty-title">
-              Aún no hay horarios asignados
+        {activeTab === 0 ? (
+          <>
+            <div className="admin-horarios__filter-bar">
+              <div className="admin-horarios__search-container">
+                <SearchField
+                  value={searchValue}
+                  onChange={handleSearchChange}
+                  onClear={handleSearchClear}
+                  placeholder="Buscar por profesional"
+                  className="admin-horarios__search"
+                />
+              </div>
+              <Button 
+                variant="primary" 
+                onClick={handleAddSchedule}
+              >
+                <CalendarIcon className="btn__icon" />
+                <span style={{ marginLeft: '.5rem' }}>Agregar horario</span>
+              </Button>
             </div>
-            <div className="admin-horarios__empty-description">
-              Agrega horarios a los profesionales para que puedan aparecer en el sitio de agendamiento.
+            
+            <div className="admin-horarios__body">
+              <div className="admin-horarios__empty-state">
+                <div className="admin-horarios__empty-title">
+                  Aún no hay horarios asignados
+                </div>
+                <div className="admin-horarios__empty-description">
+                  Agrega horarios a los profesionales para que puedan aparecer en el sitio de agendamiento.
+                </div>
+              </div>
             </div>
-          </div>
-        </div>
+          </>
+        ) : (
+          <>
+            <div className="admin-horarios__filter-bar">
+              <div className="admin-horarios__search-container">
+                <SearchField
+                  value={searchValue}
+                  onChange={handleSearchChange}
+                  onClear={handleSearchClear}
+                  placeholder="Buscar por profesional"
+                  className="admin-horarios__search"
+                />
+              </div>
+              <div className="admin-horarios__button-group">
+                <Button 
+                  variant="neutral" 
+                  onClick={handleCancelDay}
+                >
+                  <XMarkIcon className="btn__icon" />
+                  <span style={{ marginLeft: '.5rem' }}>Cancelar día</span>
+                </Button>
+                <Button 
+                  variant="neutral" 
+                  onClick={handleAddDay}
+                >
+                  <PlusIcon className="btn__icon" />
+                  <span style={{ marginLeft: '.5rem' }}>Agregar día</span>
+                </Button>
+              </div>
+            </div>
+            
+            <div className="admin-horarios__body">
+              <div className="admin-horarios__empty-state">
+                <div className="admin-horarios__empty-title">
+                  No hay excepciones registradas
+                </div>
+                <div className="admin-horarios__empty-description">
+                  Las excepciones te permiten ajustar la disponibilidad de un profesional para fechas específicas, sin alterar su horario regular.
+                </div>
+              </div>
+            </div>
+          </>
+        )}
       </div>
     </AdminLayout>
   );

@@ -106,6 +106,14 @@
   width: 300px;
 }
 
+.admin-horarios__button-group {
+  display: flex;
+  flex-direction: row;
+  gap: var(--var-sds-size-space-600, 24px);
+  align-items: center;
+  justify-content: flex-start;
+}
+
 
 
 .admin-horarios__body {
