@@ -3,6 +3,87 @@ import PropTypes from 'prop-types';
 import './Text.css';
 
 /**
+ * TextLinkList component for displaying a list of links with a title
+ * 
+ * @param {Object} props - Component props
+ * @param {string} props.title - The title for the link list
+ * @param {Array} props.items - Array of items to display in the list
+ * @param {string} props.className - Additional CSS classes
+ * @param {boolean} props.densityTight - Whether to use tight spacing
+ */
+export const TextLinkList = ({
+  title,
+  items = [],
+  className = '',
+  densityTight = false,
+  ...otherProps
+}) => {
+  const densityClass = densityTight ? 'density-tight' : '';
+  
+  return (
+    <div className={`text-link-list ${densityClass} ${className}`} {...otherProps}>
+      {title && (
+        <div className="title">
+          <div className="text-strong">
+            <div className="text-strong2">{title}</div>
+          </div>
+        </div>
+      )}
+      
+      {items.map((item, index) => (
+        <div key={index} className="text-link-list-item">
+          <div className="list-item">{item}</div>
+        </div>
+      ))}
+    </div>
+  );
+};
+
+TextLinkList.propTypes = {
+  title: PropTypes.string,
+  items: PropTypes.arrayOf(PropTypes.node),
+  className: PropTypes.string,
+  densityTight: PropTypes.bool
+};
+
+/**
+ * TextList component for displaying a list of items
+ * 
+ * @param {Object} props - Component props
+ * @param {Array} props.items - Array of items to display in the list
+ * @param {string} props.className - Additional CSS classes
+ * @param {boolean} props.densityTight - Whether to use tight spacing
+ */
+export const TextList = ({
+  items = [],
+  className = '',
+  densityTight = false,
+  ...otherProps
+}) => {
+  const densityClass = densityTight ? 'density-tight' : '';
+  
+  return (
+    <div className={`text-list ${densityClass} ${className}`} {...otherProps}>
+      {items.map((item, index) => (
+        <div key={index} className="text-list-item">
+          <div className="list-item">
+            <ul className="list-item-span">
+              <li>{item}</li>
+            </ul>
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+};
+
+TextList.propTypes = {
+  items: PropTypes.arrayOf(PropTypes.node).isRequired,
+  className: PropTypes.string,
+  densityTight: PropTypes.bool
+};
+
+/**
  * TextContentHeading component for displaying a heading with subheading
  * 
  * @param {Object} props - Component props

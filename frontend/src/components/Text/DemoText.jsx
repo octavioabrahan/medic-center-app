@@ -1,5 +1,5 @@
 import React from 'react';
-import Text, { TextContentHeading, TextPrice } from './Text';
+import Text, { TextContentHeading, TextPrice, TextLinkList, TextList } from './Text';
 import './DemoText.css';
 
 const DemoText = () => {
@@ -199,6 +199,95 @@ const DemoText = () => {
               price="350"
               currency="MXN$"
               period="/ consulta"
+            />
+          </div>
+        </div>
+      </section>
+
+      <section className="demo-section">
+        <h2>TextLinkList</h2>
+        
+        <div className="text-example-grid">
+          <div className="text-example">
+            <h3>Default</h3>
+            <TextLinkList
+              title="Text Strong"
+              items={['List item', 'List item', 'List item', 'List item']}
+            />
+          </div>
+          
+          <div className="text-example">
+            <h3>Sin título</h3>
+            <TextLinkList
+              items={['List item', 'List item', 'List item']}
+            />
+          </div>
+          
+          <div className="text-example">
+            <h3>Density Tight</h3>
+            <TextLinkList 
+              title="Text Strong"
+              items={['List item', 'List item', 'List item', 'List item', 'List item']}
+              densityTight={true}
+            />
+          </div>
+          
+          <div className="text-example">
+            <h3>Servicios médicos</h3>
+            <TextLinkList 
+              title="Servicios Disponibles"
+              items={[
+                'Consulta General',
+                'Especialidades Médicas',
+                'Exámenes de Laboratorio',
+                'Estudios de Imagen',
+                'Procedimientos Ambulatorios'
+              ]}
+            />
+          </div>
+        </div>
+      </section>
+      
+      <section className="demo-section">
+        <h2>TextList</h2>
+        
+        <div className="text-example-grid">
+          <div className="text-example">
+            <h3>Default</h3>
+            <TextList
+              items={[
+                'List item', 
+                'List item', 
+                'List item', 
+                'List item',
+                'List item'
+              ]}
+            />
+          </div>
+          
+          <div className="text-example">
+            <h3>Density Tight</h3>
+            <TextList 
+              items={[
+                'List item', 
+                'List item', 
+                'List item', 
+                'List item'
+              ]}
+              densityTight={true}
+            />
+          </div>
+          
+          <div className="text-example">
+            <h3>Requisitos</h3>
+            <TextList 
+              items={[
+                'Identificación oficial', 
+                'Comprobante de domicilio',
+                'Historial médico previo',
+                'Resultados de estudios anteriores',
+                'Carnet de seguro (si aplica)'
+              ]}
             />
           </div>
         </div>
