@@ -108,6 +108,19 @@
   line-height: var(--body-base-line-height, 140%);
 }
 
+.admin-citas-agendadas__calendar-dropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  z-index: 10;
+  background-color: white;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  border-radius: 8px;
+  padding: 12px;
+  min-width: 320px;
+  max-width: 100%;
+}
+
 .admin-citas-agendadas__body {
   display: flex;
   flex-direction: column;

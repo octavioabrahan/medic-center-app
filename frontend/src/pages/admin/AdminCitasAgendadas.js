@@ -3,6 +3,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { AdminLayout } from '../../components/AdminDashboard';
 import SearchField from '../../components/Inputs/SearchField';
 import SelectField from '../../components/Inputs/SelectField';
+import Calendar from '../../components/common/Calendar';
 import { useLocation } from 'react-router-dom';
 import axios from 'axios';
 import { format } from 'date-fns';
@@ -21,7 +22,6 @@ const AdminCitasAgendadas = () => {
   // Estados para filtros
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedStatus, setSelectedStatus] = useState('');
-  const [selectedDateRange, setSelectedDateRange] = useState('14-04-2025 20-04-2025');
   const [selectedProfessional, setSelectedProfessional] = useState('');
   const [profesionales, setProfesionales] = useState([]);
   const [sortOrder, setSortOrder] = useState("az"); // Ordenamiento alfabético
@@ -30,7 +30,8 @@ const AdminCitasAgendadas = () => {
   const [currentAgendamiento, setCurrentAgendamiento] = useState(null);
   const [showDetailModal, setShowDetailModal] = useState(false);
   
-  // Referencia para el selector de fechas
+  // Estados para el selector de fechas
+  const [showDatePicker, setShowDatePicker] = useState(false);
   const datePickerRef = useRef(null);
   
   // Estados para el calendario
@@ -180,6 +181,27 @@ const AdminCitasAgendadas = () => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchTerm, selectedStatus, selectedProfessional, sortOrder]);
+  
+  // Detectar clics fuera del selector de fechas para cerrarlo
+  useEffect(() => {
+    function handleClickOutside(event) {
+      // Solo ejecutar si el calendario está visible
+      if (!showDatePicker) return;
+      
+      // Verificar si el clic fue dentro del selector de fechas
+      if (datePickerRef.current && !datePickerRef.current.contains(event.target)) {
+        setShowDatePicker(false);
+      }
+    }
+
+    // Agregar el event listener cuando el componente se monta o cuando showDatePicker cambia
+    document.addEventListener("mousedown", handleClickOutside);
+    
+    // Limpiar el event listener cuando el componente se desmonta o showDatePicker cambia
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [showDatePicker]);
 
   // Obtener datos nuevamente cuando cambia el rango de fechas
   useEffect(() => {
@@ -196,7 +218,13 @@ const AdminCitasAgendadas = () => {
     return () => {
       if (timeoutId) clearTimeout(timeoutId);
     };
-  }, [dateRange.from, dateRange.to]);
+  }, [dateRange.from, dateRange.to, fetchAgendamientos]);
+  
+  // Función para manejar el cambio de rango de fechas desde el calendario
+  const handleDateRangeChange = (newDateRange) => {
+    setDateRange(newDateRange);
+    setShowDatePicker(false); // Cerrar el calendario después de seleccionar
+  };
   
   // Cambiar estado de agendamiento
   const actualizarEstado = async (id, nuevoEstado) => {
@@ -287,6 +315,21 @@ const AdminCitasAgendadas = () => {
               >
                 {format(dateRange.from, 'dd/MM/yyyy')} - {format(dateRange.to, 'dd/MM/yyyy')}
               </div>
+              
+              {showDatePicker && (
+                <div 
+                  className="admin-citas-agendadas__calendar-dropdown"
+                  onClick={e => e.stopPropagation()}
+                >
+                  <Calendar
+                    initialDateRange={dateRange}
+                    onDateRangeChange={handleDateRangeChange}
+                    onClose={() => setShowDatePicker(false)}
+                    showPresets={true}
+                    title="Seleccione rango de fechas"
+                  />
+                </div>
+              )}
             </div>
           </div>
           
