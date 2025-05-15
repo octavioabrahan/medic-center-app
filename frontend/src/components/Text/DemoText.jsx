@@ -1,5 +1,5 @@
 import React from 'react';
-import Text from './Text';
+import Text, { TextContentHeading } from './Text';
 import './DemoText.css';
 
 const DemoText = () => {
@@ -123,6 +123,37 @@ const DemoText = () => {
           <div className="footer-block">
             <Text variant="link">Agendar una cita</Text>
             <Text variant="link">Ver especialidades</Text>
+          </div>
+        </div>
+      </section>
+      
+      <section className="demo-section">
+        <h2>TextContentHeading</h2>
+        
+        <div className="text-example-grid">
+          <div className="text-example">
+            <h3>Default</h3>
+            <TextContentHeading 
+              heading="Heading" 
+              subheading="Subheading" 
+            />
+          </div>
+          
+          <div className="text-example">
+            <h3>Center Aligned</h3>
+            <TextContentHeading 
+              heading="Heading" 
+              subheading="Subheading"
+              alignCenter={true}
+            />
+          </div>
+          
+          <div className="text-example">
+            <h3>Custom Content</h3>
+            <TextContentHeading 
+              heading="Servicios médicos" 
+              subheading="Profesionales altamente calificados en diversas especialidades" 
+            />
           </div>
         </div>
       </section>

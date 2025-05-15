@@ -3,6 +3,39 @@ import PropTypes from 'prop-types';
 import './Text.css';
 
 /**
+ * TextContentHeading component for displaying a heading with subheading
+ * 
+ * @param {Object} props - Component props
+ * @param {string} props.heading - The main heading text
+ * @param {string} props.subheading - The subheading text
+ * @param {string} props.className - Additional CSS classes
+ * @param {boolean} props.alignCenter - Whether to center align the text
+ */
+export const TextContentHeading = ({
+  heading,
+  subheading,
+  className = '',
+  alignCenter = false,
+  ...otherProps
+}) => {
+  const alignmentClass = alignCenter ? 'align-center' : '';
+  
+  return (
+    <div className={`text-content-heading ${alignmentClass} ${className}`} {...otherProps}>
+      <div className="heading">{heading}</div>
+      <div className="subheading">{subheading}</div>
+    </div>
+  );
+};
+
+TextContentHeading.propTypes = {
+  heading: PropTypes.node.isRequired,
+  subheading: PropTypes.node.isRequired,
+  className: PropTypes.string,
+  alignCenter: PropTypes.bool
+};
+
+/**
  * Text component for displaying content with consistent styling
  * 
  * @param {Object} props - Component props
