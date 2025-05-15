@@ -17,6 +17,7 @@ const DemoText = lazy(() => import('./components/Text/DemoText'));
 const DemoSiteFrame = lazy(() => import('./components/SiteFrame/DemoSiteFrame'));
 const DemoMenus = lazy(() => import('./components/Menu/DemoMenus'));
 const DemoIndex = lazy(() => import('./components/Demo/DemoIndex'));
+const DemoTables = lazy(() => import('./components/Tables/DemoTables'));
 
 function App() {
   return (
@@ -73,6 +74,11 @@ function App() {
         <Route path="/demo/menus" element={
           <Suspense fallback={<div>Cargando demo...</div>}>
             <DemoMenus />
+          </Suspense>
+        } />
+        <Route path="/demo/tables" element={
+          <Suspense fallback={<div>Cargando demo...</div>}>
+            <DemoTables />
           </Suspense>
         } />
         {/* Rutas públicas mínimas */}
