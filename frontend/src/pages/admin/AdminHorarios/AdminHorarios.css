@@ -112,13 +112,6 @@
   gap: 8px;
   align-items: center;
   justify-content: center;
-  background: var(--var-sds-color-background-brand-default, #20377a);
-  border-radius: 8px;
-  padding: 12px;
-}
-
-.admin-horarios__add-button span {
-  color: var(--var-sds-color-text-brand-on-brand, #f0f3ff);
 }
 
 .admin-horarios__body {
