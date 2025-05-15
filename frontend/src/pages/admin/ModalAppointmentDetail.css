@@ -234,11 +234,12 @@
   display: flex;
   flex-direction: row;
   align-items: center;
-  justify-content: flex-end;
+  justify-content: space-between;
   align-self: stretch;
   flex-shrink: 0;
   position: relative;
-  gap: 12px;
+  width: 100%;
+  margin-top: 8px;
 }
 
 /* Estilos para adaptarse a los botones del componente Button */
@@ -247,6 +248,7 @@
   align-items: center;
   justify-content: center;
   gap: 8px;
+  min-width: 140px;
 }
 
 .modal-appointment-detail .button-group .btn svg {
@@ -257,6 +259,7 @@
 /* Asegurar que cuando solo hay un botón se ubique correctamente */
 .modal-appointment-detail .button-group .btn:only-child {
   margin-left: auto;
+  margin-right: 0;
 }
 
 /* Adaptación para elementos específicos */

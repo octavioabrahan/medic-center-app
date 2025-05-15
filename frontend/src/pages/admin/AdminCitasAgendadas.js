@@ -684,6 +684,7 @@ const AdminCitasAgendadas = () => {
                         <XMarkIcon width={16} height={16} style={{marginRight: '8px'}} />
                         Cancelar cita
                       </Button>
+                      <div style={{flex: 1}}></div> {/* Espacio flexible para separar los botones */}
                       <Button 
                         variant="primary" 
                         onClick={() => actualizarEstado(currentAgendamiento.agendamiento_id, "confirmada")}
