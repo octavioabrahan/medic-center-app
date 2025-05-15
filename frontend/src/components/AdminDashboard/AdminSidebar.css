@@ -22,8 +22,8 @@
 }
 
 .menu-header {
-  padding: var(--sds-space-200, 8px)
-    var(--sds-space-200, 8px) var(--sds-space-100, 4px)
+  padding: var(--sds-space-300, 12px)
+    var(--sds-space-200, 8px) var(--sds-space-300, 12px)
     var(--sds-space-200, 8px);
   display: flex;
   flex-direction: column;
@@ -40,13 +40,13 @@
 
 .logo-1 {
   flex-shrink: 0;
-  width: 80px;  /* Reducido para un mejor ajuste */
+  width: 140px;  /* Aumentado para mejor visibilidad */
   height: auto; /* Height automático para mantener proporciones */
   position: relative;
   object-fit: contain;
   margin: 0 auto;
   display: block;
-  padding: 8px 0; /* Espacio adicional arriba y abajo */
+  padding: 10px 0; /* Espacio adicional arriba y abajo */
 }
 
 .menu-group {
@@ -285,4 +285,25 @@
   font-weight: var(--body-small-font-weight, 400);
   color: var(--sds-color-text-default-secondary, #757575);
   display: block;
+}
+
+/* Media queries para responsividad */
+@media screen and (max-width: 768px) {
+  .menu {
+    width: 220px;
+  }
+  
+  .logo-1 {
+    width: 120px;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .menu {
+    width: 200px;
+  }
+  
+  .logo-1 {
+    width: 100px;
+  }
 }
