@@ -91,31 +91,7 @@
   flex-direction: row;
 }
 
-/* Estilos para indicadores de estado */
-.estado-badge {
-  display: inline-flex;
-  padding: 4px 8px;
-  border-radius: 4px;
-  font-family: var(--body-small-font-family, "Inter-Regular", sans-serif);
-  font-size: var(--body-small-font-size, 12px);
-  line-height: var(--body-small-line-height, 140%);
-  font-weight: var(--body-small-strong-font-weight, 600);
-}
-
-.estado-confirmada {
-  background-color: #E7F6E7;
-  color: #1B5E20;
-}
-
-.estado-pendiente {
-  background-color: #FFF8E1;
-  color: #F57C00;
-}
-
-.estado-cancelada {
-  background-color: #FFEBEE;
-  color: #C62828;
-}
+/* Los estilos para estados ahora se utilizan desde el componente Tag */
 
 /* Estilos para los botones de acción */
 .acciones-container {
@@ -138,13 +114,13 @@
 }
 
 .accion-btn.editar {
-  background-color: #E3F2FD;
-  color: #1565C0;
+  background-color: var(--sds-color-background-brand-tertiary, #f0f3ff);
+  color: var(--sds-color-text-brand-on-brand-tertiary, #20377a);
 }
 
 .accion-btn.eliminar {
-  background-color: #FFEBEE;
-  color: #C62828;
+  background-color: var(--sds-color-background-danger-tertiary, #fee9e7);
+  color: var(--sds-color-text-danger-on-danger-tertiary, #900b09);
 }
 
 .accion-btn:hover {

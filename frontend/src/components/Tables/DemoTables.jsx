@@ -1,6 +1,7 @@
 import React from 'react';
 import Tables from './Tables';
 import { HeaderCell, Cell } from './index';
+import Tag from '../Tag/Tag';
 import './Tables.css';
 
 const DemoTables = () => {
@@ -18,16 +19,17 @@ const DemoTables = () => {
   const renderCustomCell = (cell, cellIndex, rowIndex) => {
     // Renderizado personalizado para la columna de estado
     if (cellIndex === 5) {
-      let badgeClass = 'estado-badge ';
+      // Usar el componente Tag según el estado
+      let scheme = 'neutral';
       switch (cell.toLowerCase()) {
         case 'confirmada':
-          badgeClass += 'estado-confirmada';
+          scheme = 'positive';
           break;
         case 'pendiente':
-          badgeClass += 'estado-pendiente';
+          scheme = 'warning';
           break;
         case 'cancelada':
-          badgeClass += 'estado-cancelada';
+          scheme = 'danger';
           break;
         default:
           break;
@@ -35,7 +37,7 @@ const DemoTables = () => {
 
       return (
         <div className="text">
-          <div className={badgeClass}>{cell}</div>
+          <Tag text={cell} scheme={scheme} closeable={false} />
         </div>
       );
     }
@@ -94,15 +96,22 @@ const DemoTables = () => {
               <div className="table-header" style={{ display: 'flex', width: '100%' }}>
                 <HeaderCell>Nombre del Paciente</HeaderCell>
                 <HeaderCell>Fecha de Atención</HeaderCell>
+                <HeaderCell>Estado</HeaderCell>
               </div>
               <div className="table-body">
                 <div className="table-row" style={{ display: 'flex', width: '100%' }}>
                   <Cell>Mariana Suárez</Cell>
                   <Cell>15/05/2025</Cell>
+                  <Cell>
+                    <Tag text="Confirmada" scheme="positive" closeable={false} />
+                  </Cell>
                 </div>
                 <div className="table-row" style={{ display: 'flex', width: '100%' }}>
                   <Cell>Luis Gómez</Cell>
                   <Cell>16/05/2025</Cell>
+                  <Cell>
+                    <Tag text="Pendiente" scheme="warning" closeable={false} />
+                  </Cell>
                 </div>
               </div>
             </div>
