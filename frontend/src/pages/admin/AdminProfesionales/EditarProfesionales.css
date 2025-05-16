@@ -1,0 +1,373 @@
+.editar-profesionales-container {
+  width: 100%;
+}
+
+.editar-profesionales-error {
+  color: #d83232;
+  background-color: #ffecec;
+  padding: 12px 16px;
+  border-radius: 8px;
+  margin-bottom: 16px;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  border-left: 4px solid #d83232;
+}
+
+.text {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sds-space-300, 12px);
+  align-items: flex-start;
+  justify-content: flex-start;
+  align-self: stretch;
+  position: relative;
+  margin-bottom: var(--sds-space-600, 24px);
+}
+
+.input-field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sds-space-200, 8px);
+  align-items: flex-start;
+  justify-content: flex-start;
+  width: 100%;
+  position: relative;
+}
+
+.label {
+  color: var(--sds-color-text-default-default, #1e1e1e);
+  text-align: left;
+  font-family: "Inter-Regular", "Inter", sans-serif;
+  font-size: 16px;
+  line-height: 140%;
+  font-weight: 400;
+  position: relative;
+  align-self: stretch;
+}
+
+.input {
+  background: var(--sds-color-background-default-default, #ffffff);
+  border-radius: var(--sds-size-radius-200, 8px);
+  border-style: solid;
+  border-color: var(--sds-color-border-default-default, #d9d9d9);
+  border-width: 1px;
+  padding: var(--sds-space-300, 12px) var(--sds-space-400, 16px);
+  display: flex;
+  flex-direction: row;
+  gap: 0px;
+  align-items: center;
+  justify-content: flex-start;
+  width: 100%;
+  position: relative;
+  overflow: hidden;
+}
+
+.input input {
+  border: none;
+  outline: none;
+  width: 100%;
+  background: transparent;
+  font-family: "Inter-Regular", sans-serif;
+  font-size: 16px;
+  line-height: 100%;
+  color: var(--sds-color-text-default-default, #1e1e1e);
+}
+
+.value {
+  color: var(--sds-color-text-default-default, #1e1e1e);
+  text-align: left;
+  font-family: "Inter-Regular", sans-serif;
+  font-size: 16px;
+  line-height: 100%;
+  font-weight: 400;
+  position: relative;
+  flex: 1;
+}
+
+.select-field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sds-space-200, 8px);
+  align-items: flex-start;
+  justify-content: flex-start;
+  width: 100%;
+  position: relative;
+}
+
+.select {
+  background: var(--sds-color-background-default-default, #ffffff);
+  border-radius: var(--sds-size-radius-200, 8px);
+  border-style: solid;
+  border-color: var(--sds-color-border-default-default, #d9d9d9);
+  border-width: 1px;
+  padding: var(--sds-space-300, 12px) var(--sds-space-300, 12px);
+  display: flex;
+  flex-direction: row;
+  gap: var(--sds-space-200, 8px);
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  height: 40px;
+  min-width: 240px;
+  position: relative;
+}
+
+.select select {
+  border: none;
+  outline: none;
+  width: 100%;
+  background: transparent;
+  font-family: "Inter-Regular", sans-serif;
+  font-size: 16px;
+  line-height: 100%;
+  color: var(--sds-color-text-default-default, #1e1e1e);
+  appearance: none;
+}
+
+.chevron-down {
+  flex-shrink: 0;
+  width: 16px;
+  height: 16px;
+  position: relative;
+  pointer-events: none;
+  color: var(--sds-color-text-default-secondary, #757575);
+}
+
+.servicio {
+  color: var(--sds-color-text-default-default, #1e1e1e);
+  text-align: left;
+  font-family: "Inter-Regular", sans-serif;
+  font-size: 16px;
+  line-height: 140%;
+  font-weight: 400;
+  position: relative;
+  align-self: stretch;
+}
+
+.frame-30 {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sds-space-300, 12px);
+  align-items: flex-start;
+  justify-content: flex-start;
+  align-self: stretch;
+  position: relative;
+}
+
+.checkbox-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0px;
+  align-items: flex-start;
+  justify-content: flex-start;
+  position: relative;
+}
+
+.checkbox-and-label {
+  display: flex;
+  flex-direction: row;
+  gap: var(--sds-space-300, 12px);
+  align-items: center;
+  justify-content: flex-start;
+  position: relative;
+  cursor: pointer;
+}
+
+.checkbox {
+  background: var(--sds-color-background-default-default, #ffffff);
+  border-radius: var(--sds-size-radius-100, 4px);
+  border-style: solid;
+  border-color: var(--sds-color-border-default-secondary, #757575);
+  border-width: 1px;
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 16px;
+  height: 16px;
+  position: relative;
+  overflow: hidden;
+}
+
+.checkbox2 {
+  background: var(--sds-color-background-brand-default, #20377a);
+  border-radius: var(--sds-size-radius-100, 4px);
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 16px;
+  height: 16px;
+  position: relative;
+  overflow: hidden;
+}
+
+.label2 {
+  color: var(--sds-color-text-default-default, #1e1e1e);
+  text-align: left;
+  font-family: "Inter-Regular", sans-serif;
+  font-size: 16px;
+  line-height: 140%;
+  font-weight: 400;
+  position: relative;
+}
+
+.check {
+  flex-shrink: 0;
+  width: 16px;
+  height: 16px;
+  position: relative;
+  color: white;
+}
+
+.button-group {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  align-self: stretch;
+  width: 100%;
+  position: relative;
+}
+
+.button-danger {
+  border-radius: var(--sds-size-radius-200, 8px);
+  padding: var(--sds-space-300, 12px);
+  display: flex;
+  flex-direction: row;
+  gap: var(--sds-space-200, 8px);
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.heroicons-mini-archive-box {
+  flex-shrink: 0;
+  width: 16px;
+  height: 16px;
+  position: relative;
+  color: var(--sds-color-text-danger-default, #900b09);
+}
+
+.button {
+  color: var(--sds-color-text-danger-default, #900b09);
+  text-align: left;
+  font-family: "Inter-Regular", sans-serif;
+  font-size: 16px;
+  line-height: 140%;
+  font-weight: 400;
+  position: relative;
+}
+
+.frame-77 {
+  display: flex;
+  flex-direction: row;
+  gap: 16px;
+  align-items: center;
+  justify-content: flex-start;
+  position: relative;
+}
+
+.button-neutral {
+  background: var(--sds-color-background-neutral-tertiary, #e3e3e3);
+  border-radius: var(--sds-size-radius-200, 8px);
+  border-style: solid;
+  border-color: var(--sds-color-border-neutral-secondary, #767676);
+  border-width: 1px;
+  padding: var(--sds-space-300, 12px);
+  display: flex;
+  flex-direction: row;
+  gap: var(--sds-space-200, 8px);
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.button2 {
+  color: var(--sds-color-text-default-default, #1e1e1e);
+  text-align: left;
+  font-family: "Inter-Regular", sans-serif;
+  font-size: 16px;
+  line-height: 140%;
+  font-weight: 400;
+  position: relative;
+}
+
+.button-primary {
+  background: var(--sds-color-background-brand-default, #20377a);
+  border-radius: var(--sds-size-radius-200, 8px);
+  border-style: solid;
+  border-color: var(--sds-color-border-brand-default, #20377a);
+  border-width: 1px;
+  padding: var(--sds-space-300, 12px);
+  display: flex;
+  flex-direction: row;
+  gap: var(--sds-space-200, 8px);
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.button3 {
+  color: var(--sds-color-text-brand-on-brand, #f0f3ff);
+  text-align: left;
+  font-family: "Inter-Regular", sans-serif;
+  font-size: 16px;
+  line-height: 140%;
+  font-weight: 400;
+  position: relative;
+}
+
+/* Estilos para estado de hover en los botones */
+.button-neutral:hover {
+  background: var(--sds-color-background-neutral-tertiary-hover, #cdcdcd);
+}
+
+.button-primary:hover {
+  background: var(--sds-color-background-brand-hover, #14214b);
+}
+
+.button-danger:hover {
+  background: var(--sds-color-background-danger-tertiary, #fee9e7);
+}
+
+/* Estilos para estado deshabilitado */
+.button-primary:disabled, 
+.button-neutral:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Estilos para dispositivos móviles */
+@media (max-width: 768px) {
+  .button-group {
+    flex-direction: column-reverse;
+    gap: var(--sds-space-300, 12px);
+  }
+  
+  .frame-77 {
+    width: 100%;
+  }
+  
+  .button-neutral, 
+  .button-primary {
+    flex: 1;
+  }
+  
+  .button-danger {
+    width: 100%;
+    justify-content: center;
+    margin-top: var(--sds-space-300, 12px);
+  }
+}

@@ -1,275 +1,311 @@
 import React, { useState, useEffect } from 'react';
-import Button from '../../../components/Button/Button';
-import api from '../../../api';
-import './AdminProfesionales.css'; // Reutilizamos los estilos
+import axios from 'axios';
+import { API_URL } from '../../../config/config';
+import Modal from '../../../components/Modal/Modal';
+import { faArchiveBox, faChevronDown, faXmark, faCheck } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import './EditarProfesionales.css';
 
 /**
- * EditarProfesionales component for editing professional information
- * @param {Object} props - Component props
- * @param {boolean} props.isOpen - Controls if the modal is visible
- * @param {Function} props.onClose - Function to call when close button is clicked
- * @param {Object} props.profesional - The professional data to edit
- * @param {Array} props.especialidades - List of available specialties
- * @param {Function} props.onConfirmArchive - Function to confirm archiving a professional
- * @param {Function} props.onProfesionalUpdated - Function to call when professional is updated
- * @param {boolean} props.showArchived - Whether archived professionals are shown
+ * Componente para editar profesionales existentes
+ * @param {Object} props - Propiedades del componente
+ * @param {boolean} props.isOpen - Controla si el modal está visible
+ * @param {Function} props.onClose - Función para cerrar el modal
+ * @param {Object} props.profesional - Datos del profesional a editar
+ * @param {Array} props.especialidades - Lista de especialidades disponibles
+ * @param {Function} props.onProfesionalUpdated - Función a llamar cuando se actualiza un profesional
  */
 const EditarProfesionales = ({
   isOpen,
   onClose,
   profesional,
   especialidades = [],
-  onConfirmArchive,
-  onProfesionalUpdated,
-  showArchived = false
+  onProfesionalUpdated
 }) => {
-  // Estado local
-  const [currentProfesional, setCurrentProfesional] = useState(null);
+  // Estado para el profesional editado
+  const [profesionalEditado, setProfesionalEditado] = useState({
+    id: '',
+    cedula: '',
+    nombre: '',
+    apellido: '',
+    telefono: '',
+    correo: '',
+    especialidad_id: '',
+    activo: true
+  });
+  
+  // Estado para servicios y selección
   const [servicios, setServicios] = useState([]);
   const [serviciosSeleccionados, setServiciosSeleccionados] = useState([]);
-  const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [especialidadNombre, setEspecialidadNombre] = useState('');
 
-  // Inicializar estado cuando se abre el modal
+  // Efecto para cargar los datos del profesional cuando se abre el modal
   useEffect(() => {
     if (isOpen && profesional) {
-      setCurrentProfesional({...profesional});
+      setProfesionalEditado({
+        id: profesional.id || '',
+        cedula: profesional.cedula || '',
+        nombre: profesional.nombre || '',
+        apellido: profesional.apellido || '',
+        telefono: profesional.telefono || '',
+        correo: profesional.correo || '',
+        especialidad_id: profesional.especialidad_id || '',
+        activo: profesional.activo !== undefined ? profesional.activo : true
+      });
       
-      // Cargar servicios
-      fetchServicios();
+      cargarServicios();
       
-      // Cargar servicios seleccionados por el profesional
-      if (profesional.profesional_id) {
-        fetchServiciosProfesional(profesional.profesional_id);
-      }
+      // Buscar el nombre de la especialidad
+      const especialidadEncontrada = especialidades.find(e => e.id === profesional.especialidad_id);
+      setEspecialidadNombre(especialidadEncontrada ? especialidadEncontrada.nombre : '');
     }
-  }, [isOpen, profesional]);
+  }, [isOpen, profesional, especialidades]);
 
-  // Función para cargar servicios disponibles
-  const fetchServicios = async () => {
-    setLoading(true);
+  // Función para cargar los servicios asociados al profesional
+  const cargarServicios = async () => {
+    if (!profesional || !profesional.id) return;
+    
     try {
-      const res = await api.get('/servicios');
-      setServicios(res.data);
-      setError(null);
+      setLoading(true);
+      
+      // Cargar todos los servicios disponibles
+      const serviciosResponse = await axios.get(`${API_URL}/servicios/por-especialidad/${profesional.especialidad_id}`);
+      
+      // Cargar servicios asignados al profesional
+      const serviciosAsignadosResponse = await axios.get(`${API_URL}/profesionales/${profesional.id}/servicios`);
+      
+      const todosServicios = serviciosResponse.data;
+      const serviciosAsignados = serviciosAsignadosResponse.data.map(servicio => servicio.id);
+      
+      // Marcar los servicios que ya están asignados
+      setServicios(todosServicios);
+      setServiciosSeleccionados(serviciosAsignados);
+      
     } catch (err) {
       console.error("Error al cargar servicios:", err);
-      setError("Error al cargar los servicios disponibles");
+      setError("Error al cargar los servicios. Por favor, intente nuevamente.");
     } finally {
       setLoading(false);
     }
   };
 
-  // Función para cargar servicios seleccionados por el profesional
-  const fetchServiciosProfesional = async (profesionalId) => {
-    try {
-      const res = await api.get(`/profesionales/relaciones/${profesionalId}`);
-      setServiciosSeleccionados(res.data.servicios || []);
-    } catch (err) {
-      console.error("Error al cargar servicios del profesional:", err);
-    }
+  // Manejar cambio en los campos del formulario
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setProfesionalEditado({
+      ...profesionalEditado,
+      [name]: value
+    });
   };
 
-  // Función para actualizar el profesional
-  const handleUpdateProfesional = async (e) => {
-    e?.preventDefault();
-    
-    if (!currentProfesional.nombre || 
-        !currentProfesional.apellido || 
-        !currentProfesional.especialidad_id) {
-      setError("Todos los campos obligatorios deben ser completados");
-      return;
-    }
-
-    setLoading(true);
-    try {
-      await api.put(`/profesionales/${currentProfesional.profesional_id}`, {
-        nombre: currentProfesional.nombre,
-        apellido: currentProfesional.apellido,
-        cedula: currentProfesional.cedula,
-        telefono: currentProfesional.telefono,
-        correo: currentProfesional.email,
-        especialidad_id: currentProfesional.especialidad_id
-      });
-      
-      // Actualizar servicios
-      if (serviciosSeleccionados.length > 0) {
-        await api.post('/profesionales/asignar-servicios', {
-          profesional_id: currentProfesional.profesional_id,
-          servicios: serviciosSeleccionados
-        });
+  // Toggle de un servicio (seleccionarlo o deseleccionarlo)
+  const toggleServicio = (servicioId) => {
+    setServiciosSeleccionados(prevServicios => {
+      if (prevServicios.includes(servicioId)) {
+        return prevServicios.filter(id => id !== servicioId);
+      } else {
+        return [...prevServicios, servicioId];
       }
+    });
+  };
+
+  // Actualizar profesional
+  const handleUpdate = async (e) => {
+    e.preventDefault();
+    
+    try {
+      setLoading(true);
+      setError(null);
       
-      // Actualizar lista de profesionales
-      const updatedProfesionales = await api.get('/profesionales', { 
-        params: { soloActivos: !showArchived } 
+      // Actualizar datos del profesional
+      await axios.put(`${API_URL}/profesionales/${profesionalEditado.id}`, profesionalEditado);
+      
+      // Actualizar servicios asignados
+      await axios.put(`${API_URL}/profesionales/${profesionalEditado.id}/servicios`, {
+        servicios: serviciosSeleccionados
       });
       
-      // Notificar al componente padre
-      onProfesionalUpdated && onProfesionalUpdated(updatedProfesionales.data);
+      // Notificar actualización exitosa
+      onProfesionalUpdated();
+      onClose();
       
-      // Cerrar modal
-      handleClose();
     } catch (err) {
       console.error("Error al actualizar profesional:", err);
-      setError(err.response?.data?.error || "Error al actualizar el profesional");
+      setError("Error al actualizar el profesional. Por favor, intente nuevamente.");
     } finally {
       setLoading(false);
     }
   };
 
-  // Manejar cierre del modal
-  const handleClose = () => {
-    setCurrentProfesional(null);
-    setServiciosSeleccionados([]);
-    setError(null);
-    onClose();
+  // Archivar profesional
+  const archivarProfesional = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      
+      await axios.put(`${API_URL}/profesionales/${profesionalEditado.id}`, {
+        ...profesionalEditado,
+        activo: false
+      });
+      
+      onProfesionalUpdated();
+      onClose();
+      
+    } catch (err) {
+      console.error("Error al archivar profesional:", err);
+      setError("Error al archivar el profesional. Por favor, intente nuevamente.");
+    } finally {
+      setLoading(false);
+    }
   };
 
-  // Si no hay profesional o el modal está cerrado, no renderizar nada
-  if (!isOpen || !currentProfesional) return null;
-
+  // Renderizar el modal de edición
   return (
-    <div className="admin-profesionales__modal-overlay">
-      <div className="admin-profesionales__modal-content">
-        <div className="admin-profesionales__modal-header">
-          <h2>Editar Profesional</h2>
-          <button className="admin-profesionales__close-btn" onClick={handleClose}>×</button>
-        </div>
+    <Modal
+      isOpen={isOpen}
+      onClose={onClose}
+      title={`Editar a ${profesional?.nombre || ''} ${profesional?.apellido || ''}`}
+    >
+      <div className="editar-profesionales-container">
         {error && (
-          <div className="admin-profesionales__error-message">
+          <div className="editar-profesionales-error">
             {error}
           </div>
         )}
-        <div className="admin-profesionales__modal-body">
-          <form onSubmit={handleUpdateProfesional}>
-            <div className="admin-profesionales__form-group">
-              <label htmlFor="edit-cedula">Cédula *</label>
-              <input
-                id="edit-cedula"
-                type="text"
-                value={currentProfesional.cedula || ''}
-                onChange={(e) => setCurrentProfesional({ ...currentProfesional, cedula: e.target.value })}
-                className="admin-profesionales__input"
-                required
-                disabled // La cédula no se debería modificar una vez creado
+        
+        <div className="text">
+          <div className="input-field">
+            <div className="label">Cédula</div>
+            <div className="input">
+              <input 
+                type="text" 
+                name="cedula"
+                value={profesionalEditado.cedula}
+                onChange={handleChange}
+                className="value"
+                placeholder="Ej: 00.000.000"
               />
             </div>
-            
-            <div className="admin-profesionales__form-group">
-              <label htmlFor="edit-nombre">Nombre *</label>
-              <input
-                id="edit-nombre"
-                type="text"
-                value={currentProfesional.nombre || ''}
-                onChange={(e) => setCurrentProfesional({ ...currentProfesional, nombre: e.target.value })}
-                className="admin-profesionales__input"
-                required
+          </div>
+          
+          <div className="input-field">
+            <div className="label">Nombre</div>
+            <div className="input">
+              <input 
+                type="text" 
+                name="nombre"
+                value={profesionalEditado.nombre}
+                onChange={handleChange}
+                className="value"
+                placeholder="Nombre del profesional"
               />
             </div>
-            
-            <div className="admin-profesionales__form-group">
-              <label htmlFor="edit-apellido">Apellido *</label>
-              <input
-                id="edit-apellido"
-                type="text"
-                value={currentProfesional.apellido || ''}
-                onChange={(e) => setCurrentProfesional({ ...currentProfesional, apellido: e.target.value })}
-                className="admin-profesionales__input"
-                required
+          </div>
+          
+          <div className="input-field">
+            <div className="label">Apellido</div>
+            <div className="input">
+              <input 
+                type="text" 
+                name="apellido"
+                value={profesionalEditado.apellido}
+                onChange={handleChange}
+                className="value"
+                placeholder="Apellido del profesional"
               />
             </div>
-            
-            <div className="admin-profesionales__form-group">
-              <label htmlFor="edit-telefono">Teléfono</label>
-              <input
-                id="edit-telefono"
-                type="text"
-                value={currentProfesional.telefono || ''}
-                onChange={(e) => setCurrentProfesional({ ...currentProfesional, telefono: e.target.value })}
-                className="admin-profesionales__input"
+          </div>
+          
+          <div className="input-field">
+            <div className="label">Teléfono</div>
+            <div className="input">
+              <input 
+                type="text" 
+                name="telefono"
+                value={profesionalEditado.telefono}
+                onChange={handleChange}
+                className="value"
+                placeholder="Teléfono del profesional"
               />
             </div>
-            
-            <div className="admin-profesionales__form-group">
-              <label htmlFor="edit-correo">Correo Electrónico</label>
-              <input
-                id="edit-correo"
-                type="email"
-                value={currentProfesional.email || ''}
-                onChange={(e) => setCurrentProfesional({ ...currentProfesional, email: e.target.value })}
-                className="admin-profesionales__input"
+          </div>
+          
+          <div className="input-field">
+            <div className="label">Correo</div>
+            <div className="input">
+              <input 
+                type="email" 
+                name="correo"
+                value={profesionalEditado.correo}
+                onChange={handleChange}
+                className="value"
+                placeholder="correo@ejemplo.com"
               />
             </div>
-            
-            <div className="admin-profesionales__form-group">
-              <label htmlFor="edit-especialidad">Especialidad *</label>
-              <select
-                id="edit-especialidad"
-                value={currentProfesional.especialidad_id || ''}
-                onChange={(e) => setCurrentProfesional({ ...currentProfesional, especialidad_id: e.target.value })}
-                className="admin-profesionales__select"
-                required
+          </div>
+          
+          <div className="select-field">
+            <div className="label">Especialidad</div>
+            <div className="select">
+              <select 
+                name="especialidad_id"
+                value={profesionalEditado.especialidad_id}
+                onChange={handleChange}
+                className="value"
               >
-                <option value="">Selecciona una especialidad</option>
-                {especialidades.map(esp => (
-                  <option key={esp.especialidad_id} value={esp.especialidad_id}>
-                    {esp.nombre}
+                <option value="">Seleccione una especialidad</option>
+                {especialidades.map(especialidad => (
+                  <option key={especialidad.id} value={especialidad.id}>
+                    {especialidad.nombre}
                   </option>
                 ))}
               </select>
+              <FontAwesomeIcon icon={faChevronDown} className="chevron-down" />
+            </div>
+          </div>
+          
+          <div className="input-field">
+            <div className="servicio">Servicio</div>
+            <div className="frame-30">
+              {servicios.map(servicio => (
+                <div className="checkbox-field" key={servicio.id}>
+                  <div className="checkbox-and-label">
+                    <div 
+                      className={serviciosSeleccionados.includes(servicio.id) ? "checkbox2" : "checkbox"}
+                      onClick={() => toggleServicio(servicio.id)}
+                    >
+                      {serviciosSeleccionados.includes(servicio.id) && (
+                        <FontAwesomeIcon icon={faCheck} className="check" />
+                      )}
+                    </div>
+                    <div className="label2">{servicio.nombre}</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+        
+        <div className="button-group">
+          <div className="button-danger" onClick={archivarProfesional}>
+            <FontAwesomeIcon icon={faArchiveBox} className="heroicons-mini-archive-box" />
+            <div className="button">Archivar</div>
+          </div>
+          
+          <div className="frame-77">
+            <div className="button-neutral" onClick={onClose}>
+              <div className="button2">Cancelar</div>
             </div>
             
-            {servicios.length > 0 && (
-              <div className="admin-profesionales__form-group">
-                <label>Servicios</label>
-                <div className="admin-profesionales__servicios-list">
-                  {servicios.map(servicio => (
-                    <div key={servicio.id_servicio} className="admin-profesionales__servicio-item">
-                      <input
-                        type="checkbox"
-                        id={`edit-servicio-${servicio.id_servicio}`}
-                        checked={serviciosSeleccionados.includes(servicio.id_servicio)}
-                        onChange={(e) => {
-                          if (e.target.checked) {
-                            setServiciosSeleccionados([...serviciosSeleccionados, servicio.id_servicio]);
-                          } else {
-                            setServiciosSeleccionados(serviciosSeleccionados.filter(id => id !== servicio.id_servicio));
-                          }
-                        }}
-                        disabled={loading}
-                      />
-                      <label htmlFor={`edit-servicio-${servicio.id_servicio}`}>{servicio.nombre_servicio}</label>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-          </form>
-        </div>
-        <div className="admin-profesionales__modal-footer">
-          <Button 
-            variant="danger" 
-            onClick={() => onConfirmArchive(currentProfesional)}
-            disabled={loading}
-          >
-            Archivar profesional
-          </Button>
-          <div>
-            <Button variant="neutral" onClick={handleClose} disabled={loading}>
-              Cancelar
-            </Button>
-            <Button 
-              variant="primary" 
-              onClick={handleUpdateProfesional}
-              disabled={loading}
-            >
-              {loading ? 'Guardando...' : 'Guardar cambios'}
-            </Button>
+            <div className="button-primary" onClick={handleUpdate}>
+              <div className="button3">Guardar</div>
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    </Modal>
   );
 };
 
