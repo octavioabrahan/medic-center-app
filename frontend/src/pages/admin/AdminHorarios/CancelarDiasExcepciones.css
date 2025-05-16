@@ -28,6 +28,32 @@
   width: 100%;
 }
 
+.calendar-info {
+  font-size: 14px;
+  color: var(--sds-color-text-neutral-primary, #505251);
+  text-align: center;
+  margin-bottom: 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.calendar-info p {
+  margin: 0;
+}
+
+.dia-cancelable-example {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  background-color: var(--sds-color-background-brand-quaternary, #F1F4FF);
+  border: 1px solid var(--sds-color-border-brand-default, #D8E3FE);
+  border-radius: 4px;
+  margin-right: 6px;
+  vertical-align: middle;
+}
+
 .select-field2 {
   display: flex;
   flex-direction: column;
@@ -101,7 +127,11 @@
 }
 
 .calendar-day.cancelable:hover {
-  background-color: var(--sds-color-background-neutral-tertiary, #F5F5F5);
+  background-color: var(--sds-color-background-brand-tertiary, #E0E7FE);
+}
+
+.calendar-day.cancelable {
+  background-color: var(--sds-color-background-brand-quaternary, #F1F4FF);
 }
 
 .calendar-day.selected {
@@ -130,12 +160,12 @@
 }
 
 .day-cancelable {
-  color: var(--sds-color-text-default-default, #0a1811);
+  color: var(--sds-color-text-brand-primary, #101d58);
   text-align: center;
   font-family: var(--sds-typography-family-sans, "Inter-Regular", sans-serif);
   font-size: 20px;
   line-height: 120%;
-  font-weight: 400;
+  font-weight: 600;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -184,6 +214,24 @@
 }
 .motivo-field .inputField {
   width: 100%;
+}
+
+/* Mensaje para no días disponibles */
+.no-dias-disponibles {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--sds-space-400, 16px);
+  min-height: 200px;
+  width: 100%;
+  color: var(--sds-color-text-neutral-primary, #505251);
+  font-family: var(--sds-typography-family-sans, "Inter-Regular", sans-serif);
+  font-size: 16px;
+  text-align: center;
+  border: 1px dashed var(--sds-color-border-neutral-default, #d8dbda);
+  border-radius: var(--sds-size-radius-200, 8px);
+  background-color: var(--sds-color-background-neutral-quaternary, #f9fafa);
+  margin: 10px 0;
 }
 
 /* Grupo de botones */

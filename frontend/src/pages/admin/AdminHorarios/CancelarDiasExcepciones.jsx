@@ -80,6 +80,8 @@ const CancelarDiasExcepciones = ({ isOpen, onClose, onSuccess }) => {
       setProfesional('');
       setDiaSeleccionado(null);
       setMotivo('');
+      setDiasDisponibles([]);
+      setError(null);
     }
   }, [isOpen]);
 
@@ -126,17 +128,32 @@ const CancelarDiasExcepciones = ({ isOpen, onClose, onSuccess }) => {
       
       // Obtener días de la semana que atiende el profesional
       const diasAtencion = new Set();
+      
+      // Mapeamos los días de la semana que el profesional atiende según su horario regular
       horarios.forEach(horario => {
         if (horario.dia_semana && Array.isArray(horario.dia_semana)) {
           horario.dia_semana.forEach(dia => diasAtencion.add(dia));
+        } else if (horario.dia_semana !== undefined) {
+          // Para compatibilidad con registros antiguos (valores únicos)
+          diasAtencion.add(horario.dia_semana);
         }
       });
       
       // Crear un conjunto de fechas canceladas (para no mostrarlas como disponibles)
       const fechasCanceladas = new Set();
+      
+      // Agregamos las fechas que ya están canceladas
       excepciones.forEach(excepcion => {
         if (excepcion.tipo === 'cancelado') {
           fechasCanceladas.add(excepcion.fecha);
+        }
+      });
+      
+      // Agregamos las fechas de excepciones manuales (días especiales agregados)
+      const fechasAgregadas = new Set();
+      excepciones.forEach(excepcion => {
+        if (excepcion.tipo === 'agregado') {
+          fechasAgregadas.add(excepcion.fecha);
         }
       });
       
@@ -151,8 +168,8 @@ const CancelarDiasExcepciones = ({ isOpen, onClose, onSuccess }) => {
         const diaSemana = fecha.getDay() === 0 ? 7 : fecha.getDay(); // Convertir domingo (0) a 7
         const fechaStr = fecha.toISOString().split('T')[0];
         
-        // Verificar si es un día de atención y no está cancelado
-        if (diasAtencion.has(diaSemana) && !fechasCanceladas.has(fechaStr)) {
+        // Verificar si es un día de atención regular o un día agregado manualmente, y no está cancelado
+        if ((diasAtencion.has(diaSemana) || fechasAgregadas.has(fechaStr)) && !fechasCanceladas.has(fechaStr)) {
           diasDisponiblesArr.push(fechaStr);
         }
       }
@@ -192,6 +209,7 @@ const CancelarDiasExcepciones = ({ isOpen, onClose, onSuccess }) => {
     const diasMesActual = Array.from({ length: diasTotales }, (_, i) => {
       const fecha = new Date(anio, mes - 1, i + 1);
       const fechaStr = fecha.toISOString().split('T')[0];
+      
       return {
         dia: i + 1,
         esMesActual: true,
@@ -284,6 +302,11 @@ const CancelarDiasExcepciones = ({ isOpen, onClose, onSuccess }) => {
       setLoading(false);
     }
   };
+  
+  // Restablecer el día seleccionado cuando cambia el profesional o el mes/año
+  useEffect(() => {
+    setDiaSeleccionado(null);
+  }, [profesional, mes, anio]);
 
   return (
     <Modal
@@ -327,6 +350,13 @@ const CancelarDiasExcepciones = ({ isOpen, onClose, onSuccess }) => {
           </div>
         </div>
 
+        {profesional && (
+          <div className="calendar-info">
+            <p>Seleccione una fecha en la que el profesional atienda regularmente para cancelarla</p>
+            <p><span className="dia-cancelable-example"></span> Días disponibles para cancelar</p>
+          </div>
+        )}
+
         <div className="date-picker">
           <div className="weekdays">
             <div className="weekday-cell"><div>L</div></div>
@@ -338,28 +368,35 @@ const CancelarDiasExcepciones = ({ isOpen, onClose, onSuccess }) => {
             <div className="weekday-cell"><div>D</div></div>
           </div>
 
-          {diasDelMes.map((semana, semanaIndex) => (
-            <div className={`week-${semanaIndex + 1}`} key={`semana-${semanaIndex}`}>
-              {semana.map((dia, diaIndex) => (
-                <div 
-                  key={`dia-${semanaIndex}-${diaIndex}`}
-                  className={`calendar-day 
-                    ${dia.esMesActual ? '' : 'other-month'} 
-                    ${dia.cancelable ? 'cancelable' : 'not-cancelable'}
-                    ${diaSeleccionado?.fecha.getTime() === dia.fecha.getTime() ? 'selected' : ''}`}
-                  onClick={() => dia.cancelable && handleDiaClick(dia)}
-                >
-                  <div className={
-                    dia.esMesActual 
-                      ? (dia.cancelable ? 'day-cancelable' : 'day-normal') 
-                      : 'day-other-month'
-                  }>
-                    {dia.dia}
-                  </div>
-                </div>
-              ))}
+          {profesional && diasDisponibles.length === 0 ? (
+            <div className="no-dias-disponibles">
+              No hay días disponibles para cancelar en este mes.
             </div>
-          ))}
+          ) : (
+            diasDelMes.map((semana, semanaIndex) => (
+              <div className={`week-${semanaIndex + 1}`} key={`semana-${semanaIndex}`}>
+                {semana.map((dia, diaIndex) => (
+                  <div 
+                    key={`dia-${semanaIndex}-${diaIndex}`}
+                    className={`calendar-day 
+                      ${dia.esMesActual ? '' : 'other-month'} 
+                      ${dia.cancelable ? 'cancelable' : 'not-cancelable'}
+                      ${diaSeleccionado?.fecha.getTime() === dia.fecha.getTime() ? 'selected' : ''}`}
+                    onClick={() => dia.cancelable && handleDiaClick(dia)}
+                    title={dia.cancelable ? "Disponible para cancelar" : "No disponible para cancelar"}
+                  >
+                    <div className={
+                      dia.esMesActual 
+                        ? (dia.cancelable ? 'day-cancelable' : 'day-normal') 
+                        : 'day-other-month'
+                    }>
+                      {dia.dia}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ))
+          )}
         </div>
       </div>
 
