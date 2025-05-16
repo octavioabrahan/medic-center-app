@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './AgregarHorario.css';
-import { XMarkIcon, ChevronDownIcon } from '@heroicons/react/24/solid';
+import { ChevronDownIcon, XMarkIcon } from '@heroicons/react/24/solid';
 import Modal from '../../../components/Modal/Modal';
 import Button from '../../../components/Button/Button';
 import SelectField from '../../../components/Inputs/SelectField';
@@ -35,27 +35,40 @@ const AgregarHorario = ({ isOpen, onClose }) => {
   const profesionalesOptions = [
     { value: '1', label: 'Dr. Juan Pérez' },
     { value: '2', label: 'Dra. María González' },
-    // Más opciones...
+    { value: '3', label: 'Dr. Carlos Rodríguez' },
+    { value: '4', label: 'Dra. Ana Silva' },
+    { value: '5', label: 'Dr. Roberto Méndez' }
   ];
 
   const tiposAtencionOptions = [
     { value: '1', label: 'Consulta General' },
     { value: '2', label: 'Especialidad' },
-    // Más opciones...
+    { value: '3', label: 'Control' },
+    { value: '4', label: 'Examen' },
+    { value: '5', label: 'Procedimiento' }
   ];
 
-  const horariosOptions = [
-    { value: '08:00', label: '08:00 AM' },
-    { value: '09:00', label: '09:00 AM' },
-    { value: '10:00', label: '10:00 AM' },
-    { value: '11:00', label: '11:00 AM' },
-    { value: '12:00', label: '12:00 PM' },
-    { value: '14:00', label: '02:00 PM' },
-    { value: '15:00', label: '03:00 PM' },
-    { value: '16:00', label: '04:00 PM' },
-    { value: '17:00', label: '05:00 PM' },
-    // Más opciones...
-  ];
+  // Generamos todas las opciones de horario desde las 6:00 AM hasta las 10:00 PM en incrementos de 30 minutos
+  const horariosOptions = (() => {
+    const options = [];
+    for (let hour = 6; hour <= 22; hour++) {
+      const hour12 = hour > 12 ? hour - 12 : hour;
+      const amPm = hour >= 12 ? 'PM' : 'AM';
+      
+      // Hora en punto
+      options.push({
+        value: `${hour.toString().padStart(2, '0')}:00`,
+        label: `${hour12.toString().padStart(2, '0')}:00 ${amPm}`
+      });
+      
+      // Media hora
+      options.push({
+        value: `${hour.toString().padStart(2, '0')}:30`,
+        label: `${hour12.toString().padStart(2, '0')}:30 ${amPm}`
+      });
+    }
+    return options;
+  })();
 
   // Validar formulario
   useEffect(() => {
@@ -100,103 +113,76 @@ const AgregarHorario = ({ isOpen, onClose }) => {
   };
 
   return (
-    <div className={`agregar-horario-modal ${isOpen ? 'show' : ''}`}>
-      <div className="modal-body" onClick={(e) => e.stopPropagation()}>
-        <div className="text">
-          <div className="agregar-horario-title">
-            Agregar horario de atención para un profesional
-          </div>
-          <div className="agregar-horario-description">
-            Si un profesional atiende varios días a la semana, debes agregar cada día
-            por separado. Ejemplo: si el profesional atiende lunes a las 8:00,
-            miércoles a las 9:00 y viernes a las 10:00, debes crear tres horarios
-            distintos, uno por cada día.
-          </div>
-        </div>
-        
-        <div className="select-field-container">
-          <div className="label">Profesional</div>
-          <div className="select">
-            <select 
-              className="value-select"
-              value={profesional} 
-              onChange={(e) => setProfesional(e.target.value)}
-            >
-              <option value="" disabled>Selecciona un profesional</option>
-              {profesionalesOptions.map(option => (
-                <option key={option.value} value={option.value}>
-                  {option.label}
-                </option>
-              ))}
-            </select>
-            <ChevronDownIcon className="heroicons-micro-chevron-down" width={16} height={16} />
-          </div>
-        </div>
+    <Modal 
+      isOpen={isOpen}
+      onClose={onClose}
+      heading="Agregar horario de atención para un profesional"
+      bodyText="Si un profesional atiende varios días a la semana, debes agregar cada día por separado. Ejemplo: si el profesional atiende lunes a las 8:00, miércoles a las 9:00 y viernes a las 10:00, debes crear tres horarios distintos, uno por cada día."
+      primaryButtonText="Agregar"
+      secondaryButtonText="Cancelar"
+      onPrimaryClick={formValido ? handleAgregar : null}
+      onSecondaryClick={onClose}
+      contentClassName="agregar-horario-content"
+    >
+      <div className="agregar-horario-form">
+        <SelectField
+          label="Profesional"
+          placeholder="Selecciona un profesional"
+          value={profesional}
+          onChange={setProfesional}
+          options={profesionalesOptions}
+          style={{width: '100%'}}
+        />
 
-        <div className="select-field-container">
-          <div className="label">Tipo de atención</div>
-          <div className="select">
-            <select 
-              className="value-select"
-              value={tipoAtencion} 
-              onChange={(e) => setTipoAtencion(e.target.value)}
-            >
-              <option value="" disabled>Selecciona una opción</option>
-              {tiposAtencionOptions.map(option => (
-                <option key={option.value} value={option.value}>
-                  {option.label}
-                </option>
-              ))}
-            </select>
-            <ChevronDownIcon className="heroicons-micro-chevron-down" width={16} height={16} />
-          </div>
-        </div>
+        <SelectField
+          label="Tipo de atención"
+          placeholder="Selecciona una opción"
+          value={tipoAtencion}
+          onChange={setTipoAtencion}
+          options={tiposAtencionOptions}
+          style={{width: '100%'}}
+        />
 
-        <div className="select-field-container">
-          <div className="dia-de-la-semana">Día de la semana</div>
-          <div className="checkbox-field-container">
+        <div className="dias-semana-container">
+          <label className="dias-semana-label">Día de la semana</label>
+          
+          <div className="dias-semana-checkboxes">
             <CheckboxField 
               label="Lunes" 
               checked={diasSemana.lunes} 
               onChange={(checked) => handleDiaSemanaChange('lunes', checked)} 
             />
-          </div>
-          <div className="checkbox-field-container">
+            
             <CheckboxField 
               label="Martes" 
               checked={diasSemana.martes} 
               onChange={(checked) => handleDiaSemanaChange('martes', checked)} 
             />
-          </div>
-          <div className="checkbox-field-container">
+            
             <CheckboxField 
               label="Miércoles" 
               checked={diasSemana.miercoles} 
               onChange={(checked) => handleDiaSemanaChange('miercoles', checked)} 
             />
-          </div>
-          <div className="checkbox-field-container">
+            
             <CheckboxField 
               label="Jueves" 
               checked={diasSemana.jueves} 
               onChange={(checked) => handleDiaSemanaChange('jueves', checked)} 
             />
-          </div>
-          <div className="checkbox-field-container">
+            
             <CheckboxField 
               label="Viernes" 
               checked={diasSemana.viernes} 
               onChange={(checked) => handleDiaSemanaChange('viernes', checked)} 
             />
-          </div>
-          <div className="checkbox-field-container">
+            
             <CheckboxField 
               label="Sábado" 
               checked={diasSemana.sabado} 
               onChange={(checked) => handleDiaSemanaChange('sabado', checked)} 
             />
-          </div>
-          <div className="checkbox-field-container">
+            
             <CheckboxField 
               label="Domingo" 
               checked={diasSemana.domingo} 
@@ -205,97 +191,55 @@ const AgregarHorario = ({ isOpen, onClose }) => {
           </div>
         </div>
 
-        <div className="frame-35">
-          <div className="select-field-container select-field2">
-            <div className="label">Hora de inicio</div>
-            <div className="select">
-              <select 
-                className="value-select"
-                value={horaInicio} 
-                onChange={(e) => setHoraInicio(e.target.value)}
-              >
-                <option value="" disabled>--:-- --</option>
-                {horariosOptions.map(option => (
-                  <option key={option.value} value={option.value}>
-                    {option.label}
-                  </option>
-                ))}
-              </select>
-              <ChevronDownIcon className="heroicons-micro-chevron-down" width={16} height={16} />
-            </div>
-          </div>
+        <div className="horas-container">
+          <SelectField
+            label="Hora de inicio"
+            placeholder="--:-- --"
+            value={horaInicio}
+            onChange={setHoraInicio}
+            options={horariosOptions}
+            style={{flex: 1}}
+          />
           
-          <div className="select-field-container select-field2">
-            <div className="label">Hora de término</div>
-            <div className="select">
-              <select 
-                className="value-select"
-                value={horaTermino} 
-                onChange={(e) => setHoraTermino(e.target.value)}
-              >
-                <option value="" disabled>--:-- --</option>
-                {horariosOptions.map(option => (
-                  <option key={option.value} value={option.value}>
-                    {option.label}
-                  </option>
-                ))}
-              </select>
-              <ChevronDownIcon className="heroicons-micro-chevron-down" width={16} height={16} />
-            </div>
-          </div>
+          <SelectField
+            label="Hora de término"
+            placeholder="--:-- --"
+            value={horaTermino}
+            onChange={setHoraTermino}
+            options={horariosOptions}
+            style={{flex: 1}}
+          />
         </div>
 
-        <div className="frame-36">
-          <div className="select-field-container select-field2">
-            <div className="label">Desde</div>
-            <div className="select">
+        <div className="fechas-container">
+          <div className="fecha-field" style={{flex: 1}}>
+            <label className="fecha-label">Desde</label>
+            <div className="fecha-input-container">
               <input
                 type="date"
-                className="value-select"
+                className="fecha-input"
                 value={fechaDesde}
                 onChange={(e) => setFechaDesde(e.target.value)}
-                placeholder="dd/mm/aaaa"
+                min={new Date().toISOString().split('T')[0]}
               />
-              <ChevronDownIcon className="heroicons-micro-chevron-down" width={16} height={16} />
             </div>
           </div>
           
-          <div className="select-field-container select-field2">
-            <div className="label">Hasta</div>
-            <div className="select">
+          <div className="fecha-field" style={{flex: 1}}>
+            <label className="fecha-label">Hasta</label>
+            <div className="fecha-input-container">
               <input
                 type="date"
-                className="value-select"
+                className="fecha-input"
                 value={fechaHasta}
                 onChange={(e) => setFechaHasta(e.target.value)}
-                placeholder="dd/mm/aaaa"
+                min={fechaDesde || new Date().toISOString().split('T')[0]}
               />
-              <ChevronDownIcon className="heroicons-micro-chevron-down" width={16} height={16} />
             </div>
           </div>
         </div>
-
-        <div className="button-group">
-          <button 
-            className="cancel-button" 
-            onClick={onClose}
-          >
-            Cancelar
-          </button>
-          <button 
-            className={`agregar-button ${formValido ? 'enabled' : 'disabled'}`} 
-            onClick={handleAgregar}
-            disabled={!formValido}
-          >
-            Agregar
-          </button>
-        </div>
-        
-        <div className="icon-button" onClick={onClose}>
-          <XMarkIcon className="x" width={20} height={20} />
-        </div>
       </div>
-    </div>
+    </Modal>
   );
 };
 

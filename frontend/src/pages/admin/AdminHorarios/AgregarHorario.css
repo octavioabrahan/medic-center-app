@@ -1,230 +1,96 @@
-.agregar-horario-modal {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(0, 0, 0, 0.5);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1000;
-  visibility: hidden;
-  opacity: 0;
-  transition: visibility 0s linear 0.25s, opacity 0.25s 0s;
+.agregar-horario-content {
+  max-height: 80vh;
+  overflow-y: auto;
 }
 
-.agregar-horario-modal.show {
-  visibility: visible;
-  opacity: 1;
-  transition-delay: 0s;
-}
-
-.agregar-horario-modal .modal-body {
-  background: var(--sds-color-background-default-default);
-  border-radius: var(--sds-radius-200);
-  border: 1px solid var(--sds-color-border-default-default);
-  padding: var(--sds-space-800);
+.agregar-horario-form {
   display: flex;
   flex-direction: column;
   gap: var(--sds-space-400);
-  align-items: flex-start;
   width: 100%;
-  max-width: 600px;
-  position: relative;
-  box-shadow: 0px 4px 4px -4px rgba(12, 12, 13, 0.05),
-              0px 16px 32px -4px rgba(12, 12, 13, 0.1);
+  padding: var(--sds-space-200) 0;
 }
 
-.agregar-horario-modal .text {
-  display: flex;
-  flex-direction: column;
-  gap: var(--sds-space-300);
-  align-items: flex-start;
-  align-self: stretch;
-}
-
-.agregar-horario-modal .agregar-horario-title {
-  color: var(--sds-color-text-default-default);
-  font-family: "Inter-SemiBold", sans-serif;
-  font-size: 24px;
-  line-height: 120%;
-  letter-spacing: -0.02em;
-  font-weight: 600;
-  align-self: stretch;
-}
-
-.agregar-horario-modal .agregar-horario-description {
-  color: var(--sds-color-text-default-secondary);
-  font-family: "Inter-Regular", sans-serif;
-  font-size: 16px;
-  line-height: 140%;
-  font-weight: 400;
-  align-self: stretch;
-}
-
-.agregar-horario-modal .select-field-container {
+.dias-semana-container {
   display: flex;
   flex-direction: column;
   gap: var(--sds-space-200);
-  align-items: flex-start;
-  align-self: stretch;
+  width: 100%;
 }
 
-.agregar-horario-modal .label,
-.agregar-horario-modal .dia-de-la-semana {
+.dias-semana-label {
   color: var(--sds-color-text-default-default);
-  text-align: left;
   font-family: "Inter-Regular", sans-serif;
   font-size: 16px;
   line-height: 140%;
   font-weight: 400;
-  align-self: stretch;
 }
 
-.agregar-horario-modal .select {
+.dias-semana-checkboxes {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sds-space-200);
+  width: 100%;
+}
+
+.horas-container {
+  display: flex;
+  flex-direction: row;
+  gap: var(--sds-space-400);
+  width: 100%;
+}
+
+.fechas-container {
+  display: flex;
+  flex-direction: row;
+  gap: var(--sds-space-400);
+  width: 100%;
+}
+
+.fecha-field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sds-space-200);
+}
+
+.fecha-label {
+  color: var(--sds-color-text-default-default);
+  font-family: "Inter-Regular", sans-serif;
+  font-size: 16px;
+  line-height: 140%;
+  font-weight: 400;
+}
+
+.fecha-input-container {
   background: var(--sds-color-background-default-default);
   border-radius: var(--sds-radius-200);
   border: 1px solid var(--sds-color-border-default-default);
-  padding: var(--sds-space-300) var(--sds-space-300) var(--sds-space-300) var(--sds-space-400);
+  padding: var(--sds-space-300);
   display: flex;
-  flex-direction: row;
   align-items: center;
-  align-self: stretch;
   height: 40px;
-  min-width: 100px;
-  position: relative;
 }
 
-.agregar-horario-modal .value-select {
-  color: var(--sds-color-text-default-default);
-  text-align: left;
-  font-family: "Inter-Regular", sans-serif;
-  font-size: 16px;
-  line-height: 140%;
-  font-weight: 400;
-  flex: 1;
+.fecha-input {
+  width: 100%;
   border: none;
   background: transparent;
+  color: var(--sds-color-text-default-default);
+  font-family: "Inter-Regular", sans-serif;
+  font-size: 16px;
   outline: none;
-  width: 100%;
-  cursor: pointer;
 }
 
-.agregar-horario-modal .value-select option {
-  color: var(--sds-color-text-default-default);
-}
-
-.agregar-horario-modal .value-select:invalid {
-  color: var(--sds-color-text-default-tertiary);
-}
-
-.agregar-horario-modal .heroicons-micro-chevron-down {
-  flex-shrink: 0;
-  width: 16px;
-  height: 16px;
-  color: var(--sds-color-text-default-default);
-}
-
-.agregar-horario-modal .checkbox-field-container {
-  align-self: stretch;
-}
-
-.agregar-horario-modal .frame-35,
-.agregar-horario-modal .frame-36 {
-  display: flex;
-  flex-direction: row;
-  gap: 12px;
-  align-items: flex-start;
-  align-self: stretch;
-}
-
-.agregar-horario-modal .select-field2 {
-  flex: 1;
-}
-
-.agregar-horario-modal .button-group {
-  display: flex;
-  flex-direction: row;
-  gap: var(--sds-space-400);
-  align-items: center;
-  justify-content: flex-end;
-  align-self: stretch;
-}
-
-.agregar-horario-modal .cancel-button {
-  background: var(--sds-color-background-neutral-tertiary);
-  border-radius: var(--sds-radius-200);
-  border: 1px solid var(--sds-color-border-neutral-secondary);
-  padding: var(--sds-space-300);
-  display: flex;
-  flex-direction: row;
-  gap: var(--sds-space-200);
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  color: var(--sds-color-text-default-default);
-  font-family: "Inter-Regular", sans-serif;
-  font-size: 16px;
-  line-height: 140%;
-  font-weight: 400;
-  overflow: hidden;
-}
-
-.agregar-horario-modal .agregar-button {
-  padding: var(--sds-space-300);
-  display: flex;
-  flex-direction: row;
-  gap: var(--sds-space-200);
-  align-items: center;
-  justify-content: center;
-  font-family: "Inter-Regular", sans-serif;
-  font-size: 16px;
-  line-height: 140%;
-  font-weight: 400;
-  border-radius: var(--sds-radius-200);
-  overflow: hidden;
-  cursor: pointer;
-}
-
-.agregar-horario-modal .agregar-button.disabled {
-  background: var(--sds-color-background-disabled-default);
-  border: 1px solid var(--sds-color-border-disabled-default);
-  color: var(--sds-color-text-disabled-default);
-  cursor: not-allowed;
-}
-
-.agregar-horario-modal .agregar-button.enabled {
-  background: var(--sds-color-background-brand-default);
-  border: 1px solid var(--sds-color-border-brand-default);
-  color: var(--sds-color-text-brand-on-brand);
-}
-
-.agregar-horario-modal .icon-button {
-  border-radius: var(--sds-radius-full);
-  padding: var(--sds-space-200);
-  display: flex;
-  align-items: center;
-  justify-content: center;
+/* Elimina el icono del calendario nativo */
+input[type="date"]::-webkit-calendar-picker-indicator {
+  opacity: 0;
   position: absolute;
-  right: 8px;
-  top: 8px;
+  width: 100%;
+  height: 100%;
   cursor: pointer;
-  color: var(--sds-color-text-default-default);
 }
 
-.agregar-horario-modal .x {
-  width: 20px;
-  height: 20px;
-}
-
-/* Estilos para el input de tipo date */
-.agregar-horario-modal input[type="date"] {
-  appearance: none;
-  -webkit-appearance: none;
-  -moz-appearance: none;
-}
-
-.agregar-horario-modal input[type="date"]::-webkit-calendar-picker-indicator {
-  display: none;
+/* Asegura que los selectores ocupen el ancho completo */
+.agregar-horario-form .select-field {
+  width: 100%;
 }
