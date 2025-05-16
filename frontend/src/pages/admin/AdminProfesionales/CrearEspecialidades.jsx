@@ -1,17 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import Modal from '../../../components/Modal/Modal';
 import InputField from '../../../components/Inputs/InputField';
-import Button from '../../../components/Button/Button';
+import { Button } from '../../../components/Button/Button';
 import Text from '../../../components/Text/Text';
 import { PlusIcon } from '@heroicons/react/24/outline';
 import axios from 'axios';
+import './CrearEspecialidades.css';
 
 /**
  * CrearEspecialidades component
  * Modal component for creating new specialties following the design system
+ * exactly as shown in the mockup image
  */
 const CrearEspecialidades = ({ isOpen, onClose, onSpecialtyCreated }) => {
-  const [nuevaEspecialidad, setNuevaEspecialidad] = useState({ nombre: '' });
+  const [nuevaEspecialidad, setNuevaEspecialidad] = useState({ nombre: 'Cardiología' });
   const [error, setError] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showCreateNew, setShowCreateNew] = useState(false);
@@ -19,12 +21,18 @@ const CrearEspecialidades = ({ isOpen, onClose, onSpecialtyCreated }) => {
   // Reset form when modal opens
   useEffect(() => {
     if (isOpen) {
-      setNuevaEspecialidad({ nombre: '' });
+      setNuevaEspecialidad({ nombre: 'Cardiología' });
       setError(null);
       setIsSubmitting(false);
       setShowCreateNew(false);
     }
   }, [isOpen]);
+
+  const handleAddNewSpecialty = () => {
+    setShowCreateNew(true);
+    setNuevaEspecialidad({ nombre: '' });
+    setError(null);
+  };
 
   // Handle form submission
   const handleCreateEspecialidad = async () => {
@@ -38,8 +46,6 @@ const CrearEspecialidades = ({ isOpen, onClose, onSpecialtyCreated }) => {
     try {
       await axios.post('/api/especialidades', nuevaEspecialidad);
       const res = await axios.get('/api/especialidades');
-      setNuevaEspecialidad({ nombre: '' });
-      setShowCreateNew(false);
       
       // Call the callback to update specialties in parent component
       if (onSpecialtyCreated) {
@@ -56,20 +62,14 @@ const CrearEspecialidades = ({ isOpen, onClose, onSpecialtyCreated }) => {
     }
   };
 
-  const handleAddNewSpecialty = () => {
-    setShowCreateNew(true);
-    setNuevaEspecialidad({ nombre: '' });
-    setError(null);
-  };
-
   // Custom content for the modal body
   const renderModalContent = () => (
     <>
       {!showCreateNew ? (
         <>
-          <div style={{ marginBottom: '16px' }}>
+          <div className="especialidad-item">
             <InputField
-              label="Cardiología"
+              label="Nombre de la especialidad"
               disabled={true}
               value="Cardiología"
             />
@@ -78,14 +78,14 @@ const CrearEspecialidades = ({ isOpen, onClose, onSpecialtyCreated }) => {
           <Button
             variant="neutral"
             onClick={handleAddNewSpecialty}
-            style={{ display: 'flex', alignItems: 'center', gap: '8px' }}
+            className="crear-especialidad-btn"
           >
             <PlusIcon width={20} height={20} />
-            Crear nueva especialidad
+            <span>Crear nueva especialidad</span>
           </Button>
         </>
       ) : (
-        <div style={{ marginBottom: '16px' }}>
+        <div className="especialidad-form">
           <InputField
             label="Nombre de la especialidad"
             value={nuevaEspecialidad.nombre}
@@ -96,7 +96,7 @@ const CrearEspecialidades = ({ isOpen, onClose, onSpecialtyCreated }) => {
             autoFocus
           />
           {error && (
-            <div style={{ color: 'red', fontSize: '14px', marginTop: '8px' }}>
+            <div className="error-message">
               {error}
             </div>
           )}

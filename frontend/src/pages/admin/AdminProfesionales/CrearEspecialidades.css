@@ -1,6 +1,23 @@
-/* Este archivo ya no es necesario ya que estamos usando el componente Modal */
-/* Puedes agregar estilos específicos para el contenido del modal si es necesario */
-
 .crear-especialidades-content {
   width: 100%;
+}
+
+.especialidad-item {
+  margin-bottom: 16px;
+}
+
+.especialidad-form {
+  margin-bottom: 16px;
+}
+
+.error-message {
+  color: #dc2626;
+  font-size: 14px;
+  margin-top: 8px;
+}
+
+.crear-especialidad-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
