@@ -230,6 +230,35 @@
   background-color: #ffebee;
 }
 
+/* Estilos para los badges de estado */
+.admin-horarios__badge {
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: 500;
+  display: inline-block;
+}
+
+.admin-horarios__badge--cancelado {
+  background-color: #ffebee;
+  color: #d32f2f;
+}
+
+.admin-horarios__badge--disponible {
+  background-color: #e8f5e9;
+  color: #2e7d32;
+}
+
+.admin-horarios__badge--ocupado {
+  background-color: #fff8e1;
+  color: #f57c00;
+}
+
+.admin-horarios__badge--default {
+  background-color: #f5f5f5;
+  color: #616161;
+}
+
 /* Estilos para el modal */
 .admin-horarios__modal-overlay {
   position: fixed;

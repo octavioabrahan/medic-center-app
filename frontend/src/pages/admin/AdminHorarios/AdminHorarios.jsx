@@ -43,6 +43,24 @@ const fetchProfesionales = async () => {
 };
 
 /**
+ * Función para obtener las excepciones desde el backend
+ * @returns {Promise<Array>} - Lista de excepciones
+ */
+const fetchExcepciones = async () => {
+  try {
+    const response = await fetch('/api/excepciones');
+    if (!response.ok) {
+      throw new Error('Error al obtener excepciones');
+    }
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error('Error:', error);
+    return [];
+  }
+};
+
+/**
  * Formatea el horario semanal para mostrar los días como texto
  * @param {Object} horario - Objeto horario
  * @returns {String} - Texto formateado con los días de la semana
@@ -80,23 +98,30 @@ const AdminHorarios = () => {
   const [searchValue, setSearchValue] = useState('');
   const [horarios, setHorarios] = useState([]);
   const [filteredHorarios, setFilteredHorarios] = useState([]);
+  const [excepciones, setExcepciones] = useState([]);
+  const [filteredExcepciones, setFilteredExcepciones] = useState([]);
   const [profesionales, setProfesionales] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [currentHorario, setCurrentHorario] = useState(null);
+  const [currentExcepcion, setCurrentExcepcion] = useState(null);
   const [sortOrder, setSortOrder] = useState('az'); // Ordenamiento alfabético
 
-  // Cargar horarios y profesionales al montar el componente
+  // Cargar horarios, excepciones y profesionales al montar el componente
   useEffect(() => {
     const loadData = async () => {
       setLoading(true);
       try {
-        const horariosData = await fetchHorarios();
-        const profesionalesData = await fetchProfesionales();
+        const [horariosData, profesionalesData, excepcionesData] = await Promise.all([
+          fetchHorarios(),
+          fetchProfesionales(),
+          fetchExcepciones()
+        ]);
         
         setHorarios(horariosData);
         setProfesionales(profesionalesData);
+        setExcepciones(excepcionesData);
         setError(null);
       } catch (err) {
         setError('Error al cargar los datos');
@@ -139,6 +164,37 @@ const AdminHorarios = () => {
       setFilteredHorarios([]);
     }
   }, [searchValue, horarios, sortOrder]);
+  
+  // Filtrar y ordenar excepciones cuando cambia la búsqueda o el ordenamiento
+  useEffect(() => {
+    if (excepciones.length > 0) {
+      let results = [...excepciones];
+      
+      // Filtrar por término de búsqueda
+      if (searchValue.trim() !== "") {
+        const term = searchValue.toLowerCase();
+        results = results.filter(excepcion => 
+          `${excepcion.profesional_nombre || ''} ${excepcion.profesional_apellido || ''}`.toLowerCase().includes(term) ||
+          (excepcion.motivo || '').toLowerCase().includes(term)
+        );
+      }
+      
+      // Aplicar ordenamiento alfabético
+      if (sortOrder === 'az') {
+        results.sort((a, b) => 
+          `${a.profesional_nombre || ''} ${a.profesional_apellido || ''}`.localeCompare(`${b.profesional_nombre || ''} ${b.profesional_apellido || ''}`)
+        );
+      } else if (sortOrder === 'za') {
+        results.sort((a, b) => 
+          `${b.profesional_nombre || ''} ${b.profesional_apellido || ''}`.localeCompare(`${a.profesional_nombre || ''} ${a.profesional_apellido || ''}`)
+        );
+      }
+      
+      setFilteredExcepciones(results);
+    } else {
+      setFilteredExcepciones([]);
+    }
+  }, [searchValue, excepciones, sortOrder]);
 
   const handleTabClick = (index) => {
     setActiveTab(index);
@@ -160,6 +216,7 @@ const AdminHorarios = () => {
   
   const handleEditHorario = (horario) => {
     setCurrentHorario(horario);
+    setCurrentExcepcion(null); // Aseguramos que no hay excepción seleccionada
     setShowModal(true);
   };
 
@@ -184,14 +241,50 @@ const AdminHorarios = () => {
     }
   };
   
+  // Funciones para manejar excepciones
   const handleCancelDay = () => {
-    // Lógica para cancelar día en la pestaña de excepciones
-    console.log('Cancelar día');
+    // Abrir modal para cancelar día (crear excepción con estado "Cancelado")
+    setCurrentExcepcion({
+      estado: 'Cancelado'
+    });
+    setCurrentHorario(null); // Aseguramos que no hay horario seleccionado
+    setShowModal(true);
   };
   
   const handleAddDay = () => {
-    // Lógica para agregar día en la pestaña de excepciones
-    console.log('Agregar día');
+    // Abrir modal para agregar día especial (crear excepción con estado personalizado)
+    setCurrentExcepcion({
+      estado: 'Disponible'
+    });
+    setCurrentHorario(null); // Aseguramos que no hay horario seleccionado
+    setShowModal(true);
+  };
+  
+  const handleEditExcepcion = (excepcion) => {
+    setCurrentExcepcion(excepcion);
+    setCurrentHorario(null); // Aseguramos que no hay horario seleccionado
+    setShowModal(true);
+  };
+  
+  const handleDeleteExcepcion = async (excepcionId) => {
+    if (window.confirm('¿Estás seguro de que deseas eliminar esta excepción?')) {
+      try {
+        const response = await fetch(`/api/excepciones/${excepcionId}`, {
+          method: 'DELETE'
+        });
+        
+        if (!response.ok) {
+          throw new Error('Error al eliminar excepción');
+        }
+        
+        // Actualizar la lista de excepciones
+        const updatedExcepciones = excepciones.filter(e => e.excepcion_id !== excepcionId);
+        setExcepciones(updatedExcepciones);
+      } catch (err) {
+        console.error('Error eliminando excepción:', err);
+        alert('Hubo un error al eliminar la excepción');
+      }
+    }
   };
 
   return (
@@ -333,24 +426,82 @@ const AdminHorarios = () => {
             </div>
             
             <div className="admin-horarios__body">
-              <div className="admin-horarios__empty-state">
-                <div className="admin-horarios__empty-title">
-                  No hay excepciones registradas
+              {loading ? (
+                <div className="admin-horarios__loading">Cargando excepciones...</div>
+              ) : error ? (
+                <div className="admin-horarios__error">{error}</div>
+              ) : filteredExcepciones.length === 0 ? (
+                <div className="admin-horarios__empty-state">
+                  <div className="admin-horarios__empty-title">
+                    No hay excepciones registradas
+                  </div>
+                  <div className="admin-horarios__empty-description">
+                    Las excepciones te permiten ajustar la disponibilidad de un profesional para fechas específicas, sin alterar su horario regular.
+                  </div>
                 </div>
-                <div className="admin-horarios__empty-description">
-                  Las excepciones te permiten ajustar la disponibilidad de un profesional para fechas específicas, sin alterar su horario regular.
+              ) : (
+                <div className="admin-horarios__table">
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>Profesional</th>
+                        <th>Fecha</th>
+                        <th>Estado</th>
+                        <th>Hora inicio</th>
+                        <th>Hora término</th>
+                        <th>Motivo</th>
+                        <th>Acciones</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {filteredExcepciones.map((excepcion) => (
+                        <tr key={excepcion.excepcion_id || excepcion.id}>
+                          <td>{excepcion.profesional_nombre} {excepcion.profesional_apellido}</td>
+                          <td>{excepcion.fecha ? new Date(excepcion.fecha).toLocaleDateString() : "No disponible"}</td>
+                          <td>
+                            <span className={`admin-horarios__badge admin-horarios__badge--${excepcion.estado?.toLowerCase() || 'default'}`}>
+                              {excepcion.estado || "No especificado"}
+                            </span>
+                          </td>
+                          <td>{excepcion.hora_inicio?.slice(0, 5) || "N/A"}</td>
+                          <td>{excepcion.hora_termino?.slice(0, 5) || "N/A"}</td>
+                          <td>{excepcion.motivo || "No especificado"}</td>
+                          <td className="admin-horarios__actions">
+                            <button 
+                              className="admin-horarios__action-btn edit" 
+                              onClick={() => handleEditExcepcion(excepcion)}
+                              aria-label="Editar excepción"
+                            >
+                              ✏️
+                            </button>
+                            <button 
+                              className="admin-horarios__action-btn delete" 
+                              onClick={() => handleDeleteExcepcion(excepcion.excepcion_id || excepcion.id)}
+                              aria-label="Eliminar excepción"
+                            >
+                              🗑️
+                            </button>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
                 </div>
-              </div>
+              )}
             </div>
           </>
         )}
         
-        {/* Modal para agregar/editar horario */}
+        {/* Modal para agregar/editar horarios o excepciones */}
         {showModal && (
           <div className="admin-horarios__modal-overlay">
             <div className="admin-horarios__modal">
               <div className="admin-horarios__modal-header">
-                <h2>{currentHorario ? "Editar horario" : "Agregar horario de atención"}</h2>
+                <h2>
+                  {currentHorario && (currentHorario.horario_id ? "Editar horario" : "Agregar horario de atención")}
+                  {currentExcepcion && (currentExcepcion.excepcion_id ? "Editar excepción" : 
+                    currentExcepcion.estado === 'Cancelado' ? "Cancelar día" : "Agregar día especial")}
+                </h2>
                 <button 
                   className="admin-horarios__modal-close" 
                   onClick={() => setShowModal(false)}
@@ -360,8 +511,13 @@ const AdminHorarios = () => {
                 </button>
               </div>
               <div className="admin-horarios__modal-body">
-                {/* Aquí iría el formulario para editar/agregar horario */}
-                <p>Formulario de horario - Implementación pendiente</p>
+                {currentHorario && (
+                  <p>Formulario de horario - Implementación pendiente</p>
+                )}
+                
+                {currentExcepcion && (
+                  <p>Formulario de excepción - Implementación pendiente</p>
+                )}
               </div>
             </div>
           </div>
