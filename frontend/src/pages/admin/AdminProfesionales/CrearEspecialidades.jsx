@@ -65,15 +65,17 @@ const CrearEspecialidades = ({ isOpen, onClose, onSpecialtyCreated }) => {
 
   // Función para validar si la especialidad ya existe
   const validarEspecialidadExistente = (nombre) => {
+    if (!nombre || nombre.trim().length === 0) return false;
+    
     const nombreNormalizado = normalizarTexto(nombre);
     
     // Verificar en especialidades existentes
-    const existeEnExistentes = especialidades.some(
+    const existeEnExistentes = Array.isArray(especialidades) && especialidades.some(
       esp => normalizarTexto(esp.nombre) === nombreNormalizado
     );
     
     // Verificar en nuevas especialidades
-    const existeEnNuevas = nuevasEspecialidades.some(
+    const existeEnNuevas = Array.isArray(nuevasEspecialidades) && nuevasEspecialidades.some(
       esp => normalizarTexto(esp.nombre) === nombreNormalizado
     );
     
@@ -114,25 +116,53 @@ const CrearEspecialidades = ({ isOpen, onClose, onSpecialtyCreated }) => {
   const handleGuardar = async () => {
     setLoading(true);
     try {
+      // Si hay texto en el input y es válido, agregarlo primero a las nuevas especialidades
+      if (nombreEspecialidad.trim() && nombreEspecialidad.trim().length >= 3 && !validarEspecialidadExistente(nombreEspecialidad)) {
+        const nuevaEspecialidadObj = {
+          id: `temp-${Date.now()}`,
+          nombre: nombreEspecialidad.trim(),
+          isNew: true
+        };
+        setNuevasEspecialidades(prev => [...prev, nuevaEspecialidadObj]);
+      }
+      
+      // Asegurarnos de tener la lista actualizada antes de procesar
+      const especialidadesAGuardar = nombreEspecialidad.trim().length >= 3 && !validarEspecialidadExistente(nombreEspecialidad) 
+        ? [...nuevasEspecialidades, { id: `temp-${Date.now()}`, nombre: nombreEspecialidad.trim(), isNew: true }]
+        : nuevasEspecialidades;
+        
       // Si hay nuevas especialidades, guardarlas en la BD
-      if (nuevasEspecialidades.length > 0) {
-        for (const esp of nuevasEspecialidades) {
+      if (especialidadesAGuardar.length > 0) {
+        for (const esp of especialidadesAGuardar) {
           await api.post('/especialidades', { 
             nombre: esp.nombre 
           });
         }
+        
+        // Recargar todas las especialidades para obtener las IDs correctas
+        const response = await api.get('/especialidades');
+        
+        // Actualizar y notificar al componente padre
+        if (onSpecialtyCreated) {
+          onSpecialtyCreated(response.data);
+        }
+        
+        setError(null);
+        handleClose();
+      } else if (nombreEspecialidad.trim().length > 0 && nombreEspecialidad.trim().length < 3) {
+        // Si hay texto pero no cumple los requisitos mínimos
+        setErrorValidacion('La especialidad debe tener al menos 3 caracteres');
+        setLoading(false);
+        return;
+      } else if (nombreEspecialidad.trim().length > 0 && validarEspecialidadExistente(nombreEspecialidad)) {
+        // Si hay texto pero ya existe
+        setErrorValidacion('Esta especialidad ya existe (aunque con diferente formato)');
+        setLoading(false);
+        return;
+      } else {
+        // Si no hay nuevas especialidades ni texto para procesar, simplemente cerrar
+        handleClose();
       }
-      
-      // Recargar todas las especialidades para obtener las IDs correctas
-      const response = await api.get('/especialidades');
-      
-      // Actualizar y notificar al componente padre
-      if (onSpecialtyCreated) {
-        onSpecialtyCreated(response.data);
-      }
-      
-      setError(null);
-      handleClose();
     } catch (err) {
       console.error("Error al guardar especialidades:", err);
       setError("No se pudieron guardar las especialidades. Intente nuevamente.");
@@ -217,11 +247,12 @@ const CrearEspecialidades = ({ isOpen, onClose, onSpecialtyCreated }) => {
             onClick={mostrarInputNueva ? agregarEspecialidad : () => setMostrarInputNueva(true)}
             disabled={
               (mostrarInputNueva && nombreEspecialidad.trim().length < 3) || 
-              nuevasEspecialidades.length >= MAX_NUEVAS_ESPECIALIDADES
+              nuevasEspecialidades.length >= MAX_NUEVAS_ESPECIALIDADES ||
+              (mostrarInputNueva && validarEspecialidadExistente(nombreEspecialidad))
             }
           >
             <PlusIcon className="especialidades-plus-icon" />
-            <span>Crear nueva especialidad</span>
+            <span>{mostrarInputNueva && nombreEspecialidad.trim() ? 'Agregar a la lista' : 'Crear nueva especialidad'}</span>
           </Button>
           
           {/* Mensaje de límite alcanzado */}
