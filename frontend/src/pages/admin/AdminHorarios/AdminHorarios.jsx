@@ -6,6 +6,7 @@ import Tab from '../../../components/Tab/Tab';
 import SearchField from '../../../components/Inputs/SearchField';
 import Table from '../../../components/Tables/Table';
 import Tag from '../../../components/Tag/Tag';
+import AgregarHorario from './AgregarHorario';
 import './AdminHorarios.css';
 
 /**
@@ -106,6 +107,7 @@ const AdminHorarios = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [sortOrder, setSortOrder] = useState('az');
+  const [showAgregarHorarioModal, setShowAgregarHorarioModal] = useState(false);
 
   // Cargar horarios, excepciones y profesionales al montar el componente
   useEffect(() => {
@@ -198,6 +200,7 @@ const AdminHorarios = () => {
 
   const handleTabClick = (index) => {
     setActiveTab(index);
+    setSearchValue('');
   };
 
   const handleSearchChange = (value) => {
@@ -208,9 +211,9 @@ const AdminHorarios = () => {
     setSearchValue('');
   };
 
-  // Handlers para botones (sin funcionalidad)
+  // Handlers para botones
   const handleAddSchedule = () => {
-    console.log('Agregar horario (sin implementación)');
+    setShowAgregarHorarioModal(true);
   };
   
   const handleEditHorario = (horario) => {
@@ -481,6 +484,12 @@ const AdminHorarios = () => {
         
         {/* Los modales han sido eliminados según requerimientos */}
       </div>
+      
+      {/* Modal para agregar horarios */}
+      <AgregarHorario 
+        isOpen={showAgregarHorarioModal} 
+        onClose={() => setShowAgregarHorarioModal(false)} 
+      />
     </AdminLayout>
   );
 };
