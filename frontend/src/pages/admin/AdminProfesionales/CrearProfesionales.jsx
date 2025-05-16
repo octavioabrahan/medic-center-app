@@ -153,156 +153,138 @@ const CrearProfesionales = ({
     <Modal
       isOpen={isOpen}
       onClose={handleClose}
-      noPadding={true}
+      heading="Agregar nuevo profesional"
       size="large"
-      contentClassName="crear-profesionales-no-padding"
+      primaryButtonText="Agregar"
+      onPrimaryClick={handleCreateProfesional}
+      primaryButtonDisabled={loading}
+      secondaryButtonText="Cancelar"
+      onSecondaryClick={handleClose}
     >
-      <div className="dialog-body">
+      <div className="crear-profesionales-container">
         {error && (
           <div className="crear-profesionales-error">
             {error}
           </div>
         )}
         
-        <div className="text">
-          <div className="agregar-nuevo-profesional">Agregar nuevo profesional</div>
-          
+        <div className="input-field">
+          <div className="label">Cédula</div>
+          <div className="input">
+            <input 
+              className="value"
+              type="text"
+              value={nuevoProfesional.cedula}
+              onChange={(e) => setNuevoProfesional({ ...nuevoProfesional, cedula: e.target.value })}
+              placeholder="00.000.000"
+              disabled={loading}
+            />
+          </div>
+        </div>
+        
+        <div className="input-field">
+          <div className="label">Nombre</div>
+          <div className="input">
+            <input 
+              className="value"
+              type="text"
+              value={nuevoProfesional.nombre}
+              onChange={(e) => setNuevoProfesional({ ...nuevoProfesional, nombre: e.target.value })}
+              placeholder="Nombre del profesional"
+              disabled={loading}
+            />
+          </div>
+        </div>
+        
+        <div className="input-field">
+          <div className="label">Apellido</div>
+          <div className="input">
+            <input 
+              className="value"
+              type="text"
+              value={nuevoProfesional.apellido}
+              onChange={(e) => setNuevoProfesional({ ...nuevoProfesional, apellido: e.target.value })}
+              placeholder="Apellido del profesional"
+              disabled={loading}
+            />
+          </div>
+        </div>
+        
+        <div className="input-field">
+          <div className="label">Teléfono</div>
+          <div className="input">
+            <input 
+              className="value"
+              type="text"
+              value={nuevoProfesional.telefono}
+              onChange={(e) => setNuevoProfesional({ ...nuevoProfesional, telefono: e.target.value })}
+              placeholder="Teléfono del profesional"
+              disabled={loading}
+            />
+          </div>
+        </div>
+        
+        <div className="input-field">
+          <div className="label">Correo</div>
+          <div className="input">
+            <input 
+              className="value"
+              type="email"
+              value={nuevoProfesional.correo}
+              onChange={(e) => setNuevoProfesional({ ...nuevoProfesional, correo: e.target.value })}
+              placeholder="correo@ejemplo.com"
+              disabled={loading}
+            />
+          </div>
+        </div>
+        
+        <div className="select-field">
+          <div className="label">Especialidad</div>
+          <div className="select" onClick={() => !loading && document.getElementById('especialidad-select').focus()}>
+            <select
+              id="especialidad-select"
+              className="select-native"
+              value={nuevoProfesional.especialidad_id}
+              onChange={(e) => setNuevoProfesional({ ...nuevoProfesional, especialidad_id: e.target.value })}
+              disabled={loading}
+              style={{ opacity: 0, position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }}
+            >
+              <option value="">Seleccione una especialidad</option>
+              {especialidades.map(esp => (
+                <option key={esp.especialidad_id} value={esp.especialidad_id}>
+                  {esp.nombre}
+                </option>
+              ))}
+            </select>
+            <div className="value">
+              {especialidadNombre || 'Seleccione una especialidad'}
+            </div>
+            <ChevronDownIcon className="chevron-down" />
+          </div>
+        </div>
+        
+        {servicios.length > 0 && (
           <div className="input-field">
-            <div className="label">Cédula</div>
-            <div className="input">
-              <input 
-                className="value"
-                type="text"
-                value={nuevoProfesional.cedula}
-                onChange={(e) => setNuevoProfesional({ ...nuevoProfesional, cedula: e.target.value })}
-                placeholder="00.000.000"
-                disabled={loading}
-              />
-            </div>
-          </div>
-          
-          <div className="input-field">
-            <div className="label">Nombre</div>
-            <div className="input">
-              <input 
-                className="value"
-                type="text"
-                value={nuevoProfesional.nombre}
-                onChange={(e) => setNuevoProfesional({ ...nuevoProfesional, nombre: e.target.value })}
-                placeholder="Nombre del profesional"
-                disabled={loading}
-              />
-            </div>
-          </div>
-          
-          <div className="input-field">
-            <div className="label">Apellido</div>
-            <div className="input">
-              <input 
-                className="value"
-                type="text"
-                value={nuevoProfesional.apellido}
-                onChange={(e) => setNuevoProfesional({ ...nuevoProfesional, apellido: e.target.value })}
-                placeholder="Apellido del profesional"
-                disabled={loading}
-              />
-            </div>
-          </div>
-          
-          <div className="input-field">
-            <div className="label">Teléfono</div>
-            <div className="input">
-              <input 
-                className="value"
-                type="text"
-                value={nuevoProfesional.telefono}
-                onChange={(e) => setNuevoProfesional({ ...nuevoProfesional, telefono: e.target.value })}
-                placeholder="Teléfono del profesional"
-                disabled={loading}
-              />
-            </div>
-          </div>
-          
-          <div className="input-field">
-            <div className="label">Correo</div>
-            <div className="input">
-              <input 
-                className="value"
-                type="email"
-                value={nuevoProfesional.correo}
-                onChange={(e) => setNuevoProfesional({ ...nuevoProfesional, correo: e.target.value })}
-                placeholder="correo@ejemplo.com"
-                disabled={loading}
-              />
-            </div>
-          </div>
-          
-          <div className="select-field">
-            <div className="label">Especialidad</div>
-            <div className="select" onClick={() => !loading && document.getElementById('especialidad-select').focus()}>
-              <select
-                id="especialidad-select"
-                className="select-native"
-                value={nuevoProfesional.especialidad_id}
-                onChange={(e) => setNuevoProfesional({ ...nuevoProfesional, especialidad_id: e.target.value })}
-                disabled={loading}
-                style={{ opacity: 0, position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }}
-              >
-                <option value="">Seleccione una especialidad</option>
-                {especialidades.map(esp => (
-                  <option key={esp.especialidad_id} value={esp.especialidad_id}>
-                    {esp.nombre}
-                  </option>
-                ))}
-              </select>
-              <div className="value">
-                {especialidadNombre || 'Seleccione una especialidad'}
-              </div>
-              <ChevronDownIcon className="chevron-down" />
-            </div>
-          </div>
-          
-          {servicios.length > 0 && (
-            <div className="input-field">
-              <div className="servicio">Servicio</div>
-              <div className="frame-30">
-                {servicios.map(servicio => (
-                  <div key={servicio.id_servicio} className="checkbox-field">
-                    <div 
-                      className="checkbox-and-label" 
-                      onClick={() => !loading && toggleServicio(servicio.id_servicio)}
-                    >
-                      <div className={serviciosSeleccionados.includes(servicio.id_servicio) ? "checkbox2" : "checkbox"}>
-                        {serviciosSeleccionados.includes(servicio.id_servicio) && (
-                          <CheckIcon className="check" />
-                        )}
-                      </div>
-                      <div className="label2">{servicio.nombre_servicio}</div>
+            <div className="servicio">Servicio</div>
+            <div className="frame-30">
+              {servicios.map(servicio => (
+                <div key={servicio.id_servicio} className="checkbox-field">
+                  <div 
+                    className="checkbox-and-label" 
+                    onClick={() => !loading && toggleServicio(servicio.id_servicio)}
+                  >
+                    <div className={serviciosSeleccionados.includes(servicio.id_servicio) ? "checkbox2" : "checkbox"}>
+                      {serviciosSeleccionados.includes(servicio.id_servicio) && (
+                        <CheckIcon className="check" />
+                      )}
                     </div>
+                    <div className="label2">{servicio.nombre_servicio}</div>
                   </div>
-                ))}
-              </div>
-            </div>
-          )}
-        </div>
-        
-        <div className="button-group">
-          <div className="button-neutral" onClick={handleClose}>
-            <div className="button">Cancelar</div>
-          </div>
-          <div 
-            className={`button-primary ${loading ? 'disabled' : ''}`} 
-            onClick={!loading ? handleCreateProfesional : undefined}
-          >
-            <div className="button2">
-              {loading ? 'Procesando...' : 'Agregar'}
+                </div>
+              ))}
             </div>
           </div>
-        </div>
-        
-        <div className="icon-button" onClick={handleClose}>
-          <XMarkIcon className="x" />
-        </div>
+        )}
       </div>
     </Modal>
   );
