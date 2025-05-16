@@ -453,7 +453,7 @@ const AdminHorarios = () => {
                     headers={[
                       'Profesional',
                       'Fecha',
-                      'Tipo de execepción',
+                      'Tipo de excepción',
                       'Hora inicio',
                       'Hora término',
                       'Motivo',
@@ -473,10 +473,18 @@ const AdminHorarios = () => {
                     renderCustomCell={(row, column) => {
                       if (column === 'estado') {
                         let scheme = 'neutral';
+                        let variant = 'default';
+                        let text = row.estado;
                         const estado = row.estado.toLowerCase();
                         
                         if (estado.includes('cancelado')) {
                           scheme = 'danger';
+                          variant = 'secondary';
+                          text = 'Cancelación';
+                        } else if (estado === 'manual') {
+                          scheme = 'positive';
+                          variant = 'secondary';
+                          text = 'Habilitación';
                         } else if (estado.includes('disponible') || estado.includes('agregado')) {
                           scheme = 'positive';
                         }
@@ -484,8 +492,9 @@ const AdminHorarios = () => {
                         return (
                           <div className="text">
                             <Tag 
-                              text={row.estado} 
+                              text={text} 
                               scheme={scheme} 
+                              variant={variant}
                               closeable={false}
                             />
                           </div>
