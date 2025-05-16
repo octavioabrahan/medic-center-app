@@ -46,6 +46,12 @@
   width: 100%;
 }
 
+/* Estilo para marcar las nuevas especialidades */
+.especialidades-input.nuevas {
+  border-color: var(--var-sds-color-border-brand-default, #20377a);
+  background-color: var(--var-sds-color-background-brand-tertiary, #f0f3ff);
+}
+
 .especialidades-value {
   color: var(--var-sds-color-text-default-default, #1e1e1e);
   text-align: left;
@@ -59,6 +65,19 @@
   font-weight: var(--single-line-body-base-font-weight, 400);
   position: relative;
   flex: 1;
+}
+
+.especialidades-nuevas-lista {
+  margin-top: 16px;
+  width: 100%;
+}
+
+.especialidades-nuevas-titulo {
+  color: var(--var-sds-color-text-brand-default, #20377a);
+  font-family: var(--body-base-font-family, "Inter-Regular", sans-serif);
+  font-size: var(--body-base-font-size, 16px);
+  font-weight: 500;
+  margin-bottom: 8px;
 }
 
 .especialidades-nueva-seccion {
@@ -78,6 +97,21 @@
   justify-content: flex-start;
   width: 100%;
   margin-bottom: 8px;  /* Espacio entre el input y el botón */
+}
+
+.especialidades-error-validacion {
+  color: var(--var-sds-color-text-danger-default, #d83933);
+  font-size: 14px;
+  margin-top: 4px;
+  width: 100%;
+}
+
+.especialidades-max-message {
+  color: var(--var-sds-color-text-neutral-secondary, #767676);
+  font-size: 14px;
+  margin-top: 8px;
+  width: 100%;
+  text-align: left;
 }
 
 .especialidades-plus-icon {
