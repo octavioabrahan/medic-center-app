@@ -4,7 +4,6 @@ import Button from '../../../components/Button/Button';
 import SearchField from '../../../components/Inputs/SearchField';
 import SelectField from '../../../components/Inputs/SelectField';
 import CheckboxField from '../../../components/Inputs/CheckboxField';
-import TagToggle from '../../../components/Tag/TagToggle';
 import { UserPlusIcon, CheckIcon } from '@heroicons/react/20/solid';
 import './AdminProfesionales.css';
 
@@ -71,18 +70,14 @@ const AdminProfesionales = () => {
           </div>
           
           <div className="admin-profesionales__tag-toggle-group">
-            <TagToggle
-              label="A → Z"
-              active={sortAZ}
-              onChange={() => setSortAZ(true)}
-              className="admin-profesionales__tag-toggle"
-            />
-            <TagToggle
-              label="Z → A"
-              active={!sortAZ}
-              onChange={() => setSortAZ(false)}
-              className="admin-profesionales__tag-toggle"
-            />
+            <div className={sortAZ ? "admin-profesionales__tag-toggle state-on" : "admin-profesionales__tag-toggle state-off"} onClick={() => setSortAZ(true)}>
+              {sortAZ && <CheckIcon className="heroicons-mini-check" />}
+              <div className="title">A → Z</div>
+            </div>
+            <div className={!sortAZ ? "admin-profesionales__tag-toggle state-on" : "admin-profesionales__tag-toggle state-off"} onClick={() => setSortAZ(false)}>
+              {!sortAZ && <CheckIcon className="heroicons-mini-check" />}
+              <div className="title">Z → A</div>
+            </div>
           </div>
         </div>
         

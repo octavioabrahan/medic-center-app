@@ -77,11 +77,11 @@
 .admin-profesionales__tag-toggle-group {
   display: flex;
   flex-direction: row;
-  gap: 8px;
+  gap: var(--sds-space-200, 8px);
   align-items: flex-start;
   justify-content: flex-start;
-  border-radius: 8px;
-  overflow: hidden;
+  flex-shrink: 0;
+  position: relative;
 }
 
 .admin-profesionales__empty-state {
@@ -113,26 +113,62 @@
 }
 
 /* Estilos específicos para los toggle de ordenación */
-.admin-profesionales__tag-toggle {
-  border-radius: 0;
-}
-
 .admin-profesionales__tag-toggle.state-on {
-  background: #e6e6e6;
+  background: var(--sds-color-gray-200, #e6e6e6);
+  border-radius: var(--sds-radius-200, 8px);
+  padding: var(--sds-space-200, 8px);
+  display: flex;
+  flex-direction: row;
+  gap: var(--sds-space-200, 8px);
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  position: relative;
 }
 
 .admin-profesionales__tag-toggle.state-on .heroicons-mini-check {
-  color: #1e1e1e;
+  flex-shrink: 0;
+  width: 16px;
+  height: 16px;
+  position: relative;
+  overflow: visible;
 }
 
 .admin-profesionales__tag-toggle.state-on .title {
-  color: #1e1e1e;
+  color: var(--sds-color-text-default-default, #1e1e1e);
+  text-align: left;
+  font-family: "Inter-Regular", sans-serif;
+  font-size: 16px;
+  line-height: 100%;
+  font-weight: 400;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
 }
 
 .admin-profesionales__tag-toggle.state-off {
-  background: #f5f5f5;
+  background: var(--sds-color-gray-100, #f5f5f5);
+  border-radius: var(--sds-radius-200, 8px);
+  padding: var(--sds-space-200, 8px);
+  display: flex;
+  flex-direction: row;
+  gap: var(--sds-space-200, 8px);
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  position: relative;
 }
 
 .admin-profesionales__tag-toggle.state-off .title {
-  color: #757575;
+  color: var(--sds-color-text-default-secondary, #757575);
+  text-align: left;
+  font-family: "Inter-Regular", sans-serif;
+  font-size: 16px;
+  line-height: 100%;
+  font-weight: 400;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
 }
