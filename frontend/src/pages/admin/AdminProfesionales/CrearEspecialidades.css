@@ -64,7 +64,7 @@
 .especialidades-nueva-seccion {
   display: flex;
   flex-direction: column;
-  gap: var(--var-sds-size-space-300, 12px);
+  gap: var(--var-sds-size-space-200, 8px);  /* Mismo espaciado que entre los otros inputs */
   align-items: flex-start;
   justify-content: flex-start;
   width: 100%;
@@ -74,19 +74,20 @@
 .especialidades-nueva-input {
   display: flex;
   flex-direction: column;
-  gap: var(--var-sds-size-space-200, 8px);
   align-items: flex-start;
   justify-content: flex-start;
   width: 100%;
+  margin-bottom: 8px;  /* Espacio entre el input y el botón */
 }
 
+/* Estilo del botón neutral */
 .especialidades-btn-crear {
-  display: flex !important;
-  flex-direction: row !important;
-  gap: var(--var-sds-size-space-200, 8px) !important;
-  align-items: center !important;
-  justify-content: center !important;
   align-self: flex-start !important;
+  background-color: var(--sds-color-background-neutral-tertiary, #e3e3e3) !important;
+  color: var(--sds-color-text-neutral-default, #1e1e1e) !important;
+  border-color: var(--sds-color-border-neutral-secondary, #767676) !important;
+  border-radius: var(--var-sds-size-radius-200, 8px) !important;
+  padding: var(--var-sds-size-space-300, 12px) !important;
 }
 
 .especialidades-plus-icon {
@@ -95,6 +96,12 @@
   height: 16px;
   position: relative;
   overflow: visible;
+  margin-right: 8px;
+}
+
+/* Asegura que el contenido del botón esté bien alineado */
+.especialidades-btn-crear span {
+  display: inline-block;
 }
 
 .especialidades-loading, 

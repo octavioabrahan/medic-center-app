@@ -92,17 +92,26 @@ const CrearEspecialidades = ({ isOpen, onClose, onSpecialtyCreated }) => {
     }
   };
 
+  // Función para manejar el cierre y reiniciar el modal
+  const handleClose = () => {
+    // Reinicia el estado del modal
+    setNuevaEspecialidad('');
+    setMostrarInputNueva(false);
+    setError(null);
+    onClose();
+  };
+
   return (
     <div className="crear-especialidades-container">
       <Modal
         isOpen={isOpen}
-        onClose={onClose}
+        onClose={handleClose}
         heading="Especialidades"
         bodyText="Cada profesional debe tener asignada una especialidad para poder mostrarse en el sitio de agendamiento."
         primaryButtonText="Guardar"
         onPrimaryClick={handleGuardar}
         secondaryButtonText="Cancelar"
-        onSecondaryClick={onClose}
+        onSecondaryClick={handleClose}
         size="medium"
       >
         {/* Lista de especialidades existentes */}
@@ -135,7 +144,7 @@ const CrearEspecialidades = ({ isOpen, onClose, onSpecialtyCreated }) => {
             </div>
           )}
           
-          {/* Botón para añadir especialidad */}
+          {/* Botón para añadir especialidad - usando estilos específicos para mantener el diseño requerido */}
           <Button 
             variant="neutral" 
             onClick={mostrarInputNueva ? agregarEspecialidad : () => setMostrarInputNueva(true)}
