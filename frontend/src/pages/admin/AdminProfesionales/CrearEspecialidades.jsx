@@ -1,150 +1,141 @@
 import React, { useState, useEffect } from 'react';
-import { XMarkIcon } from '@heroicons/react/24/outline';
+import Modal from '../../../components/Modal/Modal';
+import Button from '../../../components/Button/Button';
 import InputField from '../../../components/Inputs/InputField';
-import { Button } from '../../../components/Button/Button';
-import Text from '../../../components/Text/Text';
-import { PlusIcon } from '@heroicons/react/24/outline';
+import { PlusIcon } from '@heroicons/react/20/solid';
+import { XMarkIcon } from '@heroicons/react/24/solid';
 import axios from 'axios';
 import './CrearEspecialidades.css';
 
 /**
- * CrearEspecialidades component
- * Modal component for creating new specialties following the design system
- * exactly as shown in the mockup image
+ * CrearEspecialidades component for managing specialties in the admin dashboard
+ * Allows adding, viewing, and managing medical specialties
+ * @param {Object} props - Component props
+ * @param {boolean} props.isOpen - Controls if the modal is visible
+ * @param {Function} props.onClose - Function to call when close button is clicked
+ * @param {Function} props.onSpecialtyCreated - Function to call when specialties are saved
  */
 const CrearEspecialidades = ({ isOpen, onClose, onSpecialtyCreated }) => {
-  const [nuevaEspecialidad, setNuevaEspecialidad] = useState({ nombre: 'Cardiología' });
+  const [especialidades, setEspecialidades] = useState([]);
+  const [nuevaEspecialidad, setNuevaEspecialidad] = useState('');
+  const [mostrarInputNueva, setMostrarInputNueva] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [showCreateNew, setShowCreateNew] = useState(false);
 
-  // Reset form when modal opens
+  // Cargar especialidades al abrir el modal
   useEffect(() => {
     if (isOpen) {
-      setNuevaEspecialidad({ nombre: 'Cardiología' });
-      setError(null);
-      setIsSubmitting(false);
-      setShowCreateNew(false);
+      cargarEspecialidades();
     }
   }, [isOpen]);
 
-  const handleAddNewSpecialty = () => {
-    setShowCreateNew(true);
-    setNuevaEspecialidad({ nombre: '' });
-    setError(null);
+  // Función para cargar especialidades desde la API
+  const cargarEspecialidades = async () => {
+    setLoading(true);
+    try {
+      const response = await axios.get('/api/especialidades');
+      setEspecialidades(response.data);
+      setError(null);
+    } catch (err) {
+      console.error("Error al cargar especialidades:", err);
+      setError("No se pudieron cargar las especialidades. Intente nuevamente.");
+    } finally {
+      setLoading(false);
+    }
   };
 
-  // Handle form submission
-  const handleCreateEspecialidad = async () => {
-    if (!nuevaEspecialidad.nombre.trim()) {
-      setError("El nombre de la especialidad es obligatorio");
-      return;
-    }
-
-    setIsSubmitting(true);
+  // Función para agregar una nueva especialidad
+  const agregarEspecialidad = async () => {
+    if (!nuevaEspecialidad.trim()) return;
     
+    setLoading(true);
     try {
-      await axios.post('/api/especialidades', nuevaEspecialidad);
-      const res = await axios.get('/api/especialidades');
+      const response = await axios.post('/api/especialidades', { 
+        nombre: nuevaEspecialidad.trim() 
+      });
       
-      // Call the callback to update specialties in parent component
-      if (onSpecialtyCreated) {
-        onSpecialtyCreated(res.data);
-      }
+      // Actualizar lista local
+      setEspecialidades([...especialidades, response.data]);
       
-      // Close the modal
-      onClose();
+      // Limpiar input y ocultar
+      setNuevaEspecialidad('');
+      setMostrarInputNueva(false);
+      setError(null);
     } catch (err) {
       console.error("Error al crear especialidad:", err);
-      setError("Error al crear la especialidad");
+      setError("No se pudo crear la especialidad. Intente nuevamente.");
     } finally {
-      setIsSubmitting(false);
+      setLoading(false);
     }
   };
 
-  // No necesitamos esta función ya que ahora renderizamos directamente en el return
-
-  if (!isOpen) return null;
+  // Función para guardar los cambios
+  const handleGuardar = () => {
+    if (onSpecialtyCreated) {
+      onSpecialtyCreated(especialidades);
+    }
+    onClose();
+  };
 
   return (
-    <div className="modal-overlay" onClick={onClose}>
-      <div className="custom-modal-container" onClick={(e) => e.stopPropagation()}>
-        {/* Close button */}
-        <button className="modal-close-btn" onClick={onClose}>
-          <XMarkIcon width={20} height={20} />
-        </button>
-        
-        {/* Header section with title and description side by side */}
-        <div className="modal-header">
-          <h2 className="modal-title">Especialidades</h2>
-          <p className="modal-description">
-            Cada profesional debe tener asignada una especialidad para poder mostrarse en el sitio de agendamiento.
-          </p>
-        </div>
-        
-        {/* Content area */}
-        <div className="modal-content">
-          {!showCreateNew ? (
-            <>
-              <div className="especialidad-input">
-                <InputField
-                  label="Nombre de la especialidad"
-                  disabled={true}
-                  value="Cardiología"
-                />
-              </div>
-              
-              <div className="modal-actions">
-                <Button
-                  variant="neutral"
-                  onClick={handleAddNewSpecialty}
-                  className="crear-especialidad-btn"
-                >
-                  <PlusIcon width={20} height={20} />
-                  <span>Crear nueva especialidad</span>
-                </Button>
-              </div>
-            </>
+    <div className="crear-especialidades-container">
+      <Modal
+        isOpen={isOpen}
+        onClose={onClose}
+        heading="Especialidades"
+        bodyText="Cada profesional debe tener asignada una especialidad para poder mostrarse en el sitio de agendamiento."
+        primaryButtonText="Guardar"
+        onPrimaryClick={handleGuardar}
+        secondaryButtonText="Cancelar"
+        onSecondaryClick={onClose}
+        size="medium"
+      >
+        {/* Lista de especialidades existentes */}
+        <div className="especialidades-lista">
+          {loading ? (
+            <div className="especialidades-loading">Cargando especialidades...</div>
+          ) : error ? (
+            <div className="especialidades-error">{error}</div>
           ) : (
-            <div className="especialidad-form">
-              <InputField
-                label="Nombre de la especialidad"
-                value={nuevaEspecialidad.nombre}
-                onChange={(value) => setNuevaEspecialidad({ ...nuevaEspecialidad, nombre: value })}
-                placeholder="Ingrese el nombre de la especialidad"
-                error={!!error}
-                disabled={isSubmitting}
-                autoFocus
-              />
-              {error && (
-                <div className="error-message">
-                  {error}
+            especialidades.map((especialidad) => (
+              <div key={especialidad.id} className="especialidades-item">
+                <div className="especialidades-input">
+                  <div className="especialidades-value">{especialidad.nombre}</div>
                 </div>
-              )}
-            </div>
+              </div>
+            ))
           )}
         </div>
         
-        {/* Footer with buttons */}
-        <div className="modal-footer">
-          <Button
-            variant="neutral"
-            onClick={onClose}
-          >
-            Cancelar
-          </Button>
-          
-          {showCreateNew && (
-            <Button
-              variant="primary"
-              onClick={handleCreateEspecialidad}
-              disabled={isSubmitting || !nuevaEspecialidad.nombre.trim()}
+        {/* Input para nueva especialidad */}
+        {mostrarInputNueva && (
+          <div className="especialidades-nueva-input">
+            <InputField
+              value={nuevaEspecialidad}
+              onChange={(value) => setNuevaEspecialidad(value)}
+              placeholder="Nombre de especialidad"
+            />
+            <Button 
+              variant="primary" 
+              onClick={agregarEspecialidad}
+              disabled={!nuevaEspecialidad.trim() || loading}
             >
-              Guardar
+              Agregar
             </Button>
-          )}
-        </div>
-      </div>
+          </div>
+        )}
+        
+        {/* Botón para mostrar input de nueva especialidad */}
+        {!mostrarInputNueva && (
+          <div 
+            className="especialidades-crear-btn"
+            onClick={() => setMostrarInputNueva(true)}
+          >
+            <PlusIcon className="especialidades-plus-icon" />
+            <div className="especialidades-crear-text">Crear nueva especialidad</div>
+          </div>
+        )}
+      </Modal>
     </div>
   );
 };
