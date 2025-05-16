@@ -12,7 +12,9 @@ import CheckboxField from '../../../components/Inputs/CheckboxField';
  * @param {boolean} props.isOpen - Controla si el modal está visible
  * @param {Function} props.onClose - Función para cerrar el modal
  */
-const AgregarHorario = ({ isOpen, onClose }) => {
+import axios from 'axios';
+
+const AgregarHorario = ({ isOpen, onClose, onSuccess }) => {
   // Refs para los contenedores de los date pickers
   const desdeFechaRef = React.useRef(null);
   const hastaFechaRef = React.useRef(null);
@@ -34,26 +36,15 @@ const AgregarHorario = ({ isOpen, onClose }) => {
   const [fechaDesde, setFechaDesde] = useState('');
   const [fechaHasta, setFechaHasta] = useState('');
   const [formValido, setFormValido] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
   // Ya no necesitamos estos estados
   // const [showDesdeCalendar, setShowDesdeCalendar] = useState(false);
   // const [showHastaCalendar, setShowHastaCalendar] = useState(false);
 
-  // Opciones para selects
-  const profesionalesOptions = [
-    { value: '1', label: 'Dr. Juan Pérez' },
-    { value: '2', label: 'Dra. María González' },
-    { value: '3', label: 'Dr. Carlos Rodríguez' },
-    { value: '4', label: 'Dra. Ana Silva' },
-    { value: '5', label: 'Dr. Roberto Méndez' }
-  ];
-
-  const tiposAtencionOptions = [
-    { value: '1', label: 'Consulta General' },
-    { value: '2', label: 'Especialidad' },
-    { value: '3', label: 'Control' },
-    { value: '4', label: 'Examen' },
-    { value: '5', label: 'Procedimiento' }
-  ];
+  // Estados para datos del backend
+  const [profesionalesOptions, setProfesionalesOptions] = useState([]);
+  const [tiposAtencionOptions, setTiposAtencionOptions] = useState([]);
 
   // Generamos todas las opciones de horario desde las 6:00 AM hasta las 10:00 PM en incrementos de 30 minutos
   const horariosOptions = (() => {
@@ -76,6 +67,34 @@ const AgregarHorario = ({ isOpen, onClose }) => {
     }
     return options;
   })();
+  
+  // Cargar datos del backend al montar el componente
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        // Cargar profesionales
+        const profesionalesResponse = await axios.get('/api/profesionales');
+        const profesionalesData = profesionalesResponse.data.map(p => ({
+          value: p.profesional_id,
+          label: `${p.nombre} ${p.apellido}`
+        }));
+        setProfesionalesOptions(profesionalesData);
+        
+        // Cargar tipos de atención
+        const tiposAtencionResponse = await axios.get('/api/tipoAtencion');
+        const tiposAtencionData = tiposAtencionResponse.data.map(t => ({
+          value: t.tipo_atencion_id,
+          label: t.nombre
+        }));
+        setTiposAtencionOptions(tiposAtencionData);
+      } catch (err) {
+        console.error('Error cargando datos:', err);
+        setError('Error al cargar datos necesarios. Por favor, recarga la página.');
+      }
+    };
+    
+    fetchData();
+  }, []);
 
   // Validar formulario
   useEffect(() => {
@@ -116,21 +135,70 @@ const AgregarHorario = ({ isOpen, onClose }) => {
     return `${date.getDate().toString().padStart(2, '0')}/${(date.getMonth() + 1).toString().padStart(2, '0')}/${date.getFullYear()}`;
   };
 
-  // Manejar agregar horario
-  const handleAgregar = () => {
-    // Lógica para guardar el horario
-    console.log({
-      profesional,
-      tipoAtencion,
-      diasSemana,
-      horaInicio,
-      horaTermino,
-      fechaDesde,
-      fechaHasta
-    });
+  // Convertir formato de días de la semana para el backend
+  const getDiasSemanaArray = () => {
+    const diasMapping = {
+      lunes: 1,
+      martes: 2,
+      miercoles: 3,
+      jueves: 4,
+      viernes: 5,
+      sabado: 6,
+      domingo: 7
+    };
     
-    // Cerrar modal después de guardar
-    onClose();
+    return Object.entries(diasSemana)
+      .filter(([_, isSelected]) => isSelected)
+      .map(([dia]) => diasMapping[dia]);
+  };
+
+  // Manejar agregar horario
+  const handleAgregar = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      
+      // Validar horario
+      if (horaInicio >= horaTermino) {
+        setError('La hora de inicio debe ser anterior a la hora de término');
+        setLoading(false);
+        return;
+      }
+      
+      // Obtener array de días de la semana
+      const diasArray = getDiasSemanaArray();
+      
+      if (diasArray.length === 0) {
+        setError('Debe seleccionar al menos un día de la semana');
+        setLoading(false);
+        return;
+      }
+      
+      // Crear el objeto de horario para enviar al backend
+      const horarioData = {
+        profesional_id: profesional,
+        tipo_atencion_id: tipoAtencion,
+        dia_semana: diasArray,
+        hora_inicio: horaInicio,
+        hora_termino: horaTermino,
+        valido_desde: fechaDesde,
+        valido_hasta: fechaHasta,
+      };
+      
+      // Enviar solicitud al backend
+      await axios.post('/api/horarios', horarioData);
+      
+      // Notificar éxito y cerrar
+      if (onSuccess) {
+        onSuccess();
+      }
+      onClose();
+    } catch (err) {
+      console.error('Error al guardar horario:', err);
+      setError(err.response?.data?.error || 'Error al guardar el horario. Por favor, intenta de nuevo.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -138,14 +206,20 @@ const AgregarHorario = ({ isOpen, onClose }) => {
       isOpen={isOpen}
       onClose={onClose}
       heading="Agregar horario de atención para un profesional"
-      bodyText="Si un profesional atiende varios días a la semana, debes agregar cada día por separado. Ejemplo: si el profesional atiende lunes a las 8:00, miércoles a las 9:00 y viernes a las 10:00, debes crear tres horarios distintos, uno por cada día."
-      primaryButtonText="Agregar"
+      bodyText="Si un profesional atiende varios días a la semana, puedes seleccionar múltiples días en un mismo horario si tienen la misma hora de inicio y término."
+      primaryButtonText={loading ? "Guardando..." : "Agregar"}
       secondaryButtonText="Cancelar"
       onPrimaryClick={handleAgregar}
-      primaryButtonDisabled={!formValido}
+      primaryButtonDisabled={!formValido || loading}
       onSecondaryClick={onClose}
       size="medium"
     >
+      {error && (
+        <div className="mensaje-error">
+          {error}
+        </div>
+      )}
+      
       <div className="campo-completo">
         <SelectField
           label="Profesional"
@@ -153,6 +227,7 @@ const AgregarHorario = ({ isOpen, onClose }) => {
           value={profesional}
           onChange={setProfesional}
           options={profesionalesOptions}
+          disabled={loading}
         />
       </div>
 
@@ -163,6 +238,7 @@ const AgregarHorario = ({ isOpen, onClose }) => {
           value={tipoAtencion}
           onChange={setTipoAtencion}
           options={tiposAtencionOptions}
+          disabled={loading}
         />
       </div>
 

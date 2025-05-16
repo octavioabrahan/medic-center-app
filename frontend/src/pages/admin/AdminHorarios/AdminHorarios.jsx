@@ -489,6 +489,11 @@ const AdminHorarios = () => {
       <AgregarHorario 
         isOpen={showAgregarHorarioModal} 
         onClose={() => setShowAgregarHorarioModal(false)} 
+        onSuccess={() => {
+          fetchHorarios().then(data => {
+            setHorarios(data);
+          });
+        }} 
       />
     </AdminLayout>
   );
