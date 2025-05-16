@@ -125,27 +125,31 @@ const AgregarHorario = ({ isOpen, onClose }) => {
       onClose={onClose}
       heading="Agregar horario de atención para un profesional"
       bodyText="Si un profesional atiende varios días a la semana, debes agregar cada día por separado. Ejemplo: si el profesional atiende lunes a las 8:00, miércoles a las 9:00 y viernes a las 10:00, debes crear tres horarios distintos, uno por cada día."
-      primaryButtonText={formValido ? "Agregar" : ""}
+      primaryButtonText={formValido ? "Agregar" : null}
       secondaryButtonText="Cancelar"
       onPrimaryClick={formValido ? handleAgregar : null}
       onSecondaryClick={onClose}
       size="large"
     >
-      <SelectField
-        label="Profesional"
-        placeholder="Selecciona un profesional"
-        value={profesional}
-        onChange={setProfesional}
-        options={profesionalesOptions}
-      />
+      <div className="campo-completo">
+        <SelectField
+          label="Profesional"
+          placeholder="Selecciona un profesional"
+          value={profesional}
+          onChange={setProfesional}
+          options={profesionalesOptions}
+        />
+      </div>
 
-      <SelectField
-        label="Tipo de atención"
-        placeholder="Selecciona una opción"
-        value={tipoAtencion}
-        onChange={setTipoAtencion}
-        options={tiposAtencionOptions}
-      />
+      <div className="campo-completo">
+        <SelectField
+          label="Tipo de atención"
+          placeholder="Selecciona una opción"
+          value={tipoAtencion}
+          onChange={setTipoAtencion}
+          options={tiposAtencionOptions}
+        />
+      </div>
 
       <div className="dias-semana-grupo">
         <p className="dias-semana-titulo">Día de la semana</p>
@@ -212,52 +216,58 @@ const AgregarHorario = ({ isOpen, onClose }) => {
       <div className="fechas-grupo">
         <div className="fecha-campo">
           <label className="fecha-etiqueta">Desde</label>
-          <div className="fecha-contenedor">
-            <input
-              type="text" 
-              className="fecha-input"
-              value={fechaDesde ? formatDateForDisplay(fechaDesde) : ""}
-              placeholder="dd/mm/aaaa"
-              onClick={(e) => {
-                e.currentTarget.nextElementSibling.showPicker();
-              }}
-              readOnly
-            />
-            <input
-              type="date"
-              className="fecha-picker"
-              value={fechaDesde}
-              onChange={(e) => setFechaDesde(e.target.value)}
-              min={new Date().toISOString().split('T')[0]}
-            />
-          </div>
+          <input
+            type="text" 
+            className="input-fecha"
+            value={fechaDesde ? formatDateForDisplay(fechaDesde) : ""}
+            placeholder="dd/mm/aaaa"
+            onClick={(e) => {
+              const datePicker = document.createElement('input');
+              datePicker.type = 'date';
+              datePicker.style.position = 'absolute';
+              datePicker.style.left = '-9999px';
+              datePicker.value = fechaDesde;
+              datePicker.min = new Date().toISOString().split('T')[0];
+              
+              document.body.appendChild(datePicker);
+              datePicker.addEventListener('change', (event) => {
+                setFechaDesde(event.target.value);
+                document.body.removeChild(datePicker);
+              });
+              datePicker.showPicker();
+            }}
+            readOnly
+          />
         </div>
         <div className="fecha-campo">
           <label className="fecha-etiqueta">Hasta</label>
-          <div className="fecha-contenedor">
-            <input
-              type="text" 
-              className="fecha-input"
-              value={fechaHasta ? formatDateForDisplay(fechaHasta) : ""}
-              placeholder="dd/mm/aaaa"
-              onClick={(e) => {
-                e.currentTarget.nextElementSibling.showPicker();
-              }}
-              readOnly
-            />
-            <input
-              type="date"
-              className="fecha-picker"
-              value={fechaHasta}
-              onChange={(e) => setFechaHasta(e.target.value)}
-              min={fechaDesde || new Date().toISOString().split('T')[0]}
-            />
-          </div>
+          <input
+            type="text" 
+            className="input-fecha"
+            value={fechaHasta ? formatDateForDisplay(fechaHasta) : ""}
+            placeholder="dd/mm/aaaa"
+            onClick={(e) => {
+              const datePicker = document.createElement('input');
+              datePicker.type = 'date';
+              datePicker.style.position = 'absolute';
+              datePicker.style.left = '-9999px';
+              datePicker.value = fechaHasta;
+              datePicker.min = fechaDesde || new Date().toISOString().split('T')[0];
+              
+              document.body.appendChild(datePicker);
+              datePicker.addEventListener('change', (event) => {
+                setFechaHasta(event.target.value);
+                document.body.removeChild(datePicker);
+              });
+              datePicker.showPicker();
+            }}
+            readOnly
+          />
         </div>
       </div>
 
       {!formValido && (
-        <div className="botones-inferiores">
+        <div className="botones-agregar">
           <Button variant="primary" disabled={true}>
             Agregar
           </Button>
