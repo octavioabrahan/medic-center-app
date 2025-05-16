@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { CalendarIcon, XMarkIcon, PlusIcon, PencilIcon, TrashIcon } from '@heroicons/react/20/solid';
+import axios from 'axios';
 import AdminLayout from '../../../components/AdminDashboard/AdminLayout';
 import Button from '../../../components/Button/Button';
 import Tab from '../../../components/Tab/Tab';
@@ -7,6 +8,7 @@ import SearchField from '../../../components/Inputs/SearchField';
 import Table from '../../../components/Tables/Table';
 import Tag from '../../../components/Tag/Tag';
 import AgregarHorario from './AgregarHorario';
+import EditarHorario from './EditarHorario';
 import './AdminHorarios.css';
 
 /**
@@ -108,6 +110,8 @@ const AdminHorarios = () => {
   const [error, setError] = useState(null);
   const [sortOrder, setSortOrder] = useState('az');
   const [showAgregarHorarioModal, setShowAgregarHorarioModal] = useState(false);
+  const [showEditarHorarioModal, setShowEditarHorarioModal] = useState(false);
+  const [currentHorario, setCurrentHorario] = useState(null);
 
   // Cargar horarios, excepciones y profesionales al montar el componente
   useEffect(() => {
@@ -217,11 +221,22 @@ const AdminHorarios = () => {
   };
   
   const handleEditHorario = (horario) => {
-    console.log('Editar horario (sin implementación)', horario);
+    setCurrentHorario(horario);
+    setShowEditarHorarioModal(true);
   };
 
-  const handleDeleteHorario = (horarioId) => {
-    console.log('Eliminar horario (sin implementación)', horarioId);
+  const handleDeleteHorario = async (horarioId) => {
+    if (window.confirm('¿Estás seguro de que deseas eliminar este horario?')) {
+      try {
+        await axios.delete(`/api/horarios/${horarioId}`);
+        fetchHorarios().then(data => {
+          setHorarios(data);
+        });
+      } catch (err) {
+        console.error('Error al eliminar horario:', err);
+        alert('Hubo un error al eliminar el horario');
+      }
+    }
   };
   
   // Funciones para manejar excepciones (sin funcionalidad)
@@ -494,6 +509,18 @@ const AdminHorarios = () => {
             setHorarios(data);
           });
         }} 
+      />
+
+      {/* Modal para editar horarios */}
+      <EditarHorario 
+        isOpen={showEditarHorarioModal}
+        onClose={() => setShowEditarHorarioModal(false)}
+        horario={currentHorario}
+        onSuccess={() => {
+          fetchHorarios().then(data => {
+            setHorarios(data);
+          });
+        }}
       />
     </AdminLayout>
   );
