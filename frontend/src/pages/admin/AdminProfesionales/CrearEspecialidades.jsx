@@ -45,36 +45,51 @@ const CrearEspecialidades = ({ isOpen, onClose, onSpecialtyCreated }) => {
   };
 
   // Función para agregar una nueva especialidad
-  const agregarEspecialidad = async () => {
+  const agregarEspecialidad = () => {
     if (!nuevaEspecialidad.trim()) return;
     
-    setLoading(true);
-    try {
-      const response = await axios.post('/api/especialidades', { 
-        nombre: nuevaEspecialidad.trim() 
-      });
-      
-      // Actualizar lista local
-      setEspecialidades([...especialidades, response.data]);
-      
-      // Limpiar input y ocultar
-      setNuevaEspecialidad('');
-      setMostrarInputNueva(false);
-      setError(null);
-    } catch (err) {
-      console.error("Error al crear especialidad:", err);
-      setError("No se pudo crear la especialidad. Intente nuevamente.");
-    } finally {
-      setLoading(false);
-    }
+    // Agregar temporalmente a la lista local
+    const nuevaEspecialidadObj = {
+      id: `temp-${Date.now()}`, // ID temporal
+      nombre: nuevaEspecialidad.trim(),
+      isNew: true // Marcar como nueva para identificarla al guardar
+    };
+    
+    setEspecialidades([...especialidades, nuevaEspecialidadObj]);
+    setNuevaEspecialidad(''); // Limpiar el input para la siguiente entrada
   };
 
   // Función para guardar los cambios
-  const handleGuardar = () => {
-    if (onSpecialtyCreated) {
-      onSpecialtyCreated(especialidades);
+  const handleGuardar = async () => {
+    setLoading(true);
+    try {
+      // Filtrar especialidades nuevas (marcadas con isNew)
+      const nuevasEspecialidades = especialidades.filter(esp => esp.isNew);
+      
+      // Si hay nuevas especialidades, guardarlas en la BD
+      if (nuevasEspecialidades.length > 0) {
+        for (const esp of nuevasEspecialidades) {
+          await axios.post('/api/especialidades', { 
+            nombre: esp.nombre 
+          });
+        }
+      }
+      
+      // Recargar todas las especialidades para obtener las IDs correctas
+      const response = await axios.get('/api/especialidades');
+      
+      // Actualizar y notificar al componente padre
+      if (onSpecialtyCreated) {
+        onSpecialtyCreated(response.data);
+      }
+      
+      setError(null);
+      onClose();
+    } catch (err) {
+      console.error("Error al guardar especialidades:", err);
+      setError("No se pudieron guardar las especialidades. Intente nuevamente.");
+      setLoading(false);
     }
-    onClose();
   };
 
   return (
@@ -107,34 +122,30 @@ const CrearEspecialidades = ({ isOpen, onClose, onSpecialtyCreated }) => {
           )}
         </div>
         
-        {/* Input para nueva especialidad */}
-        {mostrarInputNueva && (
-          <div className="especialidades-nueva-input">
-            <InputField
-              value={nuevaEspecialidad}
-              onChange={(value) => setNuevaEspecialidad(value)}
-              placeholder="Nombre de especialidad"
-            />
-            <Button 
-              variant="primary" 
-              onClick={agregarEspecialidad}
-              disabled={!nuevaEspecialidad.trim() || loading}
-            >
-              Agregar
-            </Button>
-          </div>
-        )}
-        
-        {/* Botón para mostrar input de nueva especialidad */}
-        {!mostrarInputNueva && (
-          <div 
-            className="especialidades-crear-btn"
-            onClick={() => setMostrarInputNueva(true)}
+        {/* Contenedor para el input y botón de nueva especialidad */}
+        <div className="especialidades-nueva-seccion">
+          {/* Input para nueva especialidad */}
+          {mostrarInputNueva && (
+            <div className="especialidades-nueva-input">
+              <InputField
+                value={nuevaEspecialidad}
+                onChange={(value) => setNuevaEspecialidad(value)}
+                placeholder="Nombre de especialidad"
+              />
+            </div>
+          )}
+          
+          {/* Botón para añadir especialidad */}
+          <Button 
+            variant="neutral" 
+            onClick={mostrarInputNueva ? agregarEspecialidad : () => setMostrarInputNueva(true)}
+            disabled={mostrarInputNueva && !nuevaEspecialidad.trim()}
+            className="especialidades-btn-crear"
           >
             <PlusIcon className="especialidades-plus-icon" />
-            <div className="especialidades-crear-text">Crear nueva especialidad</div>
-          </div>
-        )}
+            <span>{mostrarInputNueva ? "Añadir especialidad" : "Crear nueva especialidad"}</span>
+          </Button>
+        </div>
       </Modal>
     </div>
   );
