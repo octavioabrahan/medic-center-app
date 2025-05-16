@@ -11,6 +11,7 @@ import Button from '../Button/Button';
  * @param {React.ReactNode} props.children - Custom content to render in the modal body
  * @param {string} props.primaryButtonText - Text for primary button
  * @param {Function} props.onPrimaryClick - Function to call when primary button is clicked
+ * @param {boolean} props.primaryButtonDisabled - Whether the primary button is disabled
  * @param {string} props.secondaryButtonText - Text for secondary button
  * @param {Function} props.onSecondaryClick - Function to call when secondary button is clicked
  * @param {Function} props.onClose - Function to call when close button is clicked
@@ -26,6 +27,7 @@ const Modal = ({
   children,
   primaryButtonText,
   onPrimaryClick,
+  primaryButtonDisabled = false,
   secondaryButtonText,
   onSecondaryClick,
   onClose,
@@ -65,6 +67,7 @@ const Modal = ({
               <Button 
                 variant="primary" 
                 onClick={onPrimaryClick}
+                disabled={primaryButtonDisabled}
               >
                 {primaryButtonText}
               </Button>

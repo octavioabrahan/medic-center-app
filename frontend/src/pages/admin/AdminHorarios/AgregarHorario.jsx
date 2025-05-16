@@ -125,9 +125,10 @@ const AgregarHorario = ({ isOpen, onClose }) => {
       onClose={onClose}
       heading="Agregar horario de atención para un profesional"
       bodyText="Si un profesional atiende varios días a la semana, debes agregar cada día por separado. Ejemplo: si el profesional atiende lunes a las 8:00, miércoles a las 9:00 y viernes a las 10:00, debes crear tres horarios distintos, uno por cada día."
-      primaryButtonText={formValido ? "Agregar" : null}
+      primaryButtonText="Agregar"
       secondaryButtonText="Cancelar"
-      onPrimaryClick={formValido ? handleAgregar : null}
+      onPrimaryClick={handleAgregar}
+      primaryButtonDisabled={!formValido}
       onSecondaryClick={onClose}
       size="medium"
     >
