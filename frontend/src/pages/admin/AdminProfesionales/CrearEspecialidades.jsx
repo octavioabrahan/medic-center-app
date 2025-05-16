@@ -44,21 +44,9 @@ const CrearEspecialidades = ({ isOpen, onClose, onSpecialtyCreated }) => {
     }
   };
 
-  // Función para agregar una nueva especialidad
-  const agregarEspecialidad = () => {
-    if (!nuevaEspecialidad.trim()) return;
-    
-    // Agregar temporalmente a la lista local
-    const nuevaEspecialidadObj = {
-      id: `temp-${Date.now()}`, // ID temporal
-      nombre: nuevaEspecialidad.trim(),
-      isNew: true // Marcar como nueva para identificarla al guardar
-    };
-    
-    setEspecialidades([...especialidades, nuevaEspecialidadObj]);
-    setNuevaEspecialidad(''); // Limpiar el input para la siguiente entrada
-  };
-
+  // Función para agregar una nueva especialidad directamente desde el formulario
+  // Ya no necesitamos esta función separada, la lógica está en el onClick del botón
+  
   // Función para guardar los cambios
   const handleGuardar = async () => {
     setLoading(true);
@@ -144,15 +132,27 @@ const CrearEspecialidades = ({ isOpen, onClose, onSpecialtyCreated }) => {
             </div>
           )}
           
-          {/* Botón para añadir especialidad - usando estilos específicos para mantener el diseño requerido */}
+          {/* Botón para crear nueva especialidad - usando la clase btn--neutral nativa */}
           <Button 
             variant="neutral" 
-            onClick={mostrarInputNueva ? agregarEspecialidad : () => setMostrarInputNueva(true)}
-            disabled={mostrarInputNueva && !nuevaEspecialidad.trim()}
-            className="especialidades-btn-crear"
+            onClick={() => {
+              if (mostrarInputNueva && nuevaEspecialidad.trim()) {
+                // Si el input está visible y tiene valor, agregar a la lista temporal
+                const nuevaEspecialidadObj = {
+                  id: `temp-${Date.now()}`,
+                  nombre: nuevaEspecialidad.trim(),
+                  isNew: true
+                };
+                setEspecialidades([...especialidades, nuevaEspecialidadObj]);
+                setNuevaEspecialidad('');
+              } else {
+                // Si no, mostrar el input
+                setMostrarInputNueva(true);
+              }
+            }}
           >
             <PlusIcon className="especialidades-plus-icon" />
-            <span>{mostrarInputNueva ? "Añadir especialidad" : "Crear nueva especialidad"}</span>
+            <span>Crear nueva especialidad</span>
           </Button>
         </div>
       </Modal>

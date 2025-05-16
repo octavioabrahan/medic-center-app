@@ -80,16 +80,6 @@
   margin-bottom: 8px;  /* Espacio entre el input y el botón */
 }
 
-/* Estilo del botón neutral */
-.especialidades-btn-crear {
-  align-self: flex-start !important;
-  background-color: var(--sds-color-background-neutral-tertiary, #e3e3e3) !important;
-  color: var(--sds-color-text-neutral-default, #1e1e1e) !important;
-  border-color: var(--sds-color-border-neutral-secondary, #767676) !important;
-  border-radius: var(--var-sds-size-radius-200, 8px) !important;
-  padding: var(--var-sds-size-space-300, 12px) !important;
-}
-
 .especialidades-plus-icon {
   flex-shrink: 0;
   width: 16px;
@@ -97,11 +87,6 @@
   position: relative;
   overflow: visible;
   margin-right: 8px;
-}
-
-/* Asegura que el contenido del botón esté bien alineado */
-.especialidades-btn-crear span {
-  display: inline-block;
 }
 
 .especialidades-loading, 
