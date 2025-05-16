@@ -129,7 +129,7 @@ const AgregarHorario = ({ isOpen, onClose }) => {
       secondaryButtonText="Cancelar"
       onPrimaryClick={formValido ? handleAgregar : null}
       onSecondaryClick={onClose}
-      size="large"
+      size="medium"
     >
       <div className="campo-completo">
         <SelectField
@@ -216,63 +216,93 @@ const AgregarHorario = ({ isOpen, onClose }) => {
       <div className="fechas-grupo">
         <div className="fecha-campo">
           <label className="fecha-etiqueta">Desde</label>
-          <input
-            type="text" 
-            className="input-fecha"
-            value={fechaDesde ? formatDateForDisplay(fechaDesde) : ""}
-            placeholder="dd/mm/aaaa"
-            onClick={(e) => {
-              const datePicker = document.createElement('input');
-              datePicker.type = 'date';
-              datePicker.style.position = 'absolute';
-              datePicker.style.left = '-9999px';
-              datePicker.value = fechaDesde;
-              datePicker.min = new Date().toISOString().split('T')[0];
-              
-              document.body.appendChild(datePicker);
-              datePicker.addEventListener('change', (event) => {
-                setFechaDesde(event.target.value);
-                document.body.removeChild(datePicker);
-              });
-              datePicker.showPicker();
-            }}
-            readOnly
-          />
+          <div className="input-fecha-container">
+            <input
+              type="text" 
+              className="input-fecha"
+              value={fechaDesde ? formatDateForDisplay(fechaDesde) : ""}
+              placeholder="dd/mm/aaaa"
+              onClick={(e) => {
+                const rect = e.target.getBoundingClientRect();
+                const datePicker = document.createElement('input');
+                datePicker.type = 'date';
+                datePicker.style.position = 'fixed';
+                datePicker.style.left = `${rect.left}px`;
+                datePicker.style.top = `${rect.bottom + 5}px`;
+                datePicker.style.opacity = '0';
+                datePicker.value = fechaDesde;
+                datePicker.min = new Date().toISOString().split('T')[0];
+                
+                document.body.appendChild(datePicker);
+                datePicker.addEventListener('change', (event) => {
+                  setFechaDesde(event.target.value);
+                  document.body.removeChild(datePicker);
+                });
+                
+                // Si se hace clic fuera del datepicker, cerrarlo
+                const handleOutsideClick = (event) => {
+                  if (event.target !== datePicker) {
+                    document.body.removeChild(datePicker);
+                    document.removeEventListener('click', handleOutsideClick, true);
+                  }
+                };
+                
+                // Retrasar un poco la adición del listener para evitar que se active de inmediato
+                setTimeout(() => {
+                  document.addEventListener('click', handleOutsideClick, true);
+                }, 100);
+                
+                datePicker.showPicker();
+              }}
+              readOnly
+            />
+          </div>
         </div>
         <div className="fecha-campo">
           <label className="fecha-etiqueta">Hasta</label>
-          <input
-            type="text" 
-            className="input-fecha"
-            value={fechaHasta ? formatDateForDisplay(fechaHasta) : ""}
-            placeholder="dd/mm/aaaa"
-            onClick={(e) => {
-              const datePicker = document.createElement('input');
-              datePicker.type = 'date';
-              datePicker.style.position = 'absolute';
-              datePicker.style.left = '-9999px';
-              datePicker.value = fechaHasta;
-              datePicker.min = fechaDesde || new Date().toISOString().split('T')[0];
-              
-              document.body.appendChild(datePicker);
-              datePicker.addEventListener('change', (event) => {
-                setFechaHasta(event.target.value);
-                document.body.removeChild(datePicker);
-              });
-              datePicker.showPicker();
-            }}
-            readOnly
-          />
+          <div className="input-fecha-container">
+            <input
+              type="text" 
+              className="input-fecha"
+              value={fechaHasta ? formatDateForDisplay(fechaHasta) : ""}
+              placeholder="dd/mm/aaaa"
+              onClick={(e) => {
+                const rect = e.target.getBoundingClientRect();
+                const datePicker = document.createElement('input');
+                datePicker.type = 'date';
+                datePicker.style.position = 'fixed';
+                datePicker.style.left = `${rect.left}px`;
+                datePicker.style.top = `${rect.bottom + 5}px`;
+                datePicker.style.opacity = '0';
+                datePicker.value = fechaHasta;
+                datePicker.min = fechaDesde || new Date().toISOString().split('T')[0];
+                
+                document.body.appendChild(datePicker);
+                datePicker.addEventListener('change', (event) => {
+                  setFechaHasta(event.target.value);
+                  document.body.removeChild(datePicker);
+                });
+                
+                // Si se hace clic fuera del datepicker, cerrarlo
+                const handleOutsideClick = (event) => {
+                  if (event.target !== datePicker) {
+                    document.body.removeChild(datePicker);
+                    document.removeEventListener('click', handleOutsideClick, true);
+                  }
+                };
+                
+                // Retrasar un poco la adición del listener para evitar que se active de inmediato
+                setTimeout(() => {
+                  document.addEventListener('click', handleOutsideClick, true);
+                }, 100);
+                
+                datePicker.showPicker();
+              }}
+              readOnly
+            />
+          </div>
         </div>
       </div>
-
-      {!formValido && (
-        <div className="botones-agregar">
-          <Button variant="primary" disabled={true}>
-            Agregar
-          </Button>
-        </div>
-      )}
     </Modal>
   );
 };

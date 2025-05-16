@@ -4,7 +4,10 @@
   margin-bottom: 16px;
 }
 
-.campo-completo > div {
+.campo-completo > div,
+.campo-completo .select-field,
+.campo-completo .select,
+.campo-completo .select-native-wrapper {
   width: 100% !important;
 }
 
@@ -43,8 +46,11 @@
   width: calc(50% - 8px);
 }
 
-.horario-campo > div {
-  width: 100%;
+.horario-campo > div,
+.horario-campo .select-field,
+.horario-campo .select,
+.horario-campo .select-native-wrapper {
+  width: 100% !important;
 }
 
 /* Estilos para fechas */
@@ -89,11 +95,7 @@
   color: var(--sds-color-text-default-tertiary);
 }
 
-/* Botón Agregar cuando está deshabilitado */
-.botones-agregar {
-  display: flex;
-  justify-content: flex-end;
+.input-fecha-container {
+  position: relative;
   width: 100%;
-  margin-top: 16px;
-  padding-bottom: 8px;
 }
