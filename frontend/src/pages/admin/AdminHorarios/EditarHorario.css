@@ -13,7 +13,7 @@
 }
 
 /* Posiciona el botón de borrar al inicio de la fila */
-.custom-button-group .delete-button {
+.custom-button-group .btn--danger {
   margin-right: auto;
 }
 
