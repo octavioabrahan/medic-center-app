@@ -36,6 +36,15 @@ const CrearProfesionales = ({
   const [error, setError] = useState(null);
   const [especialidadNombre, setEspecialidadNombre] = useState('');
 
+  // Cargar servicios cuando se abre el modal
+  useEffect(() => {
+    if (isOpen) {
+      cargarServicios();
+      // Resetear formulario
+      resetForm();
+    }
+  }, [isOpen]);
+
   // Efecto para actualizar nombre de especialidad al cambiar especialidad_id
   useEffect(() => {
     if (nuevoProfesional.especialidad_id) {
@@ -62,6 +71,30 @@ const CrearProfesionales = ({
       setError("Error al cargar los servicios disponibles");
     } finally {
       setLoading(false);
+    }
+  };
+
+  // Función para resetear el formulario
+  const resetForm = () => {
+    setNuevoProfesional({
+      cedula: '',
+      nombre: '',
+      apellido: '',
+      telefono: '',
+      correo: '',
+      especialidad_id: '',
+    });
+    setServiciosSeleccionados([]);
+    setEspecialidadNombre('');
+    setError(null);
+  };
+
+  // Toggle de un servicio (seleccionarlo o deseleccionarlo)
+  const toggleServicio = (servicioId) => {
+    if (serviciosSeleccionados.includes(servicioId)) {
+      setServiciosSeleccionados(serviciosSeleccionados.filter(id => id !== servicioId));
+    } else {
+      setServiciosSeleccionados([...serviciosSeleccionados, servicioId]);
     }
   };
 
