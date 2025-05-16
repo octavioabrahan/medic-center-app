@@ -318,3 +318,77 @@
 .admin-horarios__modal-body {
   padding: 24px;
 }
+
+/* Form styles for modal forms */
+.admin-horarios__form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 100%;
+}
+
+.admin-horarios__form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+}
+
+.admin-horarios__form-row {
+  display: flex;
+  gap: 16px;
+  width: 100%;
+}
+
+.admin-horarios__form-row .admin-horarios__form-group {
+  flex: 1;
+}
+
+.admin-horarios__label {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--sds-color-text-default, #1e1e1e);
+}
+
+.admin-horarios__input,
+.admin-horarios__textarea,
+.admin-horarios__select {
+  padding: 10px 12px;
+  border: 1px solid var(--sds-color-border-default-default, #d9d9d9);
+  border-radius: 4px;
+  font-size: 14px;
+  width: 100%;
+  transition: border-color 0.2s;
+}
+
+.admin-horarios__input:focus,
+.admin-horarios__textarea:focus,
+.admin-horarios__select:focus {
+  border-color: var(--sds-color-interactive-primary, #0070f3);
+  outline: none;
+}
+
+.admin-horarios__textarea {
+  resize: vertical;
+  min-height: 100px;
+}
+
+.admin-horarios__checkbox-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 4px;
+}
+
+.admin-horarios__checkbox-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.admin-horarios__form-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 16px;
+}
