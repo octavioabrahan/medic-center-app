@@ -99,6 +99,31 @@
   margin-bottom: 8px;  /* Espacio entre el input y el botón */
 }
 
+/* Asegurar que el componente InputField ocupe todo el ancho */
+.especialidades-nueva-input .input-field {
+  width: 100%;
+}
+
+.especialidades-nueva-input .inputField {
+  width: 100%;
+}
+
+/* Estilo para el mensaje de error de validación */
+.especialidades-error-validacion {
+  color: var(--var-sds-color-text-error-default, #d83232);
+  font-size: 14px;
+  margin-top: 4px;
+  width: 100%;
+}
+
+/* Estilo para el mensaje de límite alcanzado */
+.especialidades-max-message {
+  color: var(--var-sds-color-text-warning-default, #8a6a00);
+  font-size: 14px;
+  margin-top: 8px;
+  width: 100%;
+}
+
 .especialidades-error-validacion {
   color: var(--var-sds-color-text-danger-default, #d83933);
   font-size: 14px;

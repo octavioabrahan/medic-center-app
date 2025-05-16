@@ -156,7 +156,7 @@ const CrearEspecialidades = ({ isOpen, onClose, onSpecialtyCreated }) => {
         return;
       } else if (nombreEspecialidad.trim().length > 0 && validarEspecialidadExistente(nombreEspecialidad)) {
         // Si hay texto pero ya existe
-        setErrorValidacion('Esta especialidad ya existe (aunque con diferente formato)');
+        setErrorValidacion('Parece que esta especialidad ya está registrada. Evita duplicados para mantener el sistema ordenado.');
         setLoading(false);
         return;
       } else {
@@ -234,6 +234,7 @@ const CrearEspecialidades = ({ isOpen, onClose, onSpecialtyCreated }) => {
                 value={nombreEspecialidad}
                 onChange={(value) => setNombreEspecialidad(value)}
                 placeholder="Nombre de especialidad"
+                style={{ width: '100%' }}
               />
               {errorValidacion && (
                 <div className="especialidades-error-validacion">{errorValidacion}</div>
