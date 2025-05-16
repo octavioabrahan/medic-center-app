@@ -1,13 +1,84 @@
-.crear-especialidades-content {
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.custom-modal-container {
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   width: 100%;
+  max-width: 500px;
+  position: relative;
+  padding: 24px;
 }
 
-.especialidad-item {
+.modal-close-btn {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #6B7280;
+  padding: 4px;
+}
+
+.modal-header {
+  display: flex;
+  margin-bottom: 24px;
+}
+
+.modal-title {
+  font-size: 20px;
+  font-weight: 600;
+  color: #111827;
+  margin: 0;
+  flex: 0 0 auto;
+  margin-right: 16px;
+}
+
+.modal-description {
+  font-size: 14px;
+  color: #6B7280;
+  margin: 0;
+  flex: 1;
+}
+
+.modal-content {
+  margin-bottom: 24px;
+}
+
+.especialidad-input {
   margin-bottom: 16px;
 }
 
-.especialidad-form {
-  margin-bottom: 16px;
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.crear-especialidad-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
 }
 
 .error-message {
@@ -16,8 +87,6 @@
   margin-top: 8px;
 }
 
-.crear-especialidad-btn {
-  display: flex;
-  align-items: center;
-  gap: 8px;
+.especialidad-form {
+  margin-bottom: 16px;
 }

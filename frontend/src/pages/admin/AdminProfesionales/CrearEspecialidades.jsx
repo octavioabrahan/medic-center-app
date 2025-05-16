@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import Modal from '../../../components/Modal/Modal';
+import { XMarkIcon } from '@heroicons/react/24/outline';
 import InputField from '../../../components/Inputs/InputField';
 import { Button } from '../../../components/Button/Button';
 import Text from '../../../components/Text/Text';
@@ -62,65 +62,90 @@ const CrearEspecialidades = ({ isOpen, onClose, onSpecialtyCreated }) => {
     }
   };
 
-  // Custom content for the modal body
-  const renderModalContent = () => (
-    <>
-      {!showCreateNew ? (
-        <>
-          <div className="especialidad-item">
-            <InputField
-              label="Nombre de la especialidad"
-              disabled={true}
-              value="Cardiología"
-            />
-          </div>
-          
-          <Button
-            variant="neutral"
-            onClick={handleAddNewSpecialty}
-            className="crear-especialidad-btn"
-          >
-            <PlusIcon width={20} height={20} />
-            <span>Crear nueva especialidad</span>
-          </Button>
-        </>
-      ) : (
-        <div className="especialidad-form">
-          <InputField
-            label="Nombre de la especialidad"
-            value={nuevaEspecialidad.nombre}
-            onChange={(value) => setNuevaEspecialidad({ ...nuevaEspecialidad, nombre: value })}
-            placeholder="Ingrese el nombre de la especialidad"
-            error={!!error}
-            disabled={isSubmitting}
-            autoFocus
-          />
-          {error && (
-            <div className="error-message">
-              {error}
+  // No necesitamos esta función ya que ahora renderizamos directamente en el return
+
+  if (!isOpen) return null;
+
+  return (
+    <div className="modal-overlay" onClick={onClose}>
+      <div className="custom-modal-container" onClick={(e) => e.stopPropagation()}>
+        {/* Close button */}
+        <button className="modal-close-btn" onClick={onClose}>
+          <XMarkIcon width={20} height={20} />
+        </button>
+        
+        {/* Header section with title and description side by side */}
+        <div className="modal-header">
+          <h2 className="modal-title">Especialidades</h2>
+          <p className="modal-description">
+            Cada profesional debe tener asignada una especialidad para poder mostrarse en el sitio de agendamiento.
+          </p>
+        </div>
+        
+        {/* Content area */}
+        <div className="modal-content">
+          {!showCreateNew ? (
+            <>
+              <div className="especialidad-input">
+                <InputField
+                  label="Nombre de la especialidad"
+                  disabled={true}
+                  value="Cardiología"
+                />
+              </div>
+              
+              <div className="modal-actions">
+                <Button
+                  variant="neutral"
+                  onClick={handleAddNewSpecialty}
+                  className="crear-especialidad-btn"
+                >
+                  <PlusIcon width={20} height={20} />
+                  <span>Crear nueva especialidad</span>
+                </Button>
+              </div>
+            </>
+          ) : (
+            <div className="especialidad-form">
+              <InputField
+                label="Nombre de la especialidad"
+                value={nuevaEspecialidad.nombre}
+                onChange={(value) => setNuevaEspecialidad({ ...nuevaEspecialidad, nombre: value })}
+                placeholder="Ingrese el nombre de la especialidad"
+                error={!!error}
+                disabled={isSubmitting}
+                autoFocus
+              />
+              {error && (
+                <div className="error-message">
+                  {error}
+                </div>
+              )}
             </div>
           )}
         </div>
-      )}
-    </>
-  );
-
-  return (
-    <Modal
-      isOpen={isOpen}
-      onClose={onClose}
-      heading="Especialidades"
-      bodyText="Cada profesional debe tener asignada una especialidad para poder mostrarse en el sitio de agendamiento."
-      contentClassName="crear-especialidades-content"
-      size="medium"
-      primaryButtonText={showCreateNew ? "Guardar" : null}
-      onPrimaryClick={showCreateNew ? handleCreateEspecialidad : null}
-      primaryButtonDisabled={isSubmitting || (showCreateNew && !nuevaEspecialidad.nombre.trim())}
-      secondaryButtonText="Cancelar"
-      onSecondaryClick={onClose}
-    >
-      {renderModalContent()}
-    </Modal>
+        
+        {/* Footer with buttons */}
+        <div className="modal-footer">
+          <Button
+            variant="neutral"
+            onClick={onClose}
+          >
+            Cancelar
+          </Button>
+          
+          {showCreateNew && (
+            <Button
+              variant="primary"
+              onClick={handleCreateEspecialidad}
+              disabled={isSubmitting || !nuevaEspecialidad.nombre.trim()}
+            >
+              Guardar
+            </Button>
+          )}
+        </div>
+      </div>
+    </div>
   );
 };
 
