@@ -6,6 +6,7 @@ import SelectField from '../../../components/Inputs/SelectField';
 import CheckboxField from '../../../components/Inputs/CheckboxField';
 import { UserPlusIcon, CheckIcon, PencilIcon, ArrowPathIcon } from '@heroicons/react/20/solid';
 import axios from 'axios';
+import CrearEspecialidades from './CrearEspecialidades';
 import './AdminProfesionales.css';
 
 /**
@@ -31,7 +32,6 @@ const AdminProfesionales = () => {
   const [showAddProfesionalModal, setShowAddProfesionalModal] = useState(false);
   const [showEditProfesionalModal, setShowEditProfesionalModal] = useState(false);
   const [showConfirmArchiveModal, setShowConfirmArchiveModal] = useState(false);
-  const [nuevaEspecialidad, setNuevaEspecialidad] = useState({ nombre: '' });
   const [currentProfesional, setCurrentProfesional] = useState(null);
   
   // Estado para el nuevo profesional
@@ -121,24 +121,9 @@ const AdminProfesionales = () => {
     }
   };
   
-  // Crear nueva especialidad
-  const handleCreateEspecialidad = async (e) => {
-    e.preventDefault();
-    if (!nuevaEspecialidad.nombre.trim()) {
-      setError("El nombre de la especialidad es obligatorio");
-      return;
-    }
-
-    try {
-      await axios.post('/api/especialidades', nuevaEspecialidad);
-      const res = await axios.get('/api/especialidades');
-      setEspecialidades(res.data);
-      setNuevaEspecialidad({ nombre: '' });
-      setShowAddEspecialidadModal(false);
-    } catch (err) {
-      console.error("Error al crear especialidad:", err);
-      setError("Error al crear la especialidad");
-    }
+  // Handle specialty creation from child component
+  const handleSpecialtyCreated = (updatedEspecialidades) => {
+    setEspecialidades(updatedEspecialidades);
   };
 
   // Crear nuevo profesional
@@ -295,45 +280,6 @@ const AdminProfesionales = () => {
       value: esp.nombre
     }))
   ];
-
-  // Modal para añadir especialidad
-  const renderAddEspecialidadModal = () => {
-    if (!showAddEspecialidadModal) return null;
-
-    return (
-      <div className="admin-profesionales__modal-overlay">
-        <div className="admin-profesionales__modal-content">
-          <div className="admin-profesionales__modal-header">
-            <h2>Crear especialidad</h2>
-            <button className="admin-profesionales__close-btn" onClick={() => setShowAddEspecialidadModal(false)}>×</button>
-          </div>
-          <div className="admin-profesionales__modal-body">
-            <form onSubmit={handleCreateEspecialidad}>
-              <div className="admin-profesionales__form-group">
-                <label htmlFor="nombre">Nombre de la especialidad</label>
-                <input
-                  id="nombre"
-                  type="text"
-                  value={nuevaEspecialidad.nombre}
-                  onChange={(e) => setNuevaEspecialidad({ ...nuevaEspecialidad, nombre: e.target.value })}
-                  className="admin-profesionales__input"
-                  required
-                />
-              </div>
-            </form>
-          </div>
-          <div className="admin-profesionales__modal-footer">
-            <Button variant="neutral" onClick={() => setShowAddEspecialidadModal(false)}>
-              Cancelar
-            </Button>
-            <Button variant="primary" onClick={handleCreateEspecialidad}>
-              Crear
-            </Button>
-          </div>
-        </div>
-      </div>
-    );
-  };
 
   // Modal para confirmar archivar profesional
   const renderConfirmArchiveModal = () => {
@@ -756,7 +702,11 @@ const AdminProfesionales = () => {
           </div>
         )}
       </div>
-      {renderAddEspecialidadModal()}
+      <CrearEspecialidades 
+        isOpen={showAddEspecialidadModal} 
+        onClose={() => setShowAddEspecialidadModal(false)} 
+        onSpecialtyCreated={handleSpecialtyCreated}
+      />
       {renderAddProfesionalModal()}
       {renderEditProfesionalModal()}
       {renderConfirmArchiveModal()}
