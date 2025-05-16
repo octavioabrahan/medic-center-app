@@ -121,6 +121,7 @@ const AdminHorarios = () => {
           fetchExcepciones()
         ]);
         
+        
         setHorarios(horariosData);
         setProfesionales(profesionalesData);
         setExcepciones(excepcionesData);
@@ -394,7 +395,8 @@ const AdminHorarios = () => {
                           </div>
                         );
                       }
-                      return null; // Para otras columnas, usar el renderizado por defecto
+                      // Para otras columnas, usar el renderizado por defecto
+                      return null;
                     }}
                   />
                 </div>
@@ -451,7 +453,7 @@ const AdminHorarios = () => {
                     headers={[
                       'Profesional',
                       'Fecha',
-                      'Estado',
+                      'Tipo de execepción',
                       'Hora inicio',
                       'Hora término',
                       'Motivo',
@@ -510,6 +512,7 @@ const AdminHorarios = () => {
                           </div>
                         );
                       }
+                      // Para otras columnas, usar el renderizado por defecto
                       return null;
                     }}
                   />

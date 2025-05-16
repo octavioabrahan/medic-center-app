@@ -46,7 +46,12 @@ const Table = ({
                   onClick={(e) => column === 'acciones' && e.stopPropagation()} // Evita que los clicks en acciones propaguen al row
                 >
                   {renderCustomCell ? (
-                    renderCustomCell(row, column, colIndex)
+                    // Si renderCustomCell devuelve null, mostrar el valor por defecto
+                    renderCustomCell(row, column, colIndex) || (
+                      <div className="text">
+                        <div className="text2">{row[column]}</div>
+                      </div>
+                    )
                   ) : (
                     <div className="text">
                       <div className="text2">{row[column]}</div>
