@@ -271,10 +271,8 @@ const EditarHorario = ({ isOpen, onClose, horario, onSuccess }) => {
   // Custom footer component para el modal que reemplaza la funcionalidad de los botones predeterminados
   const CustomFooter = () => (
     <div className="custom-button-group">
-      {/* El botón danger-subtle utiliza variant="danger" con className="btn--subtle" */}
       <Button
         variant="danger"
-        className="btn--subtle delete-button"
         onClick={handleBorrar}
         disabled={loading}
       >
