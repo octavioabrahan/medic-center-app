@@ -272,12 +272,12 @@ const EditarHorario = ({ isOpen, onClose, horario, onSuccess }) => {
   const CustomFooter = () => (
     <div className="custom-button-group">
       <Button
-        variant="danger"
+        variant="subtle"
+        className="btn--danger delete-button"
         onClick={handleBorrar}
         disabled={loading}
-        className="delete-button"
       >
-        Borrar
+        {loading ? "Borrando..." : "Borrar"}
       </Button>
       <Button 
         variant="neutral" 
