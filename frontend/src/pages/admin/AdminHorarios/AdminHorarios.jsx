@@ -9,6 +9,7 @@ import Table from '../../../components/Tables/Table';
 import Tag from '../../../components/Tag/Tag';
 import AgregarHorario from './AgregarHorario';
 import EditarHorario from './EditarHorario';
+import AgregarDiasExcepciones from './AgregarDiasExcepciones';
 import './AdminHorarios.css';
 
 /**
@@ -111,6 +112,7 @@ const AdminHorarios = () => {
   const [sortOrder, setSortOrder] = useState('az');
   const [showAgregarHorarioModal, setShowAgregarHorarioModal] = useState(false);
   const [showEditarHorarioModal, setShowEditarHorarioModal] = useState(false);
+  const [showAgregarDiaModal, setShowAgregarDiaModal] = useState(false);
   const [currentHorario, setCurrentHorario] = useState(null);
 
   // Cargar horarios, excepciones y profesionales al montar el componente
@@ -239,13 +241,13 @@ const AdminHorarios = () => {
     }
   };
   
-  // Funciones para manejar excepciones (sin funcionalidad)
+  // Funciones para manejar excepciones
   const handleCancelDay = () => {
     console.log('Cancelar día (sin implementación)');
   };
   
   const handleAddDay = () => {
-    console.log('Agregar día especial (sin implementación)');
+    setShowAgregarDiaModal(true);
   };
   
   const handleEditExcepcion = (excepcion) => {
@@ -254,6 +256,16 @@ const AdminHorarios = () => {
   
   const handleDeleteExcepcion = (excepcionId) => {
     console.log('Eliminar excepción (sin implementación)', excepcionId);
+  };
+  
+  // Función para actualizar los datos después de agregar una nueva excepción
+  const handleExcepcionSuccess = async () => {
+    try {
+      const excepcionesData = await fetchExcepciones();
+      setExcepciones(excepcionesData);
+    } catch (err) {
+      console.error('Error al actualizar excepciones:', err);
+    }
   };
 
   return (
@@ -521,6 +533,13 @@ const AdminHorarios = () => {
             setHorarios(data);
           });
         }}
+      />
+      
+      {/* Modal para agregar días específicos (excepciones) */}
+      <AgregarDiasExcepciones
+        isOpen={showAgregarDiaModal}
+        onClose={() => setShowAgregarDiaModal(false)}
+        onSuccess={handleExcepcionSuccess}
       />
     </AdminLayout>
   );
