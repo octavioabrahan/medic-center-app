@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import React, { useState, useEffect } from 'react';
 import { AdminLayout } from '../../../components/AdminDashboard';
 import Button from '../../../components/Button/Button';
 import SearchField from '../../../components/Inputs/SearchField';
