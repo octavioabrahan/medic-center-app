@@ -2,16 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Modal from '../../../components/Modal/Modal';
 import api from '../../../api';
 import './CrearProfesionales.css';
-import { 
-  ExclamationCircleIcon, 
-  CheckCircleIcon, 
-  UserIcon, 
-  PhoneIcon, 
-  EnvelopeIcon, 
-  IdentificationIcon, 
-  AcademicCapIcon,
-  ClipboardDocumentListIcon 
-} from '@heroicons/react/24/outline';
+import { XMarkIcon, ChevronDownIcon, CheckIcon } from '@heroicons/react/24/solid';
 
 /**
  * CrearProfesionales component for adding new professionals in the admin dashboard
@@ -22,7 +13,13 @@ import {
  * @param {Function} props.onProfesionalCreated - Function to call when professional is created
  * @param {boolean} props.showArchived - Whether archived professionals are shown
  */
-const CrearProfesionales = ({ isOpen, onClose, especialidades = [], onProfesionalCreated, showArchived = false }) => {
+const CrearProfesionales = ({ 
+  isOpen, 
+  onClose, 
+  especialidades = [], 
+  onProfesionalCreated, 
+  showArchived = false 
+}) => {
   const [nuevoProfesional, setNuevoProfesional] = useState({
     cedula: '',
     nombre: '',
@@ -37,15 +34,21 @@ const CrearProfesionales = ({ isOpen, onClose, especialidades = [], onProfesiona
   const [serviciosSeleccionados, setServiciosSeleccionados] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [especialidadNombre, setEspecialidadNombre] = useState('');
 
-  // Cargar servicios cuando se abre el modal
+  // Efecto para actualizar nombre de especialidad al cambiar especialidad_id
   useEffect(() => {
-    if (isOpen) {
-      cargarServicios();
-      // Resetear formulario
-      resetForm();
+    if (nuevoProfesional.especialidad_id) {
+      const especialidadSeleccionada = especialidades.find(
+        esp => esp.especialidad_id.toString() === nuevoProfesional.especialidad_id.toString()
+      );
+      if (especialidadSeleccionada) {
+        setEspecialidadNombre(especialidadSeleccionada.nombre);
+      }
+    } else {
+      setEspecialidadNombre('');
     }
-  }, [isOpen]);
+  }, [nuevoProfesional.especialidad_id, especialidades]);
 
   // Función para cargar servicios
   const cargarServicios = async () => {
@@ -60,20 +63,6 @@ const CrearProfesionales = ({ isOpen, onClose, especialidades = [], onProfesiona
     } finally {
       setLoading(false);
     }
-  };
-
-  // Función para resetear el formulario
-  const resetForm = () => {
-    setNuevoProfesional({
-      cedula: '',
-      nombre: '',
-      apellido: '',
-      telefono: '',
-      correo: '',
-      especialidad_id: '',
-    });
-    setServiciosSeleccionados([]);
-    setError(null);
   };
 
   // Función para crear nuevo profesional
@@ -126,182 +115,162 @@ const CrearProfesionales = ({ isOpen, onClose, especialidades = [], onProfesiona
     onClose();
   };
 
-  // Render personalizado dentro del Modal
-  const renderModalContent = () => (
-    <div className="crear-profesionales-container">
-      {error && (
-        <div className="crear-profesionales-error">
-          <ExclamationCircleIcon className="crear-profesionales-error-icon" />
-          <span>{error}</span>
-        </div>
-      )}
-      
-      <form onSubmit={handleCreateProfesional} className="crear-profesionales-form">
-        <div className="crear-profesionales-form-group">
-          <label htmlFor="cedula" className="crear-profesionales-label-required">
-            <IdentificationIcon width={18} height={18} />
-            Cédula
-          </label>
-          <input
-            id="cedula"
-            type="text"
-            value={nuevoProfesional.cedula}
-            onChange={(e) => setNuevoProfesional({ ...nuevoProfesional, cedula: e.target.value })}
-            className="crear-profesionales-input"
-            disabled={loading}
-            required
-            placeholder="Ingrese el número de cédula"
-          />
-        </div>
-        
-        <div className="crear-profesionales-form-group">
-          <label htmlFor="nombre" className="crear-profesionales-label-required">
-            <UserIcon width={18} height={18} />
-            Nombre
-          </label>
-          <input
-            id="nombre"
-            type="text"
-            value={nuevoProfesional.nombre}
-            onChange={(e) => setNuevoProfesional({ ...nuevoProfesional, nombre: e.target.value })}
-            className="crear-profesionales-input"
-            disabled={loading}
-            required
-            placeholder="Ingrese el nombre"
-          />
-        </div>
-        
-        <div className="crear-profesionales-form-group">
-          <label htmlFor="apellido" className="crear-profesionales-label-required">
-            <UserIcon width={18} height={18} />
-            Apellido
-          </label>
-          <input
-            id="apellido"
-            type="text"
-            value={nuevoProfesional.apellido}
-            onChange={(e) => setNuevoProfesional({ ...nuevoProfesional, apellido: e.target.value })}
-            className="crear-profesionales-input"
-            disabled={loading}
-            required
-            placeholder="Ingrese el apellido"
-          />
-        </div>
-        
-        <div className="crear-profesionales-form-group">
-          <label htmlFor="telefono">
-            <PhoneIcon width={18} height={18} />
-            Teléfono
-          </label>
-          <input
-            id="telefono"
-            type="text"
-            value={nuevoProfesional.telefono}
-            onChange={(e) => setNuevoProfesional({ ...nuevoProfesional, telefono: e.target.value })}
-            className="crear-profesionales-input"
-            disabled={loading}
-            placeholder="Ej: 099123456"
-          />
-        </div>
-        
-        <div className="crear-profesionales-form-group">
-          <label htmlFor="correo">
-            <EnvelopeIcon width={18} height={18} />
-            Correo Electrónico
-          </label>
-          <input
-            id="correo"
-            type="email"
-            value={nuevoProfesional.correo}
-            onChange={(e) => setNuevoProfesional({ ...nuevoProfesional, correo: e.target.value })}
-            className="crear-profesionales-input"
-            disabled={loading}
-            placeholder="nombre@ejemplo.com"
-          />
-        </div>
-        
-        <div className="crear-profesionales-form-group">
-          <label htmlFor="especialidad" className="crear-profesionales-label-required">
-            <AcademicCapIcon width={18} height={18} />
-            Especialidad
-          </label>
-          <select
-            id="especialidad"
-            value={nuevoProfesional.especialidad_id}
-            onChange={(e) => setNuevoProfesional({ ...nuevoProfesional, especialidad_id: e.target.value })}
-            className="crear-profesionales-select"
-            disabled={loading}
-            required
-          >
-            <option value="">Seleccione una especialidad</option>
-            {especialidades.map(esp => (
-              <option key={esp.especialidad_id} value={esp.especialidad_id}>
-                {esp.nombre}
-              </option>
-            ))}
-          </select>
-        </div>
-        
-        {servicios.length > 0 && (
-          <div className="crear-profesionales-servicios-container">
-            <div className="crear-profesionales-servicios-header">
-              <ClipboardDocumentListIcon className="crear-profesionales-servicios-icon" />
-              Servicios disponibles
-            </div>
-            <div className="crear-profesionales-servicios-list">
-              {servicios.map(servicio => (
-                <div key={servicio.id_servicio} className="crear-profesionales-servicio-item">
-                  <input
-                    type="checkbox"
-                    id={`servicio-${servicio.id_servicio}`}
-                    checked={serviciosSeleccionados.includes(servicio.id_servicio)}
-                    onChange={(e) => {
-                      if (e.target.checked) {
-                        setServiciosSeleccionados([...serviciosSeleccionados, servicio.id_servicio]);
-                      } else {
-                        setServiciosSeleccionados(serviciosSeleccionados.filter(id => id !== servicio.id_servicio));
-                      }
-                    }}
-                    disabled={loading}
-                  />
-                  <label htmlFor={`servicio-${servicio.id_servicio}`}>{servicio.nombre_servicio}</label>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-
-        <div className="crear-profesionales-form-actions">
-          <button 
-            type="button" 
-            className="crear-profesionales-btn-cancelar" 
-            onClick={handleClose}
-            disabled={loading}
-          >
-            Cancelar
-          </button>
-          <button 
-            type="submit" 
-            className="crear-profesionales-btn-guardar"
-            disabled={loading}
-          >
-            {loading ? 'Guardando...' : 'Guardar'}
-          </button>
-        </div>
-      </form>
-    </div>
-  );
-
+  // Render principal
   return (
     <Modal
       isOpen={isOpen}
       onClose={handleClose}
-      heading="Agregar Profesional"
-      bodyText="Complete el formulario con los datos del nuevo profesional médico."
+      noPadding={true}
       size="large"
-      noPadding={false}
+      contentClassName="crear-profesionales-no-padding"
     >
-      {renderModalContent()}
+      <div className="dialog-body">
+        {error && (
+          <div className="crear-profesionales-error">
+            {error}
+          </div>
+        )}
+        
+        <div className="text">
+          <div className="agregar-nuevo-profesional">Agregar nuevo profesional</div>
+          
+          <div className="input-field">
+            <div className="label">Cédula</div>
+            <div className="input">
+              <input 
+                className="value"
+                type="text"
+                value={nuevoProfesional.cedula}
+                onChange={(e) => setNuevoProfesional({ ...nuevoProfesional, cedula: e.target.value })}
+                placeholder="00.000.000"
+                disabled={loading}
+              />
+            </div>
+          </div>
+          
+          <div className="input-field">
+            <div className="label">Nombre</div>
+            <div className="input">
+              <input 
+                className="value"
+                type="text"
+                value={nuevoProfesional.nombre}
+                onChange={(e) => setNuevoProfesional({ ...nuevoProfesional, nombre: e.target.value })}
+                placeholder="Nombre del profesional"
+                disabled={loading}
+              />
+            </div>
+          </div>
+          
+          <div className="input-field">
+            <div className="label">Apellido</div>
+            <div className="input">
+              <input 
+                className="value"
+                type="text"
+                value={nuevoProfesional.apellido}
+                onChange={(e) => setNuevoProfesional({ ...nuevoProfesional, apellido: e.target.value })}
+                placeholder="Apellido del profesional"
+                disabled={loading}
+              />
+            </div>
+          </div>
+          
+          <div className="input-field">
+            <div className="label">Teléfono</div>
+            <div className="input">
+              <input 
+                className="value"
+                type="text"
+                value={nuevoProfesional.telefono}
+                onChange={(e) => setNuevoProfesional({ ...nuevoProfesional, telefono: e.target.value })}
+                placeholder="Teléfono del profesional"
+                disabled={loading}
+              />
+            </div>
+          </div>
+          
+          <div className="input-field">
+            <div className="label">Correo</div>
+            <div className="input">
+              <input 
+                className="value"
+                type="email"
+                value={nuevoProfesional.correo}
+                onChange={(e) => setNuevoProfesional({ ...nuevoProfesional, correo: e.target.value })}
+                placeholder="correo@ejemplo.com"
+                disabled={loading}
+              />
+            </div>
+          </div>
+          
+          <div className="select-field">
+            <div className="label">Especialidad</div>
+            <div className="select" onClick={() => !loading && document.getElementById('especialidad-select').focus()}>
+              <select
+                id="especialidad-select"
+                className="select-native"
+                value={nuevoProfesional.especialidad_id}
+                onChange={(e) => setNuevoProfesional({ ...nuevoProfesional, especialidad_id: e.target.value })}
+                disabled={loading}
+                style={{ opacity: 0, position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }}
+              >
+                <option value="">Seleccione una especialidad</option>
+                {especialidades.map(esp => (
+                  <option key={esp.especialidad_id} value={esp.especialidad_id}>
+                    {esp.nombre}
+                  </option>
+                ))}
+              </select>
+              <div className="value">
+                {especialidadNombre || 'Seleccione una especialidad'}
+              </div>
+              <ChevronDownIcon className="chevron-down" />
+            </div>
+          </div>
+          
+          {servicios.length > 0 && (
+            <div className="input-field">
+              <div className="servicio">Servicio</div>
+              <div className="frame-30">
+                {servicios.map(servicio => (
+                  <div key={servicio.id_servicio} className="checkbox-field">
+                    <div 
+                      className="checkbox-and-label" 
+                      onClick={() => !loading && toggleServicio(servicio.id_servicio)}
+                    >
+                      <div className={serviciosSeleccionados.includes(servicio.id_servicio) ? "checkbox2" : "checkbox"}>
+                        {serviciosSeleccionados.includes(servicio.id_servicio) && (
+                          <CheckIcon className="check" />
+                        )}
+                      </div>
+                      <div className="label2">{servicio.nombre_servicio}</div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+        
+        <div className="button-group">
+          <div className="button-neutral" onClick={handleClose}>
+            <div className="button">Cancelar</div>
+          </div>
+          <div 
+            className={`button-primary ${loading ? 'disabled' : ''}`} 
+            onClick={!loading ? handleCreateProfesional : undefined}
+          >
+            <div className="button2">
+              {loading ? 'Procesando...' : 'Agregar'}
+            </div>
+          </div>
+        </div>
+        
+        <div className="icon-button" onClick={handleClose}>
+          <XMarkIcon className="x" />
+        </div>
+      </div>
     </Modal>
   );
 };
