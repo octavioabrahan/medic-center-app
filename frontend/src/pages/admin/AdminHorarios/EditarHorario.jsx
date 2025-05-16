@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './AgregarHorario.css';
 import './EditarHorario.css';
-import { ChevronDownIcon, XMarkIcon, TrashIcon } from '@heroicons/react/24/solid';
+import { ChevronDownIcon, XMarkIcon, TrashIcon, PlusIcon } from '@heroicons/react/24/solid';
 import Modal from '../../../components/Modal/Modal';
 import Button from '../../../components/Button/Button';
 import SelectField from '../../../components/Inputs/SelectField';
@@ -271,13 +271,15 @@ const EditarHorario = ({ isOpen, onClose, horario, onSuccess }) => {
   // Custom footer component para el modal que reemplaza la funcionalidad de los botones predeterminados
   const CustomFooter = () => (
     <div className="custom-button-group">
+      {/* El botón danger-subtle utiliza variant="danger" con className="btn--subtle" */}
       <Button
-        variant="subtle"
-        className="btn--danger delete-button"
+        variant="danger"
+        className="btn--subtle delete-button"
         onClick={handleBorrar}
         disabled={loading}
       >
-        {loading ? "Borrando..." : "Borrar"}
+        <TrashIcon className="btn__icon" />
+        <span style={{ marginLeft: '.5rem' }}>{loading ? "Borrando..." : "Borrar"}</span>
       </Button>
       <Button 
         variant="neutral" 
