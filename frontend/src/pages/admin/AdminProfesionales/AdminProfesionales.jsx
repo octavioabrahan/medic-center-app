@@ -106,10 +106,10 @@ const AdminProfesionales = () => {
   // Cambiar estado activo/inactivo del profesional
   const cambiarEstadoProfesional = async (profesionalId, activo) => {
     try {
-      await axios.put(`/api/profesionales/${profesionalId}/estado`, { activo });
+      await api.put(`/profesionales/${profesionalId}/estado`, { activo });
       
       // Actualizar la lista después del cambio
-      const res = await axios.get('/api/profesionales', { params: { soloActivos: !showArchived } });
+      const res = await api.get('/profesionales', { params: { soloActivos: !showArchived } });
       setProfesionales(res.data);
       
       // Cerrar modal si está abierto
@@ -140,19 +140,19 @@ const AdminProfesionales = () => {
 
     try {
       // 1. Crear profesional
-      const res = await axios.post('/api/profesionales', nuevoProfesional);
+      const res = await api.post('/profesionales', nuevoProfesional);
       const profesionalId = res.data.profesional_id;
       
       // 2. Asignar servicios si existen
       if (serviciosSeleccionados.length > 0) {
-        await axios.post('/api/profesionales/asignar-servicios', {
+        await api.post('/profesionales/asignar-servicios', {
           profesional_id: profesionalId,
           servicios: serviciosSeleccionados
         });
       }
       
       // Actualizar lista de profesionales
-      const updatedProfesionales = await axios.get('/api/profesionales', { 
+      const updatedProfesionales = await api.get('/profesionales', { 
         params: { soloActivos: !showArchived } 
       });
       setProfesionales(updatedProfesionales.data);
@@ -199,7 +199,7 @@ const AdminProfesionales = () => {
     }
 
     try {
-      await axios.put(`/api/profesionales/${currentProfesional.profesional_id}`, {
+      await api.put(`/profesionales/${currentProfesional.profesional_id}`, {
         nombre: currentProfesional.nombre,
         apellido: currentProfesional.apellido,
         cedula: currentProfesional.cedula,
@@ -210,14 +210,14 @@ const AdminProfesionales = () => {
       
       // Actualizar servicios
       if (serviciosSeleccionados.length > 0) {
-        await axios.post('/api/profesionales/asignar-servicios', {
+        await api.post('/profesionales/asignar-servicios', {
           profesional_id: currentProfesional.profesional_id,
           servicios: serviciosSeleccionados
         });
       }
       
       // Actualizar lista
-      const updatedProfesionales = await axios.get('/api/profesionales', { 
+      const updatedProfesionales = await api.get('/profesionales', { 
         params: { soloActivos: !showArchived } 
       });
       setProfesionales(updatedProfesionales.data);
@@ -244,7 +244,7 @@ const AdminProfesionales = () => {
     if (showAddProfesionalModal || showEditProfesionalModal) {
       const fetchServicios = async () => {
         try {
-          const res = await axios.get('/api/servicios');
+          const res = await api.get('/servicios');
           setServicios(res.data);
         } catch (err) {
           console.error("Error al cargar servicios:", err);
@@ -261,7 +261,7 @@ const AdminProfesionales = () => {
     if (showEditProfesionalModal && currentProfesional?.profesional_id) {
       const fetchServiciosProfesional = async () => {
         try {
-          const res = await axios.get(`/api/profesionales/relaciones/${currentProfesional.profesional_id}`);
+          const res = await api.get(`/profesionales/relaciones/${currentProfesional.profesional_id}`);
           setServiciosSeleccionados(res.data.servicios || []);
         } catch (err) {
           console.error("Error al cargar servicios del profesional:", err);

@@ -3,7 +3,6 @@ import Modal from '../../../components/Modal/Modal';
 import Button from '../../../components/Button/Button';
 import InputField from '../../../components/Inputs/InputField';
 import { PlusIcon } from '@heroicons/react/20/solid';
-import { XMarkIcon } from '@heroicons/react/24/solid';
 import api from '../../../api'; // Importar api en lugar de axios
 import './CrearEspecialidades.css';
 
