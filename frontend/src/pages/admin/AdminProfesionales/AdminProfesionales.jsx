@@ -5,7 +5,7 @@ import SearchField from '../../../components/Inputs/SearchField';
 import SelectField from '../../../components/Inputs/SelectField';
 import CheckboxField from '../../../components/Inputs/CheckboxField';
 import { UserPlusIcon, CheckIcon, PencilIcon, ArrowPathIcon } from '@heroicons/react/20/solid';
-import axios from 'axios';
+import api from '../../../api';
 import CrearEspecialidades from './CrearEspecialidades';
 import './AdminProfesionales.css';
 
@@ -55,8 +55,8 @@ const AdminProfesionales = () => {
       setLoading(true);
       try {
         const [profesionalesRes, especialidadesRes] = await Promise.all([
-          axios.get('/api/profesionales', { params: { soloActivos: !showArchived } }),
-          axios.get('/api/especialidades')
+          api.get('/profesionales', { params: { soloActivos: !showArchived } }),
+          api.get('/especialidades')
         ]);
         
         setProfesionales(profesionalesRes.data);

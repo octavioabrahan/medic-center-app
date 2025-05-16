@@ -4,7 +4,7 @@ import Button from '../../../components/Button/Button';
 import InputField from '../../../components/Inputs/InputField';
 import { PlusIcon } from '@heroicons/react/20/solid';
 import { XMarkIcon } from '@heroicons/react/24/solid';
-import axios from 'axios';
+import api from '../../../api'; // Importar api en lugar de axios
 import './CrearEspecialidades.css';
 
 /**
@@ -43,7 +43,7 @@ const CrearEspecialidades = ({ isOpen, onClose, onSpecialtyCreated }) => {
   const cargarEspecialidades = async () => {
     setLoading(true);
     try {
-      const response = await axios.get('/api/especialidades');
+      const response = await api.get('/especialidades');
       setEspecialidades(response.data);
       setError(null);
     } catch (err) {
@@ -118,14 +118,14 @@ const CrearEspecialidades = ({ isOpen, onClose, onSpecialtyCreated }) => {
       // Si hay nuevas especialidades, guardarlas en la BD
       if (nuevasEspecialidades.length > 0) {
         for (const esp of nuevasEspecialidades) {
-          await axios.post('/api/especialidades', { 
+          await api.post('/especialidades', { 
             nombre: esp.nombre 
           });
         }
       }
       
       // Recargar todas las especialidades para obtener las IDs correctas
-      const response = await axios.get('/api/especialidades');
+      const response = await api.get('/especialidades');
       
       // Actualizar y notificar al componente padre
       if (onSpecialtyCreated) {
