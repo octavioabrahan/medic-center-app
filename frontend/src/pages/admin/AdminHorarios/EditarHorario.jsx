@@ -279,16 +279,6 @@ const EditarHorario = ({ isOpen, onClose, horario, onSuccess }) => {
       primaryButtonDisabled={!formValido || loading}
       onSecondaryClick={onClose}
       size="medium"
-      extraButton={
-        <Button
-          variant="danger-subtle"
-          onClick={handleBorrar}
-          disabled={loading}
-          icon={<TrashIcon className="btn__icon" />}
-        >
-          Borrar
-        </Button>
-      }
     >
       {error && (
         <div className="mensaje-error">
@@ -513,7 +503,16 @@ const EditarHorario = ({ isOpen, onClose, horario, onSuccess }) => {
         </div>
       </div>
 
-      
+      <div className="button-group-container">
+        <Button
+          variant="danger-subtle"
+          onClick={handleBorrar}
+          disabled={loading}
+          icon={<TrashIcon className="btn__icon" />}
+        >
+          Borrar
+        </Button>
+      </div>
     </Modal>
   );
 };
