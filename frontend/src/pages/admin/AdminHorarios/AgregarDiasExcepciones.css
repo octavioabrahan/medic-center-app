@@ -14,7 +14,9 @@
   justify-content: flex-start;
   align-self: stretch;
   width: 100%;
-  margin-bottom: var(--sds-space-300, 12px);
+  margin-bottom: var(--sds-space-600, 24px);
+  max-width: 100%;
+  overflow: hidden;
 }
 
 .month-and-year {
@@ -39,20 +41,20 @@
 .date-picker {
   display: flex;
   flex-direction: column;
-  gap: var(--sds-space-200, 8px);
+  gap: var(--sds-space-100, 4px);
   align-items: center;
   justify-content: flex-start;
   align-self: stretch;
   width: 100%;
+  border: 1px solid var(--sds-color-border-neutral-tertiary, #e0e0e0);
+  border-radius: var(--sds-size-radius-300, 12px);
+  padding: var(--sds-space-300, 12px);
+  background-color: var(--sds-color-background-default-default, #ffffff);
 }
 
 .weekdays {
-  display: flex;
-  flex-direction: row;
-  gap: var(--sds-space-300, 12px);
-  align-items: center;
-  justify-content: flex-start;
-  align-self: stretch;
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
   width: 100%;
   margin-bottom: 4px;
 }
@@ -62,44 +64,37 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  flex: 1;
 }
 
 .weekday-cell div {
   color: var(--sds-color-text-neutral-secondary, #7b827e);
   text-align: center;
   font-family: var(--sds-typography-family-sans, "Inter-Regular", sans-serif);
-  font-size: 20px;
+  font-size: 16px;
   line-height: 120%;
   font-weight: 400;
-  width: 26px;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
 .week-1, .week-2, .week-3, .week-4, .week-5 {
-  display: flex;
-  flex-direction: row;
-  gap: var(--sds-space-300, 12px);
-  align-items: center;
-  justify-content: flex-start;
-  align-self: stretch;
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
   width: 100%;
+  margin-bottom: 2px;
 }
 
 .calendar-day {
   background: var(--sds-color-background-default-default, #ffffff);
   border-radius: var(--sds-size-radius-200, 8px);
-  padding: var(--sds-space-100, 4px);
+  height: 40px;
+  margin: 2px;
   display: flex;
   flex-direction: column;
-  gap: var(--sds-space-100, 4px);
   align-items: center;
   justify-content: center;
-  flex: 1;
   position: relative;
-  overflow: hidden;
   cursor: pointer;
   transition: background-color 0.2s;
 }
@@ -109,18 +104,23 @@
 }
 
 .calendar-day.selected {
-  background-color: var(--sds-color-background-brand-tertiary, #E1EBFF);
-  border: 1px solid var(--sds-color-border-brand-secondary, #84A9FF);
+  background-color: var(--sds-color-background-brand-default, #0052cc);
+  color: white;
+  font-weight: bold;
+}
+
+.calendar-day.selected .day,
+.calendar-day.selected .day2 {
+  color: white;
 }
 
 .day {
   color: var(--sds-color-text-neutral-tertiary, #6c7470);
   text-align: center;
   font-family: var(--sds-typography-family-sans, "Inter-Regular", sans-serif);
-  font-size: 20px;
+  font-size: 14px;
   line-height: 120%;
   font-weight: 400;
-  width: 26px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -130,10 +130,9 @@
   color: var(--sds-color-text-default-default, #0a1811);
   text-align: center;
   font-family: var(--sds-typography-family-sans, "Inter-Regular", sans-serif);
-  font-size: 20px;
+  font-size: 14px;
   line-height: 120%;
   font-weight: 400;
-  width: 26px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -144,9 +143,7 @@
 }
 
 .line-1 {
-  align-self: stretch;
-  flex-shrink: 0;
-  height: 0px;
+  display: none;
 }
 
 /* Horarios */

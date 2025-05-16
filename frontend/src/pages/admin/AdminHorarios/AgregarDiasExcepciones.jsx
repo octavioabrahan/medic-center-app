@@ -150,10 +150,12 @@ const AgregarDiasExcepciones = ({ isOpen, onClose, onSuccess }) => {
       fecha: new Date(anio, mes - 1, i + 1)
     }));
     
-    // Días del mes siguiente para completar la última semana
+    // Días del mes siguiente para completar hasta 35 (5 semanas) o 42 (6 semanas) días
     const diasMesSiguiente = [];
     const totalDias = diasMesAnterior.length + diasMesActual.length;
-    const diasFaltantes = 42 - totalDias; // 6 semanas completas (7 días x 6 semanas = 42)
+    const semanasTotales = Math.ceil((primerDiaSemana - 1 + diasTotales) / 7); // 5 o 6 semanas
+    const diasNecesarios = semanasTotales * 7;
+    const diasFaltantes = diasNecesarios - totalDias;
     
     for (let i = 1; i <= diasFaltantes; i++) {
       diasMesSiguiente.push({
@@ -165,6 +167,16 @@ const AgregarDiasExcepciones = ({ isOpen, onClose, onSuccess }) => {
     
     // Combinar todos los días
     const todosLosDias = [...diasMesAnterior, ...diasMesActual, ...diasMesSiguiente];
+    
+    // Asegurarnos de que tengamos semanas completas
+    while (todosLosDias.length % 7 !== 0) {
+      const ultimoDia = todosLosDias.length;
+      todosLosDias.push({
+        dia: ultimoDia + 1,
+        esMesActual: false,
+        fecha: new Date(anio, mes, ultimoDia + 1 - diasMesActual.length - diasMesAnterior.length)
+      });
+    }
     
     // Agrupar por semanas (7 días por semana)
     const semanas = [];
@@ -285,7 +297,6 @@ const AgregarDiasExcepciones = ({ isOpen, onClose, onSuccess }) => {
                   <div className={dia.esMesActual ? 'day2' : 'day'}>
                     {dia.dia}
                   </div>
-                  <div className="line-1"></div>
                 </div>
               ))}
             </div>
