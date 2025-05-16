@@ -271,7 +271,7 @@ const AdminHorarios = () => {
   };
 
   return (
-    <AdminLayout activePage="horarios">
+    <AdminLayout activePage="/admin/horarios">
       <div className="admin-horarios">
         <div className="admin-horarios__page-header">
           <div className="admin-horarios__menu-header">
