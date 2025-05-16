@@ -95,7 +95,45 @@
   color: var(--sds-color-text-default-tertiary);
 }
 
-.input-fecha-container {
+.fecha-input-wrapper {
   position: relative;
   width: 100%;
+}
+
+.fecha-calendario-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: 1000;
+  width: 100%;
+  margin-top: 4px;
+  background: var(--sds-color-background-default-default);
+  border: 1px solid var(--sds-color-border-default-default);
+  border-radius: var(--sds-radius-200);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  padding: 8px;
+}
+
+.fecha-calendario {
+  width: 100%;
+  padding: 8px;
+  border: none;
+  outline: none;
+  font-family: "Inter-Regular", sans-serif;
+  font-size: 16px;
+}
+
+/* Estilos para hacer el calendario más atractivo */
+input[type="date"]::-webkit-calendar-picker-indicator {
+  cursor: pointer;
+  opacity: 1;
+}
+
+input[type="date"] {
+  appearance: none;
+  -webkit-appearance: none;
+  padding: 8px;
+  border: 1px solid var(--sds-color-border-default-default);
+  border-radius: var(--sds-radius-200);
+  background-color: var(--sds-color-background-default-default);
 }

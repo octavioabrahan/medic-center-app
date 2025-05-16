@@ -13,6 +13,10 @@ import CheckboxField from '../../../components/Inputs/CheckboxField';
  * @param {Function} props.onClose - Función para cerrar el modal
  */
 const AgregarHorario = ({ isOpen, onClose }) => {
+  // Refs para los contenedores de los date pickers
+  const desdeFechaRef = React.useRef(null);
+  const hastaFechaRef = React.useRef(null);
+
   // Estados para los campos del formulario
   const [profesional, setProfesional] = useState('');
   const [tipoAtencion, setTipoAtencion] = useState('');
@@ -30,6 +34,8 @@ const AgregarHorario = ({ isOpen, onClose }) => {
   const [fechaDesde, setFechaDesde] = useState('');
   const [fechaHasta, setFechaHasta] = useState('');
   const [formValido, setFormValido] = useState(false);
+  const [showDesdeCalendar, setShowDesdeCalendar] = useState(false);
+  const [showHastaCalendar, setShowHastaCalendar] = useState(false);
 
   // Opciones para selects
   const profesionalesOptions = [
@@ -86,6 +92,31 @@ const AgregarHorario = ({ isOpen, onClose }) => {
       fechasSeleccionadas
     );
   }, [profesional, tipoAtencion, diasSemana, horaInicio, horaTermino, fechaDesde, fechaHasta]);
+  
+  // Efecto para manejar clics fuera de los calendarios
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      // Para el calendario Desde
+      if (desdeFechaRef.current && !desdeFechaRef.current.contains(event.target)) {
+        setShowDesdeCalendar(false);
+      }
+      
+      // Para el calendario Hasta
+      if (hastaFechaRef.current && !hastaFechaRef.current.contains(event.target)) {
+        setShowHastaCalendar(false);
+      }
+    };
+    
+    // Agregamos el event listener cuando los calendarios están visibles
+    if (showDesdeCalendar || showHastaCalendar) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+    
+    // Limpieza del event listener
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [showDesdeCalendar, showHastaCalendar]);
 
   // Manejar cambio en días de la semana
   const handleDiaSemanaChange = (dia, checked) => {
@@ -217,90 +248,56 @@ const AgregarHorario = ({ isOpen, onClose }) => {
       <div className="fechas-grupo">
         <div className="fecha-campo">
           <label className="fecha-etiqueta">Desde</label>
-          <div className="input-fecha-container">
+          <div className="fecha-input-wrapper" ref={desdeFechaRef}>
             <input
               type="text" 
               className="input-fecha"
               value={fechaDesde ? formatDateForDisplay(fechaDesde) : ""}
               placeholder="dd/mm/aaaa"
-              onClick={(e) => {
-                const rect = e.target.getBoundingClientRect();
-                const datePicker = document.createElement('input');
-                datePicker.type = 'date';
-                datePicker.style.position = 'fixed';
-                datePicker.style.left = `${rect.left}px`;
-                datePicker.style.top = `${rect.bottom + 5}px`;
-                datePicker.style.opacity = '0';
-                datePicker.value = fechaDesde;
-                datePicker.min = new Date().toISOString().split('T')[0];
-                
-                document.body.appendChild(datePicker);
-                datePicker.addEventListener('change', (event) => {
-                  setFechaDesde(event.target.value);
-                  document.body.removeChild(datePicker);
-                });
-                
-                // Si se hace clic fuera del datepicker, cerrarlo
-                const handleOutsideClick = (event) => {
-                  if (event.target !== datePicker) {
-                    document.body.removeChild(datePicker);
-                    document.removeEventListener('click', handleOutsideClick, true);
-                  }
-                };
-                
-                // Retrasar un poco la adición del listener para evitar que se active de inmediato
-                setTimeout(() => {
-                  document.addEventListener('click', handleOutsideClick, true);
-                }, 100);
-                
-                datePicker.showPicker();
-              }}
+              onClick={() => setShowDesdeCalendar(!showDesdeCalendar)}
               readOnly
             />
+            {showDesdeCalendar && (
+              <div className="fecha-calendario-dropdown">
+                <input
+                  type="date"
+                  className="fecha-calendario"
+                  value={fechaDesde}
+                  onChange={(e) => {
+                    setFechaDesde(e.target.value);
+                    setShowDesdeCalendar(false);
+                  }}
+                  min={new Date().toISOString().split('T')[0]}
+                />
+              </div>
+            )}
           </div>
         </div>
         <div className="fecha-campo">
           <label className="fecha-etiqueta">Hasta</label>
-          <div className="input-fecha-container">
+          <div className="fecha-input-wrapper" ref={hastaFechaRef}>
             <input
               type="text" 
               className="input-fecha"
               value={fechaHasta ? formatDateForDisplay(fechaHasta) : ""}
               placeholder="dd/mm/aaaa"
-              onClick={(e) => {
-                const rect = e.target.getBoundingClientRect();
-                const datePicker = document.createElement('input');
-                datePicker.type = 'date';
-                datePicker.style.position = 'fixed';
-                datePicker.style.left = `${rect.left}px`;
-                datePicker.style.top = `${rect.bottom + 5}px`;
-                datePicker.style.opacity = '0';
-                datePicker.value = fechaHasta;
-                datePicker.min = fechaDesde || new Date().toISOString().split('T')[0];
-                
-                document.body.appendChild(datePicker);
-                datePicker.addEventListener('change', (event) => {
-                  setFechaHasta(event.target.value);
-                  document.body.removeChild(datePicker);
-                });
-                
-                // Si se hace clic fuera del datepicker, cerrarlo
-                const handleOutsideClick = (event) => {
-                  if (event.target !== datePicker) {
-                    document.body.removeChild(datePicker);
-                    document.removeEventListener('click', handleOutsideClick, true);
-                  }
-                };
-                
-                // Retrasar un poco la adición del listener para evitar que se active de inmediato
-                setTimeout(() => {
-                  document.addEventListener('click', handleOutsideClick, true);
-                }, 100);
-                
-                datePicker.showPicker();
-              }}
+              onClick={() => setShowHastaCalendar(!showHastaCalendar)}
               readOnly
             />
+            {showHastaCalendar && (
+              <div className="fecha-calendario-dropdown">
+                <input
+                  type="date"
+                  className="fecha-calendario"
+                  value={fechaHasta}
+                  onChange={(e) => {
+                    setFechaHasta(e.target.value);
+                    setShowHastaCalendar(false);
+                  }}
+                  min={fechaDesde || new Date().toISOString().split('T')[0]}
+                />
+              </div>
+            )}
           </div>
         </div>
       </div>
