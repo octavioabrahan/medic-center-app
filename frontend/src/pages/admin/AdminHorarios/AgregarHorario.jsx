@@ -95,6 +95,13 @@ const AgregarHorario = ({ isOpen, onClose }) => {
     }));
   };
 
+  // Función para formatear fechas en formato dd/mm/aaaa
+  const formatDateForDisplay = (dateString) => {
+    if (!dateString) return "";
+    const date = new Date(dateString);
+    return `${date.getDate().toString().padStart(2, '0')}/${(date.getMonth() + 1).toString().padStart(2, '0')}/${date.getFullYear()}`;
+  };
+
   // Manejar agregar horario
   const handleAgregar = () => {
     // Lógica para guardar el horario
@@ -118,127 +125,144 @@ const AgregarHorario = ({ isOpen, onClose }) => {
       onClose={onClose}
       heading="Agregar horario de atención para un profesional"
       bodyText="Si un profesional atiende varios días a la semana, debes agregar cada día por separado. Ejemplo: si el profesional atiende lunes a las 8:00, miércoles a las 9:00 y viernes a las 10:00, debes crear tres horarios distintos, uno por cada día."
-      primaryButtonText="Agregar"
+      primaryButtonText={formValido ? "Agregar" : ""}
       secondaryButtonText="Cancelar"
       onPrimaryClick={formValido ? handleAgregar : null}
       onSecondaryClick={onClose}
-      contentClassName="agregar-horario-content"
+      size="large"
     >
-      <div className="agregar-horario-form">
-        <SelectField
-          label="Profesional"
-          placeholder="Selecciona un profesional"
-          value={profesional}
-          onChange={setProfesional}
-          options={profesionalesOptions}
-          style={{width: '100%'}}
-        />
+      <SelectField
+        label="Profesional"
+        placeholder="Selecciona un profesional"
+        value={profesional}
+        onChange={setProfesional}
+        options={profesionalesOptions}
+      />
 
-        <SelectField
-          label="Tipo de atención"
-          placeholder="Selecciona una opción"
-          value={tipoAtencion}
-          onChange={setTipoAtencion}
-          options={tiposAtencionOptions}
-          style={{width: '100%'}}
-        />
+      <SelectField
+        label="Tipo de atención"
+        placeholder="Selecciona una opción"
+        value={tipoAtencion}
+        onChange={setTipoAtencion}
+        options={tiposAtencionOptions}
+      />
 
-        <div className="dias-semana-container">
-          <label className="dias-semana-label">Día de la semana</label>
-          
-          <div className="dias-semana-checkboxes">
-            <CheckboxField 
-              label="Lunes" 
-              checked={diasSemana.lunes} 
-              onChange={(checked) => handleDiaSemanaChange('lunes', checked)} 
-            />
-            
-            <CheckboxField 
-              label="Martes" 
-              checked={diasSemana.martes} 
-              onChange={(checked) => handleDiaSemanaChange('martes', checked)} 
-            />
-            
-            <CheckboxField 
-              label="Miércoles" 
-              checked={diasSemana.miercoles} 
-              onChange={(checked) => handleDiaSemanaChange('miercoles', checked)} 
-            />
-            
-            <CheckboxField 
-              label="Jueves" 
-              checked={diasSemana.jueves} 
-              onChange={(checked) => handleDiaSemanaChange('jueves', checked)} 
-            />
-            
-            <CheckboxField 
-              label="Viernes" 
-              checked={diasSemana.viernes} 
-              onChange={(checked) => handleDiaSemanaChange('viernes', checked)} 
-            />
-            
-            <CheckboxField 
-              label="Sábado" 
-              checked={diasSemana.sabado} 
-              onChange={(checked) => handleDiaSemanaChange('sabado', checked)} 
-            />
-            
-            <CheckboxField 
-              label="Domingo" 
-              checked={diasSemana.domingo} 
-              onChange={(checked) => handleDiaSemanaChange('domingo', checked)} 
-            />
-          </div>
+      <div className="dias-semana-grupo">
+        <p className="dias-semana-titulo">Día de la semana</p>
+        <div className="dias-semana-opciones">
+          <CheckboxField 
+            label="Lunes" 
+            checked={diasSemana.lunes} 
+            onChange={(checked) => handleDiaSemanaChange('lunes', checked)} 
+          />
+          <CheckboxField 
+            label="Martes" 
+            checked={diasSemana.martes} 
+            onChange={(checked) => handleDiaSemanaChange('martes', checked)} 
+          />
+          <CheckboxField 
+            label="Miércoles" 
+            checked={diasSemana.miercoles} 
+            onChange={(checked) => handleDiaSemanaChange('miercoles', checked)} 
+          />
+          <CheckboxField 
+            label="Jueves" 
+            checked={diasSemana.jueves} 
+            onChange={(checked) => handleDiaSemanaChange('jueves', checked)} 
+          />
+          <CheckboxField 
+            label="Viernes" 
+            checked={diasSemana.viernes} 
+            onChange={(checked) => handleDiaSemanaChange('viernes', checked)} 
+          />
+          <CheckboxField 
+            label="Sábado" 
+            checked={diasSemana.sabado} 
+            onChange={(checked) => handleDiaSemanaChange('sabado', checked)} 
+          />
+          <CheckboxField 
+            label="Domingo" 
+            checked={diasSemana.domingo} 
+            onChange={(checked) => handleDiaSemanaChange('domingo', checked)} 
+          />
         </div>
+      </div>
 
-        <div className="horas-container">
+      <div className="horarios-grupo">
+        <div className="horario-campo">
           <SelectField
             label="Hora de inicio"
             placeholder="--:-- --"
             value={horaInicio}
             onChange={setHoraInicio}
             options={horariosOptions}
-            style={{flex: 1}}
           />
-          
+        </div>
+        <div className="horario-campo">
           <SelectField
             label="Hora de término"
             placeholder="--:-- --"
             value={horaTermino}
             onChange={setHoraTermino}
             options={horariosOptions}
-            style={{flex: 1}}
           />
         </div>
+      </div>
 
-        <div className="fechas-container">
-          <div className="fecha-field" style={{flex: 1}}>
-            <label className="fecha-label">Desde</label>
-            <div className="fecha-input-container">
-              <input
-                type="date"
-                className="fecha-input"
-                value={fechaDesde}
-                onChange={(e) => setFechaDesde(e.target.value)}
-                min={new Date().toISOString().split('T')[0]}
-              />
-            </div>
+      <div className="fechas-grupo">
+        <div className="fecha-campo">
+          <label className="fecha-etiqueta">Desde</label>
+          <div className="fecha-contenedor">
+            <input
+              type="text" 
+              className="fecha-input"
+              value={fechaDesde ? formatDateForDisplay(fechaDesde) : ""}
+              placeholder="dd/mm/aaaa"
+              onClick={(e) => {
+                e.currentTarget.nextElementSibling.showPicker();
+              }}
+              readOnly
+            />
+            <input
+              type="date"
+              className="fecha-picker"
+              value={fechaDesde}
+              onChange={(e) => setFechaDesde(e.target.value)}
+              min={new Date().toISOString().split('T')[0]}
+            />
           </div>
-          
-          <div className="fecha-field" style={{flex: 1}}>
-            <label className="fecha-label">Hasta</label>
-            <div className="fecha-input-container">
-              <input
-                type="date"
-                className="fecha-input"
-                value={fechaHasta}
-                onChange={(e) => setFechaHasta(e.target.value)}
-                min={fechaDesde || new Date().toISOString().split('T')[0]}
-              />
-            </div>
+        </div>
+        <div className="fecha-campo">
+          <label className="fecha-etiqueta">Hasta</label>
+          <div className="fecha-contenedor">
+            <input
+              type="text" 
+              className="fecha-input"
+              value={fechaHasta ? formatDateForDisplay(fechaHasta) : ""}
+              placeholder="dd/mm/aaaa"
+              onClick={(e) => {
+                e.currentTarget.nextElementSibling.showPicker();
+              }}
+              readOnly
+            />
+            <input
+              type="date"
+              className="fecha-picker"
+              value={fechaHasta}
+              onChange={(e) => setFechaHasta(e.target.value)}
+              min={fechaDesde || new Date().toISOString().split('T')[0]}
+            />
           </div>
         </div>
       </div>
+
+      {!formValido && (
+        <div className="botones-inferiores">
+          <Button variant="primary" disabled={true}>
+            Agregar
+          </Button>
+        </div>
+      )}
     </Modal>
   );
 };

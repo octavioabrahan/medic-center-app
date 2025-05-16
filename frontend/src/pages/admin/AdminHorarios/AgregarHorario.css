@@ -1,74 +1,68 @@
-.agregar-horario-content {
-  max-height: 80vh;
-  overflow-y: auto;
-}
-
-.agregar-horario-form {
-  display: flex;
-  flex-direction: column;
-  gap: var(--sds-space-400);
-  width: 100%;
-  padding: var(--sds-space-200) 0;
-}
-
-.dias-semana-container {
-  display: flex;
-  flex-direction: column;
-  gap: var(--sds-space-200);
+/* Estilos para días de la semana */
+.dias-semana-grupo {
+  margin-top: 16px;
+  margin-bottom: 16px;
   width: 100%;
 }
 
-.dias-semana-label {
+.dias-semana-titulo {
   color: var(--sds-color-text-default-default);
   font-family: "Inter-Regular", sans-serif;
   font-size: 16px;
   line-height: 140%;
   font-weight: 400;
+  margin-bottom: 8px;
 }
 
-.dias-semana-checkboxes {
+.dias-semana-opciones {
   display: flex;
   flex-direction: column;
-  gap: var(--sds-space-200);
-  width: 100%;
+  gap: 8px;
 }
 
-.horas-container {
+/* Estilos para horarios */
+.horarios-grupo {
   display: flex;
-  flex-direction: row;
-  gap: var(--sds-space-400);
+  gap: 16px;
   width: 100%;
+  margin-bottom: 16px;
 }
 
-.fechas-container {
+.horario-campo {
+  flex: 1;
+}
+
+/* Estilos para fechas */
+.fechas-grupo {
   display: flex;
-  flex-direction: row;
-  gap: var(--sds-space-400);
+  gap: 16px;
   width: 100%;
+  margin-bottom: 16px;
 }
 
-.fecha-field {
-  display: flex;
-  flex-direction: column;
-  gap: var(--sds-space-200);
+.fecha-campo {
+  flex: 1;
 }
 
-.fecha-label {
+.fecha-etiqueta {
+  display: block;
   color: var(--sds-color-text-default-default);
   font-family: "Inter-Regular", sans-serif;
   font-size: 16px;
   line-height: 140%;
   font-weight: 400;
+  margin-bottom: 8px;
 }
 
-.fecha-input-container {
+.fecha-contenedor {
+  position: relative;
   background: var(--sds-color-background-default-default);
   border-radius: var(--sds-radius-200);
   border: 1px solid var(--sds-color-border-default-default);
-  padding: var(--sds-space-300);
+  padding: 12px 16px;
+  height: 40px;
   display: flex;
   align-items: center;
-  height: 40px;
 }
 
 .fecha-input {
@@ -79,18 +73,27 @@
   font-family: "Inter-Regular", sans-serif;
   font-size: 16px;
   outline: none;
-}
-
-/* Elimina el icono del calendario nativo */
-input[type="date"]::-webkit-calendar-picker-indicator {
-  opacity: 0;
-  position: absolute;
-  width: 100%;
-  height: 100%;
   cursor: pointer;
 }
 
-/* Asegura que los selectores ocupen el ancho completo */
-.agregar-horario-form .select-field {
+.fecha-input::placeholder {
+  color: var(--sds-color-text-default-tertiary);
+}
+
+.fecha-picker {
+  position: absolute;
+  top: 0;
+  left: 0;
   width: 100%;
+  height: 100%;
+  opacity: 0;
+  cursor: pointer;
+  z-index: -1;
+}
+
+.botones-inferiores {
+  display: flex;
+  justify-content: flex-end;
+  width: 100%;
+  margin-top: 16px;
 }
