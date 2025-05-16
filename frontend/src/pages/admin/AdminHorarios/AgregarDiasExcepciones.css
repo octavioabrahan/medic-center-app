@@ -1,0 +1,189 @@
+/* Estilos para el componente AgregarDiasExcepciones */
+
+/* Contenedor principal */
+.agregar-dias-excepciones {
+  max-width: 600px;
+}
+
+/* Estructura del calendario */
+.pick-a-day {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sds-space-300, 12px);
+  align-items: center;
+  justify-content: flex-start;
+  align-self: stretch;
+  width: 100%;
+  margin-bottom: var(--sds-space-300, 12px);
+}
+
+.month-and-year {
+  display: flex;
+  flex-direction: row;
+  gap: var(--sds-space-600, 24px);
+  align-items: flex-start;
+  justify-content: center;
+  width: 100%;
+}
+
+.select-field2 {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sds-space-200, 8px);
+  align-items: flex-start;
+  justify-content: flex-start;
+  flex: 1;
+}
+
+/* Calendario */
+.date-picker {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sds-space-200, 8px);
+  align-items: center;
+  justify-content: flex-start;
+  align-self: stretch;
+  width: 100%;
+}
+
+.weekdays {
+  display: flex;
+  flex-direction: row;
+  gap: var(--sds-space-300, 12px);
+  align-items: center;
+  justify-content: flex-start;
+  align-self: stretch;
+  width: 100%;
+  margin-bottom: 4px;
+}
+
+.weekday-cell {
+  padding: var(--sds-space-100, 4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+}
+
+.weekday-cell div {
+  color: var(--sds-color-text-neutral-secondary, #7b827e);
+  text-align: center;
+  font-family: var(--sds-typography-family-sans, "Inter-Regular", sans-serif);
+  font-size: 20px;
+  line-height: 120%;
+  font-weight: 400;
+  width: 26px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.week-1, .week-2, .week-3, .week-4, .week-5 {
+  display: flex;
+  flex-direction: row;
+  gap: var(--sds-space-300, 12px);
+  align-items: center;
+  justify-content: flex-start;
+  align-self: stretch;
+  width: 100%;
+}
+
+.calendar-day {
+  background: var(--sds-color-background-default-default, #ffffff);
+  border-radius: var(--sds-size-radius-200, 8px);
+  padding: var(--sds-space-100, 4px);
+  display: flex;
+  flex-direction: column;
+  gap: var(--sds-space-100, 4px);
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.calendar-day:hover {
+  background-color: var(--sds-color-background-neutral-tertiary, #F5F5F5);
+}
+
+.calendar-day.selected {
+  background-color: var(--sds-color-background-brand-tertiary, #E1EBFF);
+  border: 1px solid var(--sds-color-border-brand-secondary, #84A9FF);
+}
+
+.day {
+  color: var(--sds-color-text-neutral-tertiary, #6c7470);
+  text-align: center;
+  font-family: var(--sds-typography-family-sans, "Inter-Regular", sans-serif);
+  font-size: 20px;
+  line-height: 120%;
+  font-weight: 400;
+  width: 26px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.day2 {
+  color: var(--sds-color-text-default-default, #0a1811);
+  text-align: center;
+  font-family: var(--sds-typography-family-sans, "Inter-Regular", sans-serif);
+  font-size: 20px;
+  line-height: 120%;
+  font-weight: 400;
+  width: 26px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.calendar-day.other-month {
+  opacity: 0.5;
+}
+
+.line-1 {
+  align-self: stretch;
+  flex-shrink: 0;
+  height: 0px;
+}
+
+/* Horarios */
+.frame-35 {
+  display: flex;
+  flex-direction: row;
+  gap: 12px;
+  align-items: flex-start;
+  justify-content: flex-start;
+  align-self: stretch;
+  width: 100%;
+}
+
+/* Mensaje de error */
+.mensaje-error {
+  background-color: var(--sds-color-background-danger-tertiary, #FFF0F0);
+  color: var(--sds-color-text-danger-default, #D32F2F);
+  border-radius: var(--sds-size-radius-200, 8px);
+  padding: var(--sds-space-300, 12px);
+  align-self: stretch;
+  margin-top: var(--sds-space-200, 8px);
+  font-size: var(--sds-typography-size-body-sm, 14px);
+}
+
+/* Campo completo */
+.campo-completo {
+  width: 100%;
+  margin-bottom: var(--sds-space-200, 8px);
+}
+
+/* Grupo de botones */
+.button-group {
+  display: flex;
+  flex-direction: row;
+  gap: var(--sds-space-400, 16px);
+  align-items: center;
+  justify-content: flex-end;
+  align-self: stretch;
+  margin-top: var(--sds-space-400, 16px);
+}
