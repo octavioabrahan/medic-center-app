@@ -96,7 +96,8 @@
   font-family: "Inter-Regular", sans-serif;
   font-size: 16px;
   outline: none;
-  cursor: pointer;
+  /* Quitamos el cursor pointer del campo, ya que solo el icono es clickeable */
+  cursor: default;
 }
 
 .input-fecha::placeholder {
@@ -118,10 +119,16 @@
   justify-content: center;
   color: var(--sds-color-text-default-tertiary);
   padding: 0;
+  z-index: 2;
 }
 
 .fecha-calendario-icon:hover {
   color: var(--sds-color-text-default-default);
+}
+
+/* Devolverle cursor: pointer al input */
+.input-fecha {
+  cursor: pointer;
 }
 
 .fecha-calendario-icon svg {

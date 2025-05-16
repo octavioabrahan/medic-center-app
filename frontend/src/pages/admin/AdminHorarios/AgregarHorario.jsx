@@ -34,8 +34,9 @@ const AgregarHorario = ({ isOpen, onClose }) => {
   const [fechaDesde, setFechaDesde] = useState('');
   const [fechaHasta, setFechaHasta] = useState('');
   const [formValido, setFormValido] = useState(false);
-  const [showDesdeCalendar, setShowDesdeCalendar] = useState(false);
-  const [showHastaCalendar, setShowHastaCalendar] = useState(false);
+  // Ya no necesitamos estos estados
+  // const [showDesdeCalendar, setShowDesdeCalendar] = useState(false);
+  // const [showHastaCalendar, setShowHastaCalendar] = useState(false);
 
   // Opciones para selects
   const profesionalesOptions = [
@@ -93,59 +94,12 @@ const AgregarHorario = ({ isOpen, onClose }) => {
     );
   }, [profesional, tipoAtencion, diasSemana, horaInicio, horaTermino, fechaDesde, fechaHasta]);
   
-  // Efecto para manejar clics fuera de los calendarios
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      // Para el calendario Desde
-      if (desdeFechaRef.current && !desdeFechaRef.current.contains(event.target)) {
-        setShowDesdeCalendar(false);
-      }
-      
-      // Para el calendario Hasta
-      if (hastaFechaRef.current && !hastaFechaRef.current.contains(event.target)) {
-        setShowHastaCalendar(false);
-      }
-    };
-    
-    // Agregamos el event listener cuando los calendarios están visibles
-    if (showDesdeCalendar || showHastaCalendar) {
-      document.addEventListener('mousedown', handleClickOutside);
-    }
-    
-    // Limpieza del event listener
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, [showDesdeCalendar, showHastaCalendar]);
+  // Ya no necesitamos manejar clics fuera de los calendarios porque
+  // ahora usamos el date picker nativo que se cierra automáticamente
   
-  // Efecto para mostrar el picker nativo cuando se activa el calendario
-  useEffect(() => {
-    if (showDesdeCalendar) {
-      // Pequeño timeout para asegurar que el DOM se haya actualizado
-      const timer = setTimeout(() => {
-        const calendarElement = desdeFechaRef.current?.querySelector('input[type="date"]');
-        if (calendarElement) {
-          calendarElement.focus();
-          calendarElement.showPicker();
-        }
-      }, 50);
-      return () => clearTimeout(timer);
-    }
-  }, [showDesdeCalendar]);
-  
-  // Igual para el segundo calendario
-  useEffect(() => {
-    if (showHastaCalendar) {
-      const timer = setTimeout(() => {
-        const calendarElement = hastaFechaRef.current?.querySelector('input[type="date"]');
-        if (calendarElement) {
-          calendarElement.focus();
-          calendarElement.showPicker();
-        }
-      }, 50);
-      return () => clearTimeout(timer);
-    }
-  }, [showHastaCalendar]);
+    // Anteriormente había efectos para abrir pickers automáticamente,
+  // pero ahora usamos el enfoque directo al hacer clic que evita el error
+  // "showPicker() requires a user gesture"
 
   // Manejar cambio en días de la semana
   const handleDiaSemanaChange = (dia, checked) => {
@@ -284,13 +238,52 @@ const AgregarHorario = ({ isOpen, onClose }) => {
                 className="input-fecha"
                 value={fechaDesde ? formatDateForDisplay(fechaDesde) : ""}
                 placeholder="dd/mm/aaaa"
-                onClick={() => setShowDesdeCalendar(!showDesdeCalendar)}
                 readOnly
+                onClick={(e) => {
+                  // Delegamos el clic en el input al botón del calendario
+                  e.currentTarget.nextElementSibling.click();
+                }}
               />
               <button 
                 type="button" 
                 className="fecha-calendario-icon" 
-                onClick={() => setShowDesdeCalendar(!showDesdeCalendar)}
+                onClick={() => {
+                  // Creamos y mostramos el date picker nativo directamente con un click
+                  const datePicker = document.createElement('input');
+                  datePicker.type = 'date';
+                  datePicker.style.position = 'fixed';
+                  datePicker.style.opacity = '0';
+                  datePicker.style.height = '0';
+                  datePicker.style.padding = '0';
+                  datePicker.style.border = 'none';
+                  datePicker.min = new Date().toISOString().split('T')[0];
+                  datePicker.value = fechaDesde || '';
+                  
+                  // Posicionar el elemento bajo el contenedor
+                  const rect = desdeFechaRef.current.getBoundingClientRect();
+                  datePicker.style.left = `${rect.left}px`;
+                  datePicker.style.top = `${rect.bottom + 2}px`;
+                  
+                  // Agregar el picker al DOM y mostrarlo
+                  document.body.appendChild(datePicker);
+                  datePicker.focus();
+                  datePicker.showPicker();
+                  
+                  // Manejar el cambio y limpiar
+                  datePicker.addEventListener('change', (event) => {
+                    setFechaDesde(event.target.value);
+                    document.body.removeChild(datePicker);
+                  });
+                  
+                  // Manejar cuando se cierra sin elegir
+                  datePicker.addEventListener('blur', () => {
+                    setTimeout(() => {
+                      if (document.body.contains(datePicker)) {
+                        document.body.removeChild(datePicker);
+                      }
+                    }, 300);
+                  });
+                }}
                 aria-label="Abrir calendario"
               >
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
@@ -298,22 +291,6 @@ const AgregarHorario = ({ isOpen, onClose }) => {
                 </svg>
               </button>
             </div>
-            {showDesdeCalendar && (
-              <div className="fecha-calendario-dropdown">
-                <input
-                  type="date"
-                  className="fecha-calendario"
-                  value={fechaDesde}
-                  onChange={(e) => {
-                    setFechaDesde(e.target.value);
-                    setShowDesdeCalendar(false);
-                  }}
-                  autoFocus
-                  onFocus={(e) => e.target.showPicker()}
-                  min={new Date().toISOString().split('T')[0]}
-                />
-              </div>
-            )}
           </div>
         </div>
         <div className="fecha-campo">
@@ -325,13 +302,52 @@ const AgregarHorario = ({ isOpen, onClose }) => {
                 className="input-fecha"
                 value={fechaHasta ? formatDateForDisplay(fechaHasta) : ""}
                 placeholder="dd/mm/aaaa"
-                onClick={() => setShowHastaCalendar(!showHastaCalendar)}
                 readOnly
+                onClick={(e) => {
+                  // Delegamos el clic en el input al botón del calendario
+                  e.currentTarget.nextElementSibling.click();
+                }}
               />
               <button 
                 type="button" 
                 className="fecha-calendario-icon" 
-                onClick={() => setShowHastaCalendar(!showHastaCalendar)}
+                onClick={() => {
+                  // Creamos y mostramos el date picker nativo directamente con un click
+                  const datePicker = document.createElement('input');
+                  datePicker.type = 'date';
+                  datePicker.style.position = 'fixed';
+                  datePicker.style.opacity = '0';
+                  datePicker.style.height = '0';
+                  datePicker.style.padding = '0';
+                  datePicker.style.border = 'none';
+                  datePicker.min = fechaDesde || new Date().toISOString().split('T')[0];
+                  datePicker.value = fechaHasta || '';
+                  
+                  // Posicionar el elemento bajo el contenedor
+                  const rect = hastaFechaRef.current.getBoundingClientRect();
+                  datePicker.style.left = `${rect.left}px`;
+                  datePicker.style.top = `${rect.bottom + 2}px`;
+                  
+                  // Agregar el picker al DOM y mostrarlo
+                  document.body.appendChild(datePicker);
+                  datePicker.focus();
+                  datePicker.showPicker();
+                  
+                  // Manejar el cambio y limpiar
+                  datePicker.addEventListener('change', (event) => {
+                    setFechaHasta(event.target.value);
+                    document.body.removeChild(datePicker);
+                  });
+                  
+                  // Manejar cuando se cierra sin elegir
+                  datePicker.addEventListener('blur', () => {
+                    setTimeout(() => {
+                      if (document.body.contains(datePicker)) {
+                        document.body.removeChild(datePicker);
+                      }
+                    }, 300);
+                  });
+                }}
                 aria-label="Abrir calendario"
               >
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
@@ -339,22 +355,6 @@ const AgregarHorario = ({ isOpen, onClose }) => {
                 </svg>
               </button>
             </div>
-            {showHastaCalendar && (
-              <div className="fecha-calendario-dropdown">
-                <input
-                  type="date"
-                  className="fecha-calendario"
-                  value={fechaHasta}
-                  onChange={(e) => {
-                    setFechaHasta(e.target.value);
-                    setShowHastaCalendar(false);
-                  }}
-                  autoFocus
-                  onFocus={(e) => e.target.showPicker()}
-                  min={fechaDesde || new Date().toISOString().split('T')[0]}
-                />
-              </div>
-            )}
           </div>
         </div>
       </div>
