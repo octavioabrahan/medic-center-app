@@ -392,3 +392,136 @@
   gap: 12px;
   margin-top: 16px;
 }
+
+/* Estilos para mensajes de validación */
+.admin-horarios__validation-error {
+  color: var(--var-sds-color-text-danger-default, #d32f2f);
+  font-size: 14px;
+  margin: 4px 0 12px;
+  padding: 4px 8px;
+  background-color: var(--var-sds-color-background-danger-tertiary, #ffebee);
+  border-radius: 4px;
+  border-left: 3px solid var(--var-sds-color-border-danger-default, #d32f2f);
+}
+
+/* Estilo para campos con error */
+.admin-horarios__input.has-error {
+  border-color: var(--var-sds-color-border-danger-default, #d32f2f);
+}
+
+/* Cambios para el modal */
+.admin-horarios__modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.admin-horarios__modal {
+  max-width: 600px;
+  width: 100%;
+  background: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.admin-horarios__modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 24px;
+  border-bottom: 1px solid var(--var-sds-color-border-default-default, #d9d9d9);
+}
+
+.admin-horarios__modal-body {
+  padding: 24px;
+}
+
+.admin-horarios__form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.admin-horarios__form-description {
+  color: var(--var-sds-color-text-default-secondary, #757575);
+  font-size: 14px;
+  margin-bottom: 16px;
+  line-height: 1.5;
+}
+
+/* Estilo para información sobre días específicos */
+.admin-horarios__info-text {
+  color: var(--var-sds-color-text-default-secondary, #757575);
+  font-size: 14px;
+  line-height: 140%;
+  margin-top: 8px;
+  margin-bottom: 12px;
+}
+
+/* Estilos para textos de títulos en modales */
+.agregar-horario-de-atenci-n-para-un-profesional {
+  color: var(--var-sds-color-text-default-default, #1e1e1e);
+  text-align: left;
+  font-family: var(--heading-font-family, "Inter-SemiBold", sans-serif);
+  font-size: 24px;
+  line-height: 120%;
+  letter-spacing: -0.02em;
+  font-weight: 600;
+  margin-bottom: 16px;
+}
+
+/* Estilos para descripción en el modal */
+.si-un-profesional-atiende-varios-d-as-a-la-semana-debes-agregar-cada-d-a-por-separado {
+  color: var(--var-sds-color-text-default-secondary, #757575);
+  text-align: left;
+  font-family: var(--body-base-font-family, "Inter-Regular", sans-serif);
+  font-size: 16px;
+  line-height: 140%;
+  font-weight: 400;
+  margin-bottom: 24px;
+}
+
+/* Estilos para los select */
+.admin-horarios__select {
+  background: var(--var-sds-color-background-default-default, #ffffff);
+  border-radius: 8px;
+  border-style: solid;
+  border-color: var(--var-sds-color-border-default-default, #d9d9d9);
+  border-width: 1px;
+  padding: 12px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+/* Estilo para los checkbox */
+.admin-horarios__checkbox-item {
+  display: flex;
+  flex-direction: row;
+  gap: 12px;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.admin-horarios__checkbox-item input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  border-radius: 4px;
+  border: 1px solid var(--var-sds-color-border-brand-tertiary, #20377a);
+  cursor: pointer;
+}
+
+.admin-horarios__checkbox-item label {
+  color: var(--var-sds-color-text-default-default, #1e1e1e);
+  font-size: 16px;
+  line-height: 140%;
+  cursor: pointer;
+}

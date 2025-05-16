@@ -108,7 +108,28 @@ const AdminHorarios = () => {
   const [showModal, setShowModal] = useState(false);
   const [currentHorario, setCurrentHorario] = useState(null);
   const [currentExcepcion, setCurrentExcepcion] = useState(null);
-  const [sortOrder, setSortOrder] = useState('az'); // Ordenamiento alfabético
+  const [sortOrder, setSortOrder] = useState('az');
+  const [validationErrors, setValidationErrors] = useState({}); // Para mostrar errores de validación
+  
+  // Función para validar que la hora de inicio no sea mayor que la hora de término
+  const validateHoras = (horaInicio, horaTermino) => {
+    if (!horaInicio || !horaTermino) return true;
+    
+    const inicio = new Date(`2000-01-01T${horaInicio}`);
+    const termino = new Date(`2000-01-01T${horaTermino}`);
+    
+    return inicio < termino;
+  };
+  
+  // Función para validar que la fecha inicial no sea posterior a la fecha final
+  const validateFechas = (fechaInicio, fechaFinal) => {
+    if (!fechaInicio || !fechaFinal) return true;
+    
+    const inicio = new Date(fechaInicio);
+    const final = new Date(fechaFinal);
+    
+    return inicio <= final;
+  };
 
   // Cargar horarios, excepciones y profesionales al montar el componente
   useEffect(() => {
@@ -552,6 +573,16 @@ const AdminHorarios = () => {
               <div className="admin-horarios__modal-body">
                 {currentHorario && (
                   <div className="admin-horarios__form">
+                    <div className="text">
+                      <div className="agregar-horario-de-atenci-n-para-un-profesional">
+                        {currentHorario.horario_id ? "Editar horario de atención" : "Agregar horario de atención para un profesional"}
+                      </div>
+                      <div className="si-un-profesional-atiende-varios-d-as-a-la-semana-debes-agregar-cada-d-a-por-separado">
+                        Si un profesional atiende varios días a la semana, debes agregar cada día por separado. 
+                        Ejemplo: si el profesional atiende lunes a las 8:00, miércoles a las 9:00 y viernes a las 10:00, 
+                        debes crear tres horarios distintos, uno por cada día.
+                      </div>
+                    </div>
                     <div className="admin-horarios__form-group">
                       <label htmlFor="profesional_id" className="admin-horarios__label">
                         Profesional
@@ -613,6 +644,11 @@ const AdminHorarios = () => {
                       </div>
                     </div>
 
+                    <div className="admin-horarios__form-description">
+                      Si un profesional atiende varios días a la semana, debes seleccionar todos los días correspondientes. 
+                      El sistema considerará este horario para todos los días seleccionados.
+                    </div>
+                    
                     <div className="admin-horarios__form-row">
                       <div className="admin-horarios__form-group">
                         <label htmlFor="hora_inicio" className="admin-horarios__label">
@@ -622,9 +658,15 @@ const AdminHorarios = () => {
                           type="time"
                           id="hora_inicio"
                           name="hora_inicio"
-                          className="admin-horarios__input"
+                          className={`admin-horarios__input ${validationErrors.horas ? 'has-error' : ''}`}
                           value={currentHorario.hora_inicio?.slice(0, 5) || ""}
-                          onChange={e => setCurrentHorario({...currentHorario, hora_inicio: e.target.value})}
+                          onChange={e => {
+                            setCurrentHorario({...currentHorario, hora_inicio: e.target.value});
+                            if (currentHorario.hora_termino) {
+                              const isValid = validateHoras(e.target.value, currentHorario.hora_termino);
+                              setValidationErrors({...validationErrors, horas: isValid ? '' : 'La hora de inicio no puede ser mayor que la hora de término'});
+                            }
+                          }}
                           required
                         />
                       </div>
@@ -637,13 +679,24 @@ const AdminHorarios = () => {
                           type="time"
                           id="hora_termino"
                           name="hora_termino"
-                          className="admin-horarios__input"
+                          className={`admin-horarios__input ${validationErrors.horas ? 'has-error' : ''}`}
                           value={currentHorario.hora_termino?.slice(0, 5) || ""}
-                          onChange={e => setCurrentHorario({...currentHorario, hora_termino: e.target.value})}
+                          onChange={e => {
+                            setCurrentHorario({...currentHorario, hora_termino: e.target.value});
+                            if (currentHorario.hora_inicio) {
+                              const isValid = validateHoras(currentHorario.hora_inicio, e.target.value);
+                              setValidationErrors({...validationErrors, horas: isValid ? '' : 'La hora de inicio no puede ser mayor que la hora de término'});
+                            }
+                          }}
                           required
                         />
                       </div>
                     </div>
+                    {validationErrors.horas && (
+                      <div className="admin-horarios__validation-error">
+                        {validationErrors.horas}
+                      </div>
+                    )}
 
                     <div className="admin-horarios__form-row">
                       <div className="admin-horarios__form-group">
@@ -654,9 +707,15 @@ const AdminHorarios = () => {
                           type="date"
                           id="valido_desde"
                           name="valido_desde"
-                          className="admin-horarios__input"
+                          className={`admin-horarios__input ${validationErrors.fechas ? 'has-error' : ''}`}
                           value={currentHorario.valido_desde || ""}
-                          onChange={e => setCurrentHorario({...currentHorario, valido_desde: e.target.value})}
+                          onChange={e => {
+                            setCurrentHorario({...currentHorario, valido_desde: e.target.value});
+                            if (currentHorario.valido_hasta) {
+                              const isValid = validateFechas(e.target.value, currentHorario.valido_hasta);
+                              setValidationErrors({...validationErrors, fechas: isValid ? '' : 'La fecha inicial no puede ser posterior a la fecha final'});
+                            }
+                          }}
                         />
                       </div>
                       
@@ -668,12 +727,23 @@ const AdminHorarios = () => {
                           type="date"
                           id="valido_hasta"
                           name="valido_hasta"
-                          className="admin-horarios__input"
+                          className={`admin-horarios__input ${validationErrors.fechas ? 'has-error' : ''}`}
                           value={currentHorario.valido_hasta || ""}
-                          onChange={e => setCurrentHorario({...currentHorario, valido_hasta: e.target.value})}
+                          onChange={e => {
+                            setCurrentHorario({...currentHorario, valido_hasta: e.target.value});
+                            if (currentHorario.valido_desde) {
+                              const isValid = validateFechas(currentHorario.valido_desde, e.target.value);
+                              setValidationErrors({...validationErrors, fechas: isValid ? '' : 'La fecha inicial no puede ser posterior a la fecha final'});
+                            }
+                          }}
                         />
                       </div>
                     </div>
+                    {validationErrors.fechas && (
+                      <div className="admin-horarios__validation-error">
+                        {validationErrors.fechas}
+                      </div>
+                    )}
 
                     <div className="admin-horarios__form-row">
                       <div className="admin-horarios__form-group">
@@ -695,14 +765,69 @@ const AdminHorarios = () => {
                       </div>
                     </div>
 
+                    {validationErrors.dias && (
+                      <div className="admin-horarios__validation-error">
+                        {validationErrors.dias}
+                      </div>
+                    )}
+                    
+                    {validationErrors.general && (
+                      <div className="admin-horarios__validation-error">
+                        {validationErrors.general}
+                      </div>
+                    )}
+                    
                     <div className="admin-horarios__form-buttons">
                       <Button type="button" variant="neutral" onClick={() => setShowModal(false)}>
                         Cancelar
                       </Button>
                       <Button 
                         type="button" 
-                        variant="primary"
+                        variant={
+                          !currentHorario.profesional_id || 
+                          !currentHorario.hora_inicio || 
+                          !currentHorario.hora_termino || 
+                          (currentHorario.dia_semana && currentHorario.dia_semana.length === 0) || 
+                          validationErrors.horas || 
+                          validationErrors.fechas ? 'disabled' : 'primary'
+                        }
                         onClick={async () => {
+                          // Realizar validaciones antes de enviar
+                          const errors = {};
+                          
+                          // Validar campos requeridos
+                          if (!currentHorario.profesional_id) {
+                            errors.profesional_id = 'Selecciona un profesional';
+                          }
+                          
+                          if (!currentHorario.hora_inicio) {
+                            errors.horas = 'La hora de inicio es obligatoria';
+                          }
+                          
+                          if (!currentHorario.hora_termino) {
+                            errors.horas = 'La hora de término es obligatoria';
+                          }
+                          
+                          if (!currentHorario.dia_semana || currentHorario.dia_semana.length === 0) {
+                            errors.dias = 'Selecciona al menos un día de la semana';
+                          }
+                          
+                          // Validar horas y fechas
+                          if (!validateHoras(currentHorario.hora_inicio, currentHorario.hora_termino)) {
+                            errors.horas = 'La hora de inicio no puede ser mayor que la hora de término';
+                          }
+                          
+                          if (currentHorario.valido_desde && currentHorario.valido_hasta && 
+                              !validateFechas(currentHorario.valido_desde, currentHorario.valido_hasta)) {
+                            errors.fechas = 'La fecha inicial no puede ser posterior a la fecha final';
+                          }
+                          
+                          // Si hay errores, mostrarlos y detener
+                          if (Object.keys(errors).length > 0) {
+                            setValidationErrors(errors);
+                            return;
+                          }
+                          
                           try {
                             // Determinar si es agregar o editar según la presencia de horario_id
                             const method = currentHorario.horario_id ? 'PUT' : 'POST';
@@ -724,11 +849,12 @@ const AdminHorarios = () => {
                             const updatedHorarios = await fetchHorarios();
                             setHorarios(updatedHorarios);
                             
-                            // Cerrar modal
+                            // Limpiar errores y cerrar modal
+                            setValidationErrors({});
                             setShowModal(false);
                           } catch (err) {
                             console.error('Error:', err);
-                            alert(`Error: ${err.message}`);
+                            setValidationErrors({...validationErrors, general: err.message});
                           }
                         }}
                       >
@@ -759,6 +885,11 @@ const AdminHorarios = () => {
                           </option>
                         ))}
                       </select>
+                      {validationErrors.profesional_id && (
+                        <div className="admin-horarios__validation-error">
+                          {validationErrors.profesional_id}
+                        </div>
+                      )}
                     </div>
 
                     <div className="admin-horarios__form-group">
@@ -769,11 +900,16 @@ const AdminHorarios = () => {
                         type="date"
                         id="excepcion_fecha"
                         name="excepcion_fecha"
-                        className="admin-horarios__input"
+                        className={`admin-horarios__input ${validationErrors.fecha ? 'has-error' : ''}`}
                         value={currentExcepcion.fecha || ""}
                         onChange={e => setCurrentExcepcion({...currentExcepcion, fecha: e.target.value})}
                         required
                       />
+                      {validationErrors.fecha && (
+                        <div className="admin-horarios__validation-error">
+                          {validationErrors.fecha}
+                        </div>
+                      )}
                     </div>
 
                     <div className="admin-horarios__form-group">
@@ -795,37 +931,56 @@ const AdminHorarios = () => {
                     </div>
 
                     {currentExcepcion.estado !== 'Cancelado' && (
-                      <div className="admin-horarios__form-row">
-                        <div className="admin-horarios__form-group">
-                          <label htmlFor="excepcion_hora_inicio" className="admin-horarios__label">
-                            Hora de inicio
-                          </label>
-                          <input
-                            type="time"
-                            id="excepcion_hora_inicio"
-                            name="excepcion_hora_inicio"
-                            className="admin-horarios__input"
-                            value={currentExcepcion.hora_inicio?.slice(0, 5) || ""}
-                            onChange={e => setCurrentExcepcion({...currentExcepcion, hora_inicio: e.target.value})}
-                            required={currentExcepcion.estado !== 'Cancelado'}
-                          />
+                      <>
+                        <div className="admin-horarios__form-row">
+                          <div className="admin-horarios__form-group">
+                            <label htmlFor="excepcion_hora_inicio" className="admin-horarios__label">
+                              Hora de inicio
+                            </label>
+                            <input
+                              type="time"
+                              id="excepcion_hora_inicio"
+                              name="excepcion_hora_inicio"
+                              className={`admin-horarios__input ${validationErrors.horas ? 'has-error' : ''}`}
+                              value={currentExcepcion.hora_inicio?.slice(0, 5) || ""}
+                              onChange={e => {
+                                setCurrentExcepcion({...currentExcepcion, hora_inicio: e.target.value});
+                                if (currentExcepcion.hora_termino) {
+                                  const isValid = validateHoras(e.target.value, currentExcepcion.hora_termino);
+                                  setValidationErrors({...validationErrors, horas: isValid ? '' : 'La hora de inicio no puede ser mayor que la hora de término'});
+                                }
+                              }}
+                              required={currentExcepcion.estado !== 'Cancelado'}
+                            />
+                          </div>
+                          
+                          <div className="admin-horarios__form-group">
+                            <label htmlFor="excepcion_hora_termino" className="admin-horarios__label">
+                              Hora de término
+                            </label>
+                            <input
+                              type="time"
+                              id="excepcion_hora_termino"
+                              name="excepcion_hora_termino"
+                              className={`admin-horarios__input ${validationErrors.horas ? 'has-error' : ''}`}
+                              value={currentExcepcion.hora_termino?.slice(0, 5) || ""}
+                              onChange={e => {
+                                setCurrentExcepcion({...currentExcepcion, hora_termino: e.target.value});
+                                if (currentExcepcion.hora_inicio) {
+                                  const isValid = validateHoras(currentExcepcion.hora_inicio, e.target.value);
+                                  setValidationErrors({...validationErrors, horas: isValid ? '' : 'La hora de inicio no puede ser mayor que la hora de término'});
+                                }
+                              }}
+                              required={currentExcepcion.estado !== 'Cancelado'}
+                            />
+                          </div>
                         </div>
-                        
-                        <div className="admin-horarios__form-group">
-                          <label htmlFor="excepcion_hora_termino" className="admin-horarios__label">
-                            Hora de término
-                          </label>
-                          <input
-                            type="time"
-                            id="excepcion_hora_termino"
-                            name="excepcion_hora_termino"
-                            className="admin-horarios__input"
-                            value={currentExcepcion.hora_termino?.slice(0, 5) || ""}
-                            onChange={e => setCurrentExcepcion({...currentExcepcion, hora_termino: e.target.value})}
-                            required={currentExcepcion.estado !== 'Cancelado'}
-                          />
-                        </div>
-                      </div>
+                        {validationErrors.horas && (
+                          <div className="admin-horarios__validation-error">
+                            {validationErrors.horas}
+                          </div>
+                        )}
+                      </>
                     )}
 
                     <div className="admin-horarios__form-group">
@@ -847,10 +1002,55 @@ const AdminHorarios = () => {
                       <Button type="button" variant="neutral" onClick={() => setShowModal(false)}>
                         Cancelar
                       </Button>
+                      {validationErrors.general && (
+                        <div className="admin-horarios__validation-error">
+                          {validationErrors.general}
+                        </div>
+                      )}
                       <Button 
                         type="button" 
-                        variant="primary"
+                        variant={
+                          !currentExcepcion.profesional_id || 
+                          !currentExcepcion.fecha || 
+                          (currentExcepcion.estado !== 'Cancelado' && 
+                            (!currentExcepcion.hora_inicio || !currentExcepcion.hora_termino)) || 
+                          validationErrors.horas ? 'disabled' : 'primary'
+                        }
                         onClick={async () => {
+                          // Realizar validaciones antes de enviar
+                          const errors = {};
+                          
+                          // Validar campos requeridos
+                          if (!currentExcepcion.profesional_id) {
+                            errors.profesional_id = 'Selecciona un profesional';
+                          }
+                          
+                          if (!currentExcepcion.fecha) {
+                            errors.fecha = 'La fecha es obligatoria';
+                          }
+                          
+                          // Validar horas si no es una cancelación
+                          if (currentExcepcion.estado !== 'Cancelado') {
+                            if (!currentExcepcion.hora_inicio) {
+                              errors.horas = 'La hora de inicio es obligatoria';
+                            }
+                            
+                            if (!currentExcepcion.hora_termino) {
+                              errors.horas = 'La hora de término es obligatoria';
+                            }
+                            
+                            if (currentExcepcion.hora_inicio && currentExcepcion.hora_termino &&
+                                !validateHoras(currentExcepcion.hora_inicio, currentExcepcion.hora_termino)) {
+                              errors.horas = 'La hora de inicio no puede ser mayor que la hora de término';
+                            }
+                          }
+                          
+                          // Si hay errores, mostrarlos y detener
+                          if (Object.keys(errors).length > 0) {
+                            setValidationErrors(errors);
+                            return;
+                          }
+                          
                           try {
                             // Determinar si es agregar o editar según la presencia de excepcion_id
                             const method = currentExcepcion.excepcion_id ? 'PUT' : 'POST';
@@ -872,11 +1072,12 @@ const AdminHorarios = () => {
                             const updatedExcepciones = await fetchExcepciones();
                             setExcepciones(updatedExcepciones);
                             
-                            // Cerrar modal
+                            // Limpiar errores y cerrar modal
+                            setValidationErrors({});
                             setShowModal(false);
                           } catch (err) {
                             console.error('Error:', err);
-                            alert(`Error: ${err.message}`);
+                            setValidationErrors({...validationErrors, general: err.message});
                           }
                         }}
                       >
