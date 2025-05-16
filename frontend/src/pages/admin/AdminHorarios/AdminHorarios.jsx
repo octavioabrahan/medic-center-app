@@ -10,6 +10,7 @@ import Tag from '../../../components/Tag/Tag';
 import AgregarHorario from './AgregarHorario';
 import EditarHorario from './EditarHorario';
 import AgregarDiasExcepciones from './AgregarDiasExcepciones';
+import CancelarDiasExcepciones from './CancelarDiasExcepciones';
 import './AdminHorarios.css';
 
 /**
@@ -113,6 +114,7 @@ const AdminHorarios = () => {
   const [showAgregarHorarioModal, setShowAgregarHorarioModal] = useState(false);
   const [showEditarHorarioModal, setShowEditarHorarioModal] = useState(false);
   const [showAgregarDiaModal, setShowAgregarDiaModal] = useState(false);
+  const [showCancelarDiaModal, setShowCancelarDiaModal] = useState(false);
   const [currentHorario, setCurrentHorario] = useState(null);
 
   // Cargar horarios, excepciones y profesionales al montar el componente
@@ -243,7 +245,7 @@ const AdminHorarios = () => {
   
   // Funciones para manejar excepciones
   const handleCancelDay = () => {
-    console.log('Cancelar día (sin implementación)');
+    setShowCancelarDiaModal(true);
   };
   
   const handleAddDay = () => {
@@ -539,6 +541,13 @@ const AdminHorarios = () => {
       <AgregarDiasExcepciones
         isOpen={showAgregarDiaModal}
         onClose={() => setShowAgregarDiaModal(false)}
+        onSuccess={handleExcepcionSuccess}
+      />
+
+      {/* Modal para cancelar días específicos (excepciones) */}
+      <CancelarDiasExcepciones
+        isOpen={showCancelarDiaModal}
+        onClose={() => setShowCancelarDiaModal(false)}
         onSuccess={handleExcepcionSuccess}
       />
     </AdminLayout>
