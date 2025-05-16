@@ -8,6 +8,7 @@ import { UserPlusIcon, CheckIcon, PencilIcon, ArrowPathIcon } from '@heroicons/r
 import api from '../../../api';
 import CrearEspecialidades from './CrearEspecialidades';
 import CrearProfesionales from './CrearProfesionales';
+import EditarProfesionales from './EditarProfesionales';
 import './AdminProfesionales.css';
 
 /**
@@ -35,9 +36,7 @@ const AdminProfesionales = () => {
   const [showConfirmArchiveModal, setShowConfirmArchiveModal] = useState(false);
   const [currentProfesional, setCurrentProfesional] = useState(null);
   
-  // Los estados para la creación de profesionales se manejan en CrearProfesionales
-  // Mantenemos los estados necesarios para edición
-  const [servicios, setServicios] = useState([]);
+  // Los servicios se manejan ahora en el componente EditarProfesionales
   const [serviciosSeleccionados, setServiciosSeleccionados] = useState([]);
 
   // Fetch de profesionales y especialidades al cargar el componente
@@ -131,49 +130,10 @@ const AdminProfesionales = () => {
     }
   };
   
-  // Actualizar profesional
-  const handleUpdateProfesional = async (e) => {
-    e.preventDefault();
-    
-    if (!currentProfesional.nombre || 
-        !currentProfesional.apellido || 
-        !currentProfesional.especialidad_id) {
-      setError("Todos los campos obligatorios deben ser completados");
-      return;
-    }
-
-    try {
-      await api.put(`/profesionales/${currentProfesional.profesional_id}`, {
-        nombre: currentProfesional.nombre,
-        apellido: currentProfesional.apellido,
-        cedula: currentProfesional.cedula,
-        telefono: currentProfesional.telefono,
-        correo: currentProfesional.email,
-        especialidad_id: currentProfesional.especialidad_id
-      });
-      
-      // Actualizar servicios
-      if (serviciosSeleccionados.length > 0) {
-        await api.post('/profesionales/asignar-servicios', {
-          profesional_id: currentProfesional.profesional_id,
-          servicios: serviciosSeleccionados
-        });
-      }
-      
-      // Actualizar lista
-      const updatedProfesionales = await api.get('/profesionales', { 
-        params: { soloActivos: !showArchived } 
-      });
-      setProfesionales(updatedProfesionales.data);
-      
-      // Cerrar modal y limpiar estado
-      setShowEditProfesionalModal(false);
-      setCurrentProfesional(null);
-      setServiciosSeleccionados([]);
-    } catch (err) {
-      console.error("Error al actualizar profesional:", err);
-      setError("Error al actualizar el profesional");
-    }
+  // La funcionalidad de actualizar profesional se ha movido al componente EditarProfesionales
+  const handleProfesionalUpdated = (updatedProfesionales) => {
+    setProfesionales(updatedProfesionales);
+    setCurrentProfesional(null);
   };
   
   // Mostrar modal de confirmación para archivar
@@ -183,38 +143,7 @@ const AdminProfesionales = () => {
     setShowEditProfesionalModal(false);
   };
 
-  // Fetch de servicios para el modal de edición
-  useEffect(() => {
-    if (showEditProfesionalModal) {
-      const fetchServicios = async () => {
-        try {
-          const res = await api.get('/servicios');
-          setServicios(res.data);
-        } catch (err) {
-          console.error("Error al cargar servicios:", err);
-          setError("Error al cargar los servicios disponibles");
-        }
-      };
-      
-      fetchServicios();
-    }
-  }, [showEditProfesionalModal]);
-
-  // Cargar servicios del profesional cuando se edita
-  useEffect(() => {
-    if (showEditProfesionalModal && currentProfesional?.profesional_id) {
-      const fetchServiciosProfesional = async () => {
-        try {
-          const res = await api.get(`/profesionales/relaciones/${currentProfesional.profesional_id}`);
-          setServiciosSeleccionados(res.data.servicios || []);
-        } catch (err) {
-          console.error("Error al cargar servicios del profesional:", err);
-        }
-      };
-      
-      fetchServiciosProfesional();
-    }
-  }, [showEditProfesionalModal, currentProfesional]);
+  // Los efectos relacionados con el modal de edición se han trasladado al componente EditarProfesionales
 
   // Preparar los options para el dropdown de especialidades
   const especialidadesOptions = [
@@ -263,143 +192,6 @@ const AdminProfesionales = () => {
   };
 
   // La funcionalidad de añadir profesional ahora se maneja en el componente CrearProfesionales
-
-  // Modal para editar profesional
-  const renderEditProfesionalModal = () => {
-    if (!showEditProfesionalModal || !currentProfesional) return null;
-
-    return (
-      <div className="admin-profesionales__modal-overlay">
-        <div className="admin-profesionales__modal-content">
-          <div className="admin-profesionales__modal-header">
-            <h2>Editar Profesional</h2>
-            <button className="admin-profesionales__close-btn" onClick={() => setShowEditProfesionalModal(false)}>×</button>
-          </div>
-          <div className="admin-profesionales__modal-body">
-            <form onSubmit={handleUpdateProfesional}>
-              <div className="admin-profesionales__form-group">
-                <label htmlFor="edit-cedula">Cédula *</label>
-                <input
-                  id="edit-cedula"
-                  type="text"
-                  value={currentProfesional.cedula || ''}
-                  onChange={(e) => setCurrentProfesional({ ...currentProfesional, cedula: e.target.value })}
-                  className="admin-profesionales__input"
-                  required
-                  disabled // La cédula no se debería modificar una vez creado
-                />
-              </div>
-              
-              <div className="admin-profesionales__form-group">
-                <label htmlFor="edit-nombre">Nombre *</label>
-                <input
-                  id="edit-nombre"
-                  type="text"
-                  value={currentProfesional.nombre || ''}
-                  onChange={(e) => setCurrentProfesional({ ...currentProfesional, nombre: e.target.value })}
-                  className="admin-profesionales__input"
-                  required
-                />
-              </div>
-              
-              <div className="admin-profesionales__form-group">
-                <label htmlFor="edit-apellido">Apellido *</label>
-                <input
-                  id="edit-apellido"
-                  type="text"
-                  value={currentProfesional.apellido || ''}
-                  onChange={(e) => setCurrentProfesional({ ...currentProfesional, apellido: e.target.value })}
-                  className="admin-profesionales__input"
-                  required
-                />
-              </div>
-              
-              <div className="admin-profesionales__form-group">
-                <label htmlFor="edit-telefono">Teléfono</label>
-                <input
-                  id="edit-telefono"
-                  type="text"
-                  value={currentProfesional.telefono || ''}
-                  onChange={(e) => setCurrentProfesional({ ...currentProfesional, telefono: e.target.value })}
-                  className="admin-profesionales__input"
-                />
-              </div>
-              
-              <div className="admin-profesionales__form-group">
-                <label htmlFor="edit-correo">Correo Electrónico</label>
-                <input
-                  id="edit-correo"
-                  type="email"
-                  value={currentProfesional.email || ''}
-                  onChange={(e) => setCurrentProfesional({ ...currentProfesional, email: e.target.value })}
-                  className="admin-profesionales__input"
-                />
-              </div>
-              
-              <div className="admin-profesionales__form-group">
-                <label htmlFor="edit-especialidad">Especialidad *</label>
-                <select
-                  id="edit-especialidad"
-                  value={currentProfesional.especialidad_id || ''}
-                  onChange={(e) => setCurrentProfesional({ ...currentProfesional, especialidad_id: e.target.value })}
-                  className="admin-profesionales__select"
-                  required
-                >
-                  <option value="">Selecciona una especialidad</option>
-                  {especialidades.map(esp => (
-                    <option key={esp.especialidad_id} value={esp.especialidad_id}>
-                      {esp.nombre}
-                    </option>
-                  ))}
-                </select>
-              </div>
-              
-              {servicios.length > 0 && (
-                <div className="admin-profesionales__form-group">
-                  <label>Servicios</label>
-                  <div className="admin-profesionales__servicios-list">
-                    {servicios.map(servicio => (
-                      <div key={servicio.id_servicio} className="admin-profesionales__servicio-item">
-                        <input
-                          type="checkbox"
-                          id={`edit-servicio-${servicio.id_servicio}`}
-                          checked={serviciosSeleccionados.includes(servicio.id_servicio)}
-                          onChange={(e) => {
-                            if (e.target.checked) {
-                              setServiciosSeleccionados([...serviciosSeleccionados, servicio.id_servicio]);
-                            } else {
-                              setServiciosSeleccionados(serviciosSeleccionados.filter(id => id !== servicio.id_servicio));
-                            }
-                          }}
-                        />
-                        <label htmlFor={`edit-servicio-${servicio.id_servicio}`}>{servicio.nombre_servicio}</label>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-            </form>
-          </div>
-          <div className="admin-profesionales__modal-footer">
-            <Button 
-              variant="danger" 
-              onClick={() => confirmarArchivarProfesional(currentProfesional)}
-            >
-              Archivar profesional
-            </Button>
-            <div>
-              <Button variant="neutral" onClick={() => setShowEditProfesionalModal(false)}>
-                Cancelar
-              </Button>
-              <Button variant="primary" onClick={handleUpdateProfesional}>
-                Guardar cambios
-              </Button>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  };
 
   return (
     <AdminLayout activePage="/admin/profesionales">
@@ -532,7 +324,15 @@ const AdminProfesionales = () => {
         onProfesionalCreated={setProfesionales}
         showArchived={showArchived}
       />
-      {renderEditProfesionalModal()}
+      <EditarProfesionales 
+        isOpen={showEditProfesionalModal}
+        onClose={() => setShowEditProfesionalModal(false)}
+        profesional={currentProfesional}
+        especialidades={especialidades}
+        onConfirmArchive={confirmarArchivarProfesional}
+        onProfesionalUpdated={handleProfesionalUpdated}
+        showArchived={showArchived}
+      />
       {renderConfirmArchiveModal()}
     </AdminLayout>
   );
