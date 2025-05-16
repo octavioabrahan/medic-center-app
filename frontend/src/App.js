@@ -97,7 +97,6 @@ function App() {
             <AdminCitasAgendadas />
           </Suspense>
         } />
-        <Route path="/admin/horarios" element={<Navigate to="/admin/horarios" replace />} />
         <Route path="/admin/horarios" element={
           <Suspense fallback={<div>Cargando...</div>}>
             <AdminHorarios />
