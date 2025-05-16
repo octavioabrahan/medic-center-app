@@ -1,8 +1,17 @@
 import React, { useState, useEffect } from 'react';
-import Button from '../../../components/Button/Button';
 import Modal from '../../../components/Modal/Modal';
 import api from '../../../api';
 import './CrearProfesionales.css';
+import { 
+  ExclamationCircleIcon, 
+  CheckCircleIcon, 
+  UserIcon, 
+  PhoneIcon, 
+  EnvelopeIcon, 
+  IdentificationIcon, 
+  AcademicCapIcon,
+  ClipboardDocumentListIcon 
+} from '@heroicons/react/24/outline';
 
 /**
  * CrearProfesionales component for adding new professionals in the admin dashboard
@@ -117,131 +126,182 @@ const CrearProfesionales = ({ isOpen, onClose, especialidades = [], onProfesiona
     onClose();
   };
 
+  // Render personalizado dentro del Modal
+  const renderModalContent = () => (
+    <div className="crear-profesionales-container">
+      {error && (
+        <div className="crear-profesionales-error">
+          <ExclamationCircleIcon className="crear-profesionales-error-icon" />
+          <span>{error}</span>
+        </div>
+      )}
+      
+      <form onSubmit={handleCreateProfesional} className="crear-profesionales-form">
+        <div className="crear-profesionales-form-group">
+          <label htmlFor="cedula" className="crear-profesionales-label-required">
+            <IdentificationIcon width={18} height={18} />
+            Cédula
+          </label>
+          <input
+            id="cedula"
+            type="text"
+            value={nuevoProfesional.cedula}
+            onChange={(e) => setNuevoProfesional({ ...nuevoProfesional, cedula: e.target.value })}
+            className="crear-profesionales-input"
+            disabled={loading}
+            required
+            placeholder="Ingrese el número de cédula"
+          />
+        </div>
+        
+        <div className="crear-profesionales-form-group">
+          <label htmlFor="nombre" className="crear-profesionales-label-required">
+            <UserIcon width={18} height={18} />
+            Nombre
+          </label>
+          <input
+            id="nombre"
+            type="text"
+            value={nuevoProfesional.nombre}
+            onChange={(e) => setNuevoProfesional({ ...nuevoProfesional, nombre: e.target.value })}
+            className="crear-profesionales-input"
+            disabled={loading}
+            required
+            placeholder="Ingrese el nombre"
+          />
+        </div>
+        
+        <div className="crear-profesionales-form-group">
+          <label htmlFor="apellido" className="crear-profesionales-label-required">
+            <UserIcon width={18} height={18} />
+            Apellido
+          </label>
+          <input
+            id="apellido"
+            type="text"
+            value={nuevoProfesional.apellido}
+            onChange={(e) => setNuevoProfesional({ ...nuevoProfesional, apellido: e.target.value })}
+            className="crear-profesionales-input"
+            disabled={loading}
+            required
+            placeholder="Ingrese el apellido"
+          />
+        </div>
+        
+        <div className="crear-profesionales-form-group">
+          <label htmlFor="telefono">
+            <PhoneIcon width={18} height={18} />
+            Teléfono
+          </label>
+          <input
+            id="telefono"
+            type="text"
+            value={nuevoProfesional.telefono}
+            onChange={(e) => setNuevoProfesional({ ...nuevoProfesional, telefono: e.target.value })}
+            className="crear-profesionales-input"
+            disabled={loading}
+            placeholder="Ej: 099123456"
+          />
+        </div>
+        
+        <div className="crear-profesionales-form-group">
+          <label htmlFor="correo">
+            <EnvelopeIcon width={18} height={18} />
+            Correo Electrónico
+          </label>
+          <input
+            id="correo"
+            type="email"
+            value={nuevoProfesional.correo}
+            onChange={(e) => setNuevoProfesional({ ...nuevoProfesional, correo: e.target.value })}
+            className="crear-profesionales-input"
+            disabled={loading}
+            placeholder="nombre@ejemplo.com"
+          />
+        </div>
+        
+        <div className="crear-profesionales-form-group">
+          <label htmlFor="especialidad" className="crear-profesionales-label-required">
+            <AcademicCapIcon width={18} height={18} />
+            Especialidad
+          </label>
+          <select
+            id="especialidad"
+            value={nuevoProfesional.especialidad_id}
+            onChange={(e) => setNuevoProfesional({ ...nuevoProfesional, especialidad_id: e.target.value })}
+            className="crear-profesionales-select"
+            disabled={loading}
+            required
+          >
+            <option value="">Seleccione una especialidad</option>
+            {especialidades.map(esp => (
+              <option key={esp.especialidad_id} value={esp.especialidad_id}>
+                {esp.nombre}
+              </option>
+            ))}
+          </select>
+        </div>
+        
+        {servicios.length > 0 && (
+          <div className="crear-profesionales-servicios-container">
+            <div className="crear-profesionales-servicios-header">
+              <ClipboardDocumentListIcon className="crear-profesionales-servicios-icon" />
+              Servicios disponibles
+            </div>
+            <div className="crear-profesionales-servicios-list">
+              {servicios.map(servicio => (
+                <div key={servicio.id_servicio} className="crear-profesionales-servicio-item">
+                  <input
+                    type="checkbox"
+                    id={`servicio-${servicio.id_servicio}`}
+                    checked={serviciosSeleccionados.includes(servicio.id_servicio)}
+                    onChange={(e) => {
+                      if (e.target.checked) {
+                        setServiciosSeleccionados([...serviciosSeleccionados, servicio.id_servicio]);
+                      } else {
+                        setServiciosSeleccionados(serviciosSeleccionados.filter(id => id !== servicio.id_servicio));
+                      }
+                    }}
+                    disabled={loading}
+                  />
+                  <label htmlFor={`servicio-${servicio.id_servicio}`}>{servicio.nombre_servicio}</label>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        <div className="crear-profesionales-form-actions">
+          <button 
+            type="button" 
+            className="crear-profesionales-btn-cancelar" 
+            onClick={handleClose}
+            disabled={loading}
+          >
+            Cancelar
+          </button>
+          <button 
+            type="submit" 
+            className="crear-profesionales-btn-guardar"
+            disabled={loading}
+          >
+            {loading ? 'Guardando...' : 'Guardar'}
+          </button>
+        </div>
+      </form>
+    </div>
+  );
+
   return (
     <Modal
       isOpen={isOpen}
       onClose={handleClose}
       heading="Agregar Profesional"
-      bodyText="Ingresa los datos del nuevo profesional."
-      primaryButtonText="Guardar"
-      onPrimaryClick={handleCreateProfesional}
-      secondaryButtonText="Cancelar"
-      onSecondaryClick={handleClose}
+      bodyText="Complete el formulario con los datos del nuevo profesional médico."
       size="large"
+      noPadding={false}
     >
-      <div className="crear-profesionales-container">
-        {error && <div className="crear-profesionales-error">{error}</div>}
-        
-        <div className="crear-profesionales-form">
-          <div className="crear-profesionales-form-group">
-            <label htmlFor="cedula">Cédula *</label>
-            <input
-              id="cedula"
-              type="text"
-              value={nuevoProfesional.cedula}
-              onChange={(e) => setNuevoProfesional({ ...nuevoProfesional, cedula: e.target.value })}
-              className="crear-profesionales-input"
-              disabled={loading}
-              required
-            />
-          </div>
-          
-          <div className="crear-profesionales-form-group">
-            <label htmlFor="nombre">Nombre *</label>
-            <input
-              id="nombre"
-              type="text"
-              value={nuevoProfesional.nombre}
-              onChange={(e) => setNuevoProfesional({ ...nuevoProfesional, nombre: e.target.value })}
-              className="crear-profesionales-input"
-              disabled={loading}
-              required
-            />
-          </div>
-          
-          <div className="crear-profesionales-form-group">
-            <label htmlFor="apellido">Apellido *</label>
-            <input
-              id="apellido"
-              type="text"
-              value={nuevoProfesional.apellido}
-              onChange={(e) => setNuevoProfesional({ ...nuevoProfesional, apellido: e.target.value })}
-              className="crear-profesionales-input"
-              disabled={loading}
-              required
-            />
-          </div>
-          
-          <div className="crear-profesionales-form-group">
-            <label htmlFor="telefono">Teléfono</label>
-            <input
-              id="telefono"
-              type="text"
-              value={nuevoProfesional.telefono}
-              onChange={(e) => setNuevoProfesional({ ...nuevoProfesional, telefono: e.target.value })}
-              className="crear-profesionales-input"
-              disabled={loading}
-            />
-          </div>
-          
-          <div className="crear-profesionales-form-group">
-            <label htmlFor="correo">Correo Electrónico</label>
-            <input
-              id="correo"
-              type="email"
-              value={nuevoProfesional.correo}
-              onChange={(e) => setNuevoProfesional({ ...nuevoProfesional, correo: e.target.value })}
-              className="crear-profesionales-input"
-              disabled={loading}
-            />
-          </div>
-          
-          <div className="crear-profesionales-form-group">
-            <label htmlFor="especialidad">Especialidad *</label>
-            <select
-              id="especialidad"
-              value={nuevoProfesional.especialidad_id}
-              onChange={(e) => setNuevoProfesional({ ...nuevoProfesional, especialidad_id: e.target.value })}
-              className="crear-profesionales-select"
-              disabled={loading}
-              required
-            >
-              <option value="">Selecciona una especialidad</option>
-              {especialidades.map(esp => (
-                <option key={esp.especialidad_id} value={esp.especialidad_id}>
-                  {esp.nombre}
-                </option>
-              ))}
-            </select>
-          </div>
-          
-          {servicios.length > 0 && (
-            <div className="crear-profesionales-form-group">
-              <label>Servicios</label>
-              <div className="crear-profesionales-servicios-list">
-                {servicios.map(servicio => (
-                  <div key={servicio.id_servicio} className="crear-profesionales-servicio-item">
-                    <input
-                      type="checkbox"
-                      id={`servicio-${servicio.id_servicio}`}
-                      checked={serviciosSeleccionados.includes(servicio.id_servicio)}
-                      onChange={(e) => {
-                        if (e.target.checked) {
-                          setServiciosSeleccionados([...serviciosSeleccionados, servicio.id_servicio]);
-                        } else {
-                          setServiciosSeleccionados(serviciosSeleccionados.filter(id => id !== servicio.id_servicio));
-                        }
-                      }}
-                      disabled={loading}
-                    />
-                    <label htmlFor={`servicio-${servicio.id_servicio}`}>{servicio.nombre_servicio}</label>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-        </div>
-      </div>
+      {renderModalContent()}
     </Modal>
   );
 };
