@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { AdminLayout } from '../../../components/AdminDashboard';
 import Button from '../../../components/Button/Button';
 import SearchField from '../../../components/Inputs/SearchField';
@@ -7,6 +8,7 @@ import CheckboxField from '../../../components/Inputs/CheckboxField';
 import { UserPlusIcon, CheckIcon, PencilIcon, ArrowPathIcon } from '@heroicons/react/20/solid';
 import api from '../../../api';
 import CrearEspecialidades from './CrearEspecialidades';
+import CrearProfesionales from './CrearProfesionales';
 import './AdminProfesionales.css';
 
 /**
@@ -34,18 +36,8 @@ const AdminProfesionales = () => {
   const [showConfirmArchiveModal, setShowConfirmArchiveModal] = useState(false);
   const [currentProfesional, setCurrentProfesional] = useState(null);
   
-  // Estado para el nuevo profesional
-  const [nuevoProfesional, setNuevoProfesional] = useState({
-    cedula: '',
-    nombre: '',
-    apellido: '',
-    telefono: '',
-    correo: '',
-    especialidad_id: '',
-    servicios: []
-  });
-  
-  // Estado para servicios y categorías
+  // Los estados para la creación de profesionales se manejan en CrearProfesionales
+  // Mantenemos los estados necesarios para edición
   const [servicios, setServicios] = useState([]);
   const [serviciosSeleccionados, setServiciosSeleccionados] = useState([]);
 
@@ -126,54 +118,7 @@ const AdminProfesionales = () => {
     setEspecialidades(updatedEspecialidades);
   };
 
-  // Crear nuevo profesional
-  const handleCreateProfesional = async (e) => {
-    e.preventDefault();
-    
-    if (!nuevoProfesional.cedula || 
-        !nuevoProfesional.nombre || 
-        !nuevoProfesional.apellido || 
-        !nuevoProfesional.especialidad_id) {
-      setError("Todos los campos obligatorios deben ser completados");
-      return;
-    }
-
-    try {
-      // 1. Crear profesional
-      const res = await api.post('/profesionales', nuevoProfesional);
-      const profesionalId = res.data.profesional_id;
-      
-      // 2. Asignar servicios si existen
-      if (serviciosSeleccionados.length > 0) {
-        await api.post('/profesionales/asignar-servicios', {
-          profesional_id: profesionalId,
-          servicios: serviciosSeleccionados
-        });
-      }
-      
-      // Actualizar lista de profesionales
-      const updatedProfesionales = await api.get('/profesionales', { 
-        params: { soloActivos: !showArchived } 
-      });
-      setProfesionales(updatedProfesionales.data);
-      
-      // Limpiar formulario y cerrar modal
-      setNuevoProfesional({
-        cedula: '',
-        nombre: '',
-        apellido: '',
-        telefono: '',
-        correo: '',
-        especialidad_id: '',
-        servicios: []
-      });
-      setServiciosSeleccionados([]);
-      setShowAddProfesionalModal(false);
-    } catch (err) {
-      console.error("Error al crear profesional:", err);
-      setError(err.response?.data?.error || "Error al crear profesional");
-    }
-  };
+  // La funcionalidad de crear profesional se ha movido al componente CrearProfesionales
 
   // Editar profesional
   const handleEditProfesional = (profesional) => {
@@ -239,9 +184,9 @@ const AdminProfesionales = () => {
     setShowEditProfesionalModal(false);
   };
 
-  // Fetch de servicios para los modales
+  // Fetch de servicios para el modal de edición
   useEffect(() => {
-    if (showAddProfesionalModal || showEditProfesionalModal) {
+    if (showEditProfesionalModal) {
       const fetchServicios = async () => {
         try {
           const res = await api.get('/servicios');
@@ -254,7 +199,7 @@ const AdminProfesionales = () => {
       
       fetchServicios();
     }
-  }, [showAddProfesionalModal, showEditProfesionalModal]);
+  }, [showEditProfesionalModal]);
 
   // Cargar servicios del profesional cuando se edita
   useEffect(() => {
@@ -318,133 +263,7 @@ const AdminProfesionales = () => {
     );
   };
 
-  // Modal para añadir profesional
-  const renderAddProfesionalModal = () => {
-    if (!showAddProfesionalModal) return null;
-
-    return (
-      <div className="admin-profesionales__modal-overlay">
-        <div className="admin-profesionales__modal-content">
-          <div className="admin-profesionales__modal-header">
-            <h2>Agregar Profesional</h2>
-            <button className="admin-profesionales__close-btn" onClick={() => setShowAddProfesionalModal(false)}>×</button>
-          </div>
-          <div className="admin-profesionales__modal-body">
-            <form onSubmit={handleCreateProfesional}>
-              <div className="admin-profesionales__form-group">
-                <label htmlFor="cedula">Cédula *</label>
-                <input
-                  id="cedula"
-                  type="text"
-                  value={nuevoProfesional.cedula}
-                  onChange={(e) => setNuevoProfesional({ ...nuevoProfesional, cedula: e.target.value })}
-                  className="admin-profesionales__input"
-                  required
-                />
-              </div>
-              
-              <div className="admin-profesionales__form-group">
-                <label htmlFor="nombre">Nombre *</label>
-                <input
-                  id="nombre"
-                  type="text"
-                  value={nuevoProfesional.nombre}
-                  onChange={(e) => setNuevoProfesional({ ...nuevoProfesional, nombre: e.target.value })}
-                  className="admin-profesionales__input"
-                  required
-                />
-              </div>
-              
-              <div className="admin-profesionales__form-group">
-                <label htmlFor="apellido">Apellido *</label>
-                <input
-                  id="apellido"
-                  type="text"
-                  value={nuevoProfesional.apellido}
-                  onChange={(e) => setNuevoProfesional({ ...nuevoProfesional, apellido: e.target.value })}
-                  className="admin-profesionales__input"
-                  required
-                />
-              </div>
-              
-              <div className="admin-profesionales__form-group">
-                <label htmlFor="telefono">Teléfono</label>
-                <input
-                  id="telefono"
-                  type="text"
-                  value={nuevoProfesional.telefono}
-                  onChange={(e) => setNuevoProfesional({ ...nuevoProfesional, telefono: e.target.value })}
-                  className="admin-profesionales__input"
-                />
-              </div>
-              
-              <div className="admin-profesionales__form-group">
-                <label htmlFor="correo">Correo Electrónico</label>
-                <input
-                  id="correo"
-                  type="email"
-                  value={nuevoProfesional.correo}
-                  onChange={(e) => setNuevoProfesional({ ...nuevoProfesional, correo: e.target.value })}
-                  className="admin-profesionales__input"
-                />
-              </div>
-              
-              <div className="admin-profesionales__form-group">
-                <label htmlFor="especialidad">Especialidad *</label>
-                <select
-                  id="especialidad"
-                  value={nuevoProfesional.especialidad_id}
-                  onChange={(e) => setNuevoProfesional({ ...nuevoProfesional, especialidad_id: e.target.value })}
-                  className="admin-profesionales__select"
-                  required
-                >
-                  <option value="">Selecciona una especialidad</option>
-                  {especialidades.map(esp => (
-                    <option key={esp.especialidad_id} value={esp.especialidad_id}>
-                      {esp.nombre}
-                    </option>
-                  ))}
-                </select>
-              </div>
-              
-              {servicios.length > 0 && (
-                <div className="admin-profesionales__form-group">
-                  <label>Servicios</label>
-                  <div className="admin-profesionales__servicios-list">
-                    {servicios.map(servicio => (
-                      <div key={servicio.id_servicio} className="admin-profesionales__servicio-item">
-                        <input
-                          type="checkbox"
-                          id={`servicio-${servicio.id_servicio}`}
-                          checked={serviciosSeleccionados.includes(servicio.id_servicio)}
-                          onChange={(e) => {
-                            if (e.target.checked) {
-                              setServiciosSeleccionados([...serviciosSeleccionados, servicio.id_servicio]);
-                            } else {
-                              setServiciosSeleccionados(serviciosSeleccionados.filter(id => id !== servicio.id_servicio));
-                            }
-                          }}
-                        />
-                        <label htmlFor={`servicio-${servicio.id_servicio}`}>{servicio.nombre_servicio}</label>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-            </form>
-          </div>
-          <div className="admin-profesionales__modal-footer">
-            <Button variant="neutral" onClick={() => setShowAddProfesionalModal(false)}>
-              Cancelar
-            </Button>
-            <Button variant="primary" onClick={handleCreateProfesional}>
-              Guardar
-            </Button>
-          </div>
-        </div>
-      </div>
-    );
-  };
+  // La funcionalidad de añadir profesional ahora se maneja en el componente CrearProfesionales
 
   // Modal para editar profesional
   const renderEditProfesionalModal = () => {
@@ -707,7 +526,13 @@ const AdminProfesionales = () => {
         onClose={() => setShowAddEspecialidadModal(false)} 
         onSpecialtyCreated={handleSpecialtyCreated}
       />
-      {renderAddProfesionalModal()}
+      <CrearProfesionales 
+        isOpen={showAddProfesionalModal}
+        onClose={() => setShowAddProfesionalModal(false)}
+        especialidades={especialidades}
+        onProfesionalCreated={setProfesionales}
+        showArchived={showArchived}
+      />
       {renderEditProfesionalModal()}
       {renderConfirmArchiveModal()}
     </AdminLayout>
