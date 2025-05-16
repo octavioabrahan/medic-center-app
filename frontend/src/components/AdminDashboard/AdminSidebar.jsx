@@ -75,12 +75,23 @@ const AdminSidebar = ({ username = 'Usuario', role = 'Administrador', activePage
         </div>
         
         <div 
+          className={isActive('/admin/profesionales') ? "menu-item2" : "menu-item"}
+          onClick={() => handleNavigation('/admin/profesionales')}
+        >
+          <div className="body">
+            <div className="row">
+              <div className={isActive('/admin/profesionales') ? "label2" : "label"}>Profesionales</div>
+            </div>
+          </div>
+        </div>
+        
+        <div 
           className={isActive('/admin/especialidades') ? "menu-item2" : "menu-item"}
           onClick={() => handleNavigation('/admin/especialidades')}
         >
           <div className="body">
             <div className="row">
-              <div className={isActive('/admin/especialidades') ? "label2" : "label"}>Especialidades y profesionales</div>
+              <div className={isActive('/admin/especialidades') ? "label2" : "label"}>Especialidades</div>
             </div>
           </div>
         </div>

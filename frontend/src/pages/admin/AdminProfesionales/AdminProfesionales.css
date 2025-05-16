@@ -1,0 +1,111 @@
+.admin-profesionales {
+  padding: 32px;
+}
+
+.admin-profesionales__page-header {
+  border-style: solid;
+  border-color: #d9d9d9;
+  border-width: 0px 0px 1px 0px;
+  padding: 0px 0px 12px 0px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+.admin-profesionales__menu-header {
+  border-radius: 8px;
+  padding: 8px 16px 4px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 0px;
+  align-items: flex-start;
+  justify-content: flex-start;
+}
+
+.admin-profesionales__text-strong {
+  color: #1e1e1e;
+  text-align: left;
+  font-family: "Inter-SemiBold", sans-serif;
+  font-size: 16px;
+  line-height: 140%;
+  font-weight: 600;
+}
+
+.admin-profesionales__button-group {
+  display: flex;
+  flex-direction: row;
+  gap: 16px;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.admin-profesionales__icon {
+  width: 16px;
+  height: 16px;
+}
+
+.admin-profesionales__filter-bar {
+  display: flex;
+  flex-direction: row;
+  gap: 24px;
+  align-items: center;
+  justify-content: flex-start;
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+.admin-profesionales__search-filter {
+  flex: 0 0 327px;
+}
+
+.admin-profesionales__select-field {
+  flex: 1;
+  min-width: 240px;
+}
+
+.admin-profesionales__checkbox-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0px;
+  align-items: flex-start;
+  justify-content: flex-start;
+}
+
+.admin-profesionales__tag-toggle-group {
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+  align-items: flex-start;
+  justify-content: flex-start;
+}
+
+.admin-profesionales__empty-state {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: center;
+  justify-content: center;
+  height: 596px;
+  width: 100%;
+}
+
+.admin-profesionales__empty-title {
+  color: #757575;
+  text-align: center;
+  font-family: "Inter-SemiBold", sans-serif;
+  font-size: 16px;
+  line-height: 140%;
+  font-weight: 600;
+}
+
+.admin-profesionales__empty-description {
+  color: #757575;
+  text-align: center;
+  font-family: "Inter-Regular", sans-serif;
+  font-size: 16px;
+  line-height: 140%;
+  font-weight: 400;
+}
