@@ -80,6 +80,8 @@
   gap: 8px;
   align-items: flex-start;
   justify-content: flex-start;
+  border-radius: 8px;
+  overflow: hidden;
 }
 
 .admin-profesionales__empty-state {
@@ -108,4 +110,29 @@
   font-size: 16px;
   line-height: 140%;
   font-weight: 400;
+}
+
+/* Estilos específicos para los toggle de ordenación */
+.admin-profesionales__tag-toggle {
+  border-radius: 0;
+}
+
+.admin-profesionales__tag-toggle.state-on {
+  background: #e6e6e6;
+}
+
+.admin-profesionales__tag-toggle.state-on .heroicons-mini-check {
+  color: #1e1e1e;
+}
+
+.admin-profesionales__tag-toggle.state-on .title {
+  color: #1e1e1e;
+}
+
+.admin-profesionales__tag-toggle.state-off {
+  background: #f5f5f5;
+}
+
+.admin-profesionales__tag-toggle.state-off .title {
+  color: #757575;
 }

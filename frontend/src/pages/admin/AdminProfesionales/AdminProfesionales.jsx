@@ -75,11 +75,13 @@ const AdminProfesionales = () => {
               label="A → Z"
               active={sortAZ}
               onChange={() => setSortAZ(true)}
+              className="admin-profesionales__tag-toggle"
             />
             <TagToggle
               label="Z → A"
               active={!sortAZ}
               onChange={() => setSortAZ(false)}
+              className="admin-profesionales__tag-toggle"
             />
           </div>
         </div>

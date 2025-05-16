@@ -14,13 +14,15 @@ const TagToggle = ({
   label,
   active = true,
   onChange,
-  scheme = 'brand'
+  scheme = 'brand',
+  className = ''
 }) => {
   // Create classes based on props
   const toggleClasses = [
     'tag-toggle',
     active ? 'state-on' : 'state-off',
-    `scheme-${scheme}`
+    `scheme-${scheme}`,
+    className
   ].join(' ');
 
   const handleClick = () => {
