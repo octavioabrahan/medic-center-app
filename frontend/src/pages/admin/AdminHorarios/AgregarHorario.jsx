@@ -81,7 +81,7 @@ const AgregarHorario = ({ isOpen, onClose, onSuccess }) => {
         setProfesionalesOptions(profesionalesData);
         
         // Cargar tipos de atención
-        const tiposAtencionResponse = await axios.get('/api/tipoAtencion');
+        const tiposAtencionResponse = await axios.get('/api/tipo-atencion');
         const tiposAtencionData = tiposAtencionResponse.data.map(t => ({
           value: t.tipo_atencion_id,
           label: t.nombre
