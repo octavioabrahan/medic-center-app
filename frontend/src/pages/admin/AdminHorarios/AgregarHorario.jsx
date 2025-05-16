@@ -117,6 +117,35 @@ const AgregarHorario = ({ isOpen, onClose }) => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, [showDesdeCalendar, showHastaCalendar]);
+  
+  // Efecto para mostrar el picker nativo cuando se activa el calendario
+  useEffect(() => {
+    if (showDesdeCalendar) {
+      // Pequeño timeout para asegurar que el DOM se haya actualizado
+      const timer = setTimeout(() => {
+        const calendarElement = desdeFechaRef.current?.querySelector('input[type="date"]');
+        if (calendarElement) {
+          calendarElement.focus();
+          calendarElement.showPicker();
+        }
+      }, 50);
+      return () => clearTimeout(timer);
+    }
+  }, [showDesdeCalendar]);
+  
+  // Igual para el segundo calendario
+  useEffect(() => {
+    if (showHastaCalendar) {
+      const timer = setTimeout(() => {
+        const calendarElement = hastaFechaRef.current?.querySelector('input[type="date"]');
+        if (calendarElement) {
+          calendarElement.focus();
+          calendarElement.showPicker();
+        }
+      }, 50);
+      return () => clearTimeout(timer);
+    }
+  }, [showHastaCalendar]);
 
   // Manejar cambio en días de la semana
   const handleDiaSemanaChange = (dia, checked) => {
@@ -249,14 +278,26 @@ const AgregarHorario = ({ isOpen, onClose }) => {
         <div className="fecha-campo">
           <label className="fecha-etiqueta">Desde</label>
           <div className="fecha-input-wrapper" ref={desdeFechaRef}>
-            <input
-              type="text" 
-              className="input-fecha"
-              value={fechaDesde ? formatDateForDisplay(fechaDesde) : ""}
-              placeholder="dd/mm/aaaa"
-              onClick={() => setShowDesdeCalendar(!showDesdeCalendar)}
-              readOnly
-            />
+            <div className="fecha-input-container">
+              <input
+                type="text" 
+                className="input-fecha"
+                value={fechaDesde ? formatDateForDisplay(fechaDesde) : ""}
+                placeholder="dd/mm/aaaa"
+                onClick={() => setShowDesdeCalendar(!showDesdeCalendar)}
+                readOnly
+              />
+              <button 
+                type="button" 
+                className="fecha-calendario-icon" 
+                onClick={() => setShowDesdeCalendar(!showDesdeCalendar)}
+                aria-label="Abrir calendario"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5" />
+                </svg>
+              </button>
+            </div>
             {showDesdeCalendar && (
               <div className="fecha-calendario-dropdown">
                 <input
@@ -267,6 +308,8 @@ const AgregarHorario = ({ isOpen, onClose }) => {
                     setFechaDesde(e.target.value);
                     setShowDesdeCalendar(false);
                   }}
+                  autoFocus
+                  onFocus={(e) => e.target.showPicker()}
                   min={new Date().toISOString().split('T')[0]}
                 />
               </div>
@@ -276,14 +319,26 @@ const AgregarHorario = ({ isOpen, onClose }) => {
         <div className="fecha-campo">
           <label className="fecha-etiqueta">Hasta</label>
           <div className="fecha-input-wrapper" ref={hastaFechaRef}>
-            <input
-              type="text" 
-              className="input-fecha"
-              value={fechaHasta ? formatDateForDisplay(fechaHasta) : ""}
-              placeholder="dd/mm/aaaa"
-              onClick={() => setShowHastaCalendar(!showHastaCalendar)}
-              readOnly
-            />
+            <div className="fecha-input-container">
+              <input
+                type="text" 
+                className="input-fecha"
+                value={fechaHasta ? formatDateForDisplay(fechaHasta) : ""}
+                placeholder="dd/mm/aaaa"
+                onClick={() => setShowHastaCalendar(!showHastaCalendar)}
+                readOnly
+              />
+              <button 
+                type="button" 
+                className="fecha-calendario-icon" 
+                onClick={() => setShowHastaCalendar(!showHastaCalendar)}
+                aria-label="Abrir calendario"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5" />
+                </svg>
+              </button>
+            </div>
             {showHastaCalendar && (
               <div className="fecha-calendario-dropdown">
                 <input
@@ -294,6 +349,8 @@ const AgregarHorario = ({ isOpen, onClose }) => {
                     setFechaHasta(e.target.value);
                     setShowHastaCalendar(false);
                   }}
+                  autoFocus
+                  onFocus={(e) => e.target.showPicker()}
                   min={fechaDesde || new Date().toISOString().split('T')[0]}
                 />
               </div>
