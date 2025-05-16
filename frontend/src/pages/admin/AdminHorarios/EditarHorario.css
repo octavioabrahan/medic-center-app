@@ -1,0 +1,23 @@
+/* Estilo específico para la barra de botones en el EditarHorario */
+.custom-button-group {
+  display: flex;
+  flex-direction: row;
+  gap: var(--sds-space-400, 16px);
+  align-items: center;
+  justify-content: flex-end;
+  align-self: stretch;
+  flex-shrink: 0;
+  position: relative;
+  width: 100%;
+  margin-top: 16px;
+}
+
+/* Posiciona el botón de borrar al inicio de la fila */
+.custom-button-group .delete-button {
+  margin-right: auto;
+}
+
+/* Clase para ocultar el botón-group original del modal */
+.hide-original-buttons .button-group {
+  display: none !important;
+}

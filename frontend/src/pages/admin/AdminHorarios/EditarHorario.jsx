@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './AgregarHorario.css';
+import './EditarHorario.css';
 import { ChevronDownIcon, XMarkIcon, TrashIcon } from '@heroicons/react/24/solid';
 import Modal from '../../../components/Modal/Modal';
 import Button from '../../../components/Button/Button';
@@ -267,17 +268,40 @@ const EditarHorario = ({ isOpen, onClose, horario, onSuccess }) => {
     }
   };
 
+  // Custom footer component para el modal que reemplaza la funcionalidad de los botones predeterminados
+  const CustomFooter = () => (
+    <div className="custom-button-group">
+      <Button
+        variant="danger"
+        onClick={handleBorrar}
+        disabled={loading}
+        className="delete-button"
+      >
+        Borrar
+      </Button>
+      <Button 
+        variant="neutral" 
+        onClick={onClose}
+      >
+        Cancelar
+      </Button>
+      <Button 
+        variant="primary" 
+        onClick={handleGuardar}
+        disabled={!formValido || loading}
+      >
+        {loading ? "Guardando..." : "Guardar"}
+      </Button>
+    </div>
+  );
+
   return (
     <Modal 
       isOpen={isOpen}
       onClose={onClose}
       heading="Editar horario de atención"
       bodyText=""
-      primaryButtonText={loading ? "Guardando..." : "Guardar"}
-      secondaryButtonText="Cancelar"
-      onPrimaryClick={handleGuardar}
-      primaryButtonDisabled={!formValido || loading}
-      onSecondaryClick={onClose}
+      contentClassName="hide-original-buttons"
       size="medium"
     >
       {error && (
@@ -503,16 +527,9 @@ const EditarHorario = ({ isOpen, onClose, horario, onSuccess }) => {
         </div>
       </div>
 
-      <div className="button-group-container">
-        <Button
-          variant="danger-subtle"
-          onClick={handleBorrar}
-          disabled={loading}
-          icon={<TrashIcon className="btn__icon" />}
-        >
-          Borrar
-        </Button>
-      </div>
+      
+      {/* Renderizamos el footer personalizado con los tres botones */}
+      <CustomFooter />
     </Modal>
   );
 };
