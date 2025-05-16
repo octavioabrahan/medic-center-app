@@ -82,7 +82,7 @@ const AgregarDiasExcepciones = ({ isOpen, onClose, onSuccess }) => {
         const response = await axios.get('/api/profesionales');
         const profesionales = response.data.map(p => ({
           value: p.profesional_id.toString(),
-          label: `${p.apellido}, ${p.nombre}`.toUpperCase()
+          label: `${p.nombre} ${p.apellido}`
         }));
         setProfesionalesOptions(profesionales);
       } catch (err) {
@@ -327,13 +327,14 @@ const AgregarDiasExcepciones = ({ isOpen, onClose, onSuccess }) => {
         </div>
       </div>
 
-      <div className="campo-completo">
+      <div className="campo-completo motivo-field">
         <InputField
           label="Motivo"
           placeholder=""
           value={motivo}
           onChange={setMotivo}
           disabled={loading || !diaSeleccionado}
+          style={{ width: "100%" }}
         />
       </div>
 

@@ -46,10 +46,7 @@
   justify-content: flex-start;
   align-self: stretch;
   width: 100%;
-  border: 1px solid var(--sds-color-border-neutral-tertiary, #e0e0e0);
-  border-radius: var(--sds-size-radius-300, 12px);
-  padding: var(--sds-space-300, 12px);
-  background-color: var(--sds-color-background-default-default, #ffffff);
+  padding: var(--sds-space-200, 8px) 0;
 }
 
 .weekdays {
@@ -172,6 +169,17 @@
 .campo-completo {
   width: 100%;
   margin-bottom: var(--sds-space-200, 8px);
+}
+
+/* Campo de motivo */
+.motivo-field {
+  width: 100%;
+}
+.motivo-field .input-field {
+  width: 100%;
+}
+.motivo-field .inputField {
+  width: 100%;
 }
 
 /* Grupo de botones */
