@@ -306,7 +306,7 @@ const AgregarHorario = ({ isOpen, onClose, onSuccess }) => {
 
       <div className="fechas-grupo">
         <div className="fecha-campo">
-          <label className="fecha-etiqueta">Desde</label>
+          <div className="label">Desde</div>
           <div className="fecha-input-wrapper" ref={desdeFechaRef}>
             <div className="fecha-input-container">
               <input
@@ -370,7 +370,7 @@ const AgregarHorario = ({ isOpen, onClose, onSuccess }) => {
           </div>
         </div>
         <div className="fecha-campo">
-          <label className="fecha-etiqueta">Hasta</label>
+          <div className="label">Hasta</div>
           <div className="fecha-input-wrapper" ref={hastaFechaRef}>
             <div className="fecha-input-container">
               <input
