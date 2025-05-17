@@ -269,6 +269,7 @@ const EditarProfesionales = ({
           label="Cédula"
           value={profesionalEditado.cedula}
           placeholder="Ej: 00.000.000"
+          fillContainer={true}
           onChange={(value) => setProfesionalEditado({
             ...profesionalEditado,
             cedula: value
@@ -281,6 +282,7 @@ const EditarProfesionales = ({
           label="Nombre"
           value={profesionalEditado.nombre}
           placeholder="Nombre del profesional"
+          fillContainer={true}
           onChange={(value) => setProfesionalEditado({
             ...profesionalEditado,
             nombre: value
@@ -293,6 +295,7 @@ const EditarProfesionales = ({
           label="Apellido"
           value={profesionalEditado.apellido}
           placeholder="Apellido del profesional"
+          fillContainer={true}
           onChange={(value) => setProfesionalEditado({
             ...profesionalEditado,
             apellido: value
@@ -305,6 +308,7 @@ const EditarProfesionales = ({
           label="Teléfono"
           value={profesionalEditado.telefono}
           placeholder="Teléfono del profesional"
+          fillContainer={true}
           onChange={(value) => setProfesionalEditado({
             ...profesionalEditado,
             telefono: value
@@ -317,6 +321,7 @@ const EditarProfesionales = ({
           label="Correo"
           value={profesionalEditado.correo}
           placeholder="correo@ejemplo.com"
+          fillContainer={true}
           onChange={(value) => setProfesionalEditado({
             ...profesionalEditado,
             correo: value
@@ -329,6 +334,7 @@ const EditarProfesionales = ({
           label="Especialidad"
           value={profesionalEditado.especialidad_id}
           placeholder="Seleccione una especialidad"
+          fillContainer={true}
           options={especialidades.map(esp => ({
             label: esp.nombre,
             value: esp.especialidad_id

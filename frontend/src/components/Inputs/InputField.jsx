@@ -8,6 +8,7 @@ import "./InputField.css";
  * - placeholder?: string
  * - disabled?: boolean
  * - error?: boolean
+ * - fillContainer?: boolean - Si es true, el campo ocupará el 100% del ancho disponible
  * - onChange?: (value: string) => void
  * - style?: React.CSSProperties
  */
@@ -17,6 +18,7 @@ export default function InputField({
   placeholder = "",
   disabled = false,
   error = false,
+  fillContainer = false,
   onChange = () => {},
   style = {},
 }) {
@@ -27,9 +29,10 @@ export default function InputField({
     ? "state-error"
     : "state-default";
   const valueType = isPlaceholder ? "value-type-placeholder" : "value-type-value";
+  const fillClass = fillContainer ? "fill-container" : "";
 
   return (
-    <div className={`input-field ${state} ${valueType}`} style={style}>
+    <div className={`input-field ${state} ${valueType} ${fillClass}`} style={style}>
       <div className="label">{label}</div>
       <div className="inputField">
         <input

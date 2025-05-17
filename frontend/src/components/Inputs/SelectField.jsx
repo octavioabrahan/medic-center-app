@@ -10,6 +10,7 @@ import { ChevronDownIcon } from '@heroicons/react/20/solid';
  * - options: Array<{ label: string, value: string }>
  * - disabled?: boolean
  * - error?: boolean
+ * - fillContainer?: boolean - Si es true, el campo ocupará el 100% del ancho disponible
  * - onChange?: (value: string) => void
  * - style?: React.CSSProperties
  */
@@ -20,6 +21,7 @@ export default function SelectField({
   options = [],
   disabled = false,
   error = false,
+  fillContainer = false,
   onChange = () => {},
   style = {},
 }) {
@@ -30,11 +32,12 @@ export default function SelectField({
     ? "state-error"
     : "state-default";
   const valueType = isPlaceholder ? "value-type-placeholder" : "value-type-value";
+  const fillClass = fillContainer ? "fill-container" : "";
 
   return (
-    <div className={`select-field ${state} ${valueType}`} style={style}>
+    <div className={`select-field ${state} ${valueType} ${fillClass}`} style={style}>
       <div className="label">{label}</div>
-      <div className="select select-native-wrapper">
+      <div className={`select select-native-wrapper ${fillContainer ? 'fill-container' : ''}`}>
         <select
           className="select-native"
           value={value}
