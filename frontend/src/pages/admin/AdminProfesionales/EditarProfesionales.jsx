@@ -456,6 +456,7 @@ const EditarProfesionales = ({
               label="Entiendo que este profesional dejará de mostrarse en el sitio de agendamiento."
               checked={confirmacionArchivado}
               onChange={(checked) => setConfirmacionArchivado(checked)}
+              fillContainer={true}
             />
           </div>
 
