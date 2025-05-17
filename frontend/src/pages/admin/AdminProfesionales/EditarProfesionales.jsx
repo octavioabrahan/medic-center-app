@@ -1,10 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import axios from 'axios';
+import api from '../../../api';
 import { ArchiveBoxIcon, ChevronDownIcon, XMarkIcon, CheckIcon } from '@heroicons/react/24/solid';
 import './EditarProfesionales.css';
-
-// API URL directamente desde las variables de entorno
-const API_URL = process.env.REACT_APP_API_URL || '';
 
 /**
  * Componente para editar profesionales existentes
@@ -48,13 +45,14 @@ const EditarProfesionales = ({
       setLoading(true);
       
       // Cargar todos los servicios disponibles
-      const serviciosResponse = await axios.get(`${API_URL}/servicios/por-especialidad/${profesional.especialidad_id}`);
+      const serviciosResponse = await api.get(`/servicios`);
       
-      // Cargar servicios asignados al profesional
-      const serviciosAsignadosResponse = await axios.get(`${API_URL}/profesionales/${profesional.id}/servicios`);
+      // Cargar servicios asignados al profesional (relaciones)
+      const relacionesResponse = await api.get(`/profesionales/relaciones/${profesional.id}`);
       
       const todosServicios = serviciosResponse.data;
-      const serviciosAsignados = serviciosAsignadosResponse.data.map(servicio => servicio.id);
+      // Extraer los IDs de servicios de las relaciones
+      const serviciosAsignados = relacionesResponse.data?.servicios?.map(servicio => servicio.id_servicio) || [];
       
       // Marcar los servicios que ya están asignados
       setServicios(todosServicios);
@@ -72,14 +70,14 @@ const EditarProfesionales = ({
   useEffect(() => {
     if (isOpen && profesional) {
       setProfesionalEditado({
-        id: profesional.id || '',
+        id: profesional.profesional_id || '',
         cedula: profesional.cedula || '',
         nombre: profesional.nombre || '',
         apellido: profesional.apellido || '',
         telefono: profesional.telefono || '',
-        correo: profesional.correo || '',
+        correo: profesional.email || '', // backend uses email, not correo
         especialidad_id: profesional.especialidad_id || '',
-        activo: profesional.activo !== undefined ? profesional.activo : true
+        activo: profesional.is_active !== undefined ? profesional.is_active : true
       });
       
       cargarServicios();
@@ -115,10 +113,14 @@ const EditarProfesionales = ({
       setError(null);
       
       // Actualizar datos del profesional
-      await axios.put(`${API_URL}/profesionales/${profesionalEditado.id}`, profesionalEditado);
+      await api.put(`/profesionales/estado/${profesionalEditado.id}`, {
+        ...profesionalEditado,
+        activo: profesionalEditado.activo
+      });
       
       // Actualizar servicios asignados
-      await axios.put(`${API_URL}/profesionales/${profesionalEditado.id}/servicios`, {
+      await api.post(`/profesionales/asignar-servicios`, {
+        profesional_id: profesionalEditado.id,
         servicios: serviciosSeleccionados
       });
       
@@ -140,8 +142,7 @@ const EditarProfesionales = ({
       setLoading(true);
       setError(null);
       
-      await axios.put(`${API_URL}/profesionales/${profesionalEditado.id}`, {
-        ...profesionalEditado,
+      await api.put(`/profesionales/estado/${profesionalEditado.id}`, {
         activo: false
       });
       
@@ -254,7 +255,7 @@ const EditarProfesionales = ({
                   >
                     <option value="">Seleccione una especialidad</option>
                     {especialidades.map(especialidad => (
-                      <option key={especialidad.id} value={especialidad.id}>
+                      <option key={especialidad.especialidad_id} value={especialidad.especialidad_id}>
                         {especialidad.nombre}
                       </option>
                     ))}
@@ -267,17 +268,17 @@ const EditarProfesionales = ({
                 <div className="servicio">Servicio</div>
                 <div className="frame-30">
                   {servicios.map(servicio => (
-                    <div className="checkbox-field" key={servicio.id}>
+                    <div className="checkbox-field" key={servicio.id_servicio}>
                       <div className="checkbox-and-label">
                         <div 
-                          className={serviciosSeleccionados.includes(servicio.id) ? "checkbox2" : "checkbox"}
-                          onClick={() => toggleServicio(servicio.id)}
+                          className={serviciosSeleccionados.includes(servicio.id_servicio) ? "checkbox2" : "checkbox"}
+                          onClick={() => toggleServicio(servicio.id_servicio)}
                         >
-                          {serviciosSeleccionados.includes(servicio.id) && (
+                          {serviciosSeleccionados.includes(servicio.id_servicio) && (
                             <CheckIcon className="check" />
                           )}
                         </div>
-                        <div className="label2">{servicio.nombre}</div>
+                        <div className="label2">{servicio.nombre_servicio}</div>
                       </div>
                     </div>
                   ))}
