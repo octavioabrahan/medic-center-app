@@ -91,14 +91,14 @@ const EditarProfesionales = ({
     if (isOpen && profesional) {
       console.log('Profesional recibido:', profesional);
       
-      // Asegurarse de que especialidad_id sea del mismo tipo de datos que se espera en el select
-      const especialidadId = profesional.especialidad_id ? profesional.especialidad_id.toString() : '';
+      // Mantener el especialidad_id en su formato original
+      const especialidadId = profesional.especialidad_id || '';
       console.log('Especialidad ID que se va a seleccionar:', especialidadId);
       console.log('Especialidades disponibles:', especialidades);
       
       // Verificar explícitamente si la especialidad existe en las opciones
       const especialidadExiste = especialidades.some(esp => 
-        esp.especialidad_id.toString() === especialidadId
+        esp.especialidad_id === especialidadId
       );
       
       console.log('¿Especialidad existe en las opciones?', especialidadExiste);
@@ -358,12 +358,11 @@ const EditarProfesionales = ({
               });
             }}
           >
-            <option value="" disabled>Seleccione una especialidad</option>
+            <option value="">Seleccione una especialidad</option>
             {especialidades.map(esp => (
               <option 
                 key={esp.especialidad_id} 
-                value={esp.especialidad_id.toString()}
-                selected={profesionalEditado.especialidad_id === esp.especialidad_id.toString()}
+                value={esp.especialidad_id}
               >
                 {esp.nombre}
               </option>
