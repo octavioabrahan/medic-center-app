@@ -1,6 +1,6 @@
 /* Estilos para el modal de confirmación de archivar profesional */
 .archivar-modal-content {
-  padding: 16px 24px;
+  padding: var(--sds-space-600) var(--sds-space-600);
   width: 100%;
   max-width: 520px;
   margin: 0 auto;
@@ -8,49 +8,52 @@
 
 .archivar-modal-content p {
   margin-top: 0;
-  margin-bottom: 16px;
-  color: #1e1e1e;
-  font-size: 16px;
-  font-weight: 500;
+  margin-bottom: var(--sds-space-400);
+  color: var(--sds-color-text-default-default);
+  font-size: var(--sds-scale-03);
+  font-weight: var(--sds-weight-medium);
+  line-height: 1.5;
 }
 
 .archivar-modal-content ul {
-  margin-top: 8px;
-  margin-bottom: 16px;
-  padding-left: 24px;
+  margin-top: var(--sds-space-200);
+  margin-bottom: var(--sds-space-600);
+  padding-left: var(--sds-space-600);
   list-style-type: disc;
 }
 
 .archivar-modal-content li {
-  margin-bottom: 8px;
-  padding-left: 4px;
-  color: #202020;
+  margin-bottom: var(--sds-space-200);
+  padding-left: var(--sds-space-100);
+  color: var(--sds-color-text-default-default);
   line-height: 1.5;
-  font-size: 15px;
+  font-size: var(--sds-scale-02);
 }
 
 .archivar-modal-buttons {
   display: flex;
   justify-content: flex-end;
-  gap: 16px;
-  margin-top: 24px;
-  padding: 8px 0;
+  gap: var(--sds-space-400);
+  margin-top: var(--sds-space-600);
+  padding: var(--sds-space-200) 0;
 }
 
 .archivar-modal-buttons button {
-  padding: 12px 24px;
-  border-radius: 8px;
-  font-size: 16px;
-  font-weight: 500;
+  padding: var(--sds-space-300) var(--sds-space-600);
+  border-radius: var(--sds-radius-200);
+  font-size: var(--sds-scale-03);
+  font-weight: var(--sds-weight-regular);
   min-width: 120px;
 }
 
 .checkbox-container {
-  margin: 24px 0 16px 0;
-  padding: 8px 0;
+  margin: var(--sds-space-600) 0 var(--sds-space-600) 0;
+  padding: var(--sds-space-400) var(--sds-space-400);
   display: flex;
   align-items: flex-start;
   width: 100%;
+  background-color: var(--sds-color-background-brand-tertiary);
+  border-radius: var(--sds-radius-200);
 }
 
 .archivar-modal-content .checkbox-field {
@@ -59,12 +62,16 @@
 
 .archivar-modal-content .checkbox-field .checkbox-and-label {
   width: 100%;
-  gap: 16px;
+  gap: var(--sds-space-400);
   align-items: flex-start;
 }
 
 .archivar-modal-content .checkbox-field .label {
   width: calc(100% - 32px);
+  font-size: var(--sds-scale-02);
+  line-height: 1.5;
+  color: var(--sds-color-text-brand-default);
+  font-weight: var(--sds-weight-medium);
 }
 
 .checkbox-container label {
@@ -75,16 +82,33 @@
 
 /* Estilos de botones específicos para el modal de confirmación */
 .archivar-modal-buttons .btn--danger {
-  background-color: #dc3545;
+  background-color: var(--sds-color-background-danger-default);
+  border: 1px solid var(--sds-color-border-danger-default);
+  color: var(--sds-color-text-danger-on-danger);
+  font-weight: var(--sds-weight-medium);
+  padding: var(--sds-space-300) var(--sds-space-600);
 }
 
 .archivar-modal-buttons .btn--danger:hover {
-  background-color: #bd2130;
+  background-color: var(--sds-color-background-danger-hover);
 }
 
 .archivar-modal-buttons .btn--danger:disabled {
-  background-color: #e4606d;
+  background-color: var(--sds-color-background-danger-tertiary);
   cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.archivar-modal-buttons .btn--neutral {
+  background-color: var(--sds-color-background-default-secondary);
+  border: 1px solid var(--sds-color-border-default-default);
+  color: var(--sds-color-text-default-default);
+  font-weight: var(--sds-weight-medium);
+  padding: var(--sds-space-300) var(--sds-space-600);
+}
+
+.archivar-modal-buttons .btn--neutral:hover {
+  background-color: var(--sds-color-background-default-secondary-hover);
 }
 
 
