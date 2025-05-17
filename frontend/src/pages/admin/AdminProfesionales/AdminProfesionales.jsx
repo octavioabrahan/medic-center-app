@@ -131,9 +131,16 @@ const AdminProfesionales = () => {
   };
   
   // La funcionalidad de actualizar profesional se ha movido al componente EditarProfesionales
-  const handleProfesionalUpdated = (updatedProfesionales) => {
-    setProfesionales(updatedProfesionales);
-    setCurrentProfesional(null);
+  const handleProfesionalUpdated = async () => {
+    try {
+      // Obtener la lista actualizada de profesionales
+      const res = await api.get('/profesionales', { params: { soloActivos: !showArchived } });
+      setProfesionales(res.data);
+      setCurrentProfesional(null);
+    } catch (err) {
+      console.error("Error al actualizar lista de profesionales:", err);
+      setError("Error al actualizar la lista de profesionales");
+    }
   };
   
   // Mostrar modal de confirmación para archivar

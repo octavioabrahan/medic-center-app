@@ -27,6 +27,7 @@ const EditarProfesionales = ({
   onClose,
   profesional,
   especialidades = [],
+  onConfirmArchive,
   onProfesionalUpdated
 }) => {
   // Estado para el profesional editado
@@ -205,7 +206,13 @@ const EditarProfesionales = ({
 
   // Mostrar el modal de confirmación para archivar
   const archivarProfesional = () => {
-    setShowArchivarModal(true);
+    if (typeof onConfirmArchive === 'function') {
+      // Pasar el profesional al componente padre para archivar
+      onConfirmArchive(profesionalEditado);
+    } else {
+      // Fallback al comportamiento anterior si no se proporciona la función
+      setShowArchivarModal(true);
+    }
   };
   
   // Confirmar archivado del profesional
@@ -213,6 +220,10 @@ const EditarProfesionales = ({
     try {
       setLoading(true);
       setError(null);
+      
+      if (!profesionalEditado || !profesionalEditado.id) {
+        throw new Error("No se pudo identificar al profesional para archivar");
+      }
       
       console.log('Archivando profesional:', profesionalEditado.id);
       
@@ -236,7 +247,9 @@ const EditarProfesionales = ({
       // Esperar un breve momento antes de cerrar el modal
       setTimeout(() => {
         // Notificar que el profesional ha sido actualizado
-        onProfesionalUpdated();
+        if (typeof onProfesionalUpdated === 'function') {
+          onProfesionalUpdated();
+        }
         onClose();
       }, 1500);
       
