@@ -1,0 +1,60 @@
+/* Estilos para el modal de confirmación de archivar profesional */
+.archivar-modal-content {
+  padding: 8px 0;
+}
+
+.archivar-modal-content p {
+  margin-top: 0;
+  margin-bottom: 16px;
+  color: #1e1e1e;
+  font-size: 16px;
+}
+
+.archivar-modal-content ul {
+  margin-top: 0;
+  margin-bottom: 20px;
+  padding-left: 20px;
+}
+
+.archivar-modal-content li {
+  margin-bottom: 8px;
+  color: #505050;
+  line-height: 1.4;
+}
+
+.archivar-modal-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 16px;
+  margin-top: 24px;
+}
+
+.checkbox-container {
+  margin: 24px 0 8px 0;
+  padding: 12px;
+  background-color: #f9fafb;
+  border-radius: 6px;
+  border: 1px solid #e5e7eb;
+}
+
+/* Estilos de botones específicos para el modal de confirmación */
+.archivar-modal-buttons .btn--danger {
+  background-color: #dc3545;
+}
+
+.archivar-modal-buttons .btn--danger:hover {
+  background-color: #bd2130;
+}
+
+.archivar-modal-buttons .btn--danger:disabled {
+  background-color: #e4606d;
+  cursor: not-allowed;
+}
+
+/* Estilos para el mensaje de advertencia en el modal */
+.archivar-modal-content .mensaje-advertencia {
+  font-weight: 500;
+  color: #dc3545;
+  margin-top: 8px;
+  font-size: 14px;
+}

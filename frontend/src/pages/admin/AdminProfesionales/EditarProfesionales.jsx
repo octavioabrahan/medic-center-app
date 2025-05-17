@@ -6,6 +6,7 @@ import './EditarProfesionales.css';
 import './EditarProfesionales-fix.css';
 import './modal-fix.css';
 import './checkbox-fix.css';
+import './ArchivarModal.css';
 import Modal from '../../../components/Modal/Modal';
 import InputField from '../../../components/Inputs/InputField';
 import SelectField from '../../../components/Inputs/SelectField';
@@ -46,6 +47,10 @@ const EditarProfesionales = ({
   const [loading, setLoading] = useState(false); // Usado para mostrar estados de carga si se necesita
   const [error, setError] = useState(null);
   const [successMessage, setSuccessMessage] = useState(null);
+  
+  // Estado para el modal de confirmación de archivar profesional
+  const [showArchivarModal, setShowArchivarModal] = useState(false);
+  const [confirmacionArchivado, setConfirmacionArchivado] = useState(false);
 
   // Función para cargar los servicios asociados al profesional
   const cargarServicios = useCallback(async () => {
@@ -191,8 +196,13 @@ const EditarProfesionales = ({
     }
   };
 
-  // Archivar profesional
-  const archivarProfesional = async () => {
+  // Mostrar el modal de confirmación para archivar
+  const archivarProfesional = () => {
+    setShowArchivarModal(true);
+  };
+  
+  // Confirmar archivado del profesional
+  const confirmarArchivarProfesional = async () => {
     try {
       setLoading(true);
       setError(null);
@@ -205,6 +215,10 @@ const EditarProfesionales = ({
       });
       
       console.log('Respuesta archivar profesional:', response);
+      
+      // Cerrar el modal de confirmación
+      setShowArchivarModal(false);
+      setConfirmacionArchivado(false);
       
       // Mostrar mensaje de éxito
       setSuccessMessage("Profesional archivado correctamente");
@@ -254,140 +268,196 @@ const EditarProfesionales = ({
 
   // Renderizar el modal de edición con el nuevo diseño
   return (
-    <Modal 
-      isOpen={isOpen}
-      onClose={onClose}
-      heading={`Editar a ${profesional?.nombre || ''} ${profesional?.apellido || ''}`}
-      bodyText=""
-      contentClassName="hide-original-buttons full-width-modal"
-      size="medium"
-    >
-      {error && (
-        <div className="mensaje-error">
-          {error}
-        </div>
-      )}
-      
-      {successMessage && (
-        <div className="mensaje-error" style={{ 
-          backgroundColor: '#d4edda', 
-          color: '#155724', 
-          borderLeft: '4px solid #155724'
-        }}>
-          {successMessage}
-        </div>
-      )}
-      
-      <div className="campo-completo">
-        <InputField
-          label="Cédula"
-          value={profesionalEditado.cedula}
-          placeholder="Ej: 00.000.000"
-          fillContainer={true}
-          onChange={(value) => setProfesionalEditado({
-            ...profesionalEditado,
-            cedula: value
-          })}
-        />
-      </div>
-            
-      <div className="campo-completo">
-        <InputField
-          label="Nombre"
-          value={profesionalEditado.nombre}
-          placeholder="Nombre del profesional"
-          fillContainer={true}
-          onChange={(value) => setProfesionalEditado({
-            ...profesionalEditado,
-            nombre: value
-          })}
-        />
-      </div>
+    <>
+      <Modal 
+        isOpen={isOpen}
+        onClose={onClose}
+        heading={`Editar a ${profesional?.nombre || ''} ${profesional?.apellido || ''}`}
+        bodyText=""
+        contentClassName="hide-original-buttons full-width-modal"
+        size="medium"
+      >
+        {error && (
+          <div className="mensaje-error">
+            {error}
+          </div>
+        )}
         
-      <div className="campo-completo">
-        <InputField
-          label="Apellido"
-          value={profesionalEditado.apellido}
-          placeholder="Apellido del profesional"
-          fillContainer={true}
-          onChange={(value) => setProfesionalEditado({
-            ...profesionalEditado,
-            apellido: value
-          })}
-        />
-      </div>
+        {successMessage && (
+          <div className="mensaje-error" style={{ 
+            backgroundColor: '#d4edda', 
+            color: '#155724', 
+            borderLeft: '4px solid #155724'
+          }}>
+            {successMessage}
+          </div>
+        )}
         
-      <div className="campo-completo">
-        <InputField
-          label="Teléfono"
-          value={profesionalEditado.telefono}
-          placeholder="Teléfono del profesional"
-          fillContainer={true}
-          onChange={(value) => setProfesionalEditado({
-            ...profesionalEditado,
-            telefono: value
-          })}
-        />
-      </div>
-        
-      <div className="campo-completo">
-        <InputField
-          label="Correo"
-          value={profesionalEditado.correo}
-          placeholder="correo@ejemplo.com"
-          fillContainer={true}
-          onChange={(value) => setProfesionalEditado({
-            ...profesionalEditado,
-            correo: value
-          })}
-        />
-      </div>
-        
-      <div className="campo-completo">
-        <SelectField
-          label="Especialidad"
-          value={String(profesionalEditado.especialidad_id)}
-          placeholder="Seleccione una especialidad"
-          fillContainer={true}
-          options={especialidades.map(esp => ({
-            label: esp.nombre,
-            value: String(esp.especialidad_id)
-          }))}
-          onChange={(value) => {
-            console.log('Especialidad seleccionada desde SelectField:', value);
-            setProfesionalEditado({
+        <div className="campo-completo">
+          <InputField
+            label="Cédula"
+            value={profesionalEditado.cedula}
+            placeholder="Ej: 00.000.000"
+            fillContainer={true}
+            onChange={(value) => setProfesionalEditado({
               ...profesionalEditado,
-              especialidad_id: value
-            });
-          }}
-        />
-      </div>
-        
-      <div className="servicios-grupo">
-        <p className="servicios-titulo">Servicios</p>
-        <div className="servicios-opciones">
-          {loading ? (
-            <div>Cargando servicios...</div>
-          ) : (
-            Array.isArray(servicios) && servicios.length > 0 ? (
-              servicios.map(servicio => (
-                <CheckboxField
-                  key={servicio.id_servicio}
-                  label={servicio.nombre_servicio}
-                  checked={serviciosSeleccionados.includes(servicio.id_servicio)}
-                  onChange={() => toggleServicio(servicio.id_servicio)}
-                  description={servicio.price_usd ? `USD ${servicio.price_usd}` : ''}
-                />
-              ))
-            ) : (
-              <div>No hay servicios disponibles para esta especialidad</div>
-            )
-          )}
+              cedula: value
+            })}
+          />
         </div>
-      </div>
+            
+        <div className="campo-completo">
+          <InputField
+            label="Nombre"
+            value={profesionalEditado.nombre}
+            placeholder="Nombre del profesional"
+            fillContainer={true}
+            onChange={(value) => setProfesionalEditado({
+              ...profesionalEditado,
+              nombre: value
+            })}
+          />
+        </div>
+        
+        <div className="campo-completo">
+          <InputField
+            label="Apellido"
+            value={profesionalEditado.apellido}
+            placeholder="Apellido del profesional"
+            fillContainer={true}
+            onChange={(value) => setProfesionalEditado({
+              ...profesionalEditado,
+              apellido: value
+            })}
+          />
+        </div>
+        
+        <div className="campo-completo">
+          <InputField
+            label="Teléfono"
+            value={profesionalEditado.telefono}
+            placeholder="Teléfono del profesional"
+            fillContainer={true}
+            onChange={(value) => setProfesionalEditado({
+              ...profesionalEditado,
+              telefono: value
+            })}
+          />
+        </div>
+        
+        <div className="campo-completo">
+          <InputField
+            label="Correo"
+            value={profesionalEditado.correo}
+            placeholder="correo@ejemplo.com"
+            fillContainer={true}
+            onChange={(value) => setProfesionalEditado({
+              ...profesionalEditado,
+              correo: value
+            })}
+          />
+        </div>
+        
+        <div className="campo-completo">
+          <SelectField
+            label="Especialidad"
+            value={String(profesionalEditado.especialidad_id)}
+            placeholder="Seleccione una especialidad"
+            fillContainer={true}
+            options={especialidades.map(esp => ({
+              label: esp.nombre,
+              value: String(esp.especialidad_id)
+            }))}
+            onChange={(value) => {
+              console.log('Especialidad seleccionada desde SelectField:', value);
+              setProfesionalEditado({
+                ...profesionalEditado,
+                especialidad_id: value
+              });
+            }}
+          />
+        </div>
+        
+        <div className="servicios-grupo">
+          <p className="servicios-titulo">Servicios</p>
+          <div className="servicios-opciones">
+            {loading ? (
+              <div>Cargando servicios...</div>
+            ) : (
+              Array.isArray(servicios) && servicios.length > 0 ? (
+                servicios.map(servicio => (
+                  <CheckboxField
+                    key={servicio.id_servicio}
+                    label={servicio.nombre_servicio}
+                    checked={serviciosSeleccionados.includes(servicio.id_servicio)}
+                    onChange={() => toggleServicio(servicio.id_servicio)}
+                    description={servicio.price_usd ? `USD ${servicio.price_usd}` : ''}
+                  />
+                ))
+              ) : (
+                <div>No hay servicios disponibles para esta especialidad</div>
+              )
+            )}
+          </div>
+        </div>
       
-      <CustomFooter />
-    </Modal>
+        <CustomFooter />
+      </Modal>
+
+      {/* Modal de confirmación para archivar profesional */}
+      <Modal
+        isOpen={showArchivarModal}
+        onClose={() => {
+          setShowArchivarModal(false);
+          setConfirmacionArchivado(false);
+        }}
+        heading="Estás a punto de archivar al profesional"
+        size="small"
+        contentClassName="hide-original-buttons"
+      >
+        <div className="archivar-modal-content">
+          <p>Al archivar a <strong>{profesionalEditado.nombre} {profesionalEditado.apellido}</strong>:</p>
+          <ul>
+            <li>El profesional no estará disponible para nuevas citas.</li>
+            <li>Los datos del profesional se mantendrán en los registros históricos.</li>
+            <li>Las citas existentes no se verán afectadas.</li>
+            <li>El profesional podrá ser activado nuevamente si es necesario.</li>
+          </ul>
+          
+          <div className="checkbox-container">
+            <CheckboxField
+              label="Entiendo que el profesional dejará de estar disponible para agendamiento."
+              checked={confirmacionArchivado}
+              onChange={(checked) => setConfirmacionArchivado(checked)}
+            />
+            {!confirmacionArchivado && (
+              <div className="mensaje-advertencia">
+                Debes confirmar que entiendes las consecuencias para continuar.
+              </div>
+            )}
+          </div>
+
+          <div className="archivar-modal-buttons">
+            <Button 
+              variant="neutral" 
+              onClick={() => {
+                setShowArchivarModal(false);
+                setConfirmacionArchivado(false);
+              }}
+            >
+              Cancelar
+            </Button>
+            <Button 
+              variant="danger" 
+              onClick={confirmarArchivarProfesional}
+              disabled={!confirmacionArchivado || loading}
+            >
+              {loading ? "Archivando..." : "Sí, archivar"}
+            </Button>
+          </div>
+        </div>
+      </Modal>
+    </>
   );
 };
 
