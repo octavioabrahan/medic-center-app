@@ -40,13 +40,6 @@ const EditarProfesionales = ({
     activo: true
   });
   
-  // Para debugging de los valores de especialidad  
-  const [especialidadDebug, setEspecialidadDebug] = useState({
-    original: '',
-    current: '',
-    type: ''
-  });
-  
   // Estado para servicios y selección
   const [servicios, setServicios] = useState([]);
   const [serviciosSeleccionados, setServiciosSeleccionados] = useState([]);
@@ -98,24 +91,14 @@ const EditarProfesionales = ({
     if (isOpen && profesional) {
       console.log('Profesional recibido:', profesional);
       
-      // Mantener el especialidad_id en su formato original
-      const especialidadId = profesional.especialidad_id || '';
+      // Mantener el especialidad_id en su formato original pero asegurarnos que sea string
+      const especialidadId = profesional.especialidad_id ? String(profesional.especialidad_id) : '';
       console.log('Especialidad ID que se va a seleccionar:', especialidadId);
-      console.log('Tipo de dato del ID de especialidad:', typeof especialidadId);
-      console.log('Especialidades disponibles:', especialidades);
       
-      // Debugging para ver los valores y tipos
-      setEspecialidadDebug({
-        original: especialidadId,
-        current: '',
-        type: typeof especialidadId
-      });
-      
-      // Verificar explícitamente si la especialidad existe en las opciones
-      const especialidadExiste = especialidades.some(esp => {
-        console.log(`Comparando: ${esp.especialidad_id} (${typeof esp.especialidad_id}) con ${especialidadId} (${typeof especialidadId})`);
-        return String(esp.especialidad_id) === String(especialidadId);
-      });
+      // Verificar que exista en las opciones disponibles
+      const especialidadExiste = especialidades.some(esp => 
+        String(esp.especialidad_id) === especialidadId
+      );
       
       console.log('¿Especialidad existe en las opciones?', especialidadExiste);
       
@@ -361,40 +344,23 @@ const EditarProfesionales = ({
       </div>
         
       <div className="campo-completo">
-        <label className="label">Especialidad</label>
-        <div className={`select select-native-wrapper fill-container`}>
-          <select
-            className="select-native"
-            value={String(profesionalEditado.especialidad_id)}
-            onChange={(e) => {
-              console.log('Especialidad seleccionada:', e.target.value);
-              console.log('Tipo de dato seleccionado:', typeof e.target.value);
-              setEspecialidadDebug(prev => ({
-                ...prev,
-                current: e.target.value,
-                type: typeof e.target.value
-              }));
-              setProfesionalEditado({
-                ...profesionalEditado,
-                especialidad_id: e.target.value
-              });
-            }}
-          >
-            <option value="">Seleccione una especialidad</option>
-            {especialidades.map(esp => {
-              console.log(`Renderizando opción: ${esp.nombre} - ID: ${esp.especialidad_id} - Tipo: ${typeof esp.especialidad_id}`);
-              return (
-                <option 
-                  key={esp.especialidad_id} 
-                  value={String(esp.especialidad_id)}
-                >
-                  {esp.nombre}
-                </option>
-              );
-            })}
-          </select>
-          <ChevronDownIcon className="heroicons-micro-chevron-down" style={{ width: '16px', height: '16px', position: 'absolute', right: '12px', pointerEvents: 'none' }} />
-        </div>
+        <SelectField
+          label="Especialidad"
+          value={String(profesionalEditado.especialidad_id)}
+          placeholder="Seleccione una especialidad"
+          fillContainer={true}
+          options={especialidades.map(esp => ({
+            label: esp.nombre,
+            value: String(esp.especialidad_id)
+          }))}
+          onChange={(value) => {
+            console.log('Especialidad seleccionada desde SelectField:', value);
+            setProfesionalEditado({
+              ...profesionalEditado,
+              especialidad_id: value
+            });
+          }}
+        />
       </div>
         
       <div className="servicios-grupo">

@@ -35,20 +35,14 @@
 }
 
 /* Estilos para el select personalizado */
-.campo-completo .select-native-wrapper {
-  position: relative;
-  width: 100%;
+.select-field.fill-container,
+.select-field.fill-container .select,
+.select-field.fill-container .select-native-wrapper {
+  width: 100% !important;
 }
 
-.campo-completo .select-native {
-  width: 100%;
-  height: 44px;
-  padding: 12px 16px;
-  border-radius: 8px;
-  border: 1px solid #d9d9d9;
-  background: #fff;
-  color: #1e1e1e;
-  font-size: 16px;
+.select-field.fill-container select {
+  width: 100% !important;
   appearance: none;
   -webkit-appearance: none;
   -moz-appearance: none;
