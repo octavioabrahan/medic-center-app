@@ -8,18 +8,20 @@
   margin-bottom: 16px;
   color: #1e1e1e;
   font-size: 16px;
+  font-weight: 500;
 }
 
 .archivar-modal-content ul {
   margin-top: 0;
   margin-bottom: 20px;
-  padding-left: 20px;
+  padding-left: 24px;
 }
 
 .archivar-modal-content li {
   margin-bottom: 8px;
-  color: #505050;
-  line-height: 1.4;
+  color: #202020;
+  line-height: 1.5;
+  font-size: 15px;
 }
 
 .archivar-modal-buttons {
@@ -29,12 +31,19 @@
   margin-top: 24px;
 }
 
+.archivar-modal-buttons button {
+  padding: 10px 24px;
+  border-radius: 6px;
+  font-size: 16px;
+  font-weight: 500;
+  min-width: 120px;
+}
+
 .checkbox-container {
   margin: 24px 0 8px 0;
-  padding: 12px;
-  background-color: #f9fafb;
-  border-radius: 6px;
-  border: 1px solid #e5e7eb;
+  padding: 8px 0;
+  display: flex;
+  align-items: flex-start;
 }
 
 /* Estilos de botones específicos para el modal de confirmación */

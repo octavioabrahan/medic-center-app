@@ -443,22 +443,20 @@ const EditarProfesionales = ({
           setShowArchivarModal(false);
           setConfirmacionArchivado(false);
         }}
-        heading="Estás a punto de archivar al profesional"
+        heading={`¿Quieres archivar al profesional "${profesionalEditado.nombre} ${profesionalEditado.apellido}"?`}
         size="small"
         contentClassName="hide-original-buttons"
       >
         <div className="archivar-modal-content">
-          <p>Al archivar a <strong>{profesionalEditado.nombre} {profesionalEditado.apellido}</strong>:</p>
+          <p>Al archivar este profesional:</p>
           <ul>
-            <li>El profesional no estará disponible para nuevas citas.</li>
-            <li>Los datos del profesional se mantendrán en los registros históricos.</li>
-            <li>Las citas existentes no se verán afectadas.</li>
-            <li>El profesional podrá ser activado nuevamente si es necesario.</li>
+            <li>Ya no estará disponible en el sitio de agendamiento.</li>
+            <li>Los agendamientos previamente generados no se eliminarán.</li>
           </ul>
           
           <div className="checkbox-container">
             <CheckboxField
-              label="Entiendo que el profesional dejará de estar disponible para agendamiento."
+              label="Entiendo que este profesional dejará de mostrarse en el sitio de agendamiento."
               checked={confirmacionArchivado}
               onChange={(checked) => setConfirmacionArchivado(checked)}
             />
