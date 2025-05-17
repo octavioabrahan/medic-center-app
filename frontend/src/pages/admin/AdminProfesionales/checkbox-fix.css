@@ -1,0 +1,35 @@
+/* Ajustes específicos para los checkboxes en el modal de editar profesionales */
+.servicios-opciones .checkbox-field {
+  width: 100% !important;
+  max-width: 100% !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+.servicios-opciones .checkbox-and-label {
+  width: 100% !important;
+  padding-right: 16px !important;
+}
+
+.servicios-opciones .checkbox-description {
+  text-align: right;
+  margin-left: auto;
+  opacity: 0.8;
+  font-size: 14px;
+  color: #555;
+}
+
+/* Asegurar que si hay descripción, ocupe el espacio correctamente */
+.checkbox-field .label {
+  flex: 1;
+  margin-right: 8px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Estilo para la etiqueta de precio */
+.checkbox-price {
+  margin-left: auto;
+  color: #666;
+  font-size: 14px;
+}

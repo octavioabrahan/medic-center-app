@@ -4,6 +4,7 @@ import { ArchiveBoxIcon, ChevronDownIcon, XMarkIcon, CheckIcon } from '@heroicon
 import './EditarProfesionales.css';
 import './EditarProfesionales-fix.css';
 import './modal-fix.css';
+import './checkbox-fix.css';
 import Modal from '../../../components/Modal/Modal';
 import InputField from '../../../components/Inputs/InputField';
 import SelectField from '../../../components/Inputs/SelectField';
@@ -89,6 +90,10 @@ const EditarProfesionales = ({
     if (isOpen && profesional) {
       console.log('Profesional recibido:', profesional);
       
+      // Asegurarse de que especialidad_id sea del mismo tipo de datos que se espera en el select
+      const especialidadId = profesional.especialidad_id ? profesional.especialidad_id.toString() : '';
+      console.log('Especialidad ID que se va a seleccionar:', especialidadId);
+      
       setProfesionalEditado({
         id: profesional.profesional_id || '',
         cedula: profesional.cedula || '',
@@ -96,7 +101,7 @@ const EditarProfesionales = ({
         apellido: profesional.apellido || '',
         telefono: profesional.telefono || '',
         correo: profesional.email || '', // backend uses email, not correo
-        especialidad_id: profesional.especialidad_id || '',
+        especialidad_id: especialidadId,
         activo: profesional.is_active !== undefined ? profesional.is_active : true
       });
       
@@ -338,12 +343,15 @@ const EditarProfesionales = ({
           fillContainer={true}
           options={especialidades.map(esp => ({
             label: esp.nombre,
-            value: esp.especialidad_id
+            value: esp.especialidad_id.toString() // Convertir explícitamente a string
           }))}
-          onChange={(value) => setProfesionalEditado({
-            ...profesionalEditado,
-            especialidad_id: value
-          })}
+          onChange={(value) => {
+            console.log('Especialidad seleccionada:', value);
+            setProfesionalEditado({
+              ...profesionalEditado,
+              especialidad_id: value
+            });
+          }}
         />
       </div>
         

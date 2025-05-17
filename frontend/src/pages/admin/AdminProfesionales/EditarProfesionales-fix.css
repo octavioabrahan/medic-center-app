@@ -64,6 +64,7 @@
 .servicios-grupo {
   width: 100%;
   margin-bottom: 16px;
+  padding: 0;
 }
 
 .servicios-titulo {
@@ -77,6 +78,14 @@
   display: flex;
   flex-direction: column;
   gap: 12px;
+  width: 100%;
+  padding: 0;
+}
+
+/* Ajustar el espacio de los checkboxes */
+.servicios-opciones .checkbox-field {
+  width: 100%;
+  padding: 0;
 }
 
 /* Para el botón de icono en la esquina superior derecha */
