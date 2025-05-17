@@ -126,7 +126,7 @@ const EditarProfesionales = ({
         apellido: profesional.apellido || '',
         telefono: profesional.telefono || '',
         correo: profesional.email || '', // backend uses email, not correo
-        especialidad_id: String(especialidadId), // Ensure string type
+        especialidad_id: especialidadId,
         activo: profesional.is_active !== undefined ? profesional.is_active : true
       });
       
@@ -399,24 +399,6 @@ const EditarProfesionales = ({
         
       <div className="servicios-grupo">
         <p className="servicios-titulo">Servicios</p>
-        
-        {/* Solo visible durante desarrollo - eliminar en producción */}
-        <details className="debug-panel" style={{ 
-          marginBottom: '10px', 
-          padding: '8px', 
-          background: '#f5f5f5', 
-          border: '1px solid #ddd',
-          borderRadius: '4px',
-          fontSize: '12px'
-        }}>
-          <summary style={{ fontWeight: 'bold', cursor: 'pointer' }}>Información de Depuración</summary>
-          <div style={{ marginTop: '8px', fontFamily: 'monospace' }}>
-            <div>ID Especialidad Original: {String(especialidadDebug.original)} ({especialidadDebug.type})</div>
-            <div>ID Especialidad Actual: {String(profesionalEditado.especialidad_id)} ({typeof profesionalEditado.especialidad_id})</div>
-            <div>Especialidades Disponibles: {especialidades.length}</div>
-          </div>
-        </details>
-        
         <div className="servicios-opciones">
           {loading ? (
             <div>Cargando servicios...</div>
