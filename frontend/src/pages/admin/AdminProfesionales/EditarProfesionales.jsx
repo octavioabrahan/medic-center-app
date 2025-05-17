@@ -2,6 +2,11 @@ import React, { useState, useEffect, useCallback } from 'react';
 import api from '../../../api';
 import { ArchiveBoxIcon, ChevronDownIcon, XMarkIcon, CheckIcon } from '@heroicons/react/24/solid';
 import './EditarProfesionales.css';
+import Modal from '../../../components/Modal/Modal';
+import InputField from '../../../components/Inputs/InputField';
+import SelectField from '../../../components/Inputs/SelectField';
+import CheckboxField from '../../../components/Inputs/CheckboxField';
+import { Button } from '../../../components/Button/Button';
 
 /**
  * Componente para editar profesionales existentes
@@ -36,6 +41,7 @@ const EditarProfesionales = ({
   const [serviciosSeleccionados, setServiciosSeleccionados] = useState([]);
   const [loading, setLoading] = useState(false); // Usado para mostrar estados de carga si se necesita
   const [error, setError] = useState(null);
+  const [successMessage, setSuccessMessage] = useState(null);
 
   // Función para cargar los servicios asociados al profesional
   const cargarServicios = useCallback(async () => {
@@ -56,12 +62,13 @@ const EditarProfesionales = ({
       
       const todosServicios = serviciosResponse.data || [];
       
-      // La estructura de la respuesta debería ser { categorias: [...], servicios: [...] }
-      // Extraer los IDs de servicios de las relaciones
-      // La API devuelve un array de IDs directamente
-      const serviciosAsignados = relacionesResponse.data?.servicios || [];
-      
-      console.log('Servicios asignados:', serviciosAsignados);
+      // La respuesta del backend es { categorias: [...ids], servicios: [...ids] }
+      // Extraer los IDs de servicios directamente de la respuesta
+      const serviciosAsignados = Array.isArray(relacionesResponse.data?.servicios) 
+        ? relacionesResponse.data.servicios
+        : [];
+        
+      console.log('Servicios asignados procesados:', serviciosAsignados);
       
       // Marcar los servicios que ya están asignados
       setServicios(todosServicios);
@@ -112,11 +119,14 @@ const EditarProfesionales = ({
   const toggleServicio = (servicioId) => {
     console.log('Toggle servicio:', servicioId);
     setServiciosSeleccionados(prevServicios => {
+      // Verificar si el servicio ya está seleccionado
       if (prevServicios.includes(servicioId)) {
         console.log('Removiendo servicio:', servicioId);
+        // Si está seleccionado, lo quitamos
         return prevServicios.filter(id => id !== servicioId);
       } else {
         console.log('Agregando servicio:', servicioId);
+        // Si no está seleccionado, lo agregamos
         return [...prevServicios, servicioId];
       }
     });
@@ -148,9 +158,15 @@ const EditarProfesionales = ({
       
       console.log('Respuesta asignación servicios:', serviciosResponse);
       
-      // Notificar actualización exitosa
-      onProfesionalUpdated();
-      onClose();
+      // Mostrar mensaje de éxito
+      setSuccessMessage("Profesional actualizado correctamente");
+      
+      // Esperar un breve momento antes de cerrar el modal
+      setTimeout(() => {
+        // Notificar actualización exitosa
+        onProfesionalUpdated();
+        onClose();
+      }, 1500);
       
     } catch (err) {
       console.error("Error al actualizar profesional:", err);
@@ -168,12 +184,22 @@ const EditarProfesionales = ({
       
       console.log('Archivando profesional:', profesionalEditado.id);
       
-      await api.put(`/profesionales/estado/${profesionalEditado.id}`, {
+      // Llamar a la API para archivar el profesional (cambiar estado a inactivo)
+      const response = await api.put(`/profesionales/estado/${profesionalEditado.id}`, {
         activo: false
       });
       
-      onProfesionalUpdated();
-      onClose();
+      console.log('Respuesta archivar profesional:', response);
+      
+      // Mostrar mensaje de éxito
+      setSuccessMessage("Profesional archivado correctamente");
+      
+      // Esperar un breve momento antes de cerrar el modal
+      setTimeout(() => {
+        // Notificar que el profesional ha sido actualizado
+        onProfesionalUpdated();
+        onClose();
+      }, 1500);
       
     } catch (err) {
       console.error("Error al archivar profesional:", err);
@@ -185,165 +211,162 @@ const EditarProfesionales = ({
 
   // Renderizar el modal de edición
   return (
-    isOpen && (
-      <div className="modal-overlay" onClick={onClose}>
-        <div className="editar-profesionales-container" onClick={(e) => e.stopPropagation()}>
-          <div className="dialog-body">
-            {error && (
-              <div className="editar-profesionales-error">
-                {error}
-              </div>
-            )}
+    <Modal 
+      isOpen={isOpen} 
+      onClose={onClose}
+      title={`Editar a ${profesional?.nombre || ''} ${profesional?.apellido || ''}`}
+    >
+      {error && (
+        <div className="editar-profesionales-error">
+          {error}
+        </div>
+      )}
+      
+      {successMessage && (
+        <div className="editar-profesionales-success" style={{ 
+          backgroundColor: '#d4edda', 
+          color: '#155724', 
+          padding: '0.75rem 1.25rem', 
+          marginBottom: '1rem', 
+          borderRadius: '0.25rem' 
+        }}>
+          {successMessage}
+        </div>
+      )}
+      
+      <div className="text">
+        <InputField
+          label="Cédula"
+          value={profesionalEditado.cedula}
+          placeholder="Ej: 00.000.000"
+          onChange={(value) => setProfesionalEditado({
+            ...profesionalEditado,
+            cedula: value
+          })}
+          style={{ marginBottom: '16px' }}
+        />
             
-            <div className="text">
-              <div className="editar-a-endher-castillo">
-                Editar a {profesional?.nombre || ''} {profesional?.apellido || ''}
-              </div>
-              
-              <div className="input-field">
-                <div className="label">Cédula</div>
-                <div className="input">
-                  <input 
-                    type="text" 
-                    name="cedula"
-                    value={profesionalEditado.cedula}
-                    onChange={handleChange}
-                    className="value"
-                    placeholder="Ej: 00.000.000"
+        <InputField
+          label="Nombre"
+          value={profesionalEditado.nombre}
+          placeholder="Nombre del profesional"
+          onChange={(value) => setProfesionalEditado({
+            ...profesionalEditado,
+            nombre: value
+          })}
+          style={{ marginBottom: '16px' }}
+        />
+        
+        <InputField
+          label="Apellido"
+          value={profesionalEditado.apellido}
+          placeholder="Apellido del profesional"
+          onChange={(value) => setProfesionalEditado({
+            ...profesionalEditado,
+            apellido: value
+          })}
+          style={{ marginBottom: '16px' }}
+        />
+        
+        <InputField
+          label="Teléfono"
+          value={profesionalEditado.telefono}
+          placeholder="Teléfono del profesional"
+          onChange={(value) => setProfesionalEditado({
+            ...profesionalEditado,
+            telefono: value
+          })}
+          style={{ marginBottom: '16px' }}
+        />
+        
+        <InputField
+          label="Correo"
+          value={profesionalEditado.correo}
+          placeholder="correo@ejemplo.com"
+          onChange={(value) => setProfesionalEditado({
+            ...profesionalEditado,
+            correo: value
+          })}
+          style={{ marginBottom: '16px' }}
+        />
+        
+        <SelectField
+          label="Especialidad"
+          value={profesionalEditado.especialidad_id}
+          placeholder="Seleccione una especialidad"
+          options={especialidades.map(esp => ({
+            label: esp.nombre,
+            value: esp.especialidad_id
+          }))}
+          onChange={(value) => setProfesionalEditado({
+            ...profesionalEditado,
+            especialidad_id: value
+          })}
+          style={{ marginBottom: '16px' }}
+        />
+        
+        <div className="input-field">
+          <div className="servicio">Servicio</div>
+          {loading ? (
+            <div>Cargando servicios...</div>
+          ) : (
+            <div className="frame-30">
+              {Array.isArray(servicios) && servicios.length > 0 ? (
+                servicios.map(servicio => (
+                  <CheckboxField
+                    key={servicio.id_servicio}
+                    label={servicio.nombre_servicio}
+                    checked={serviciosSeleccionados.includes(servicio.id_servicio)}
+                    onChange={() => toggleServicio(servicio.id_servicio)}
+                    description={servicio.price_usd ? `USD ${servicio.price_usd}` : ''}
                   />
-                </div>
-              </div>
-              
-              <div className="input-field">
-                <div className="label">Nombre</div>
-                <div className="input">
-                  <input 
-                    type="text" 
-                    name="nombre"
-                    value={profesionalEditado.nombre}
-                    onChange={handleChange}
-                    className="value"
-                    placeholder="Nombre del profesional"
-                  />
-                </div>
-              </div>
-              
-              <div className="input-field">
-                <div className="label">Apellido</div>
-                <div className="input">
-                  <input 
-                    type="text" 
-                    name="apellido"
-                    value={profesionalEditado.apellido}
-                    onChange={handleChange}
-                    className="value"
-                    placeholder="Apellido del profesional"
-                  />
-                </div>
-              </div>
-              
-              <div className="input-field">
-                <div className="label">Teléfono</div>
-                <div className="input">
-                  <input 
-                    type="text" 
-                    name="telefono"
-                    value={profesionalEditado.telefono}
-                    onChange={handleChange}
-                    className="value"
-                    placeholder="Teléfono del profesional"
-                  />
-                </div>
-              </div>
-              
-              <div className="input-field">
-                <div className="label">Correo</div>
-                <div className="input">
-                  <input 
-                    type="email" 
-                    name="correo"
-                    value={profesionalEditado.correo}
-                    onChange={handleChange}
-                    className="value"
-                    placeholder="correo@ejemplo.com"
-                  />
-                </div>
-              </div>
-              
-              <div className="select-field">
-                <div className="label">Especialidad</div>
-                <div className="select">
-                  <select 
-                    name="especialidad_id"
-                    value={profesionalEditado.especialidad_id}
-                    onChange={handleChange}
-                    className="value"
-                  >
-                    <option value="">Seleccione una especialidad</option>
-                    {especialidades.map(especialidad => (
-                      <option key={especialidad.especialidad_id} value={especialidad.especialidad_id}>
-                        {especialidad.nombre}
-                      </option>
-                    ))}
-                  </select>
-                  <ChevronDownIcon className="chevron-down" />
-                </div>
-              </div>
-              
-              <div className="input-field">
-                <div className="servicio">Servicio</div>
-                {loading ? (
-                  <div>Cargando servicios...</div>
-                ) : (
-                  <div className="frame-30">
-                    {Array.isArray(servicios) && servicios.length > 0 ? (
-                      servicios.map(servicio => (
-                        <div className="checkbox-field" key={servicio.id_servicio}>
-                          <div className="checkbox-and-label">
-                            <div 
-                              className={serviciosSeleccionados.includes(servicio.id_servicio) ? "checkbox2" : "checkbox"}
-                              onClick={() => toggleServicio(servicio.id_servicio)}
-                            >
-                              {serviciosSeleccionados.includes(servicio.id_servicio) && (
-                                <CheckIcon className="check" />
-                              )}
-                            </div>
-                            <div className="label2">{servicio.nombre_servicio}</div>
-                          </div>
-                        </div>
-                      ))
-                    ) : (
-                      <div>No hay servicios disponibles para esta especialidad</div>
-                    )}
-                  </div>
-                )}
-              </div>
+                ))
+              ) : (
+                <div>No hay servicios disponibles para esta especialidad</div>
+              )}
             </div>
-            
-            <div className="button-group">
-              <div className="button-danger" onClick={archivarProfesional}>
-                <ArchiveBoxIcon className="heroicons-mini-archive-box" />
-                <div className="button">Archivar</div>
-              </div>
-              
-              <div className="frame-77">
-                <div className="button-neutral" onClick={onClose}>
-                  <div className="button2">Cancelar</div>
-                </div>
-                
-                <div className="button-primary" onClick={handleUpdate}>
-                  <div className="button3">Guardar</div>
-                </div>
-              </div>
-            </div>
-            
-            <div className="icon-button" onClick={onClose}>
-              <XMarkIcon className="x" />
-            </div>
-          </div>
+          )}
         </div>
       </div>
-    )
+      
+      <div className="button-group">
+        <Button
+          variant="danger"
+          onClick={archivarProfesional}
+          style={{ display: 'flex', alignItems: 'center', gap: '8px' }}
+          disabled={loading}
+        >
+          <ArchiveBoxIcon className="heroicons-mini-archive-box" />
+          {loading ? 'Archivando...' : 'Archivar'}
+        </Button>
+        
+        <div className="frame-77">
+          <Button
+            variant="neutral"
+            onClick={onClose}
+            disabled={loading}
+          >
+            Cancelar
+          </Button>
+          
+          <Button
+            variant="primary"
+            onClick={handleUpdate}
+            disabled={loading}
+          >
+            {loading ? 'Guardando...' : 'Guardar'}
+          </Button>
+        </div>
+      </div>
+      
+      <Button
+        variant="icon"
+        onClick={onClose}
+        style={{ position: 'absolute', top: '12px', right: '12px' }}
+      >
+        <XMarkIcon className="x" />
+      </Button>
+    </Modal>
   );
 };
 
