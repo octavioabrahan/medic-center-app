@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import api from '../../../api';
-import { ArchiveBoxIcon, ChevronDownIcon, XMarkIcon, CheckIcon } from '@heroicons/react/24/solid';
+import { ArchiveBoxIcon, XMarkIcon, CheckIcon } from '@heroicons/react/24/solid';
+import { ChevronDownIcon } from '@heroicons/react/20/solid';
 import './EditarProfesionales.css';
 import './EditarProfesionales-fix.css';
 import './modal-fix.css';
@@ -93,6 +94,14 @@ const EditarProfesionales = ({
       // Asegurarse de que especialidad_id sea del mismo tipo de datos que se espera en el select
       const especialidadId = profesional.especialidad_id ? profesional.especialidad_id.toString() : '';
       console.log('Especialidad ID que se va a seleccionar:', especialidadId);
+      console.log('Especialidades disponibles:', especialidades);
+      
+      // Verificar explícitamente si la especialidad existe en las opciones
+      const especialidadExiste = especialidades.some(esp => 
+        esp.especialidad_id.toString() === especialidadId
+      );
+      
+      console.log('¿Especialidad existe en las opciones?', especialidadExiste);
       
       setProfesionalEditado({
         id: profesional.profesional_id || '',
@@ -336,23 +345,32 @@ const EditarProfesionales = ({
       </div>
         
       <div className="campo-completo">
-        <SelectField
-          label="Especialidad"
-          value={profesionalEditado.especialidad_id}
-          placeholder="Seleccione una especialidad"
-          fillContainer={true}
-          options={especialidades.map(esp => ({
-            label: esp.nombre,
-            value: esp.especialidad_id.toString() // Convertir explícitamente a string
-          }))}
-          onChange={(value) => {
-            console.log('Especialidad seleccionada:', value);
-            setProfesionalEditado({
-              ...profesionalEditado,
-              especialidad_id: value
-            });
-          }}
-        />
+        <label className="label">Especialidad</label>
+        <div className={`select select-native-wrapper fill-container`}>
+          <select
+            className="select-native"
+            value={profesionalEditado.especialidad_id}
+            onChange={(e) => {
+              console.log('Especialidad seleccionada:', e.target.value);
+              setProfesionalEditado({
+                ...profesionalEditado,
+                especialidad_id: e.target.value
+              });
+            }}
+          >
+            <option value="" disabled>Seleccione una especialidad</option>
+            {especialidades.map(esp => (
+              <option 
+                key={esp.especialidad_id} 
+                value={esp.especialidad_id.toString()}
+                selected={profesionalEditado.especialidad_id === esp.especialidad_id.toString()}
+              >
+                {esp.nombre}
+              </option>
+            ))}
+          </select>
+          <ChevronDownIcon className="heroicons-micro-chevron-down" style={{ width: '16px', height: '16px', position: 'absolute', right: '12px', pointerEvents: 'none' }} />
+        </div>
       </div>
         
       <div className="servicios-grupo">
