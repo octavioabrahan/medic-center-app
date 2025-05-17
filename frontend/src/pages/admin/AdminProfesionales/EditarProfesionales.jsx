@@ -39,7 +39,7 @@ const EditarProfesionales = ({
 
   // Función para cargar los servicios asociados al profesional
   const cargarServicios = useCallback(async () => {
-    if (!profesional || !profesional.id) return;
+    if (!profesional || !profesional.profesional_id) return;
     
     try {
       setLoading(true);
@@ -48,11 +48,20 @@ const EditarProfesionales = ({
       const serviciosResponse = await api.get(`/servicios`);
       
       // Cargar servicios asignados al profesional (relaciones)
-      const relacionesResponse = await api.get(`/profesionales/relaciones/${profesional.id}`);
+      const relacionesResponse = await api.get(`/profesionales/relaciones/${profesional.profesional_id}`);
       
-      const todosServicios = serviciosResponse.data;
+      console.log('Profesional ID:', profesional.profesional_id);
+      console.log('Todos los servicios:', serviciosResponse.data);
+      console.log('Relaciones:', relacionesResponse.data);
+      
+      const todosServicios = serviciosResponse.data || [];
+      
+      // La estructura de la respuesta debería ser { categorias: [...], servicios: [...] }
       // Extraer los IDs de servicios de las relaciones
-      const serviciosAsignados = relacionesResponse.data?.servicios?.map(servicio => servicio.id_servicio) || [];
+      // La API devuelve un array de IDs directamente
+      const serviciosAsignados = relacionesResponse.data?.servicios || [];
+      
+      console.log('Servicios asignados:', serviciosAsignados);
       
       // Marcar los servicios que ya están asignados
       setServicios(todosServicios);
@@ -69,6 +78,8 @@ const EditarProfesionales = ({
   // Efecto para cargar los datos del profesional cuando se abre el modal
   useEffect(() => {
     if (isOpen && profesional) {
+      console.log('Profesional recibido:', profesional);
+      
       setProfesionalEditado({
         id: profesional.profesional_id || '',
         cedula: profesional.cedula || '',
@@ -80,9 +91,13 @@ const EditarProfesionales = ({
         activo: profesional.is_active !== undefined ? profesional.is_active : true
       });
       
-      cargarServicios();
+      // Cargar servicios solo cuando tenemos un profesional válido con ID
+      if (profesional.profesional_id) {
+        console.log('Cargando servicios para el profesional ID:', profesional.profesional_id);
+        cargarServicios();
+      }
     }
-  }, [isOpen, profesional, especialidades, cargarServicios]);
+  }, [isOpen, profesional, cargarServicios]);
 
   // Manejar cambio en los campos del formulario
   const handleChange = (e) => {
@@ -95,10 +110,13 @@ const EditarProfesionales = ({
 
   // Toggle de un servicio (seleccionarlo o deseleccionarlo)
   const toggleServicio = (servicioId) => {
+    console.log('Toggle servicio:', servicioId);
     setServiciosSeleccionados(prevServicios => {
       if (prevServicios.includes(servicioId)) {
+        console.log('Removiendo servicio:', servicioId);
         return prevServicios.filter(id => id !== servicioId);
       } else {
+        console.log('Agregando servicio:', servicioId);
         return [...prevServicios, servicioId];
       }
     });
@@ -112,17 +130,23 @@ const EditarProfesionales = ({
       setLoading(true);
       setError(null);
       
+      console.log('Actualizando profesional:', profesionalEditado);
+      console.log('Servicios seleccionados:', serviciosSeleccionados);
+      
       // Actualizar datos del profesional
-      await api.put(`/profesionales/estado/${profesionalEditado.id}`, {
-        ...profesionalEditado,
+      const updateResponse = await api.put(`/profesionales/estado/${profesionalEditado.id}`, {
         activo: profesionalEditado.activo
       });
       
+      console.log('Respuesta actualización profesional:', updateResponse);
+      
       // Actualizar servicios asignados
-      await api.post(`/profesionales/asignar-servicios`, {
+      const serviciosResponse = await api.post(`/profesionales/asignar-servicios`, {
         profesional_id: profesionalEditado.id,
         servicios: serviciosSeleccionados
       });
+      
+      console.log('Respuesta asignación servicios:', serviciosResponse);
       
       // Notificar actualización exitosa
       onProfesionalUpdated();
@@ -141,6 +165,8 @@ const EditarProfesionales = ({
     try {
       setLoading(true);
       setError(null);
+      
+      console.log('Archivando profesional:', profesionalEditado.id);
       
       await api.put(`/profesionales/estado/${profesionalEditado.id}`, {
         activo: false
@@ -266,23 +292,31 @@ const EditarProfesionales = ({
               
               <div className="input-field">
                 <div className="servicio">Servicio</div>
-                <div className="frame-30">
-                  {servicios.map(servicio => (
-                    <div className="checkbox-field" key={servicio.id_servicio}>
-                      <div className="checkbox-and-label">
-                        <div 
-                          className={serviciosSeleccionados.includes(servicio.id_servicio) ? "checkbox2" : "checkbox"}
-                          onClick={() => toggleServicio(servicio.id_servicio)}
-                        >
-                          {serviciosSeleccionados.includes(servicio.id_servicio) && (
-                            <CheckIcon className="check" />
-                          )}
+                {loading ? (
+                  <div>Cargando servicios...</div>
+                ) : (
+                  <div className="frame-30">
+                    {Array.isArray(servicios) && servicios.length > 0 ? (
+                      servicios.map(servicio => (
+                        <div className="checkbox-field" key={servicio.id_servicio}>
+                          <div className="checkbox-and-label">
+                            <div 
+                              className={serviciosSeleccionados.includes(servicio.id_servicio) ? "checkbox2" : "checkbox"}
+                              onClick={() => toggleServicio(servicio.id_servicio)}
+                            >
+                              {serviciosSeleccionados.includes(servicio.id_servicio) && (
+                                <CheckIcon className="check" />
+                              )}
+                            </div>
+                            <div className="label2">{servicio.nombre_servicio}</div>
+                          </div>
                         </div>
-                        <div className="label2">{servicio.nombre_servicio}</div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
+                      ))
+                    ) : (
+                      <div>No hay servicios disponibles para esta especialidad</div>
+                    )}
+                  </div>
+                )}
               </div>
             </div>
             
