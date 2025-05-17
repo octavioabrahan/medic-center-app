@@ -183,8 +183,9 @@ const AdminProfesionales = () => {
           <div className="admin-profesionales__modal-body">
             <p className="admin-profesionales__confirm-message">
               ¿Está seguro que desea archivar al profesional <strong>{currentProfesional.nombre} {currentProfesional.apellido}</strong>?
-              <br />
-              <small>El profesional no podrá recibir nuevas citas pero se mantendrán sus registros históricos.</small>
+            </p>
+            <p className="admin-profesionales__confirm-description">
+              El profesional no podrá recibir nuevas citas pero se mantendrán sus registros históricos.
             </p>
           </div>
           <div className="admin-profesionales__modal-footer">
