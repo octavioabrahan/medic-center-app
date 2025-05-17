@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import api from '../../../api';
 import { ArchiveBoxIcon, ChevronDownIcon, XMarkIcon, CheckIcon } from '@heroicons/react/24/solid';
 import './EditarProfesionales.css';
+import './EditarProfesionales-fix.css';
 import Modal from '../../../components/Modal/Modal';
 import InputField from '../../../components/Inputs/InputField';
 import SelectField from '../../../components/Inputs/SelectField';
@@ -209,32 +210,61 @@ const EditarProfesionales = ({
     }
   };
 
-  // Renderizar el modal de edición
+  // Custom footer component para el modal que reemplaza la funcionalidad de los botones predeterminados
+  const CustomFooter = () => (
+    <div className="custom-button-group">
+      <Button
+        variant="danger"
+        onClick={archivarProfesional}
+        disabled={loading}
+      >
+        <ArchiveBoxIcon className="btn__icon" />
+        <span style={{ marginLeft: '.5rem' }}>{loading ? "Archivando..." : "Archivar"}</span>
+      </Button>
+      <Button 
+        variant="neutral" 
+        onClick={onClose}
+        disabled={loading}
+      >
+        Cancelar
+      </Button>
+      <Button 
+        variant="primary" 
+        onClick={handleUpdate}
+        disabled={loading}
+      >
+        {loading ? "Guardando..." : "Guardar"}
+      </Button>
+    </div>
+  );
+
+  // Renderizar el modal de edición con el nuevo diseño
   return (
     <Modal 
-      isOpen={isOpen} 
+      isOpen={isOpen}
       onClose={onClose}
-      title={`Editar a ${profesional?.nombre || ''} ${profesional?.apellido || ''}`}
+      heading={`Editar a ${profesional?.nombre || ''} ${profesional?.apellido || ''}`}
+      bodyText=""
+      contentClassName="hide-original-buttons"
+      size="medium"
     >
       {error && (
-        <div className="editar-profesionales-error">
+        <div className="mensaje-error">
           {error}
         </div>
       )}
       
       {successMessage && (
-        <div className="editar-profesionales-success" style={{ 
+        <div className="mensaje-error" style={{ 
           backgroundColor: '#d4edda', 
           color: '#155724', 
-          padding: '0.75rem 1.25rem', 
-          marginBottom: '1rem', 
-          borderRadius: '0.25rem' 
+          borderLeft: '4px solid #155724'
         }}>
           {successMessage}
         </div>
       )}
       
-      <div className="text">
+      <div className="campo-completo">
         <InputField
           label="Cédula"
           value={profesionalEditado.cedula}
@@ -243,9 +273,10 @@ const EditarProfesionales = ({
             ...profesionalEditado,
             cedula: value
           })}
-          style={{ marginBottom: '16px' }}
         />
+      </div>
             
+      <div className="campo-completo">
         <InputField
           label="Nombre"
           value={profesionalEditado.nombre}
@@ -254,9 +285,10 @@ const EditarProfesionales = ({
             ...profesionalEditado,
             nombre: value
           })}
-          style={{ marginBottom: '16px' }}
         />
+      </div>
         
+      <div className="campo-completo">
         <InputField
           label="Apellido"
           value={profesionalEditado.apellido}
@@ -265,9 +297,10 @@ const EditarProfesionales = ({
             ...profesionalEditado,
             apellido: value
           })}
-          style={{ marginBottom: '16px' }}
         />
+      </div>
         
+      <div className="campo-completo">
         <InputField
           label="Teléfono"
           value={profesionalEditado.telefono}
@@ -276,9 +309,10 @@ const EditarProfesionales = ({
             ...profesionalEditado,
             telefono: value
           })}
-          style={{ marginBottom: '16px' }}
         />
+      </div>
         
+      <div className="campo-completo">
         <InputField
           label="Correo"
           value={profesionalEditado.correo}
@@ -287,9 +321,10 @@ const EditarProfesionales = ({
             ...profesionalEditado,
             correo: value
           })}
-          style={{ marginBottom: '16px' }}
         />
+      </div>
         
+      <div className="campo-completo">
         <SelectField
           label="Especialidad"
           value={profesionalEditado.especialidad_id}
@@ -302,70 +337,33 @@ const EditarProfesionales = ({
             ...profesionalEditado,
             especialidad_id: value
           })}
-          style={{ marginBottom: '16px' }}
         />
+      </div>
         
-        <div className="input-field">
-          <div className="servicio">Servicio</div>
+      <div className="servicios-grupo">
+        <p className="servicios-titulo">Servicios</p>
+        <div className="servicios-opciones">
           {loading ? (
             <div>Cargando servicios...</div>
           ) : (
-            <div className="frame-30">
-              {Array.isArray(servicios) && servicios.length > 0 ? (
-                servicios.map(servicio => (
-                  <CheckboxField
-                    key={servicio.id_servicio}
-                    label={servicio.nombre_servicio}
-                    checked={serviciosSeleccionados.includes(servicio.id_servicio)}
-                    onChange={() => toggleServicio(servicio.id_servicio)}
-                    description={servicio.price_usd ? `USD ${servicio.price_usd}` : ''}
-                  />
-                ))
-              ) : (
-                <div>No hay servicios disponibles para esta especialidad</div>
-              )}
-            </div>
+            Array.isArray(servicios) && servicios.length > 0 ? (
+              servicios.map(servicio => (
+                <CheckboxField
+                  key={servicio.id_servicio}
+                  label={servicio.nombre_servicio}
+                  checked={serviciosSeleccionados.includes(servicio.id_servicio)}
+                  onChange={() => toggleServicio(servicio.id_servicio)}
+                  description={servicio.price_usd ? `USD ${servicio.price_usd}` : ''}
+                />
+              ))
+            ) : (
+              <div>No hay servicios disponibles para esta especialidad</div>
+            )
           )}
         </div>
       </div>
       
-      <div className="button-group">
-        <Button
-          variant="danger"
-          onClick={archivarProfesional}
-          style={{ display: 'flex', alignItems: 'center', gap: '8px' }}
-          disabled={loading}
-        >
-          <ArchiveBoxIcon className="heroicons-mini-archive-box" />
-          {loading ? 'Archivando...' : 'Archivar'}
-        </Button>
-        
-        <div className="frame-77">
-          <Button
-            variant="neutral"
-            onClick={onClose}
-            disabled={loading}
-          >
-            Cancelar
-          </Button>
-          
-          <Button
-            variant="primary"
-            onClick={handleUpdate}
-            disabled={loading}
-          >
-            {loading ? 'Guardando...' : 'Guardar'}
-          </Button>
-        </div>
-      </div>
-      
-      <Button
-        variant="icon"
-        onClick={onClose}
-        style={{ position: 'absolute', top: '12px', right: '12px' }}
-      >
-        <XMarkIcon className="x" />
-      </Button>
+      <CustomFooter />
     </Modal>
   );
 };
