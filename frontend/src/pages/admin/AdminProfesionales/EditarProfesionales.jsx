@@ -40,6 +40,13 @@ const EditarProfesionales = ({
     activo: true
   });
   
+  // Para debugging de los valores de especialidad  
+  const [especialidadDebug, setEspecialidadDebug] = useState({
+    original: '',
+    current: '',
+    type: ''
+  });
+  
   // Estado para servicios y selección
   const [servicios, setServicios] = useState([]);
   const [serviciosSeleccionados, setServiciosSeleccionados] = useState([]);
@@ -94,12 +101,21 @@ const EditarProfesionales = ({
       // Mantener el especialidad_id en su formato original
       const especialidadId = profesional.especialidad_id || '';
       console.log('Especialidad ID que se va a seleccionar:', especialidadId);
+      console.log('Tipo de dato del ID de especialidad:', typeof especialidadId);
       console.log('Especialidades disponibles:', especialidades);
       
+      // Debugging para ver los valores y tipos
+      setEspecialidadDebug({
+        original: especialidadId,
+        current: '',
+        type: typeof especialidadId
+      });
+      
       // Verificar explícitamente si la especialidad existe en las opciones
-      const especialidadExiste = especialidades.some(esp => 
-        esp.especialidad_id === especialidadId
-      );
+      const especialidadExiste = especialidades.some(esp => {
+        console.log(`Comparando: ${esp.especialidad_id} (${typeof esp.especialidad_id}) con ${especialidadId} (${typeof especialidadId})`);
+        return String(esp.especialidad_id) === String(especialidadId);
+      });
       
       console.log('¿Especialidad existe en las opciones?', especialidadExiste);
       
@@ -110,7 +126,7 @@ const EditarProfesionales = ({
         apellido: profesional.apellido || '',
         telefono: profesional.telefono || '',
         correo: profesional.email || '', // backend uses email, not correo
-        especialidad_id: especialidadId,
+        especialidad_id: String(especialidadId), // Ensure string type
         activo: profesional.is_active !== undefined ? profesional.is_active : true
       });
       
@@ -349,9 +365,15 @@ const EditarProfesionales = ({
         <div className={`select select-native-wrapper fill-container`}>
           <select
             className="select-native"
-            value={profesionalEditado.especialidad_id}
+            value={String(profesionalEditado.especialidad_id)}
             onChange={(e) => {
               console.log('Especialidad seleccionada:', e.target.value);
+              console.log('Tipo de dato seleccionado:', typeof e.target.value);
+              setEspecialidadDebug(prev => ({
+                ...prev,
+                current: e.target.value,
+                type: typeof e.target.value
+              }));
               setProfesionalEditado({
                 ...profesionalEditado,
                 especialidad_id: e.target.value
@@ -359,14 +381,17 @@ const EditarProfesionales = ({
             }}
           >
             <option value="">Seleccione una especialidad</option>
-            {especialidades.map(esp => (
-              <option 
-                key={esp.especialidad_id} 
-                value={esp.especialidad_id}
-              >
-                {esp.nombre}
-              </option>
-            ))}
+            {especialidades.map(esp => {
+              console.log(`Renderizando opción: ${esp.nombre} - ID: ${esp.especialidad_id} - Tipo: ${typeof esp.especialidad_id}`);
+              return (
+                <option 
+                  key={esp.especialidad_id} 
+                  value={String(esp.especialidad_id)}
+                >
+                  {esp.nombre}
+                </option>
+              );
+            })}
           </select>
           <ChevronDownIcon className="heroicons-micro-chevron-down" style={{ width: '16px', height: '16px', position: 'absolute', right: '12px', pointerEvents: 'none' }} />
         </div>
@@ -374,6 +399,24 @@ const EditarProfesionales = ({
         
       <div className="servicios-grupo">
         <p className="servicios-titulo">Servicios</p>
+        
+        {/* Solo visible durante desarrollo - eliminar en producción */}
+        <details className="debug-panel" style={{ 
+          marginBottom: '10px', 
+          padding: '8px', 
+          background: '#f5f5f5', 
+          border: '1px solid #ddd',
+          borderRadius: '4px',
+          fontSize: '12px'
+        }}>
+          <summary style={{ fontWeight: 'bold', cursor: 'pointer' }}>Información de Depuración</summary>
+          <div style={{ marginTop: '8px', fontFamily: 'monospace' }}>
+            <div>ID Especialidad Original: {String(especialidadDebug.original)} ({especialidadDebug.type})</div>
+            <div>ID Especialidad Actual: {String(profesionalEditado.especialidad_id)} ({typeof profesionalEditado.especialidad_id})</div>
+            <div>Especialidades Disponibles: {especialidades.length}</div>
+          </div>
+        </details>
+        
         <div className="servicios-opciones">
           {loading ? (
             <div>Cargando servicios...</div>
