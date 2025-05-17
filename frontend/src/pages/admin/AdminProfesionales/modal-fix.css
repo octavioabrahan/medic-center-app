@@ -1,0 +1,38 @@
+/* Sobrescribir estilos del modal para asegurar que tenga el ancho correcto */
+.modal-body {
+  width: calc(100% - 48px) !important;
+  max-width: 600px !important;
+}
+
+/* Clase específica para el modal de editar profesionales */
+.full-width-modal {
+  width: 100% !important;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Asegurar que el contenido del modal tenga espacio para expandirse */
+.modal-content {
+  width: 100% !important;
+}
+
+/* Estilos específicos para los campos de entrada dentro del modal */
+.modal-body .input-field,
+.modal-body .select-field {
+  width: 100% !important;
+}
+
+.modal-body .inputField,
+.modal-body .select-native-wrapper {
+  width: 100% !important;
+  max-width: none !important;
+}
+
+/* Asegurar que los inputs y selects ocupen todo el ancho disponible */
+.modal-body input.value {
+  width: 100% !important;
+}
+
+.modal-body select.select-native {
+  width: 100% !important;
+}

@@ -28,6 +28,24 @@
   margin-bottom: 16px;
 }
 
+/* Forzar ancho completo para los campos dentro de campo-completo */
+.campo-completo .input-field,
+.campo-completo .select-field {
+  width: 100% !important;
+}
+
+.campo-completo .inputField,
+.campo-completo .select,
+.campo-completo .select-native-wrapper {
+  width: 100% !important;
+}
+
+/* Asegurar que los inputs y selects dentro ocupe el 100% */
+.campo-completo input,
+.campo-completo select {
+  width: 100% !important;
+}
+
 /* Estilo para los mensajes de error */
 .mensaje-error {
   color: #d83232;

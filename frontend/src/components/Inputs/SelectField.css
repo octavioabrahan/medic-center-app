@@ -125,6 +125,13 @@
 .select-field.fill-container {
   width: 100% !important;
 }
+
+/* Asegurar que cuando fillContainer es true, todos los elementos internos ocupen el ancho completo */
+.select-field.fill-container .select,
+.select-field.fill-container .select-native-wrapper {
+  width: 100% !important;
+  min-width: 100% !important;
+}
 .select-native-wrapper {
   position: relative;
   width: 240px;

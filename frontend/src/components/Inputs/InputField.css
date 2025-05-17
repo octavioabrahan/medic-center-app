@@ -75,3 +75,9 @@
 .input-field.fill-container {
   width: 100% !important;
 }
+
+/* Asegurar que cuando fillContainer es true, todos los elementos internos ocupen el ancho completo */
+.input-field.fill-container .inputField {
+  width: 100% !important;
+  min-width: 100% !important;
+}

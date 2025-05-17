@@ -3,6 +3,7 @@ import api from '../../../api';
 import { ArchiveBoxIcon, ChevronDownIcon, XMarkIcon, CheckIcon } from '@heroicons/react/24/solid';
 import './EditarProfesionales.css';
 import './EditarProfesionales-fix.css';
+import './modal-fix.css';
 import Modal from '../../../components/Modal/Modal';
 import InputField from '../../../components/Inputs/InputField';
 import SelectField from '../../../components/Inputs/SelectField';
@@ -245,7 +246,7 @@ const EditarProfesionales = ({
       onClose={onClose}
       heading={`Editar a ${profesional?.nombre || ''} ${profesional?.apellido || ''}`}
       bodyText=""
-      contentClassName="hide-original-buttons"
+      contentClassName="hide-original-buttons full-width-modal"
       size="medium"
     >
       {error && (
