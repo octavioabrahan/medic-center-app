@@ -1,9 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { API_URL } from '../../../config/config';
-import Modal from '../../../components/Modal/Modal';
-import { faArchiveBox, faChevronDown, faXmark, faCheck } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { ArchiveBoxIcon, ChevronDownIcon, XMarkIcon, CheckIcon } from '@heroicons/react/24/solid';
 import './EditarProfesionales.css';
 
 /**
@@ -163,149 +161,157 @@ const EditarProfesionales = ({
 
   // Renderizar el modal de edición
   return (
-    <Modal
-      isOpen={isOpen}
-      onClose={onClose}
-      title={`Editar a ${profesional?.nombre || ''} ${profesional?.apellido || ''}`}
-    >
-      <div className="editar-profesionales-container">
-        {error && (
-          <div className="editar-profesionales-error">
-            {error}
-          </div>
-        )}
-        
-        <div className="text">
-          <div className="input-field">
-            <div className="label">Cédula</div>
-            <div className="input">
-              <input 
-                type="text" 
-                name="cedula"
-                value={profesionalEditado.cedula}
-                onChange={handleChange}
-                className="value"
-                placeholder="Ej: 00.000.000"
-              />
-            </div>
-          </div>
-          
-          <div className="input-field">
-            <div className="label">Nombre</div>
-            <div className="input">
-              <input 
-                type="text" 
-                name="nombre"
-                value={profesionalEditado.nombre}
-                onChange={handleChange}
-                className="value"
-                placeholder="Nombre del profesional"
-              />
-            </div>
-          </div>
-          
-          <div className="input-field">
-            <div className="label">Apellido</div>
-            <div className="input">
-              <input 
-                type="text" 
-                name="apellido"
-                value={profesionalEditado.apellido}
-                onChange={handleChange}
-                className="value"
-                placeholder="Apellido del profesional"
-              />
-            </div>
-          </div>
-          
-          <div className="input-field">
-            <div className="label">Teléfono</div>
-            <div className="input">
-              <input 
-                type="text" 
-                name="telefono"
-                value={profesionalEditado.telefono}
-                onChange={handleChange}
-                className="value"
-                placeholder="Teléfono del profesional"
-              />
-            </div>
-          </div>
-          
-          <div className="input-field">
-            <div className="label">Correo</div>
-            <div className="input">
-              <input 
-                type="email" 
-                name="correo"
-                value={profesionalEditado.correo}
-                onChange={handleChange}
-                className="value"
-                placeholder="correo@ejemplo.com"
-              />
-            </div>
-          </div>
-          
-          <div className="select-field">
-            <div className="label">Especialidad</div>
-            <div className="select">
-              <select 
-                name="especialidad_id"
-                value={profesionalEditado.especialidad_id}
-                onChange={handleChange}
-                className="value"
-              >
-                <option value="">Seleccione una especialidad</option>
-                {especialidades.map(especialidad => (
-                  <option key={especialidad.id} value={especialidad.id}>
-                    {especialidad.nombre}
-                  </option>
-                ))}
-              </select>
-              <FontAwesomeIcon icon={faChevronDown} className="chevron-down" />
-            </div>
-          </div>
-          
-          <div className="input-field">
-            <div className="servicio">Servicio</div>
-            <div className="frame-30">
-              {servicios.map(servicio => (
-                <div className="checkbox-field" key={servicio.id}>
-                  <div className="checkbox-and-label">
-                    <div 
-                      className={serviciosSeleccionados.includes(servicio.id) ? "checkbox2" : "checkbox"}
-                      onClick={() => toggleServicio(servicio.id)}
-                    >
-                      {serviciosSeleccionados.includes(servicio.id) && (
-                        <FontAwesomeIcon icon={faCheck} className="check" />
-                      )}
-                    </div>
-                    <div className="label2">{servicio.nombre}</div>
-                  </div>
+    isOpen && (
+      <div className="modal-overlay" onClick={onClose}>
+        <div className="editar-profesionales-container" onClick={(e) => e.stopPropagation()}>
+          <div className="dialog-body">
+            {error && (
+              <div className="editar-profesionales-error">
+                {error}
+              </div>
+            )}
+            
+            <div className="text">
+              <div className="editar-a-endher-castillo">
+                Editar a {profesional?.nombre || ''} {profesional?.apellido || ''}
+              </div>
+              
+              <div className="input-field">
+                <div className="label">Cédula</div>
+                <div className="input">
+                  <input 
+                    type="text" 
+                    name="cedula"
+                    value={profesionalEditado.cedula}
+                    onChange={handleChange}
+                    className="value"
+                    placeholder="Ej: 00.000.000"
+                  />
                 </div>
-              ))}
-            </div>
-          </div>
-        </div>
-        
-        <div className="button-group">
-          <div className="button-danger" onClick={archivarProfesional}>
-            <FontAwesomeIcon icon={faArchiveBox} className="heroicons-mini-archive-box" />
-            <div className="button">Archivar</div>
-          </div>
-          
-          <div className="frame-77">
-            <div className="button-neutral" onClick={onClose}>
-              <div className="button2">Cancelar</div>
+              </div>
+              
+              <div className="input-field">
+                <div className="label">Nombre</div>
+                <div className="input">
+                  <input 
+                    type="text" 
+                    name="nombre"
+                    value={profesionalEditado.nombre}
+                    onChange={handleChange}
+                    className="value"
+                    placeholder="Nombre del profesional"
+                  />
+                </div>
+              </div>
+              
+              <div className="input-field">
+                <div className="label">Apellido</div>
+                <div className="input">
+                  <input 
+                    type="text" 
+                    name="apellido"
+                    value={profesionalEditado.apellido}
+                    onChange={handleChange}
+                    className="value"
+                    placeholder="Apellido del profesional"
+                  />
+                </div>
+              </div>
+              
+              <div className="input-field">
+                <div className="label">Teléfono</div>
+                <div className="input">
+                  <input 
+                    type="text" 
+                    name="telefono"
+                    value={profesionalEditado.telefono}
+                    onChange={handleChange}
+                    className="value"
+                    placeholder="Teléfono del profesional"
+                  />
+                </div>
+              </div>
+              
+              <div className="input-field">
+                <div className="label">Correo</div>
+                <div className="input">
+                  <input 
+                    type="email" 
+                    name="correo"
+                    value={profesionalEditado.correo}
+                    onChange={handleChange}
+                    className="value"
+                    placeholder="correo@ejemplo.com"
+                  />
+                </div>
+              </div>
+              
+              <div className="select-field">
+                <div className="label">Especialidad</div>
+                <div className="select">
+                  <select 
+                    name="especialidad_id"
+                    value={profesionalEditado.especialidad_id}
+                    onChange={handleChange}
+                    className="value"
+                  >
+                    <option value="">Seleccione una especialidad</option>
+                    {especialidades.map(especialidad => (
+                      <option key={especialidad.id} value={especialidad.id}>
+                        {especialidad.nombre}
+                      </option>
+                    ))}
+                  </select>
+                  <ChevronDownIcon className="chevron-down" />
+                </div>
+              </div>
+              
+              <div className="input-field">
+                <div className="servicio">Servicio</div>
+                <div className="frame-30">
+                  {servicios.map(servicio => (
+                    <div className="checkbox-field" key={servicio.id}>
+                      <div className="checkbox-and-label">
+                        <div 
+                          className={serviciosSeleccionados.includes(servicio.id) ? "checkbox2" : "checkbox"}
+                          onClick={() => toggleServicio(servicio.id)}
+                        >
+                          {serviciosSeleccionados.includes(servicio.id) && (
+                            <CheckIcon className="check" />
+                          )}
+                        </div>
+                        <div className="label2">{servicio.nombre}</div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
             </div>
             
-            <div className="button-primary" onClick={handleUpdate}>
-              <div className="button3">Guardar</div>
+            <div className="button-group">
+              <div className="button-danger" onClick={archivarProfesional}>
+                <ArchiveBoxIcon className="heroicons-mini-archive-box" />
+                <div className="button">Archivar</div>
+              </div>
+              
+              <div className="frame-77">
+                <div className="button-neutral" onClick={onClose}>
+                  <div className="button2">Cancelar</div>
+                </div>
+                
+                <div className="button-primary" onClick={handleUpdate}>
+                  <div className="button3">Guardar</div>
+                </div>
+              </div>
+            </div>
+            
+            <div className="icon-button" onClick={onClose}>
+              <XMarkIcon className="x" />
             </div>
           </div>
         </div>
       </div>
-    </Modal>
+    )
   );
 };
 
