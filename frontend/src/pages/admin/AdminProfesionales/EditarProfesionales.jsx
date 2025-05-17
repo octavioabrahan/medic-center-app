@@ -1,8 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
-import { API_URL } from '../../../config/config';
 import { ArchiveBoxIcon, ChevronDownIcon, XMarkIcon, CheckIcon } from '@heroicons/react/24/solid';
 import './EditarProfesionales.css';
+
+// API URL directamente desde las variables de entorno
+const API_URL = process.env.REACT_APP_API_URL || '';
 
 /**
  * Componente para editar profesionales existentes
@@ -35,9 +37,8 @@ const EditarProfesionales = ({
   // Estado para servicios y selección
   const [servicios, setServicios] = useState([]);
   const [serviciosSeleccionados, setServiciosSeleccionados] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(false); // Usado para mostrar estados de carga si se necesita
   const [error, setError] = useState(null);
-  const [especialidadNombre, setEspecialidadNombre] = useState('');
 
   // Efecto para cargar los datos del profesional cuando se abre el modal
   useEffect(() => {
@@ -54,15 +55,11 @@ const EditarProfesionales = ({
       });
       
       cargarServicios();
-      
-      // Buscar el nombre de la especialidad
-      const especialidadEncontrada = especialidades.find(e => e.id === profesional.especialidad_id);
-      setEspecialidadNombre(especialidadEncontrada ? especialidadEncontrada.nombre : '');
     }
-  }, [isOpen, profesional, especialidades]);
+  }, [isOpen, profesional, especialidades, cargarServicios]);
 
   // Función para cargar los servicios asociados al profesional
-  const cargarServicios = async () => {
+  const cargarServicios = useCallback(async () => {
     if (!profesional || !profesional.id) return;
     
     try {
@@ -87,7 +84,7 @@ const EditarProfesionales = ({
     } finally {
       setLoading(false);
     }
-  };
+  }, [profesional]);
 
   // Manejar cambio en los campos del formulario
   const handleChange = (e) => {
