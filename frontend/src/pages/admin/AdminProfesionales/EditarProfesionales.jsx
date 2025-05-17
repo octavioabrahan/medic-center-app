@@ -40,24 +40,6 @@ const EditarProfesionales = ({
   const [loading, setLoading] = useState(false); // Usado para mostrar estados de carga si se necesita
   const [error, setError] = useState(null);
 
-  // Efecto para cargar los datos del profesional cuando se abre el modal
-  useEffect(() => {
-    if (isOpen && profesional) {
-      setProfesionalEditado({
-        id: profesional.id || '',
-        cedula: profesional.cedula || '',
-        nombre: profesional.nombre || '',
-        apellido: profesional.apellido || '',
-        telefono: profesional.telefono || '',
-        correo: profesional.correo || '',
-        especialidad_id: profesional.especialidad_id || '',
-        activo: profesional.activo !== undefined ? profesional.activo : true
-      });
-      
-      cargarServicios();
-    }
-  }, [isOpen, profesional, especialidades, cargarServicios]);
-
   // Función para cargar los servicios asociados al profesional
   const cargarServicios = useCallback(async () => {
     if (!profesional || !profesional.id) return;
@@ -85,6 +67,24 @@ const EditarProfesionales = ({
       setLoading(false);
     }
   }, [profesional]);
+  
+  // Efecto para cargar los datos del profesional cuando se abre el modal
+  useEffect(() => {
+    if (isOpen && profesional) {
+      setProfesionalEditado({
+        id: profesional.id || '',
+        cedula: profesional.cedula || '',
+        nombre: profesional.nombre || '',
+        apellido: profesional.apellido || '',
+        telefono: profesional.telefono || '',
+        correo: profesional.correo || '',
+        especialidad_id: profesional.especialidad_id || '',
+        activo: profesional.activo !== undefined ? profesional.activo : true
+      });
+      
+      cargarServicios();
+    }
+  }, [isOpen, profesional, especialidades, cargarServicios]);
 
   // Manejar cambio en los campos del formulario
   const handleChange = (e) => {
