@@ -96,6 +96,14 @@ const AdminProfesionales = () => {
   // Cambiar estado activo/inactivo del profesional
   const cambiarEstadoProfesional = async (profesionalId, activo) => {
     try {
+      if (!profesionalId) {
+        console.error("Error: ID de profesional no definido");
+        setError("Error: ID de profesional no definido");
+        return;
+      }
+      
+      console.log(`Cambiando estado del profesional ID: ${profesionalId} a ${activo ? 'activo' : 'inactivo'}`);
+      
       await api.put(`/profesionales/estado/${profesionalId}`, { activo });
       
       // Actualizar la lista después del cambio
@@ -188,7 +196,15 @@ const AdminProfesionales = () => {
             </Button>
             <Button 
               variant="danger"
-              onClick={() => cambiarEstadoProfesional(currentProfesional.profesional_id, false)}
+              onClick={() => {
+                console.log('Profesional a archivar:', currentProfesional);
+                if (currentProfesional && currentProfesional.profesional_id) {
+                  cambiarEstadoProfesional(currentProfesional.profesional_id, false);
+                } else {
+                  console.error('Error: No se puede archivar, ID de profesional no válido');
+                  setError('Error: ID de profesional no válido');
+                }
+              }}
             >
               Sí, quiero archivar
             </Button>
