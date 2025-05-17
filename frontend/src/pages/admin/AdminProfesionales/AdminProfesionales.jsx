@@ -96,7 +96,7 @@ const AdminProfesionales = () => {
   // Cambiar estado activo/inactivo del profesional
   const cambiarEstadoProfesional = async (profesionalId, activo) => {
     try {
-      await api.put(`/profesionales/${profesionalId}/estado`, { activo });
+      await api.put(`/profesionales/estado/${profesionalId}`, { activo });
       
       // Actualizar la lista después del cambio
       const res = await api.get('/profesionales', { params: { soloActivos: !showArchived } });
