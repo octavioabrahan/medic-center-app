@@ -33,7 +33,6 @@ const AdminProfesionales = () => {
   const [showAddEspecialidadModal, setShowAddEspecialidadModal] = useState(false);
   const [showAddProfesionalModal, setShowAddProfesionalModal] = useState(false);
   const [showEditProfesionalModal, setShowEditProfesionalModal] = useState(false);
-  const [showConfirmArchiveModal, setShowConfirmArchiveModal] = useState(false);
   const [currentProfesional, setCurrentProfesional] = useState(null);
   
   // Los servicios se manejan ahora en el componente EditarProfesionales
@@ -110,8 +109,6 @@ const AdminProfesionales = () => {
       const res = await api.get('/profesionales', { params: { soloActivos: !showArchived } });
       setProfesionales(res.data);
       
-      // Cerrar modal si está abierto
-      setShowConfirmArchiveModal(false);
       setCurrentProfesional(null);
     } catch (err) {
       console.error("Error al cambiar estado del profesional:", err);
@@ -152,10 +149,20 @@ const AdminProfesionales = () => {
   };
   
   // Mostrar modal de confirmación para archivar
-  const confirmarArchivarProfesional = (profesional) => {
-    setCurrentProfesional(profesional);
-    setShowConfirmArchiveModal(true);
-    setShowEditProfesionalModal(false);
+  const confirmarArchivarProfesional = async (profesional) => {
+    console.log('Profesional a archivar:', profesional);
+    if (profesional && profesional.profesional_id) {
+      try {
+        await cambiarEstadoProfesional(profesional.profesional_id, false);
+        setShowEditProfesionalModal(false);
+      } catch (err) {
+        console.error('Error al archivar profesional:', err);
+        setError('Error al archivar el profesional');
+      }
+    } else {
+      console.error('Error: No se puede archivar, ID de profesional no válido');
+      setError('Error: ID de profesional no válido');
+    }
   };
 
   // Los efectos relacionados con el modal de edición se han trasladado al componente EditarProfesionales
@@ -168,52 +175,6 @@ const AdminProfesionales = () => {
       value: esp.nombre
     }))
   ];
-
-  // Modal para confirmar archivar profesional
-  const renderConfirmArchiveModal = () => {
-    if (!showConfirmArchiveModal || !currentProfesional) return null;
-
-    return (
-      <div className="admin-profesionales__modal-overlay">
-        <div className="admin-profesionales__modal-content">
-          <div className="admin-profesionales__modal-header">
-            <h2>Confirmar acción</h2>
-            <button className="admin-profesionales__close-btn" onClick={() => setShowConfirmArchiveModal(false)}>×</button>
-          </div>
-          <div className="admin-profesionales__modal-body">
-            <p className="admin-profesionales__confirm-message">
-              ¿Está seguro que desea archivar al profesional <strong>{currentProfesional.nombre} {currentProfesional.apellido}</strong>?
-            </p>
-            <p className="admin-profesionales__confirm-description">
-              El profesional no podrá recibir nuevas citas pero se mantendrán sus registros históricos.
-            </p>
-          </div>
-          <div className="admin-profesionales__modal-footer">
-            <Button 
-              variant="neutral" 
-              onClick={() => setShowConfirmArchiveModal(false)}
-            >
-              Cancelar
-            </Button>
-            <Button 
-              variant="danger"
-              onClick={() => {
-                console.log('Profesional a archivar:', currentProfesional);
-                if (currentProfesional && currentProfesional.profesional_id) {
-                  cambiarEstadoProfesional(currentProfesional.profesional_id, false);
-                } else {
-                  console.error('Error: No se puede archivar, ID de profesional no válido');
-                  setError('Error: ID de profesional no válido');
-                }
-              }}
-            >
-              Sí, quiero archivar
-            </Button>
-          </div>
-        </div>
-      </div>
-    );
-  };
 
   // La funcionalidad de añadir profesional ahora se maneja en el componente CrearProfesionales
 
@@ -357,7 +318,6 @@ const AdminProfesionales = () => {
         onProfesionalUpdated={handleProfesionalUpdated}
         showArchived={showArchived}
       />
-      {renderConfirmArchiveModal()}
     </AdminLayout>
   );
 };

@@ -206,19 +206,8 @@ const EditarProfesionales = ({
 
   // Mostrar el modal de confirmación para archivar
   const archivarProfesional = () => {
-    if (typeof onConfirmArchive === 'function') {
-      // Pasar el profesional al componente padre para archivar
-      // Convertimos el objeto profesionalEditado para que tenga el formato esperado por el componente padre
-      const profesionalParaArchivar = {
-        profesional_id: profesionalEditado.id,
-        nombre: profesionalEditado.nombre,
-        apellido: profesionalEditado.apellido
-      };
-      onConfirmArchive(profesionalParaArchivar);
-    } else {
-      // Fallback al comportamiento anterior si no se proporciona la función
-      setShowArchivarModal(true);
-    }
+    // Siempre mostramos el modal de confirmación
+    setShowArchivarModal(true);
   };
   
   // Confirmar archivado del profesional
@@ -233,15 +222,23 @@ const EditarProfesionales = ({
       
       console.log('Archivando profesional:', profesionalEditado.id);
       
-      // Llamar a la API para archivar el profesional (cambiar estado a inactivo)
-      const profesionalId = profesionalEditado.id;
-      console.log('URL de la solicitud:', `/profesionales/estado/${profesionalId}`);
-      
-      const response = await api.put(`/profesionales/estado/${profesionalId}`, {
-        activo: false
-      });
-      
-      console.log('Respuesta archivar profesional:', response);
+      if (typeof onConfirmArchive === 'function') {
+        // Pasar el profesional al componente padre para archivar
+        const profesionalParaArchivar = {
+          profesional_id: profesionalEditado.id,
+          nombre: profesionalEditado.nombre,
+          apellido: profesionalEditado.apellido
+        };
+        await onConfirmArchive(profesionalParaArchivar);
+      } else {
+        // Archivar directamente si no hay función del padre
+        const profesionalId = profesionalEditado.id;
+        console.log('URL de la solicitud:', `/profesionales/estado/${profesionalId}`);
+        
+        await api.put(`/profesionales/estado/${profesionalId}`, {
+          activo: false
+        });
+      }
       
       // Cerrar el modal de confirmación
       setShowArchivarModal(false);
