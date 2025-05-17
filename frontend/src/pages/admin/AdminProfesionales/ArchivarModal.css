@@ -1,6 +1,7 @@
 /* Estilos para el modal de confirmación de archivar profesional */
 .archivar-modal-content {
-  padding: 8px 0;
+  padding: 8px 16px;
+  width: 100%;
 }
 
 .archivar-modal-content p {
@@ -40,10 +41,17 @@
 }
 
 .checkbox-container {
-  margin: 24px 0 8px 0;
+  margin: 24px 0 16px 0;
   padding: 8px 0;
   display: flex;
   align-items: flex-start;
+  width: 100%;
+}
+
+.checkbox-container label {
+  width: 100%;
+  font-size: 15px;
+  line-height: 1.5;
 }
 
 /* Estilos de botones específicos para el modal de confirmación */
@@ -60,10 +68,4 @@
   cursor: not-allowed;
 }
 
-/* Estilos para el mensaje de advertencia en el modal */
-.archivar-modal-content .mensaje-advertencia {
-  font-weight: 500;
-  color: #dc3545;
-  margin-top: 8px;
-  font-size: 14px;
-}
+

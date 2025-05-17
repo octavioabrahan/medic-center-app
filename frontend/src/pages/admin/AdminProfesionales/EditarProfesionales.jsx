@@ -457,11 +457,6 @@ const EditarProfesionales = ({
               checked={confirmacionArchivado}
               onChange={(checked) => setConfirmacionArchivado(checked)}
             />
-            {!confirmacionArchivado && (
-              <div className="mensaje-advertencia">
-                Debes confirmar que entiendes las consecuencias para continuar.
-              </div>
-            )}
           </div>
 
           <div className="archivar-modal-buttons">
