@@ -118,13 +118,17 @@ const EditarProfesionales = ({
         activo: profesional.is_active !== undefined ? profesional.is_active : true
       });
       
+      // Inicializar los servicios como arrays vacíos para evitar errores
+      setServicios([]);
+      setServiciosSeleccionados([]);
+      
       // Cargar servicios solo cuando tenemos un profesional válido con ID
       if (profesional.profesional_id) {
         console.log('Cargando servicios para el profesional ID:', profesional.profesional_id);
         cargarServicios();
       }
     }
-  }, [isOpen, profesional, cargarServicios]);
+  }, [isOpen, profesional, cargarServicios, especialidades]);
 
   // Manejar cambio en los campos del formulario
   const handleChange = (e) => {
@@ -139,15 +143,18 @@ const EditarProfesionales = ({
   const toggleServicio = (servicioId) => {
     console.log('Toggle servicio:', servicioId);
     setServiciosSeleccionados(prevServicios => {
+      // Asegurarnos que prevServicios es un array
+      const serviciosArray = Array.isArray(prevServicios) ? prevServicios : [];
+      
       // Verificar si el servicio ya está seleccionado
-      if (prevServicios.includes(servicioId)) {
+      if (serviciosArray.includes(servicioId)) {
         console.log('Removiendo servicio:', servicioId);
         // Si está seleccionado, lo quitamos
-        return prevServicios.filter(id => id !== servicioId);
+        return serviciosArray.filter(id => id !== servicioId);
       } else {
         console.log('Agregando servicio:', servicioId);
         // Si no está seleccionado, lo agregamos
-        return [...prevServicios, servicioId];
+        return [...serviciosArray, servicioId];
       }
     });
   };
@@ -222,6 +229,9 @@ const EditarProfesionales = ({
       
       // Mostrar mensaje de éxito
       setSuccessMessage("Profesional archivado correctamente");
+      
+      // Asegurar que los servicios seleccionados sea un array
+      setServiciosSeleccionados([]);
       
       // Esperar un breve momento antes de cerrar el modal
       setTimeout(() => {
@@ -389,7 +399,7 @@ const EditarProfesionales = ({
                   <CheckboxField
                     key={servicio.id_servicio}
                     label={servicio.nombre_servicio}
-                    checked={serviciosSeleccionados.includes(servicio.id_servicio)}
+                    checked={Array.isArray(serviciosSeleccionados) && serviciosSeleccionados.includes(servicio.id_servicio)}
                     onChange={() => toggleServicio(servicio.id_servicio)}
                     description={servicio.price_usd ? `USD ${servicio.price_usd}` : ''}
                   />
