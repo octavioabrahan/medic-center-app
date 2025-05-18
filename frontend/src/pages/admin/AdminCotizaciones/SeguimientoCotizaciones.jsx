@@ -5,12 +5,13 @@ import Button from '../../../components/Button/Button';
 import SelectField from '../../../components/Inputs/SelectField';
 import TextAreaField from '../../../components/Inputs/TextAreaField';
 import InputField from '../../../components/Inputs/InputField';
+import Table from '../../../components/Tables/Table';
 import axios from 'axios';
 
 const SeguimientoCotizaciones = ({ cotizacion, onClose }) => {
   // Estados para el formulario de seguimiento
   const [tipoContacto, setTipoContacto] = useState('llamada');
-  const [resultado, setResultado] = useState('exitoso');
+  const [estado, setEstado] = useState('pendiente');
   const [comentarios, setComentarios] = useState('');
   const [proximaAccion, setProximaAccion] = useState('');
   const [fechaProximaAccion, setFechaProximaAccion] = useState(new Date().toISOString().split('T')[0]);
@@ -29,11 +30,10 @@ const SeguimientoCotizaciones = ({ cotizacion, onClose }) => {
     { value: 'presencial', label: 'Presencial' }
   ];
 
-  const resultadoOptions = [
-    { value: 'exitoso', label: 'Exitoso' },
-    { value: 'sin_respuesta', label: 'Sin Respuesta' },
-    { value: 'rechazado', label: 'Rechazado' },
-    { value: 'pendiente_decision', label: 'Pendiente de Decisión' }
+  const estadoOptions = [
+    { value: 'pendiente', label: 'Pendiente' },
+    { value: 'confirmado', label: 'Confirmado' },
+    { value: 'cancelado', label: 'Cancelado' }
   ];
 
   // Formatear fecha para el select
@@ -124,7 +124,7 @@ const SeguimientoCotizaciones = ({ cotizacion, onClose }) => {
     const seguimientoData = {
       cotizacion_id: cotizacion.id_unico,
       tipo_contacto: tipoContacto,
-      resultado: resultado,
+      resultado: estado, // Enviamos el estado como resultado para mantener compatibilidad
       comentarios: comentarios,
       usuario: 'admin', // En un sistema real, esto vendría del sistema de autenticación
       proxima_accion: proximaAccion,
@@ -141,11 +141,8 @@ const SeguimientoCotizaciones = ({ cotizacion, onClose }) => {
       setComentarios('');
       setProximaAccion('');
       
-      // Actualizar estado de la cotización en la lista local si el resultado cambia el estado
-      if (resultado === 'exitoso' || resultado === 'rechazado') {
-        const newStatus = resultado === 'exitoso' ? 'confirmado' : 'cancelado';
-        await updateCotizacionStatus(cotizacion.id_unico, newStatus);
-      }
+      // Actualizar estado de la cotización directamente con el valor seleccionado
+      await updateCotizacionStatus(cotizacion.id_unico, estado);
     } catch (error) {
       console.error('Error al guardar seguimiento:', error);
       setError('Error al guardar seguimiento. Por favor, intenta nuevamente.');
@@ -365,10 +362,10 @@ const SeguimientoCotizaciones = ({ cotizacion, onClose }) => {
                 </div>
                 <div className={styles.selectField}>
                   <SelectField
-                    label="Resultado"
-                    value={resultado}
-                    options={resultadoOptions}
-                    onChange={setResultado}
+                    label="Estado"
+                    value={estado}
+                    options={estadoOptions}
+                    onChange={setEstado}
                   />
                 </div>
               </div>
@@ -399,13 +396,15 @@ const SeguimientoCotizaciones = ({ cotizacion, onClose }) => {
                 </div>
               </div>
               {error && <div className={styles.errorMessage}>{error}</div>}
-              <Button 
-                label="Guardar"
-                onClick={handleSaveFollowUp}
-                disabled={!comentarios || !proximaAccion || loading}
-                loading={loading}
-                className={styles.buttonPrimary}
-              />
+              <div className={styles.buttonContainer}>
+                <Button 
+                  label="Guardar"
+                  onClick={handleSaveFollowUp}
+                  disabled={!comentarios || !proximaAccion || loading}
+                  loading={loading}
+                  className={styles.buttonPrimary}
+                />
+              </div>
             </div>
             
             {/* Historial de seguimiento */}
@@ -421,46 +420,36 @@ const SeguimientoCotizaciones = ({ cotizacion, onClose }) => {
               ) : !Array.isArray(historial) || historial.length === 0 ? (
                 <div className={styles.noHistorial}>No hay registros de seguimiento previos.</div>
               ) : (
-                historial.map((item, index) => (
-                  <div key={index} className={styles.historialItem}>
-                    <div className={styles.frame79}>
-                      <div className={styles.tipoDeContacto}>Tipo de contacto</div>
-                      <div className={styles.tipoContactoValue}>
-                        {item.tipo_contacto.charAt(0).toUpperCase() + item.tipo_contacto.slice(1)}
-                      </div>
-                    </div>
-                    <div className={styles.frame78}>
-                      <div className={styles.resultadoLabel}>Resultado</div>
-                      <div className={styles.resultadoValue}>
-                        {item.resultado.charAt(0).toUpperCase() + item.resultado.slice(1)}
-                      </div>
-                    </div>
-                    <div className={styles.frame89}>
-                      <div className={styles.comentariosLabel}>Comentarios</div>
-                      <div className={styles.comentariosValue}>
-                        {item.comentarios}
-                      </div>
-                    </div>
-                    <div className={styles.frame90}>
-                      <div className={styles.proximaAccionLabel}>Próxima acción</div>
-                      <div className={styles.proximaAccionValue}>
-                        {item.proxima_accion}
-                      </div>
-                    </div>
-                    <div className={styles.frame912}>
-                      <div className={styles.fechaLabel}>Fecha</div>
-                      <div className={styles.fechaValue}>
-                        {formatDisplayDate(item.fecha_seguimiento)}
-                      </div>
-                    </div>
-                    <div className={styles.frame912}>
-                      <div className={styles.fechaLabel}>Usuario</div>
-                      <div className={styles.fechaValue}>
-                        {item.usuario || 'Sistema'}
-                      </div>
-                    </div>
-                  </div>
-                ))
+                <div className={styles.historialScrollable}>
+                  <Table
+                    headers={["Tipo", "Estado", "Comentarios", "Próxima acción", "Fecha", "Usuario"]}
+                    data={historial.map(item => {
+                      // Definir el color del estado basado en el valor
+                      const estado = item.resultado;
+                      const estadoTag = (
+                        <div className={`${styles.tag} ${
+                          estado === 'pendiente' ? styles.warning : 
+                          estado === 'confirmado' ? styles.positive : 
+                          estado === 'cancelado' ? styles.danger : 
+                          styles.neutral
+                        }`}>
+                          {estado.charAt(0).toUpperCase() + estado.slice(1)}
+                        </div>
+                      );
+                      
+                      return {
+                        tipo: item.tipo_contacto.charAt(0).toUpperCase() + item.tipo_contacto.slice(1),
+                        estado_tag: estadoTag,
+                        comentarios: item.comentarios,
+                        proxima_accion: item.proxima_accion,
+                        fecha: formatDisplayDate(item.fecha_seguimiento),
+                        usuario: item.usuario || 'Sistema'
+                      };
+                    })}
+                    columns={["tipo", "estado_tag", "comentarios", "proxima_accion", "fecha", "usuario"]}
+                    className={styles.historialTable}
+                  />
+                </div>
               )}
             </div>
           </div>
