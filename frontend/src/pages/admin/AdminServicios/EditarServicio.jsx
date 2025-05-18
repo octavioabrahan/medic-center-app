@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import Modal from '../../../components/Modal/Modal';
 import Button from '../../../components/Button/Button';
-import TextField from '../../../components/Inputs/TextField';
+import InputField from '../../../components/Inputs/InputField';
+import TextAreaField from '../../../components/Inputs/TextAreaField';
 import api from '../../../api';
 import './EditarServicio.css';
 
@@ -76,22 +77,21 @@ const EditarServicio = ({ isOpen, onClose, servicio, onServicioUpdated, onConfir
         )}
         
         <div className="editar-servicio__field">
-          <TextField
+          <InputField
             label="Nombre del servicio"
             value={nombre}
             onChange={setNombre}
             placeholder="Ingrese el nombre del servicio"
-            required
+            fillContainer={true}
           />
         </div>
         
         <div className="editar-servicio__field">
-          <TextField
+          <TextAreaField
             label="Descripción (opcional)"
             value={descripcion}
             onChange={setDescripcion}
             placeholder="Ingrese una descripción para el servicio"
-            multiline
             rows={3}
           />
         </div>

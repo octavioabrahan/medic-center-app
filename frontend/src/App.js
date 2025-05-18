@@ -1,6 +1,5 @@
 import React, { Suspense, lazy } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import Home from './pages/Home';
 
 // Lazy load para páginas de administración
 const AdminDummy = lazy(() => import('./pages/admin/AdminDummy'));
