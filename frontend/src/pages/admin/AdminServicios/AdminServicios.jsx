@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { AdminLayout } from '../../../components/AdminDashboard';
 import Button from '../../../components/Button/Button';
 import SearchField from '../../../components/Inputs/SearchField';
@@ -207,7 +207,6 @@ const AdminServicios = () => {
       setError('Error al archivar el servicio: ' + (err.message || err));
       return false;
     }
-  }
   };
 
   return (
@@ -385,5 +384,6 @@ const AdminServicios = () => {
       />
     </AdminLayout>
   );
+}
 
 export default AdminServicios;
