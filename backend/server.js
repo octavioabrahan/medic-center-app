@@ -49,7 +49,7 @@ const ArchivoAdjunto = require('./models/archivoAdjunto');
 // Limitar solicitudes para prevenir ataques de fuerza bruta
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutos
-  max: 100, // límite de 100 solicitudes por ventana
+  max: 10000, // límite de 100 solicitudes por ventana
   standardHeaders: true,
   legacyHeaders: false,
   message: 'Demasiadas solicitudes desde esta IP, por favor intente nuevamente después de 15 minutos'
