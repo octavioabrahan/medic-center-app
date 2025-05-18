@@ -421,34 +421,53 @@ const SeguimientoCotizaciones = ({ cotizacion, onClose }) => {
                 <div className={styles.noHistorial}>No hay registros de seguimiento previos.</div>
               ) : (
                 <div className={styles.historialScrollable}>
-                  <Table
-                    headers={["Tipo", "Estado", "Comentarios", "Próxima acción", "Fecha", "Usuario"]}
-                    data={historial.map(item => {
-                      // Definir el color del estado basado en el valor
-                      const estado = item.resultado;
-                      const estadoTag = (
-                        <div className={`${styles.tag} ${
-                          estado === 'pendiente' ? styles.warning : 
-                          estado === 'confirmado' ? styles.positive : 
-                          estado === 'cancelado' ? styles.danger : 
-                          styles.neutral
-                        }`}>
-                          {estado.charAt(0).toUpperCase() + estado.slice(1)}
+                  {historial.map((item, index) => (
+                    <div key={index} className={styles.historialItem}>
+                      <div className={styles.frame79}>
+                        <div className={styles.tipoDeContacto}>Tipo de contacto</div>
+                        <div className={styles.tipoContactoValue}>
+                          {item.tipo_contacto.charAt(0).toUpperCase() + item.tipo_contacto.slice(1)}
                         </div>
-                      );
-                      
-                      return {
-                        tipo: item.tipo_contacto.charAt(0).toUpperCase() + item.tipo_contacto.slice(1),
-                        estado_tag: estadoTag,
-                        comentarios: item.comentarios,
-                        proxima_accion: item.proxima_accion,
-                        fecha: formatDisplayDate(item.fecha_seguimiento),
-                        usuario: item.usuario || 'Sistema'
-                      };
-                    })}
-                    columns={["tipo", "estado_tag", "comentarios", "proxima_accion", "fecha", "usuario"]}
-                    className={styles.historialTable}
-                  />
+                      </div>
+                      <div className={styles.frame78}>
+                        <div className={styles.resultadoLabel}>Estado</div>
+                        <div className={styles.resultadoValue}>
+                          <div className={`${styles.tag} ${
+                            item.resultado === 'pendiente' ? styles.warning : 
+                            item.resultado === 'confirmado' ? styles.positive : 
+                            item.resultado === 'cancelado' ? styles.danger : 
+                            styles.neutral
+                          }`}>
+                            {item.resultado.charAt(0).toUpperCase() + item.resultado.slice(1)}
+                          </div>
+                        </div>
+                      </div>
+                      <div className={styles.frame89}>
+                        <div className={styles.comentariosLabel}>Comentarios</div>
+                        <div className={styles.comentariosValue}>
+                          {item.comentarios}
+                        </div>
+                      </div>
+                      <div className={styles.frame90}>
+                        <div className={styles.proximaAccionLabel}>Próxima acción</div>
+                        <div className={styles.proximaAccionValue}>
+                          {item.proxima_accion}
+                        </div>
+                      </div>
+                      <div className={styles.frame912}>
+                        <div className={styles.fechaLabel}>Fecha</div>
+                        <div className={styles.fechaValue}>
+                          {formatDisplayDate(item.fecha_seguimiento)}
+                        </div>
+                      </div>
+                      <div className={styles.frame912}>
+                        <div className={styles.fechaLabel}>Usuario</div>
+                        <div className={styles.fechaValue}>
+                          {item.usuario || 'Sistema'}
+                        </div>
+                      </div>
+                    </div>
+                  ))}
                 </div>
               )}
             </div>
