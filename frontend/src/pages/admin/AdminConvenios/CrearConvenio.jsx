@@ -11,9 +11,9 @@ import './CrearConvenio.css';
  * @param {Object} props - Propiedades del componente
  * @param {boolean} props.isOpen - Determina si el modal está abierto
  * @param {Function} props.onClose - Función para cerrar el modal
- * @param {Function} props.onConvenioCreated - Función que se ejecuta al crear exitosamente
+ * @param {Function} props.onEmpresaCreated - Función que se ejecuta al crear exitosamente
  */
-const CrearConvenio = ({ isOpen, onClose, onConvenioCreated }) => {
+const CrearConvenio = ({ isOpen, onClose, onEmpresaCreated }) => {
   const [formData, setFormData] = useState({
     nombre_empresa: '',
     rif: '',
@@ -160,8 +160,8 @@ const CrearConvenio = ({ isOpen, onClose, onConvenioCreated }) => {
       const empresasRes = await api.get('/empresas');
       
       // Call the callback with updated list
-      if (typeof onConvenioCreated === 'function') {
-        onConvenioCreated(empresasRes.data);
+      if (typeof onEmpresaCreated === 'function') {
+        onEmpresaCreated(empresasRes.data);
       }
       
       // Close the modal

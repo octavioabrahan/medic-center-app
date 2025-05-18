@@ -11,15 +11,15 @@ import './EditarConvenio.css';
  * @param {Object} props - Component props
  * @param {boolean} props.isOpen - Controls if the modal is open
  * @param {Function} props.onClose - Function to close the modal
- * @param {Object} props.convenio - The convenio object to edit
- * @param {Function} props.onConvenioUpdated - Callback when convenio is updated
- * @param {Function} props.onConfirmArchive - Function to archive convenio
+ * @param {Object} props.convenio - The empresa object to edit
+ * @param {Function} props.onEmpresaUpdated - Callback when empresa is updated
+ * @param {Function} props.onConfirmArchive - Function to archive empresa
  */
 const EditarConvenio = ({ 
   isOpen, 
   onClose, 
   convenio, 
-  onConvenioUpdated,
+  onEmpresaUpdated,
   onConfirmArchive 
 }) => {
   const [formData, setFormData] = useState({
@@ -158,7 +158,7 @@ const EditarConvenio = ({
     return Object.keys(errors).length === 0;
   };
 
-  // Handle archive convenio
+  // Handle archive empresa
   const handleArchive = async () => {
     if (!convenio) return;
     
@@ -166,8 +166,8 @@ const EditarConvenio = ({
       await onConfirmArchive(convenio);
       onClose();
     } catch (err) {
-      console.error('Error archiving convenio:', err);
-      setError('Error al archivar el convenio');
+      console.error('Error archiving empresa:', err);
+      setError('Error al archivar la empresa');
     }
   };
 
@@ -214,15 +214,15 @@ const EditarConvenio = ({
       });
       
       // Call the callback to refresh the list
-      if (typeof onConvenioUpdated === 'function') {
-        await onConvenioUpdated();
+      if (typeof onEmpresaUpdated === 'function') {
+        await onEmpresaUpdated();
       }
       
       // Close the modal
       onClose();
     } catch (err) {
-      console.error('Error updating convenio:', err);
-      setError(`Error al actualizar convenio: ${err.response?.data?.error || err.message}`);
+      console.error('Error updating empresa:', err);
+      setError(`Error al actualizar empresa: ${err.response?.data?.error || err.message}`);
     } finally {
       setIsSubmitting(false);
     }
