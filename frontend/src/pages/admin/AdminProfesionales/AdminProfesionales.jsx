@@ -5,6 +5,7 @@ import SearchField from '../../../components/Inputs/SearchField';
 import SelectField from '../../../components/Inputs/SelectField';
 import CheckboxField from '../../../components/Inputs/CheckboxField';
 import Table from '../../../components/Tables/Table';
+import Tag from '../../../components/Tag/Tag';
 import { UserPlusIcon, CheckIcon, PencilIcon, ArrowPathIcon, TrashIcon } from '@heroicons/react/20/solid';
 import api from '../../../api';
 import CrearEspecialidades from './CrearEspecialidades';
@@ -282,11 +283,18 @@ const AdminProfesionales = () => {
                 renderCustomCell={(row, column) => {
                   if (column === 'estado') {
                     const isActive = row.estado;
+                    let scheme = isActive ? 'positive' : 'neutral';
+                    let variant = 'secondary';
+                    let text = isActive ? 'Activo' : 'Archivado';
+                    
                     return (
                       <div className="text">
-                        <div className={`admin-profesionales__status-badge ${isActive ? 'admin-profesionales__status-active' : 'admin-profesionales__status-inactive'}`}>
-                          {isActive ? 'Activo' : 'Archivado'}
-                        </div>
+                        <Tag 
+                          text={text}
+                          scheme={scheme}
+                          variant={variant}
+                          closeable={false}
+                        />
                       </div>
                     );
                   }
