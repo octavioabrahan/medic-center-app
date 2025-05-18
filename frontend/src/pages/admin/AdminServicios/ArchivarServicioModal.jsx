@@ -3,7 +3,6 @@ import Modal from '../../../components/Modal/Modal';
 import Button from '../../../components/Button/Button';
 import CheckboxField from '../../../components/Inputs/CheckboxField';
 import './ArchivarServicioModal.css';
-import './modal-fix.css';
 
 /**
  * Modal de confirmación para archivar un servicio
@@ -24,6 +23,9 @@ const ArchivarServicioModal = ({ isOpen, onClose, servicio, onConfirmArchive, lo
     } else if (isOpen) {
       console.log('Modal abierto con servicio:', servicio);
     }
+    
+    // Reset checkbox state when modal opens/closes
+    setConfirmacionArchivado(false);
   }, [isOpen, servicio]);
 
   const handleConfirmar = async () => {
@@ -44,61 +46,56 @@ const ArchivarServicioModal = ({ isOpen, onClose, servicio, onConfirmArchive, lo
     }
   };
 
-  return (
-    <Modal
-      isOpen={isOpen}
-      onClose={onClose}
-      size="small"
-      contentClassName="hide-original-buttons"
-    >
-      <div className="archivar-servicio-modal-content">
-        <div className="text">
-          <h2 className="archivar-servicio-modal-heading">
-            ¿Quieres archivar {servicio?.nombre || 'este servicio'}?
-          </h2>
-          
-          <div className="archivar-servicio-modal-text">
-            <p>Al archivar este servicio:</p>
-            <ul>
-              <li>Ya no estará disponible en el sitio de agendamiento.</li>
-              <li>Los profesionales que lo tienen asignado dejarán de mostrarse si no tienen otros servicios activos.</li>
-              <li>Los agendamientos previamente generados no se eliminarán.</li>
-            </ul>
-          </div>
-          
-          <div className="checkbox-container">
-            <CheckboxField
-              label="Entiendo que este servicio y los profesionales que solo lo ofrecen dejarán de mostrarse en el portal."
-              checked={confirmacionArchivado}
-              onChange={(checked) => setConfirmacionArchivado(checked)}
-              fillContainer={true}
-            />
-          </div>
-        </div>
+  const nombreServicio = servicio ? (servicio.nombre || servicio.nombre_servicio || 'este servicio') : 'este servicio';
 
-        <div className="archivar-servicio-modal-buttons">
-          <Button 
-            variant="neutral" 
-            onClick={onClose}
-          >
-            Cancelar
-          </Button>
-          <Button 
-            variant="danger" 
-            onClick={handleConfirmar}
-            disabled={!confirmacionArchivado || loading}
-          >
-            {loading ? "Archivando..." : "Sí, archivar"}
-          </Button>
-        </div>
-
-        <button className="modal-close-button" onClick={onClose}>
-          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M15 5L5 15M5 5L15 15" stroke="currentColor" strokeWidth="1.67" strokeLinecap="round" strokeLinejoin="round"/>
-          </svg>
-        </button>
+  const modalContent = (
+    <div className="archivar-content">
+      <p>Al archivar este servicio:</p>
+      <ul>
+        <li>Ya no estará disponible en el sitio de agendamiento.</li>
+        <li>Los profesionales que lo tienen asignado dejarán de mostrarse si no tienen otros servicios activos.</li>
+        <li>Los agendamientos previamente generados no se eliminarán.</li>
+      </ul>
+      
+      <div className="checkbox-wrapper">
+        <CheckboxField
+          label="Entiendo que este servicio y los profesionales que solo lo ofrecen dejarán de mostrarse en el portal."
+          checked={confirmacionArchivado}
+          onChange={(checked) => setConfirmacionArchivado(checked)}
+          fillContainer={true}
+        />
       </div>
-    </Modal>
+    </div>
+  );
+
+  return (
+    <>
+      {/* We need to create our own buttons to show danger variant */}
+      <Modal
+        isOpen={isOpen}
+        onClose={onClose}
+        heading={`¿Quieres archivar ${nombreServicio}?`}
+        size="small"
+        variant="default"
+        contentClassName="hide-original-buttons"
+      >
+        <div style={{display: 'flex', flexDirection: 'column', gap: 'var(--sds-space-600)'}}>
+          {modalContent}
+          <div style={{display: 'flex', justifyContent: 'flex-end', gap: 'var(--sds-space-400)'}}>
+            <Button variant="neutral" onClick={onClose}>
+              Cancelar
+            </Button>
+            <Button 
+              variant="danger" 
+              onClick={handleConfirmar}
+              disabled={!confirmacionArchivado || loading}
+            >
+              {loading ? "Archivando..." : "Sí, archivar"}
+            </Button>
+          </div>
+        </div>
+      </Modal>
+    </>
   );
 };
 
