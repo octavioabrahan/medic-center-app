@@ -27,7 +27,6 @@ const EditarEmpresaConvenio = ({ isOpen, onClose, onSave, onArchive, empresa }) 
       noPadding
       heading="Editar empresa"
       contentClassName={styles.dialogBody}
-      /* No primary/secondary button, custom footer below */
     >
       <div className={styles.textSection}>
         <div className={styles.fieldsSection}>
@@ -63,7 +62,9 @@ const EditarEmpresaConvenio = ({ isOpen, onClose, onSave, onArchive, empresa }) 
           <span className={styles.archivarButtonText}>Archivar</span>
         </Button>
         <div className={styles.frame77}>
-          <Button variant="neutral" size="medium" onClick={onClose}>Cancelar</Button>
+          <Button variant="neutral" size="medium" onClick={onClose}>
+            Cancelar
+          </Button>
           <Button
             variant="primary"
             size="medium"
