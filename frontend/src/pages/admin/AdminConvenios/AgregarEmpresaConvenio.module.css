@@ -1,0 +1,72 @@
+.agregar-empresa-convenio-modal {
+  width: 100%;
+  max-width: 600px;
+  padding: var(--sds-space-800, 32px);
+  background: var(--sds-color-background-default-default, #fff);
+  box-shadow: 0px 4px 4px -4px rgba(12, 12, 13, 0.05);
+  border-radius: var(--sds-radius-200, 8px);
+  outline: 1px solid var(--sds-color-border-default-default, #d9d9d9);
+  outline-offset: -1px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sds-space-600, 24px);
+}
+
+.agregar-empresa-convenio-modal .input-field {
+  margin-bottom: 0;
+}
+
+.agregar-empresa-convenio-modal .label {
+  color: var(--sds-color-text-default-default, #1e1e1e);
+  font-size: var(--sds-scale-03, 16px);
+  font-family: 'Inter', sans-serif;
+  font-weight: var(--sds-weight-regular, 400);
+  line-height: 22.4px;
+}
+
+.agregar-empresa-convenio-modal .value {
+  color: var(--sds-color-text-default-default, #1e1e1e);
+  font-size: var(--sds-scale-03, 16px);
+  font-family: 'Inter', sans-serif;
+  font-weight: var(--sds-weight-regular, 400);
+  line-height: 16px;
+}
+
+.agregar-empresa-convenio-modal .inputField {
+  background: var(--sds-color-background-default-default, #fff);
+  border-radius: var(--sds-radius-200, 8px);
+  outline: 1px solid var(--sds-color-border-default-default, #d9d9d9);
+  outline-offset: -0.5px;
+  padding: var(--sds-space-300, 12px) var(--sds-space-400, 16px);
+  min-width: 240px;
+  display: flex;
+  align-items: center;
+}
+
+.agregar-empresa-convenio-modal .button-group {
+  align-self: stretch;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: var(--sds-space-400, 16px);
+}
+
+.agregar-empresa-convenio-modal .icon-button {
+  position: absolute;
+  top: var(--sds-space-200, 8px);
+  right: var(--sds-space-200, 8px);
+  padding: var(--sds-space-200, 8px);
+  border-radius: var(--sds-radius-full, 32px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.agregar-empresa-convenio-modal .x {
+  width: 20px;
+  height: 20px;
+  color: var(--sds-color-icon-default-default, #1e1e1e);
+}
