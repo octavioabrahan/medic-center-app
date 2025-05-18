@@ -214,12 +214,15 @@ const AdminProfesionales = () => {
           </div>
           
           <div className="admin-profesionales__filter-options">
-            <SelectField
-              options={especialidadesOptions}
-              value={selectedEspecialidad}
-              onChange={setSelectedEspecialidad}
-              className="admin-profesionales__select-field"
-            />
+            <div className="admin-profesionales__select-container">
+              <SelectField
+                options={especialidadesOptions}
+                value={selectedEspecialidad}
+                onChange={setSelectedEspecialidad}
+                className="admin-profesionales__select-field"
+                fillContainer={true}
+              />
+            </div>
             
             <div className="admin-profesionales__checkbox-field">
               <CheckboxField
