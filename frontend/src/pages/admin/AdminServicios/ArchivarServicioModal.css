@@ -1,77 +1,54 @@
 /* Styles for the archivar modal content */
-.archivar-content {
+.archivar-servicio-modal-content {
   display: flex;
   flex-direction: column;
+  gap: var(--sds-space-300);
   width: 100%;
 }
 
-.archivar-content p {
+.archivar-servicio-modal-content p {
   color: var(--sds-color-text-default-default);
   text-align: left;
   font-family: var(--body-base-font-family, "Inter-Regular", sans-serif);
-  font-size: 16px;
-  line-height: 140%;
-  font-weight: 400;
-  margin: 0 0 var(--sds-space-100) 0;
+  font-size: var(--body-base-font-size, 16px);
+  line-height: var(--body-base-line-height, 140%);
+  font-weight: var(--body-base-font-weight, 400);
 }
 
-.archivar-content ul {
+.archivar-servicio-modal-content ul {
   list-style-type: disc;
-  padding-left: 1em;
-  margin: 0 0 var(--sds-space-200) 0;
+  padding-left: 1.5em;
+  margin-top: var(--sds-space-200);
+  margin-bottom: var(--sds-space-400);
 }
 
-.archivar-content li {
+.archivar-servicio-modal-content li {
   color: var(--sds-color-text-default-default);
   text-align: left;
   font-family: var(--body-base-font-family, "Inter-Regular", sans-serif);
-  font-size: 16px;
-  line-height: 140%;
-  font-weight: 400;
-  margin-bottom: 0;
+  font-size: var(--body-base-font-size, 16px);
+  line-height: var(--body-base-line-height, 140%);
+  font-weight: var(--body-base-font-weight, 400);
+  margin-bottom: var(--sds-space-100);
 }
 
-.checkbox-wrapper {
+.checkbox-container {
+  margin-top: var(--sds-space-400);
+  margin-bottom: var(--sds-space-600);
+}
+
+.archivar-servicio-modal-buttons {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  gap: var(--sds-space-400);
+  margin-top: var(--sds-space-400);
   width: 100%;
-  margin-top: var(--sds-space-200);
 }
 
-/* Override default Modal component styles */
-.modal-body {
-  padding: var(--sds-space-400) !important; /* Reduce padding to make more compact */
-  max-width: 500px !important; /* Widen the modal */
-  gap: var(--sds-space-300) !important; /* Reduce gap between elements */
-}
-
-.modal-body .modal-content {
-  padding: 0 !important;
-}
-
-.modal-body .text {
-  gap: var(--sds-space-200) !important;
-}
-
-.modal-body .text-heading {
-  font-size: 18px !important;
-  padding-bottom: var(--sds-space-300);
-  border-bottom: 1px solid var(--sds-color-border-default-default);
-  width: 100%;
-  margin-bottom: var(--sds-space-200);
-}
-
-/* Red button override */
-.modal-body .button-danger {
-  background-color: var(--sds-color-background-danger-default) !important;
-  color: white !important;
-  border: none !important;
-  border-radius: 4px !important;
-}
-
-/* Ensure the modal has close button properly styled */
-.modal-body .icon-button {
-  position: absolute;
-  top: 8px;
-  right: 8px;
+.archivar-servicio-modal-buttons button {
+  min-width: 100px;
+  padding: var(--sds-space-200) var(--sds-space-300);
 }
 
 /* Font consistency fixes */
