@@ -48,7 +48,7 @@ const AdminCotizaciones = () => {
   const fetchCotizaciones = async () => {
     setLoading(true);
     try {
-      const res = await axios.get(`${API_URL}/quotes`);
+      const res = await axios.get(`${API_URL}/cotizaciones`);
       setCotizaciones(res.data);
       setError(null);
     } catch (err) {
@@ -62,7 +62,7 @@ const AdminCotizaciones = () => {
   // Obtener tasa de cambio
   const fetchTasaCambio = async () => {
     try {
-      const res = await axios.get(`${API_URL}/exchange-rate/latest`);
+      const res = await axios.get(`${API_URL}/tasa-cambio/latest`);
       setTasaCambio(res.data.tasa || 0);
     } catch (err) {
       console.error('Error al obtener tasa de cambio:', err);
@@ -79,7 +79,7 @@ const AdminCotizaciones = () => {
         const term = searchTerm.toLowerCase();
         results = results.filter(c => 
           c.folio?.toLowerCase().includes(term) || 
-          `${c.nombre} ${c.apellido}`.toLowerCase().includes(term) ||
+          `${c.nombre || ''} ${c.apellido || ''}`.toLowerCase().includes(term) ||
           c.cedula_cliente?.toLowerCase().includes(term)
         );
       }
@@ -91,32 +91,35 @@ const AdminCotizaciones = () => {
       
       // Ordenar por fecha
       results = results.sort((a, b) => {
-        const dateA = new Date(a.fecha_creacion);
-        const dateB = new Date(b.fecha_creacion);
+        const dateA = new Date(a.fecha_creacion || a.fecha || Date.now());
+        const dateB = new Date(b.fecha_creacion || b.fecha || Date.now());
         return sortRecent ? dateB - dateA : dateA - dateB;
       });
       
       // Mapear datos para la tabla con formato
       const formattedResults = results.map(cot => {
         // Formatear fecha
-        const fecha = new Date(cot.fecha_creacion);
-        const fechaFormateada = fecha.toLocaleDateString('es-ES');
+        const fecha = new Date(cot.fecha_creacion || cot.fecha || Date.now());
+        const fechaFormateada = fecha.toLocaleDateString('es-ES', {
+          year: 'numeric', 
+          month: '2-digit', 
+          day: '2-digit'
+        });
         
-        // Determinar clase de estado para el estilo
-        const statusClass = 
-          cot.estado === 'pendiente' ? 'pending' : 
-          cot.estado === 'confirmado' ? 'confirmed' : 
-          cot.estado === 'completado' ? 'completed' : 
-          'cancelled';
+        // Crear total en VES
+        const totalUsd = typeof cot.total_usd === 'number' ? cot.total_usd : 
+                       parseFloat(cot.total_usd) || 0;
+        const totalVes = (totalUsd * tasaCambio).toFixed(2);
         
         // Crear etiqueta de estado
+        const estado = cot.estado || 'pendiente';
         const estadoTag = (
           <Tag 
-            text={cot.estado.charAt(0).toUpperCase() + cot.estado.slice(1)}
+            text={estado.charAt(0).toUpperCase() + estado.slice(1)}
             scheme={
-              cot.estado === 'pendiente' ? 'warning' : 
-              cot.estado === 'confirmado' ? 'brand' : 
-              cot.estado === 'completado' ? 'positive' : 
+              estado === 'pendiente' ? 'warning' : 
+              estado === 'confirmado' ? 'brand' : 
+              estado === 'completado' ? 'positive' : 
               'neutral'
             }
             variant="secondary"
@@ -126,10 +129,11 @@ const AdminCotizaciones = () => {
         
         return {
           ...cot,
-          cliente: `${cot.nombre} ${cot.apellido}`,
+          cliente: `${cot.nombre || ''} ${cot.apellido || ''}`.trim(),
           fecha_formateada: fechaFormateada,
           estado_tag: estadoTag,
-          total_ves: (cot.total_usd * tasaCambio).toFixed(2) + ' Bs'
+          total_usd: totalUsd.toFixed(2) + ' $',
+          total_ves: totalVes + ' Bs'
         };
       });
       
@@ -195,6 +199,12 @@ const AdminCotizaciones = () => {
           <div className={styles.text}>
             <div className={styles.emptyMessage}>
               Aún no has recibido una cotización
+            </div>
+          </div>
+        ) : filteredCotizaciones.length === 0 ? (
+          <div className={styles.text}>
+            <div className={styles.emptyMessage}>
+              No se encontraron cotizaciones que coincidan con los criterios de búsqueda
             </div>
           </div>
         ) : (
