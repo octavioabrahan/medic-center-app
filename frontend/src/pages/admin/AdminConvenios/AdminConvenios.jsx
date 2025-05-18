@@ -7,7 +7,7 @@ import Table from '../../../components/Tables/Table';
 import Tag from '../../../components/Tag/Tag';
 import TagToggle from '../../../components/Tag/TagToggle';
 import MenuHeader from '../../../components/Menu/MenuHeader';
-import { PlusIcon, CheckIcon, BuildingOffice2Icon, XMarkIcon, StarIcon, PencilIcon, ArchiveBoxIcon } from '@heroicons/react/20/solid';
+import { BuildingOffice2Icon, PencilIcon, ArchiveBoxIcon } from '@heroicons/react/20/solid';
 import api from '../../../api';
 import CrearConvenio from './CrearConvenio';
 import EditarConvenioModal from './EditarConvenioModal';

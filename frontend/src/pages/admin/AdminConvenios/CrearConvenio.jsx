@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import Modal from '../../../components/Modal/Modal';
 import Button from '../../../components/Button/Button';
-import TextField from '../../../components/Inputs/TextField';
-import TextareaField from '../../../components/Inputs/TextareaField';
+import InputField from '../../../components/Inputs/InputField';
+import TextAreaField from '../../../components/Inputs/TextAreaField';
 import api from '../../../api';
 import './CrearConvenio.css';
 
@@ -84,7 +84,7 @@ const CrearConvenio = ({ isOpen, onClose, onSuccess }) => {
 
         <form onSubmit={handleSubmit}>
           <div className="form-group">
-            <TextField
+            <InputField
               label="Nombre de la empresa *"
               name="nombre"
               value={formData.nombre}
@@ -95,7 +95,7 @@ const CrearConvenio = ({ isOpen, onClose, onSuccess }) => {
           </div>
 
           <div className="form-group">
-            <TextareaField
+            <TextAreaField
               label="Descripción"
               name="descripcion"
               value={formData.descripcion}
@@ -107,7 +107,7 @@ const CrearConvenio = ({ isOpen, onClose, onSuccess }) => {
 
           <div className="form-row">
             <div className="form-group">
-              <TextField
+              <InputField
                 label="Dirección"
                 name="direccion"
                 value={formData.direccion}
@@ -116,7 +116,7 @@ const CrearConvenio = ({ isOpen, onClose, onSuccess }) => {
               />
             </div>
             <div className="form-group">
-              <TextField
+              <InputField
                 label="Teléfono"
                 name="telefono"
                 value={formData.telefono}
@@ -128,7 +128,7 @@ const CrearConvenio = ({ isOpen, onClose, onSuccess }) => {
 
           <div className="form-row">
             <div className="form-group">
-              <TextField
+              <InputField
                 label="Email"
                 name="email"
                 value={formData.email}
@@ -138,7 +138,7 @@ const CrearConvenio = ({ isOpen, onClose, onSuccess }) => {
               />
             </div>
             <div className="form-group">
-              <TextField
+              <InputField
                 label="Sitio web"
                 name="sitio_web"
                 value={formData.sitio_web}
@@ -149,7 +149,7 @@ const CrearConvenio = ({ isOpen, onClose, onSuccess }) => {
           </div>
 
           <div className="form-group">
-            <TextField
+            <InputField
               label="URL del logo"
               name="logo_url"
               value={formData.logo_url}

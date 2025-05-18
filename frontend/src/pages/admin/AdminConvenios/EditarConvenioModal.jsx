@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import Modal from '../../../components/Modal/Modal';
 import Button from '../../../components/Button/Button';
-import TextField from '../../../components/Inputs/TextField';
-import TextareaField from '../../../components/Inputs/TextareaField';
+import InputField from '../../../components/Inputs/InputField';
+import TextAreaField from '../../../components/Inputs/TextAreaField';
 import api from '../../../api';
 import './EditarConvenioModal.css';
 
@@ -104,7 +104,7 @@ const EditarConvenioModal = ({ isOpen, onClose, convenio, onSuccess }) => {
 
         <form onSubmit={handleSubmit}>
           <div className="form-group">
-            <TextField
+            <InputField
               label="Nombre de la empresa *"
               name="nombre"
               value={formData.nombre}
@@ -115,7 +115,7 @@ const EditarConvenioModal = ({ isOpen, onClose, convenio, onSuccess }) => {
           </div>
 
           <div className="form-group">
-            <TextareaField
+            <TextAreaField
               label="Descripción"
               name="descripcion"
               value={formData.descripcion}
@@ -127,7 +127,7 @@ const EditarConvenioModal = ({ isOpen, onClose, convenio, onSuccess }) => {
 
           <div className="form-row">
             <div className="form-group">
-              <TextField
+              <InputField
                 label="Dirección"
                 name="direccion"
                 value={formData.direccion}
@@ -136,7 +136,7 @@ const EditarConvenioModal = ({ isOpen, onClose, convenio, onSuccess }) => {
               />
             </div>
             <div className="form-group">
-              <TextField
+              <InputField
                 label="Teléfono"
                 name="telefono"
                 value={formData.telefono}
@@ -148,7 +148,7 @@ const EditarConvenioModal = ({ isOpen, onClose, convenio, onSuccess }) => {
 
           <div className="form-row">
             <div className="form-group">
-              <TextField
+              <InputField
                 label="Email"
                 name="email"
                 value={formData.email}
@@ -158,7 +158,7 @@ const EditarConvenioModal = ({ isOpen, onClose, convenio, onSuccess }) => {
               />
             </div>
             <div className="form-group">
-              <TextField
+              <InputField
                 label="Sitio web"
                 name="sitio_web"
                 value={formData.sitio_web}
@@ -169,7 +169,7 @@ const EditarConvenioModal = ({ isOpen, onClose, convenio, onSuccess }) => {
           </div>
 
           <div className="form-group">
-            <TextField
+            <InputField
               label="URL del logo"
               name="logo_url"
               value={formData.logo_url}
