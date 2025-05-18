@@ -1,149 +1,116 @@
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
 .dialogBody {
   width: 100%;
   max-width: 600px;
-  padding: var(--sds-size-space-800, 32px);
+  padding: 32px;
   position: relative;
-  background: var(--sds-color-background-default-default, white);
-  box-shadow: var(--sds-size-depth-0, 0) var(--sds-size-depth-400, 4px) var(--sds-size-depth-800, 8px) var(--sds-size-depth-negative-100, -1px) var(--sds-color-black-200, rgba(12, 12, 13, 0.05)),
-    var(--sds-size-depth-0, 0) var(--sds-size-depth-100, 1px) var(--sds-size-depth-100, 1px) var(--sds-size-depth-negative-100, -1px) var(--sds-color-black-100, rgba(12, 12, 13, 0.03));
-  border-radius: var(--sds-size-radius-200, 8px);
-  border: var(--sds-size-stroke-border, 1px) solid var(--sds-color-border-default-default, #D9D9D9);
+  background: white;
+  box-shadow: 0px 4px 8px -1px rgba(12, 12, 13, 0.05),
+              0px 1px 1px -1px rgba(12, 12, 13, 0.03);
+  border-radius: 8px;
+  border: 1px solid #D9D9D9;
   display: flex;
   flex-direction: column;
-  justify-content: flex-start;
-  align-items: flex-start;
-  gap: var(--sds-size-space-600, 24px);
+  gap: 24px;
+}
+
+.modalTitle {
+  font-size: 24px;
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
+  line-height: 28.8px;
+  color: #1E1E1E;
+  margin-bottom: 12px;
 }
 
 .textSection {
   align-self: stretch;
   display: flex;
   flex-direction: column;
-  justify-content: flex-start;
-  align-items: flex-start;
-  gap: var(--sds-size-space-300, 12px);
-}
-
-.fieldsSection {
-  display: flex;
-  flex-direction: column;
-  gap: var(--sds-size-space-400, 16px);
-  align-self: stretch;
-}
-
-.buttonGroup {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: center;
-  align-self: stretch;
-}
-
-.archivarButton {
-  display: flex;
-  padding: var(--sds-size-space-300, 12px);
-  overflow: hidden;
-  border-radius: var(--sds-size-radius-200, 8px);
-  justify-content: center;
-  align-items: center;
-  gap: var(--sds-size-space-200, 8px);
-}
-
-.archivarButton:hover {
-  background: var(--sds-color-background-danger-tertiary-hover, rgba(144, 11, 9, 0.08));
-}
-
-.archiveIconWrapper {
-  display: flex;
-  position: relative;
-}
-
-.archivarButtonText {
-  color: var(--sds-color-text-danger-default, #900B09);
-  font-size: var(--sds-scale-03, 16px);
-  font-family: 'Inter', sans-serif;
-  font-weight: var(--sds-weight-regular, 400);
-  line-height: 22.4px;
-}
-
-.frame77 {
-  display: flex;
-  justify-content: flex-start;
-  align-items: center;
-  gap: var(--sds-size-space-400, 16px);
-}
-
-.dialogBody {
+  gap: 12px;
   width: 100%;
-  max-width: 600px;
-  padding: var(--sds-size-space-800, 32px);
-  position: relative;
-  background: var(--sds-color-background-default-default, white);
-  box-shadow: var(--sds-size-depth-0, 0) var(--sds-size-depth-400, 4px) var(--sds-size-depth-800, 8px) var(--sds-size-depth-negative-100, -1px) var(--sds-color-black-200, rgba(12, 12, 13, 0.05)),
-    var(--sds-size-depth-0, 0) var(--sds-size-depth-100, 1px) var(--sds-size-depth-100, 1px) var(--sds-size-depth-negative-100, -1px) var(--sds-color-black-100, rgba(12, 12, 13, 0.03));
-  border-radius: var(--sds-size-radius-200, 8px);
-  border: var(--sds-size-stroke-border, 1px) solid var(--sds-color-border-default-default, #D9D9D9);
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  align-items: flex-start;
-  gap: var(--sds-size-space-600, 24px);
-}
-
-.textSection {
-  align-self: stretch;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  align-items: flex-start;
-  gap: var(--sds-size-space-300, 12px);
 }
 
 .fieldsSection {
   display: flex;
   flex-direction: column;
-  gap: var(--sds-size-space-400, 16px);
-  align-self: stretch;
+  gap: 16px;
+  width: 100%;
 }
 
 .buttonGroup {
   display: flex;
-  flex-direction: row;
   justify-content: space-between;
   align-items: center;
-  align-self: stretch;
+  width: 100%;
+  margin-top: 8px;
 }
 
 .archivarButton {
   display: flex;
-  padding: var(--sds-size-space-300, 12px);
-  overflow: hidden;
-  border-radius: var(--sds-size-radius-200, 8px);
+  padding: 12px;
+  border-radius: 8px;
   justify-content: center;
   align-items: center;
-  gap: var(--sds-size-space-200, 8px);
+  gap: 8px;
+  cursor: pointer;
+  background: transparent;
+  border: none;
 }
 
 .archivarButton:hover {
-  background: var(--sds-color-background-danger-tertiary-hover, rgba(144, 11, 9, 0.08));
+  background: rgba(144, 11, 9, 0.08);
 }
 
 .archiveIconWrapper {
   display: flex;
-  position: relative;
 }
 
 .archivarButtonText {
-  color: var(--sds-color-text-danger-default, #900B09);
-  font-size: var(--sds-scale-03, 16px);
+  color: #900B09;
+  font-size: 16px;
   font-family: 'Inter', sans-serif;
-  font-weight: var(--sds-weight-regular, 400);
+  font-weight: 400;
   line-height: 22.4px;
 }
 
 .frame77 {
   display: flex;
-  justify-content: flex-start;
   align-items: center;
-  gap: var(--sds-size-space-400, 16px);
+  gap: 16px;
+}
+
+.closeButton {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  padding: 8px;
+  border-radius: 32px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.closeButton:hover {
+  background: rgba(0, 0, 0, 0.05);
+}
+
+.closeIcon {
+  width: 20px;
+  height: 20px;
 }
