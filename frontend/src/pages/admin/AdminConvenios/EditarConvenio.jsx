@@ -101,7 +101,8 @@ const EditarConvenio = ({
 
   // Handle logo upload
   const handleLogoChange = (e) => {
-    const file = e.target.files[0];
+    // Check if e is an event or already a file
+    const file = e.target ? e.target.files[0] : e;
     if (!file) return;
 
     if (file.size > 2 * 1024 * 1024) { // 2MB limit
@@ -182,13 +183,16 @@ const EditarConvenio = ({
     setError(null);
     
     try {
-      const convenioId = convenio.id_convenio || convenio.convenio_id;
+      const convenioId = convenio.id_empresa;
       
       if (!convenioId) {
-        throw new Error('ID de convenio no válido');
+        throw new Error('ID de empresa no válido');
       }
       
       const formDataToSend = new FormData();
+      
+      // Add the ID to FormData
+      formDataToSend.append('id_empresa', convenioId);
       
       // Add all text fields to FormData
       Object.entries(formData).forEach(([key, value]) => {
@@ -244,7 +248,7 @@ const EditarConvenio = ({
               label="Nombre de la empresa *"
               name="nombre_empresa"
               value={formData.nombre_empresa}
-              onChange={(e) => handleChange('nombre_empresa', e.target.value)}
+              onChange={(value) => handleChange('nombre_empresa', value)}
               error={formErrors.nombre_empresa}
               required
             />
@@ -253,7 +257,7 @@ const EditarConvenio = ({
               label="RIF *"
               name="rif"
               value={formData.rif}
-              onChange={(e) => handleRIFChange(e.target.value)}
+              onChange={(value) => handleRIFChange(value)}
               error={formErrors.rif}
               placeholder="J-XXXXXXXX-X"
               required
@@ -263,7 +267,7 @@ const EditarConvenio = ({
               label="Teléfono *"
               name="telefono"
               value={formData.telefono}
-              onChange={(e) => handleChange('telefono', e.target.value)}
+              onChange={(value) => handleChange('telefono', value)}
               error={formErrors.telefono}
               required
             />
@@ -272,7 +276,7 @@ const EditarConvenio = ({
               label="Email"
               name="email"
               value={formData.email}
-              onChange={(e) => handleChange('email', e.target.value)}
+              onChange={(value) => handleChange('email', value)}
               error={formErrors.email}
             />
           </div>
@@ -282,7 +286,7 @@ const EditarConvenio = ({
               label="Dirección"
               name="direccion"
               value={formData.direccion}
-              onChange={(e) => handleChange('direccion', e.target.value)}
+              onChange={(value) => handleChange('direccion', value)}
               error={formErrors.direccion}
             />
             
@@ -290,7 +294,7 @@ const EditarConvenio = ({
               label="Descripción"
               name="descripcion"
               value={formData.descripcion}
-              onChange={(e) => handleChange('descripcion', e.target.value)}
+              onChange={(value) => handleChange('descripcion', value)}
               error={formErrors.descripcion}
               rows={3}
             />

@@ -157,28 +157,28 @@ const AdminConvenios = () => {
     setShowAddConvenioModal(true);
   };
   
-  // Confirm archive convenio
-  const confirmarArchivarConvenio = async (convenio) => {
+  // Confirm archive empresa
+  const confirmarArchivarEmpresa = async (empresa) => {
     try {
-      if (!convenio) {
-        console.error('Error: Convenio no definido');
-        setError('Error: Convenio no definido');
+      if (!empresa) {
+        console.error('Error: Empresa no definida');
+        setError('Error: Empresa no definida');
         return false;
       }
       
-      console.log('AdminConvenios -> confirmarArchivarConvenio -> convenio recibido:', convenio);
+      console.log('AdminConvenios -> confirmarArchivarEmpresa -> empresa recibida:', empresa);
       
-      // Get convenio ID
-      const convenioId = convenio?.id_convenio || convenio?.convenio_id;
+      // Get empresa ID
+      const empresaId = convenio?.id_empresa;
       
-      if (!convenioId) {
-        console.error('Error: No se puede archivar, ID de convenio no válido', convenio);
-        setError('Error: ID de convenio no válido');
+      if (!empresaId) {
+        console.error('Error: No se puede archivar, ID de empresa no válido', convenio);
+        setError('Error: ID de empresa no válido');
         return false;
       }
       
-      console.log(`Intentando archivar convenio con ID: ${convenioId}`);
-      const result = await cambiarEstadoConvenio(convenioId, false);
+      console.log(`Intentando archivar empresa con ID: ${empresaId}`);
+      const result = await cambiarEstadoConvenio(empresaId, false);
       console.log('Resultado de cambiarEstadoConvenio:', result);
       
       if (result) {
@@ -230,14 +230,13 @@ const AdminConvenios = () => {
         </div>
         
         <div className="admin-convenios__filter-bar">
-          <div className="admin-convenios__search-container">
-            <SearchField
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              onClear={() => setSearchTerm('')}
-              placeholder="Buscar por nombre"
-              className="admin-convenios__search-filter"
-            />
+          <div className="admin-convenios__search-container">          <SearchField
+            value={searchTerm}
+            onChange={(value) => setSearchTerm(value)}
+            onClear={() => setSearchTerm('')}
+            placeholder="Buscar por nombre"
+            className="admin-convenios__search-filter"
+          />
           </div>
           
           <div className="admin-convenios__filter-options">
@@ -393,7 +392,7 @@ const AdminConvenios = () => {
         onClose={() => setShowEditConvenioModal(false)}
         convenio={currentConvenio}
         onConvenioUpdated={handleConvenioUpdated}
-        onConfirmArchive={confirmarArchivarConvenio}
+        onConfirmArchive={confirmarArchivarEmpresa}
       />
     </AdminLayout>
   );

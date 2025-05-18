@@ -65,7 +65,8 @@ const CrearConvenio = ({ isOpen, onClose, onConvenioCreated }) => {
 
   // Handle logo upload
   const handleLogoChange = (e) => {
-    const file = e.target.files[0];
+    // Check if e is an event or already a file
+    const file = e.target ? e.target.files[0] : e;
     if (!file) return;
 
     if (file.size > 2 * 1024 * 1024) { // 2MB limit
@@ -210,7 +211,7 @@ const CrearConvenio = ({ isOpen, onClose, onConvenioCreated }) => {
               label="Nombre de la empresa *"
               name="nombre_empresa"
               value={formData.nombre_empresa}
-              onChange={(e) => handleChange('nombre_empresa', e.target.value)}
+              onChange={(value) => handleChange('nombre_empresa', value)}
               error={formErrors.nombre_empresa}
               required
             />
@@ -219,7 +220,7 @@ const CrearConvenio = ({ isOpen, onClose, onConvenioCreated }) => {
               label="RIF *"
               name="rif"
               value={formData.rif}
-              onChange={(e) => handleRIFChange(e.target.value)}
+              onChange={(value) => handleRIFChange(value)}
               error={formErrors.rif}
               placeholder="J-XXXXXXXX-X"
               required
@@ -229,7 +230,7 @@ const CrearConvenio = ({ isOpen, onClose, onConvenioCreated }) => {
               label="Teléfono *"
               name="telefono"
               value={formData.telefono}
-              onChange={(e) => handleChange('telefono', e.target.value)}
+              onChange={(value) => handleChange('telefono', value)}
               error={formErrors.telefono}
               required
             />
@@ -238,7 +239,7 @@ const CrearConvenio = ({ isOpen, onClose, onConvenioCreated }) => {
               label="Email"
               name="email"
               value={formData.email}
-              onChange={(e) => handleChange('email', e.target.value)}
+              onChange={(value) => handleChange('email', value)}
               error={formErrors.email}
             />
           </div>
@@ -248,7 +249,7 @@ const CrearConvenio = ({ isOpen, onClose, onConvenioCreated }) => {
               label="Dirección"
               name="direccion"
               value={formData.direccion}
-              onChange={(e) => handleChange('direccion', e.target.value)}
+              onChange={(value) => handleChange('direccion', value)}
               error={formErrors.direccion}
             />
             
@@ -256,7 +257,7 @@ const CrearConvenio = ({ isOpen, onClose, onConvenioCreated }) => {
               label="Descripción"
               name="descripcion"
               value={formData.descripcion}
-              onChange={(e) => handleChange('descripcion', e.target.value)}
+              onChange={(value) => handleChange('descripcion', value)}
               error={formErrors.descripcion}
               rows={3}
             />
