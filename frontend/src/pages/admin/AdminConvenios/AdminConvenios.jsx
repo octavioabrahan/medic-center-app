@@ -7,6 +7,7 @@ import TagToggleGroup from '../../../components/Tag/TagToggleGroup';
 import TagToggle from '../../../components/Tag/TagToggle';
 import Text from '../../../components/Text/Text';
 import styles from './AdminConvenios.module.css';
+import AgregarEmpresaConvenio from './AgregarEmpresaConvenio';
 
 // SVG icon for the button (building-office-2)
 const BuildingOfficeIcon = () => (
@@ -20,6 +21,7 @@ const AdminConvenios = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [showArchived, setShowArchived] = useState(false);
   const [sortAZ, setSortAZ] = useState(true);
+  const [showAgregarEmpresaModal, setShowAgregarEmpresaModal] = useState(false);
 
   // No convenios yet, so always show empty state
   return (
@@ -30,7 +32,7 @@ const AdminConvenios = () => {
           <div className={styles.adminConveniosMenuHeader}>
             <div className={styles.adminConveniosTitle}>Convenios</div>
           </div>
-          <Button variant="primary">
+          <Button variant="primary" onClick={() => setShowAgregarEmpresaModal(true)}>
             <BuildingOfficeIcon />
             <span>Agregar empresas con convenio</span>
           </Button>
@@ -79,6 +81,11 @@ const AdminConvenios = () => {
           </div>
         </div>
       </div>
+      <AgregarEmpresaConvenio
+        isOpen={showAgregarEmpresaModal}
+        onClose={() => setShowAgregarEmpresaModal(false)}
+        onAdd={() => setShowAgregarEmpresaModal(false)}
+      />
     </AdminLayout>
   );
 };
