@@ -31,12 +31,16 @@ const CrearServicio = ({ isOpen, onClose, onServicioCreated, showArchived }) => 
     setLoading(true);
     try {
       await api.post('/servicios', {
-        nombre: nombre.trim(),
-        descripcion: descripcion.trim() || null
+        // Use property name that matches the old code's backend expectations
+        nombre_servicio: nombre.trim(),
+        descripcion: descripcion.trim() || null,
+        price_usd: 0, // Default value as seen in old code
+        is_recommended: false, // Default value as seen in old code
+        is_active: true // Set as active by default
       });
       
-      // Recargar la lista de servicios
-      const serviciosRes = await api.get('/servicios', { params: { soloActivos: !showArchived } });
+      // Recargar la lista de servicios - no params like in old code
+      const serviciosRes = await api.get('/servicios');
       onServicioCreated(serviciosRes.data);
       
       handleClose();

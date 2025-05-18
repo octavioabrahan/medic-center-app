@@ -15,8 +15,10 @@ const EditarServicio = ({ isOpen, onClose, servicio, onServicioUpdated, onConfir
   // Actualizar valores cuando cambia el servicio seleccionado
   useEffect(() => {
     if (servicio && isOpen) {
-      setNombre(servicio.nombre || '');
+      // Handle both property name formats
+      setNombre(servicio.nombre || servicio.nombre_servicio || '');
       setDescripcion(servicio.descripcion || '');
+      console.log("Editing service:", servicio); // Debug to see structure
     }
   }, [servicio, isOpen]);
 
@@ -39,16 +41,22 @@ const EditarServicio = ({ isOpen, onClose, servicio, onServicioUpdated, onConfir
       return;
     }
     
-    if (!servicio || !servicio.servicio_id) {
+    // Check for servicio_id or id_servicio (from old code)
+    const servicioId = servicio?.servicio_id || servicio?.id_servicio;
+    if (!servicio || !servicioId) {
       setError('Error: Información del servicio no disponible');
       return;
     }
     
     setLoading(true);
     try {
-      await api.put(`/servicios/${servicio.servicio_id}`, {
-        nombre: nombre.trim(),
-        descripcion: descripcion.trim() || null
+      // Use the property name and format from old code
+      await api.put(`/servicios/${servicioId}`, {
+        nombre_servicio: nombre.trim(),
+        descripcion: descripcion.trim() || null,
+        // Keep existing values if they exist
+        price_usd: servicio.price_usd || 0,
+        is_recommended: servicio.is_recommended || false
       });
       
       // Actualizar lista en el componente padre

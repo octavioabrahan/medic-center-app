@@ -37,7 +37,9 @@ const AdminServicios = () => {
     const fetchData = async () => {
       setLoading(true);
       try {
-        const serviciosRes = await api.get('/servicios', { params: { soloActivos: !showArchived } });
+        // Using the endpoint from the old code as reference
+        const serviciosRes = await api.get('/servicios');
+        console.log('Servicios data:', serviciosRes.data); // Debug to see actual data structure
         setServicios(serviciosRes.data);
         setError(null);
       } catch (err) {
@@ -51,6 +53,26 @@ const AdminServicios = () => {
     fetchData();
   }, [showArchived]);
 
+  // Debug function to inspect service data format
+  const inspectServiceData = (data) => {
+    if (!data || data.length === 0) return;
+    
+    const sampleService = data[0];
+    console.log("Sample service data structure:", {
+      id: sampleService.id_servicio || sampleService.servicio_id || 'undefined',
+      name: sampleService.nombre_servicio || sampleService.nombre || 'undefined',
+      isActive: sampleService.is_active,
+      fullObject: sampleService
+    });
+  };
+
+  // Attach to useEffect to inspect data when it loads
+  useEffect(() => {
+    if (servicios.length > 0) {
+      inspectServiceData(servicios);
+    }
+  }, [servicios]);
+
   // Aplicar filtros y ordenamiento a la lista de servicios
   useEffect(() => {
     if (servicios.length > 0) {
@@ -58,15 +80,31 @@ const AdminServicios = () => {
       
       if (searchTerm) {
         const termLower = searchTerm.toLowerCase();
-        filtered = filtered.filter(servicio => 
-          servicio.nombre?.toLowerCase().includes(termLower)
-        );
+        filtered = filtered.filter(servicio => {
+          // Check if nombre or nombre_servicio exists before using toLowerCase
+          const servicioNombre = servicio.nombre || servicio.nombre_servicio || '';
+          return servicioNombre.toLowerCase().includes(termLower);
+        });
       }
       
+      // Filter by archived status if needed
+      if (!showArchived) {
+        filtered = filtered.filter(servicio => servicio.is_active !== false);
+      }
+      
+      // Sort with proper null checks
       if (sortAZ) {
-        filtered.sort((a, b) => a.nombre.localeCompare(b.nombre));
+        filtered.sort((a, b) => {
+          const nameA = (a.nombre || a.nombre_servicio || '').toLowerCase();
+          const nameB = (b.nombre || b.nombre_servicio || '').toLowerCase();
+          return nameA.localeCompare(nameB);
+        });
       } else {
-        filtered.sort((a, b) => b.nombre.localeCompare(a.nombre));
+        filtered.sort((a, b) => {
+          const nameA = (a.nombre || a.nombre_servicio || '').toLowerCase();
+          const nameB = (b.nombre || b.nombre_servicio || '').toLowerCase();
+          return nameB.localeCompare(nameA);
+        });
       }
       
       setFilteredServicios(filtered);
@@ -86,10 +124,17 @@ const AdminServicios = () => {
       
       console.log(`Cambiando estado del servicio ID: ${servicioId} a ${activo ? 'activo' : 'inactivo'}`);
       
-      await api.put(`/servicios/estado/${servicioId}`, { activo });
+      // Use the endpoint format from the old code
+      const endpoint = activo ? 
+        `/servicios/${servicioId}/desarchivar` : 
+        `/servicios/${servicioId}/archivar`;
       
-      // Actualizar la lista después del cambio
-      const res = await api.get('/servicios', { params: { soloActivos: !showArchived } });
+      await api.put(endpoint);
+      
+      // Update the list after change - use plain endpoint without params like in old code
+      const res = await api.get('/servicios');
+      
+      // Update the local list to reflect the change
       setServicios(res.data);
       
       setCurrentServicio(null);
@@ -108,8 +153,9 @@ const AdminServicios = () => {
   // Actualizar servicio
   const handleServicioUpdated = async () => {
     try {
-      // Obtener la lista actualizada de servicios
-      const res = await api.get('/servicios', { params: { soloActivos: !showArchived } });
+      // Get updated service list without params like in old code
+      const res = await api.get('/servicios');
+      console.log("Updated services:", res.data); // Debug
       setServicios(res.data);
       setCurrentServicio(null);
     } catch (err) {
@@ -212,10 +258,10 @@ const AdminServicios = () => {
                   'Acciones'
                 ]}
                 data={filteredServicios.map(servicio => ({
-                  nombre: servicio.nombre || 'N/A',
-                  estado: servicio.is_active,
-                  acciones: servicio.servicio_id,
-                  servicio_id: servicio.servicio_id,
+                  nombre: servicio.nombre || servicio.nombre_servicio || 'N/A',
+                  estado: servicio.is_active !== undefined ? servicio.is_active : true,
+                  acciones: servicio.servicio_id || servicio.id_servicio,
+                  servicio_id: servicio.servicio_id || servicio.id_servicio,
                   servicio_completo: servicio // Para poder acceder al objeto completo
                 }))}
                 columns={['nombre', 'estado', 'acciones']}
@@ -253,7 +299,7 @@ const AdminServicios = () => {
                         ) : (
                           <button
                             className="admin-servicios__action-btn activate"
-                            onClick={() => cambiarEstadoServicio(row.servicio_id, true)}
+                            onClick={() => cambiarEstadoServicio(row.servicio_completo.id_servicio || row.servicio_completo.servicio_id, true)}
                             aria-label="Activar servicio"
                           >
                             <ArrowPathIcon width={16} height={16} />
