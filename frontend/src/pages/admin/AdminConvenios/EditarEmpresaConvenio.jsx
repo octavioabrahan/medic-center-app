@@ -28,35 +28,26 @@ const EditarEmpresaConvenio = ({ isOpen, onClose, onSave, onArchive, empresa }) 
     }
   };
 
+  const handleClose = () => {
+    setNombre(empresa?.nombre || '');
+    setRif(empresa?.rif || '');
+    onClose?.();
+  };
+
   return (
     <Modal
       isOpen={isOpen}
-      onClose={onClose}
-      contentClassName={styles.editarEmpresaConvenioModal}
+      onClose={handleClose}
+      contentClassName={styles.agregarEmpresaConvenioModal}
+      primaryButtonText="Guardar"
+      onPrimaryClick={handleSave}
+      primaryButtonDisabled={!nombre.trim() || !rif.trim()}
+      secondaryButtonText="Cancelar"
+      onSecondaryClick={handleClose}
       size="medium"
-      noPadding
-    >
-      <div className={styles.dialogBody}>
-        <div className={styles.textSection}>
-          <h2 className={styles.title}>Editar empresa</h2>
-          <div className={styles.fieldsSection}>
-            <InputField
-              label="Nombre de la empresa"
-              value={nombre}
-              onChange={setNombre}
-              placeholder="Nombre de la empresa"
-              fillContainer
-            />
-            <InputField
-              label="RIF"
-              value={rif}
-              onChange={setRif}
-              placeholder="J1234567-0"
-              fillContainer
-            />
-          </div>
-        </div>
-        <div className={styles.buttonGroup}>
+      noPadding={false}
+      footer={
+        <div className={styles['button-group']}>
           <Button
             variant="subtle"
             size="medium"
@@ -71,18 +62,30 @@ const EditarEmpresaConvenio = ({ isOpen, onClose, onSave, onArchive, empresa }) 
             </span>
             <span className={styles.archivarButtonText}>Archivar</span>
           </Button>
-          <div className={styles.frame77}>
-            <Button variant="neutral" size="medium" onClick={onClose}>Cancelar</Button>
-            <Button
-              variant="primary"
-              size="medium"
-              onClick={handleSave}
-              disabled={!nombre.trim() || !rif.trim()}
-            >
-              Guardar
-            </Button>
-          </div>
         </div>
+      }
+    >
+      <div className={styles.agregarEmpresaConvenioModal}>
+        <h2 className={styles['agregar-empresa-convenio-modal__title']}>
+          Editar empresa
+        </h2>
+        <form className={styles['agregar-empresa-convenio-modal__form']} onSubmit={e => { e.preventDefault(); handleSave(); }}>
+          <InputField
+            label="Nombre de la empresa"
+            value={nombre}
+            onChange={setNombre}
+            placeholder="Nombre de la empresa"
+            fillContainer
+            autoFocus
+          />
+          <InputField
+            label="RIF"
+            value={rif}
+            onChange={setRif}
+            placeholder="A00000000-0"
+            fillContainer
+          />
+        </form>
       </div>
     </Modal>
   );
