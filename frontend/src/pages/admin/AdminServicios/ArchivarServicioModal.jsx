@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import Modal from '../../../components/Modal/Modal';
 import Button from '../../../components/Button/Button';
 import CheckboxField from '../../../components/Inputs/CheckboxField';
@@ -16,16 +17,32 @@ import './modal-fix.css';
  */
 const ArchivarServicioModal = ({ isOpen, onClose, servicio, onConfirmArchive, loading }) => {
   const [confirmacionArchivado, setConfirmacionArchivado] = useState(false);
+  
+  // Verificar que tengamos los datos del servicio al cargar el componente
+  useEffect(() => {
+    if (isOpen && !servicio) {
+      console.error('Error: Modal de archivar abierto sin datos de servicio');
+    } else if (isOpen) {
+      console.log('Modal abierto con servicio:', servicio);
+    }
+  }, [isOpen, servicio]);
 
   const handleConfirmar = async () => {
     // Siempre registrar en consola la intención de archivar para depuración
     console.log('Botón "Sí, archivar" presionado', {
       confirmacionArchivado,
       hasOnConfirmArchive: !!onConfirmArchive,
-      servicio
+      servicio,
+      servicioId: servicio?.id_servicio || servicio?.servicio_id || 'no-id'
     });
     
-    if (confirmacionArchivado && onConfirmArchive && servicio) {
+    if (!servicio) {
+      console.error('Error: No hay datos del servicio para archivar');
+      alert('Error: No se pudo obtener la información del servicio para archivar.');
+      return;
+    }
+    
+    if (confirmacionArchivado && onConfirmArchive) {
       console.log('Ejecutando confirmación de archivo de servicio:', servicio);
       try {
         // Debug la función que recibimos
@@ -60,11 +77,14 @@ const ArchivarServicioModal = ({ isOpen, onClose, servicio, onConfirmArchive, lo
     }
   };
 
+  // Obtener el nombre del servicio para mostrar en el título
+  const nombreServicio = servicio ? (servicio.nombre || servicio.nombre_servicio || 'este servicio') : 'este servicio';
+
   return (
     <Modal
       isOpen={isOpen}
       onClose={onClose}
-      heading={`¿Quieres archivar el servicio?`}
+      heading={`¿Quieres archivar ${nombreServicio}?`}
       size="small"
       contentClassName="hide-original-buttons modal-heading"
     >
@@ -98,28 +118,11 @@ const ArchivarServicioModal = ({ isOpen, onClose, servicio, onConfirmArchive, lo
               // Log every time button is clicked
               console.log("→→→ BOTÓN ARCHIVAR PRESIONADO");
               
-              // Attempt to execute proper handler
-              handleConfirmar();
-              
-              // If checkbox is checked, but for some reason the handler doesn't work,
-              // provide a fallback that at least closes the modal
+              // Just call the handler directly - the fallback was causing issues
               if (confirmacionArchivado) {
-                console.log("→→→ FALLBACK: Cerrando modal después de 1 segundo");
-                setTimeout(() => {
-                  if (servicio && onConfirmArchive) {
-                    try {
-                      console.log("→→→ FALLBACK: Intentando archivar servicio", servicio.id_servicio || servicio.servicio_id);
-                      onConfirmArchive(servicio);
-                    } catch (e) {
-                      console.error("→→→ FALLBACK: Error al archivar", e);
-                    } finally {
-                      console.log("→→→ FALLBACK: Cerrando modal");
-                      onClose();
-                    }
-                  } else {
-                    onClose();
-                  }
-                }, 1000);
+                handleConfirmar();
+              } else {
+                console.log("Checkbox no marcado - no se puede archivar");
               }
             }}
             disabled={!confirmacionArchivado || loading}

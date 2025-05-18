@@ -384,6 +384,6 @@ const AdminServicios = () => {
       />
     </AdminLayout>
   );
-}
+};
 
 export default AdminServicios;

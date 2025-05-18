@@ -18,6 +18,8 @@ const EditarServicio = ({ isOpen, onClose, servicio, onServicioUpdated, onConfir
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [showArchivarModal, setShowArchivarModal] = useState(false);
+  // Store current service in a state variable to ensure it's available when needed
+  const [currentServicio, setCurrentServicio] = useState(null);
 
   // Actualizar valores cuando cambia el servicio seleccionado
   useEffect(() => {
@@ -27,6 +29,7 @@ const EditarServicio = ({ isOpen, onClose, servicio, onServicioUpdated, onConfir
       setDescripcion(servicio.descripcion || '');
       setPriceUsd(servicio.price_usd || 0);
       setIsRecommended(servicio.is_recommended || false);
+      setCurrentServicio(servicio); // Store the current service
       console.log("Editing service:", servicio); // Debug to see structure
     }
   }, [servicio, isOpen]);
@@ -37,7 +40,12 @@ const EditarServicio = ({ isOpen, onClose, servicio, onServicioUpdated, onConfir
   };
 
   const handleArchive = () => {
-    console.log("Servicio a archivar desde EditarServicio:", servicio);
+    console.log("Servicio a archivar desde EditarServicio:", currentServicio || servicio);
+    if (!currentServicio && !servicio) {
+      console.error("Error: No hay datos de servicio para archivar");
+      setError("Error: No se pueden obtener datos del servicio para archivar");
+      return;
+    }
     setShowArchivarModal(true);
   };
   
@@ -46,7 +54,7 @@ const EditarServicio = ({ isOpen, onClose, servicio, onServicioUpdated, onConfir
       console.log('Confirmando archivar servicio en EditarServicio:', servicioParaArchivar);
       
       // Si no se recibe un servicio válido en el parámetro, usar el del estado
-      const servicioAArchivar = servicioParaArchivar || servicio;
+      const servicioAArchivar = servicioParaArchivar || currentServicio || servicio;
       
       if (!servicioAArchivar) {
         throw new Error('No hay servicio para archivar');
@@ -209,7 +217,7 @@ const EditarServicio = ({ isOpen, onClose, servicio, onServicioUpdated, onConfir
     <ArchivarServicioModal
       isOpen={showArchivarModal}
       onClose={() => setShowArchivarModal(false)}
-      servicio={servicio}
+      servicio={currentServicio || servicio} 
       onConfirmArchive={confirmarArchivar}
       loading={loading}
     />
