@@ -49,7 +49,7 @@ const ArchivoAdjunto = require('./models/archivoAdjunto');
 // Limitar solicitudes para prevenir ataques de fuerza bruta
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutos
-  max: 500, // límite de 100 solicitudes por ventana
+  max: 10000, // límite aumentado a 10000 solicitudes por ventana para desarrollo
   standardHeaders: true,
   legacyHeaders: false,
   message: 'Demasiadas solicitudes desde esta IP, por favor intente nuevamente después de 15 minutos'
@@ -70,7 +70,8 @@ app.use(helmet()); // Protección con headers HTTP
 app.use(express.json({ limit: '1mb' })); // Limitar tamaño de payload
 app.use(securityHeaders);
 app.use(preventXSS); // Proteger contra XSS
-app.use('/api/', limiter); // Aplicar limitador de tasa a rutas API
+// Comentar la siguiente línea para deshabilitar completamente el limitador de tasa si sigues experimentando problemas
+// app.use('/api/', limiter); // Aplicar limitador de tasa a rutas API (deshabilitado temporalmente)
 
 // Servir archivos estáticos
 const logosFolderPath = path.join(__dirname, '..', 'frontend', 'src', 'components', 'logos_empresas');
