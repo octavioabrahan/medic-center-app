@@ -4,8 +4,11 @@ import Button from '../../../components/Button/Button';
 import InputField from '../../../components/Inputs/InputField';
 import TextAreaField from '../../../components/Inputs/TextAreaField';
 import CheckboxField from '../../../components/Inputs/CheckboxField';
+import { ArchiveBoxIcon } from '@heroicons/react/24/solid';
 import api from '../../../api';
+import ArchivarServicioModal from './ArchivarServicioModal';
 import './EditarServicio.css';
+import './modal-fix.css';
 
 const EditarServicio = ({ isOpen, onClose, servicio, onServicioUpdated, onConfirmArchive }) => {
   const [nombre, setNombre] = useState('');
@@ -14,6 +17,7 @@ const EditarServicio = ({ isOpen, onClose, servicio, onServicioUpdated, onConfir
   const [isRecommended, setIsRecommended] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [showArchivarModal, setShowArchivarModal] = useState(false);
 
   // Actualizar valores cuando cambia el servicio seleccionado
   useEffect(() => {
@@ -34,8 +38,18 @@ const EditarServicio = ({ isOpen, onClose, servicio, onServicioUpdated, onConfir
 
   const handleArchive = () => {
     console.log("Servicio a archivar desde EditarServicio:", servicio);
-    onConfirmArchive(servicio);
-    handleClose();
+    setShowArchivarModal(true);
+  };
+  
+  const confirmarArchivar = async (servicioParaArchivar) => {
+    try {
+      await onConfirmArchive(servicioParaArchivar);
+      setShowArchivarModal(false);
+      handleClose();
+    } catch (err) {
+      console.error("Error al archivar servicio:", err);
+      setError("Error al archivar el servicio. Por favor intente nuevamente.");
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -76,11 +90,12 @@ const EditarServicio = ({ isOpen, onClose, servicio, onServicioUpdated, onConfir
   };
 
   return (
-    <Modal
+    <>
+      <Modal
       isOpen={isOpen}
       onClose={handleClose}
       title="Editar servicio"
-      className="editar-servicio-modal"
+      className="editar-servicio-modal modal-heading"
     >
       <form onSubmit={handleSubmit} className="editar-servicio-form">
         {error && (
@@ -136,7 +151,8 @@ const EditarServicio = ({ isOpen, onClose, servicio, onServicioUpdated, onConfir
             onClick={handleArchive}
             disabled={loading}
           >
-            Archivar servicio
+            <ArchiveBoxIcon className="btn__icon" />
+            <span>Archivar servicio</span>
           </Button>
           
           <div className="editar-servicio__primary-actions">
@@ -159,6 +175,16 @@ const EditarServicio = ({ isOpen, onClose, servicio, onServicioUpdated, onConfir
         </div>
       </form>
     </Modal>
+    
+    {/* Modal de confirmación para archivar servicio */}
+    <ArchivarServicioModal
+      isOpen={showArchivarModal}
+      onClose={() => setShowArchivarModal(false)}
+      servicio={servicio}
+      onConfirmArchive={confirmarArchivar}
+      loading={loading}
+    />
+    </>
   );
 };
 

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Modal from '../../../components/Modal/Modal';
 import Button from '../../../components/Button/Button';
 import InputField from '../../../components/Inputs/InputField';
@@ -6,6 +6,7 @@ import TextAreaField from '../../../components/Inputs/TextAreaField';
 import CheckboxField from '../../../components/Inputs/CheckboxField';
 import api from '../../../api';
 import './CrearServicio.css';
+import './modal-fix.css';
 
 const CrearServicio = ({ isOpen, onClose, onServicioCreated, showArchived }) => {
   const [nombre, setNombre] = useState('');
@@ -62,7 +63,7 @@ const CrearServicio = ({ isOpen, onClose, onServicioCreated, showArchived }) => 
       isOpen={isOpen}
       onClose={handleClose}
       title="Crear servicio"
-      className="crear-servicio-modal"
+      className="crear-servicio-modal modal-heading"
     >
       <form onSubmit={handleSubmit} className="crear-servicio-form">
         {error && (

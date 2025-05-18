@@ -49,6 +49,17 @@
   margin-right: var(--sds-space-200);
 }
 
+/* Font consistency fixes for modals */
+.modal__title {
+  color: var(--sds-color-text-default-default);
+  text-align: left;
+  font-family: var(--heading-font-family, "Inter-SemiBold", sans-serif);
+  font-size: var(--heading-font-size, 24px);
+  line-height: var(--heading-line-height, 120%);
+  letter-spacing: var(--heading-letter-spacing, -0.02em);
+  font-weight: var(--heading-font-weight, 600);
+}
+
 .admin-servicios__filter-bar {
   display: flex;
   flex-direction: row;
