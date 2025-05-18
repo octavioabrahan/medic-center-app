@@ -1,88 +1,88 @@
-.agregar-empresa-convenio-modal {
-  width: 100%;
-  max-width: 600px;
-  padding: var(--sds-space-800, 32px);
-  background: var(--sds-color-background-default-default, #fff);
-  box-shadow: 0px 4px 4px -4px rgba(12, 12, 13, 0.05);
-  border-radius: var(--sds-radius-200, 8px);
-  outline: 1px solid var(--sds-color-border-default-default, #d9d9d9);
-  outline-offset: -1px;
-  display: flex;
-  flex-direction: column;
-  gap: var(--sds-space-600, 24px);
-}
-
-.agregar-empresa-convenio-modal .input-field {
-  margin-bottom: 0;
-}
-
-.agregar-empresa-convenio-modal .label {
-  color: var(--sds-color-text-default-default, #1e1e1e);
-  font-size: var(--sds-scale-03, 16px);
-  font-family: 'Inter', sans-serif;
-  font-weight: var(--sds-weight-regular, 400);
-  line-height: 22.4px;
-}
-
-.agregar-empresa-convenio-modal .value {
-  color: var(--sds-color-text-default-default, #1e1e1e);
-  font-size: var(--sds-scale-03, 16px);
-  font-family: 'Inter', sans-serif;
-  font-weight: var(--sds-weight-regular, 400);
-  line-height: 16px;
-}
-
-.agregar-empresa-convenio-modal .inputField {
-  background: var(--sds-color-background-default-default, #fff);
-  border-radius: var(--sds-radius-200, 8px);
-  outline: 1px solid var(--sds-color-border-default-default, #d9d9d9);
-  outline-offset: -0.5px;
-  padding: var(--sds-space-300, 12px) var(--sds-space-400, 16px);
-  min-width: 240px;
-  display: flex;
-  align-items: center;
-}
-
-.agregar-empresa-convenio-modal .button-group {
-  align-self: stretch;
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-  gap: var(--sds-space-400, 16px);
-}
-
-.agregar-empresa-convenio-modal .icon-button {
-  position: absolute;
-  top: var(--sds-space-200, 8px);
-  right: var(--sds-space-200, 8px);
-  padding: var(--sds-space-200, 8px);
-  border-radius: var(--sds-radius-full, 32px);
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
   display: flex;
   justify-content: center;
   align-items: center;
-  background: none;
-  border: none;
-  cursor: pointer;
+  z-index: 1000;
 }
 
-.agregar-empresa-convenio-modal .x {
-  width: 20px;
-  height: 20px;
-  color: var(--sds-color-icon-default-default, #1e1e1e);
+.dialogBody {
+  width: 100%;
+  max-width: 600px;
+  padding: 32px;
+  position: relative;
+  background: white;
+  box-shadow: 0px 4px 8px -1px rgba(12, 12, 13, 0.05),
+              0px 1px 1px -1px rgba(12, 12, 13, 0.03);
+  border-radius: 8px;
+  border: 1px solid #D9D9D9;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
 }
 
-.agregar-empresa-convenio-modal__title {
-  color: var(--sds-color-text-default-default, #1e1e1e);
+.textSection {
+  align-self: stretch;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+}
+
+.fieldsSection {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
+}
+
+.buttonGroup {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  width: 100%;
+  margin-top: 8px;
+}
+
+.frame77 {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.modalTitle {
   font-size: 24px;
   font-family: 'Inter', sans-serif;
   font-weight: 600;
   line-height: 28.8px;
-  margin-bottom: var(--sds-space-400, 16px);
+  color: #1E1E1E;
+  margin-bottom: 12px;
 }
 
-.agregar-empresa-convenio-modal__form {
-  flex: 1;
+.closeButton {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  padding: 8px;
+  border-radius: 32px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
   display: flex;
-  flex-direction: column;
-  gap: var(--sds-space-400, 16px); /* Add gap between input fields and labels */
+  align-items: center;
+  justify-content: center;
+}
+
+.closeButton:hover {
+  background: rgba(0, 0, 0, 0.05);
+}
+
+.closeIcon {
+  width: 20px;
+  height: 20px;
 }
