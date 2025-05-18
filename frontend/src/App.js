@@ -8,6 +8,7 @@ const AdminHorarios = lazy(() => import('./pages/admin/AdminHorarios/AdminHorari
 const AdminProfesionales = lazy(() => import('./pages/admin/AdminProfesionales'));
 const AdminServicios = lazy(() => import('./pages/admin/AdminServicios/AdminServicios'));
 const AdminConvenios = lazy(() => import('./pages/admin/AdminConvenios/AdminConvenios'));
+const AdminCotizaciones = lazy(() => import('./pages/admin/AdminCotizaciones/AdminCotizaciones'));
 
 // Lazy load para los demos
 const ButtonDemo = lazy(() => import('./components/Button/ButtonDemo'));
@@ -131,7 +132,7 @@ function App() {
         } />
         <Route path="/admin/cotizaciones" element={
           <Suspense fallback={<div>Cargando...</div>}>
-            <AdminDummy />
+            <AdminCotizaciones />
           </Suspense>
         } />
         <Route path="/admin/usuarios" element={

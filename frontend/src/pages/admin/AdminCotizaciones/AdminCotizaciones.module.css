@@ -1,0 +1,93 @@
+.pageHeader {
+  width: 1042px;
+  padding-bottom: 12px;
+  margin: 32px 32px 0;
+  border-bottom: 1px solid var(--sds-color-border-default-default, #D9D9D9);
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 4px;
+}
+
+.menuHeader {
+  padding: 8px 16px 4px 16px;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+}
+
+.textStrong {
+  color: var(--sds-color-text-default-default, #1E1E1E);
+  font-size: 16px;
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
+  line-height: 22.4px;
+  word-wrap: break-word;
+}
+
+.filterBar {
+  width: 1042px;
+  margin: 24px 32px 32px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.searchFilter {
+  width: 327px;
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+.searchField {
+  flex: 1;
+}
+
+.selectField {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.tagToggleGroup {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.body {
+  width: 1042px;
+  height: 596px;
+  min-width: 160px;
+  margin: 0 32px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 32px;
+}
+
+.text {
+  align-self: stretch;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 8px;
+}
+
+.emptyMessage {
+  align-self: stretch;
+  text-align: center;
+  color: var(--sds-color-text-default-secondary, #757575);
+  font-size: 16px;
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
+  line-height: 22.4px;
+  word-wrap: break-word;
+}
