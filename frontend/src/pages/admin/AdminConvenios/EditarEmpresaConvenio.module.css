@@ -11,6 +11,10 @@
   flex-direction: column;
   gap: var(--sds-space-600, 24px);
   position: relative;
+  box-sizing: border-box;
+  border-top: none !important;
+  border-bottom: none !important;
+  overflow-x: hidden;
 }
 
 .textSection {
@@ -81,4 +85,14 @@
   flex-direction: row;
   align-items: center;
   gap: var(--sds-space-400, 16px);
+}
+
+/* Remove border or padding from parent modal body/content if present */
+:global(.modal-body),
+:global(.modal-content) {
+  border-top: none !important;
+  border-bottom: none !important;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+  overflow-x: hidden !important;
 }
