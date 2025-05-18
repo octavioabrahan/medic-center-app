@@ -43,7 +43,16 @@ const EditarServicio = ({ isOpen, onClose, servicio, onServicioUpdated, onConfir
   
   const confirmarArchivar = async (servicioParaArchivar) => {
     try {
-      await onConfirmArchive(servicioParaArchivar);
+      console.log('Confirmando archivar servicio en EditarServicio:', servicioParaArchivar);
+      
+      // Si no se recibe un servicio válido en el parámetro, usar el del estado
+      const servicioAArchivar = servicioParaArchivar || servicio;
+      
+      if (!servicioAArchivar) {
+        throw new Error('No hay servicio para archivar');
+      }
+      
+      await onConfirmArchive(servicioAArchivar);
       setShowArchivarModal(false);
       handleClose();
     } catch (err) {

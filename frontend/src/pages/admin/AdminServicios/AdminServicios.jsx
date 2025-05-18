@@ -173,22 +173,43 @@ const AdminServicios = () => {
   
   // Confirmar archivar servicio
   const confirmarArchivarServicio = async (servicio) => {
-    console.log('Servicio a archivar:', servicio);
-    const servicioId = servicio?.id_servicio || servicio?.servicio_id;
-    if (servicio && servicioId) {
-      try {
-        const result = await cambiarEstadoServicio(servicioId, false);
-        if (result) {
-          // Solo cerrar el modal si la operación fue exitosa
-          setShowEditServicioModal(false);
-        }
-      } catch (err) {
-        console.error('Error al archivar servicio:', err);
-        setError(`Error al archivar el servicio: ${err.response?.data?.error || err.message}`);
+    try {
+      if (!servicio) {
+        console.error('Error: Servicio no definido');
+        setError('Error: Servicio no definido');
+        return;
       }
-    } else {
-      console.error('Error: No se puede archivar, ID de servicio no válido');
-      setError('Error: ID de servicio no válido');
+      
+      console.log('Servicio a archivar (objeto completo):', servicio);
+      
+      // Asegurar que tenemos un ID válido verificando ambas formas posibles del nombre de propiedad
+      const servicioId = servicio?.id_servicio || servicio?.servicio_id;
+      
+      if (!servicioId) {
+        console.error('Error: No se puede archivar, ID de servicio no válido', servicio);
+        setError('Error: ID de servicio no válido');
+        return;
+      }
+      
+      console.log(`Intentando archivar servicio con ID: ${servicioId}`);
+      await cambiarEstadoServicio(servicioId, false);
+      setShowEditServicioModal(false);
+    } catch (err) {
+      console.error('Error al archivar servicio:', err);
+      setError('Error al archivar el servicio: ' + (err.message || err));
+    }
+    
+    console.log(`ID del servicio a archivar: ${servicioId}`);
+    
+    try {
+      const result = await cambiarEstadoServicio(servicioId, false);
+      if (result) {
+        // Solo cerrar el modal si la operación fue exitosa
+        setShowEditServicioModal(false);
+      }
+    } catch (err) {
+      console.error('Error al archivar servicio:', err);
+      setError(`Error al archivar el servicio: ${err.response?.data?.error || err.message}`);
     }
   };
 

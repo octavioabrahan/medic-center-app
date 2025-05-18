@@ -18,7 +18,9 @@ const ArchivarServicioModal = ({ isOpen, onClose, servicio, onConfirmArchive, lo
   const [confirmacionArchivado, setConfirmacionArchivado] = useState(false);
 
   const handleConfirmar = async () => {
-    if (confirmacionArchivado && onConfirmArchive) {
+    if (confirmacionArchivado && onConfirmArchive && servicio) {
+      console.log('Confirmando archivar servicio:', servicio);
+      // Asegurarnos de pasar el servicio completo con todos sus datos
       await onConfirmArchive(servicio);
     }
   };
