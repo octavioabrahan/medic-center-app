@@ -4,7 +4,6 @@ import Button from '../../../components/Button/Button';
 import SearchField from '../../../components/Inputs/SearchField';
 import SelectField from '../../../components/Inputs/SelectField';
 import CheckboxField from '../../../components/Inputs/CheckboxField';
-import Table from '../../../components/Tables/Table';
 import { UserPlusIcon, CheckIcon, PencilIcon, ArrowPathIcon } from '@heroicons/react/20/solid';
 import api from '../../../api';
 import CrearEspecialidades from './CrearEspecialidades';
@@ -201,119 +200,102 @@ const AdminProfesionales = () => {
         </div>
         
         <div className="admin-profesionales__filter-bar">
-          <div className="admin-profesionales__search-container">
-            <SearchField
-              value={searchTerm}
-              onChange={setSearchTerm}
-              placeholder="Buscar por nombre"
-              className="admin-profesionales__search"
-              onClear={() => setSearchTerm('')}
+          <SearchField
+            value={searchTerm}
+            onChange={setSearchTerm}
+            placeholder="Buscar por nombre"
+            className="admin-profesionales__search-filter"
+          />
+          
+          <SelectField
+            options={especialidadesOptions}
+            value={selectedEspecialidad}
+            onChange={setSelectedEspecialidad}
+            className="admin-profesionales__select-field"
+          />
+          
+          <div className="admin-profesionales__checkbox-field">
+            <CheckboxField
+              label="Mostrar archivados"
+              checked={showArchived}
+              onChange={setShowArchived}
             />
           </div>
           
-          <div className="admin-profesionales__filter-options">
-            <SelectField
-              options={especialidadesOptions}
-              value={selectedEspecialidad}
-              onChange={setSelectedEspecialidad}
-              className="admin-profesionales__select-field"
-            />
-            
-            <div className="admin-profesionales__checkbox-field">
-              <CheckboxField
-                label="Mostrar archivados"
-                checked={showArchived}
-                onChange={setShowArchived}
-              />
+          <div className="admin-profesionales__tag-toggle-group">
+            <div className={sortAZ ? "admin-profesionales__tag-toggle state-on" : "admin-profesionales__tag-toggle state-off"} onClick={() => setSortAZ(true)}>
+              {sortAZ && <CheckIcon className="heroicons-mini-check" />}
+              <div className="title">A → Z</div>
             </div>
-            
-            <div className="admin-profesionales__tag-toggle-group">
-              <div className={sortAZ ? "admin-profesionales__tag-toggle state-on" : "admin-profesionales__tag-toggle state-off"} onClick={() => setSortAZ(true)}>
-                {sortAZ && <CheckIcon className="heroicons-mini-check" />}
-                <div className="title">A → Z</div>
-              </div>
-              <div className={!sortAZ ? "admin-profesionales__tag-toggle state-on" : "admin-profesionales__tag-toggle state-off"} onClick={() => setSortAZ(false)}>
-                {!sortAZ && <CheckIcon className="heroicons-mini-check" />}
-                <div className="title">Z → A</div>
-              </div>
+            <div className={!sortAZ ? "admin-profesionales__tag-toggle state-on" : "admin-profesionales__tag-toggle state-off"} onClick={() => setSortAZ(false)}>
+              {!sortAZ && <CheckIcon className="heroicons-mini-check" />}
+              <div className="title">Z → A</div>
             </div>
           </div>
         </div>
         
-        <div className="admin-profesionales__body">
-          {loading ? (
-            <div className="admin-profesionales__loading">Cargando profesionales...</div>
-          ) : error ? (
-            <div className="admin-profesionales__error">{error}</div>
-          ) : filteredProfesionales.length === 0 ? (
-            <div className="admin-profesionales__empty-state">
-              <div className="admin-profesionales__empty-title">
-                Aún no has agregado profesionales
-              </div>
-              <div className="admin-profesionales__empty-description">
-                Cada profesional debe tener una especialidad asignada y al menos un servicio activo para mostrarse en el sitio de agendamiento.
-              </div>
+        {loading ? (
+          <div className="admin-profesionales__loading">Cargando profesionales...</div>
+        ) : error ? (
+          <div className="admin-profesionales__error">{error}</div>
+        ) : filteredProfesionales.length === 0 ? (
+          <div className="admin-profesionales__empty-state">
+            <div className="admin-profesionales__empty-title">
+              Aún no has agregado profesionales
             </div>
-          ) : (
-            <div className="admin-profesionales__table">
-              <Table
-                headers={[
-                  'Cédula',
-                  'Profesional',
-                  'Especialidad',
-                  'Estado',
-                  'Acciones'
-                ]}
-                data={filteredProfesionales.map(profesional => ({
-                  cedula: profesional.cedula || 'N/A',
-                  nombre: `${profesional.nombre || ''} ${profesional.apellido || ''}`.trim(),
-                  especialidad: profesional.nombre_especialidad || 'No especificada',
-                  estado: profesional.is_active,
-                  acciones: profesional.profesional_id,
-                  profesional: profesional // Para poder acceder al objeto completo
-                }))}
-                columns={['cedula', 'nombre', 'especialidad', 'estado', 'acciones']}
-                renderCustomCell={(row, column) => {
-                  if (column === 'estado') {
-                    return (
-                      <div className="text">
-                        <span className={`admin-profesionales__status-badge ${row.estado ? 'admin-profesionales__status-active' : 'admin-profesionales__status-inactive'}`}>
-                          {row.estado ? 'Activo' : 'Archivado'}
-                        </span>
-                      </div>
-                    );
-                  }
-                  
-                  if (column === 'acciones') {
-                    return (
-                      <div className="admin-profesionales__actions">
-                        {row.profesional.is_active ? (
-                          <button 
-                            className="admin-profesionales__action-btn edit" 
-                            onClick={() => handleEditProfesional(row.profesional)}
-                            aria-label="Editar profesional"
-                          >
-                            <PencilIcon width={16} height={16} />
-                          </button>
-                        ) : (
-                          <button 
-                            className="admin-profesionales__action-btn restore" 
-                            onClick={() => cambiarEstadoProfesional(row.profesional.profesional_id, true)}
-                            aria-label="Restaurar profesional"
-                          >
-                            <ArrowPathIcon width={16} height={16} />
-                          </button>
-                        )}
-                      </div>
-                    );
-                  }
-                  // Para otras columnas, usar el renderizado por defecto
-                  return null;
-                }}
-              />
+            <div className="admin-profesionales__empty-description">
+              Cada profesional debe tener una especialidad asignada y al menos un servicio activo para mostrarse en el sitio de agendamiento.
             </div>
-          )}
-        </div>
+          </div>
+        ) : (
+          <div className="admin-profesionales__table-container">
+            <table className="admin-profesionales__table">
+              <thead>
+                <tr>
+                  <th>Cédula</th>
+                  <th>Profesional</th>
+                  <th>Especialidad</th>
+                  <th>Estado</th>
+                  <th>Acciones</th>
+                </tr>
+              </thead>
+              <tbody>
+                {filteredProfesionales.map(profesional => (
+                  <tr 
+                    key={profesional.profesional_id}
+                    className={profesional.is_active === false ? 'admin-profesionales__row-inactive' : ''}
+                  >
+                    <td>{profesional.cedula}</td>
+                    <td>{profesional.nombre} {profesional.apellido}</td>
+                    <td>{profesional.nombre_especialidad}</td>
+                    <td>
+                      <span className={`admin-profesionales__status-badge ${profesional.is_active ? 'admin-profesionales__status-active' : 'admin-profesionales__status-inactive'}`}>
+                        {profesional.is_active ? 'Activo' : 'Archivado'}
+                      </span>
+                    </td>
+                    <td>
+                      {profesional.is_active ? (
+                        <Button 
+                          variant="subtle"
+                          onClick={() => handleEditProfesional(profesional)}
+                        >
+                          <PencilIcon className="admin-profesionales__icon-small" />
+                        </Button>
+                      ) : (
+                        <Button 
+                          variant="subtle"
+                          onClick={() => cambiarEstadoProfesional(profesional.profesional_id, true)}
+                        >
+                          <ArrowPathIcon className="admin-profesionales__icon-small" />
+                        </Button>
+                      )}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
       </div>
       <CrearEspecialidades 
         isOpen={showAddEspecialidadModal} 
