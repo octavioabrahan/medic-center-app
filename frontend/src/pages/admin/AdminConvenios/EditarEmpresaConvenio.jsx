@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Modal from '../../../components/Modal/Modal';
 import InputField from '../../../components/Inputs/InputField';
+import Button from '../../../components/Button/Button';
 import styles from './EditarEmpresaConvenio.module.css';
 
 /**
@@ -31,37 +32,36 @@ const EditarEmpresaConvenio = ({ isOpen, onClose, onSave, onArchive, empresa }) 
     <Modal
       isOpen={isOpen}
       onClose={onClose}
-      heading="Editar empresa"
       contentClassName={styles.editarEmpresaConvenioModal}
-      primaryButtonText="Guardar"
-      onPrimaryClick={handleSave}
-      primaryButtonDisabled={!nombre.trim() || !rif.trim()}
-      secondaryButtonText="Cancelar"
-      onSecondaryClick={onClose}
       size="medium"
+      noPadding
     >
-      <div className={styles.editarEmpresaConvenioModalBody}>
-        <div className={styles.editarEmpresaConvenioFields}>
-          <InputField
-            label="Nombre de la empresa"
-            value={nombre}
-            onChange={setNombre}
-            placeholder="DAKA"
-            fillContainer
-          />
-          <InputField
-            label="RIF"
-            value={rif}
-            onChange={setRif}
-            placeholder="00000000-0"
-            fillContainer
-          />
+      <div className={styles.dialogBody}>
+        <div className={styles.textSection}>
+          <h2 className={styles.title}>Editar empresa</h2>
+          <div className={styles.fieldsSection}>
+            <InputField
+              label="Nombre de la empresa"
+              value={nombre}
+              onChange={setNombre}
+              placeholder="Nombre de la empresa"
+              fillContainer
+            />
+            <InputField
+              label="RIF"
+              value={rif}
+              onChange={setRif}
+              placeholder="J1234567-0"
+              fillContainer
+            />
+          </div>
         </div>
-        <div className={styles.editarEmpresaConvenioButtonGroup}>
-          <button
-            className={styles.archivarButton}
-            type="button"
+        <div className={styles.buttonGroup}>
+          <Button
+            variant="subtle"
+            size="medium"
             onClick={onArchive}
+            className={styles.archivarButton}
           >
             <span className={styles.archiveIconWrapper}>
               <svg width="16" height="17" viewBox="0 0 16 17" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -70,9 +70,17 @@ const EditarEmpresaConvenio = ({ isOpen, onClose, onSave, onArchive, empresa }) 
               </svg>
             </span>
             <span className={styles.archivarButtonText}>Archivar</span>
-          </button>
+          </Button>
           <div className={styles.frame77}>
-            {/* The Modal's button-group already renders Cancel/Guardar, so nothing here */}
+            <Button variant="neutral" size="medium" onClick={onClose}>Cancelar</Button>
+            <Button
+              variant="primary"
+              size="medium"
+              onClick={handleSave}
+              disabled={!nombre.trim() || !rif.trim()}
+            >
+              Guardar
+            </Button>
           </div>
         </div>
       </div>
