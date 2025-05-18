@@ -1,0 +1,25 @@
+
+.crear-servicio-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sds-space-400);
+}
+
+.crear-servicio__field {
+  width: 100%;
+}
+
+.crear-servicio__error-message {
+  background-color: var(--sds-color-background-danger-tertiary);
+  color: var(--sds-color-text-danger-default);
+  padding: var(--sds-space-300);
+  border-radius: var(--sds-radius-200);
+  margin-bottom: var(--sds-space-300);
+}
+
+.crear-servicio__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--sds-space-300);
+  margin-top: var(--sds-space-400);
+}
