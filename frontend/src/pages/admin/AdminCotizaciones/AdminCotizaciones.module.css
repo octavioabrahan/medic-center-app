@@ -125,3 +125,12 @@
   width: 20px;
   height: 20px;
 }
+
+.tableWrapper {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.horizontalScrollTable {
+  min-width: 900px; /* Ensure table has a minimum width */
+}

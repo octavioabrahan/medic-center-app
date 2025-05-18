@@ -1,0 +1,561 @@
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  overflow-y: auto;
+  padding: 20px;
+}
+
+.mainContent {
+  display: flex;
+  width: 1106px;
+  padding: 32px 28px 54px 32px;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 24px;
+  background: #fff;
+  border-radius: 12px;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.pageHeader {
+  border-style: solid;
+  border-color: var(--var-sds-color-border-default-default, #d9d9d9);
+  border-width: 0px 0px 1px 0px;
+  padding: 0px 0px 12px 0px;
+  display: flex;
+  flex-direction: row;
+  gap: 4px;
+  align-items: center;
+  justify-content: flex-start;
+  width: 1042px;
+}
+
+.iconButton {
+  border-radius: 32px;
+  padding: 12px;
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.iconButton:hover {
+  background-color: #f5f5f5;
+}
+
+.arrowLeft {
+  width: 20px;
+  height: 20px;
+}
+
+.menuHeader {
+  border-radius: 8px;
+  display: flex;
+  flex-direction: row;
+  gap: 12px;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.textStrong {
+  color: #1e1e1e;
+  font-family: "Inter-SemiBold", sans-serif;
+  font-size: 16px;
+  line-height: 140%;
+  font-weight: 600;
+}
+
+.tag {
+  border-radius: 8px;
+  padding: 8px;
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+  align-items: center;
+  justify-content: center;
+}
+
+.tag.positive {
+  background: #cff7d3;
+  color: #02542d;
+}
+
+.tag.warning {
+  background: #ffedcc;
+  color: #805b10;
+}
+
+.tag.danger {
+  background: #fee9e7;
+  color: #900b09;
+}
+
+.tag.neutral {
+  background: #e6e6e6;
+  color: #1e1e1e;
+}
+
+.frame93 {
+  display: flex;
+  flex-direction: row;
+  gap: 24px;
+  align-items: flex-start;
+  justify-content: flex-start;
+  width: 1046px;
+}
+
+.cotizacionCard {
+  background: #ffffff;
+  border-radius: 8px;
+  border: 1px solid #d9d9d9;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  align-items: flex-end;
+  justify-content: flex-start;
+  flex: 1;
+  min-width: 300px;
+}
+
+.infoCotizacion {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: flex-start;
+  justify-content: flex-start;
+  align-self: stretch;
+}
+
+.frame88 {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  align-items: flex-start;
+  justify-content: flex-start;
+  align-self: stretch;
+}
+
+.informacionDeLaCotizacion {
+  color: #757575;
+  font-family: "Inter-SemiBold", sans-serif;
+  font-size: 16px;
+  line-height: 140%;
+  font-weight: 600;
+  align-self: stretch;
+}
+
+.line6 {
+  margin-top: -1px;
+  border-style: solid;
+  border-color: #b2b2b2;
+  border-width: 1px 0 0 0;
+  align-self: stretch;
+  height: 0px;
+}
+
+.frame78 {
+  display: flex;
+  flex-direction: row;
+  gap: 12px;
+  align-items: flex-start;
+  justify-content: flex-start;
+  align-self: stretch;
+}
+
+.folio {
+  color: #757575;
+  font-family: "Inter-Regular", sans-serif;
+  font-size: 16px;
+  line-height: 140%;
+  font-weight: 400;
+}
+
+.cotFolio, .nombreCliente, .cedulaCliente, .telefonoCliente, .correoCliente {
+  color: #1e1e1e;
+  font-family: "Inter-Regular", sans-serif;
+  font-size: 16px;
+  line-height: 140%;
+  font-weight: 400;
+}
+
+.frame79 {
+  display: flex;
+  flex-direction: row;
+  gap: 12px;
+  align-items: flex-start;
+  justify-content: flex-start;
+  align-self: stretch;
+}
+
+.fecha, .nombre, .cedula, .telefono, .correoElectronico {
+  color: #757575;
+  font-family: "Inter-Regular", sans-serif;
+  font-size: 16px;
+  line-height: 140%;
+  font-weight: 400;
+}
+
+.fechaText {
+  color: #1e1e1e;
+  font-family: "Inter-Regular", sans-serif;
+  font-size: 16px;
+  line-height: 140%;
+  font-weight: 400;
+}
+
+.frame89 {
+  display: flex;
+  flex-direction: row;
+  gap: 12px;
+  align-items: flex-start;
+  justify-content: flex-start;
+  align-self: stretch;
+}
+
+.totalUsd {
+  color: #757575;
+  font-family: "Inter-SemiBold", sans-serif;
+  font-size: 16px;
+  line-height: 140%;
+  font-weight: 600;
+}
+
+.totalValue {
+  color: #1e1e1e;
+  font-family: "Inter-SemiBold", sans-serif;
+  font-size: 16px;
+  line-height: 140%;
+  font-weight: 600;
+}
+
+.contentTable {
+  border-radius: 8px;
+  border: 1px solid #d9d9d9;
+  display: flex;
+  flex-direction: row;
+  gap: 0px;
+  align-items: flex-start;
+  justify-content: flex-start;
+  align-self: stretch;
+  overflow: hidden;
+}
+
+.col {
+  display: flex;
+  flex-direction: column;
+  gap: 0px;
+  align-items: flex-start;
+  justify-content: flex-start;
+  align-self: stretch;
+  flex: 1;
+}
+
+.col2 {
+  display: flex;
+  flex-direction: column;
+  gap: 0px;
+  align-items: flex-start;
+  justify-content: flex-start;
+  width: 314px;
+}
+
+.col3 {
+  display: flex;
+  flex-direction: column;
+  gap: 0px;
+  align-items: flex-start;
+  justify-content: flex-start;
+}
+
+.headerCell {
+  background: #faf8ff;
+  border-bottom: 1px solid #d9d9d9;
+  padding: 8px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 0px;
+  align-items: flex-start;
+  justify-content: center;
+  align-self: stretch;
+}
+
+.text {
+  display: flex;
+  flex-direction: row;
+  gap: 0px;
+  align-items: center;
+  justify-content: center;
+}
+
+.text2 {
+  color: #1e1e1e;
+  font-family: "Inter-SemiBold", sans-serif;
+  font-size: 14px;
+  line-height: 140%;
+  font-weight: 600;
+}
+
+.cell {
+  background: #ffffff;
+  border-bottom: 1px solid #d9d9d9;
+  padding: 8px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 0px;
+  align-items: flex-start;
+  justify-content: center;
+  align-self: stretch;
+  flex: 1;
+}
+
+.cell2 {
+  background: #ffffff;
+  border-bottom: 1px solid #d9d9d9;
+  padding: 8px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 0px;
+  align-items: flex-start;
+  justify-content: center;
+  align-self: stretch;
+  height: 58px;
+}
+
+.text3 {
+  color: #1e1e1e;
+  font-family: "Inter-Regular", sans-serif;
+  font-size: 16px;
+  line-height: 140%;
+  font-weight: 400;
+}
+
+.text4 {
+  display: flex;
+  flex-direction: row;
+  gap: 0px;
+  align-items: center;
+  justify-content: flex-start;
+  align-self: stretch;
+}
+
+.infoDelCotizante {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: flex-start;
+  justify-content: flex-start;
+  align-self: stretch;
+}
+
+.paciente, .historialItem {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: flex-start;
+  justify-content: flex-start;
+  align-self: stretch;
+}
+
+.informacionDelCotizante {
+  color: #757575;
+  font-family: "Inter-SemiBold", sans-serif;
+  font-size: 16px;
+  line-height: 140%;
+  font-weight: 600;
+  align-self: stretch;
+}
+
+.frame90 {
+  display: flex;
+  flex-direction: row;
+  gap: 12px;
+  align-items: flex-start;
+  justify-content: flex-start;
+  align-self: stretch;
+}
+
+.frame81 {
+  display: flex;
+  flex-direction: row;
+  gap: 12px;
+  align-items: flex-start;
+  justify-content: flex-start;
+  align-self: stretch;
+}
+
+.paciente2 {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: flex-end;
+  justify-content: flex-start;
+  align-self: stretch;
+}
+
+.nuevoSeguimiento {
+  color: #757575;
+  font-family: "Inter-SemiBold", sans-serif;
+  font-size: 16px;
+  line-height: 140%;
+  font-weight: 600;
+  align-self: stretch;
+}
+
+.frame91 {
+  display: flex;
+  flex-direction: row;
+  gap: 12px;
+  align-items: flex-start;
+  justify-content: flex-start;
+  align-self: stretch;
+}
+
+.selectField {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: flex-start;
+  justify-content: flex-start;
+  flex: 1;
+}
+
+.textareaField {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: flex-start;
+  justify-content: flex-start;
+  align-self: stretch;
+}
+
+.frame92 {
+  display: flex;
+  flex-direction: row;
+  gap: 12px;
+  align-items: flex-start;
+  justify-content: flex-start;
+  align-self: stretch;
+}
+
+.inputField {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: flex-start;
+  justify-content: flex-start;
+  flex: 1;
+}
+
+.buttonPrimary {
+  margin-top: 8px;
+  align-self: flex-end;
+}
+
+.historial {
+  color: #757575;
+  font-family: "Inter-SemiBold", sans-serif;
+  font-size: 16px;
+  line-height: 140%;
+  font-weight: 600;
+  align-self: stretch;
+}
+
+.tipoDeContacto, .resultadoLabel, .comentariosLabel, .proximaAccionLabel, .fechaLabel {
+  color: #757575;
+  font-family: "Inter-Regular", sans-serif;
+  font-size: 16px;
+  line-height: 140%;
+  font-weight: 400;
+}
+
+.tipoContactoValue, .resultadoValue, .comentariosValue, .proximaAccionValue, .fechaValue {
+  color: #1e1e1e;
+  font-family: "Inter-Regular", sans-serif;
+  font-size: 16px;
+  line-height: 140%;
+  font-weight: 400;
+}
+
+.proximaAccionLabel {
+  color: #757575;
+  font-family: "Inter-SemiBold", sans-serif;
+  font-size: 16px;
+  line-height: 140%;
+  font-weight: 600;
+}
+
+.frame912 {
+  display: flex;
+  flex-direction: row;
+  gap: 12px;
+  align-items: flex-start;
+  justify-content: flex-start;
+  align-self: stretch;
+}
+
+.fechaLabel {
+  color: #757575;
+  font-family: "Inter-SemiBold", sans-serif;
+  font-size: 16px;
+  line-height: 140%;
+  font-weight: 600;
+}
+
+.noHistorial {
+  color: #757575;
+  font-family: "Inter-Regular", sans-serif;
+  font-size: 16px;
+  line-height: 140%;
+  font-weight: 400;
+  align-self: center;
+  padding: 16px 0;
+}
+
+.historialItem {
+  padding-bottom: 16px;
+  border-bottom: 1px solid #e6e6e6;
+  margin-bottom: 16px;
+}
+
+.historialItem:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+}
+
+/* Media queries for responsiveness */
+@media (max-width: 1200px) {
+  .mainContent {
+    width: 90%;
+  }
+  
+  .frame93 {
+    flex-direction: column;
+    width: 100%;
+  }
+  
+  .pageHeader {
+    width: 100%;
+  }
+}
+
+@media (max-width: 768px) {
+  .frame91, .frame92 {
+    flex-direction: column;
+  }
+}

@@ -7,8 +7,9 @@ import TagToggle from '../../../components/Tag/TagToggle';
 import Table from '../../../components/Tables/Table';
 import Tag from '../../../components/Tag/Tag';
 import styles from './AdminCotizaciones.module.css';
-import { CheckIcon } from '@heroicons/react/20/solid';
+import { PencilSquareIcon } from '@heroicons/react/20/solid';
 import axios from 'axios';
+import SeguimientoCotizaciones from './SeguimientoCotizaciones';
 
 /**
  * AdminCotizaciones component for managing quotes in the admin dashboard
@@ -24,6 +25,8 @@ const AdminCotizaciones = () => {
   const [filteredCotizaciones, setFilteredCotizaciones] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [selectedCotizacion, setSelectedCotizacion] = useState(null);
+  const [showSeguimiento, setShowSeguimiento] = useState(false);
   
   // API URL
   const API_URL = `${process.env.REACT_APP_API_URL || ''}/api`;
@@ -114,14 +117,14 @@ const AdminCotizaciones = () => {
           />
         );
         
-        // Crear acción con botón check
+        // Crear acción con botón de editar
         const accion = (
           <button 
             className={styles.checkButton} 
             title="Procesar cotización"
-            onClick={() => console.log(`Procesar cotización ${cot.id_cotizacion || cot.folio}`)}
+            onClick={() => handleProcessCotizacion(cot)}
           >
-            <CheckIcon className={styles.checkIcon} width={20} height={20} />
+            <PencilSquareIcon className={styles.checkIcon} width={20} height={20} />
           </button>
         );
         
@@ -140,6 +143,17 @@ const AdminCotizaciones = () => {
       setFilteredCotizaciones([]);
     }
   }, [cotizaciones, searchTerm, filterStatus, sortRecent]);
+
+  // Manejador para procesar cotización
+  const handleProcessCotizacion = (cotizacion) => {
+    setSelectedCotizacion(cotizacion);
+    setShowSeguimiento(true);
+  };
+
+  // Cerrar modal de seguimiento
+  const handleCloseSeguimiento = () => {
+    setShowSeguimiento(false);
+  };
 
   return (
     <AdminLayout activePage="/admin/cotizaciones">
@@ -206,13 +220,23 @@ const AdminCotizaciones = () => {
             </div>
           </div>
         ) : (
-          <Table
-            headers={["Folio", "Cliente", "Cédula", "Fecha", "Total USD", "Estado", "Acción"]}
-            data={filteredCotizaciones}
-            columns={["folio", "cliente", "cedula_cliente", "fecha_formateada", "total_usd", "estado_tag", "accion"]}
-          />
+          <div className={styles.tableWrapper}>
+            <Table
+              headers={["Folio", "Cliente", "Cédula", "Fecha", "Total USD", "Estado", "Acción"]}
+              data={filteredCotizaciones}
+              columns={["folio", "cliente", "cedula_cliente", "fecha_formateada", "total_usd", "estado_tag", "accion"]}
+              className={styles.horizontalScrollTable}
+            />
+          </div>
         )}
       </div>
+
+      {showSeguimiento && selectedCotizacion && (
+        <SeguimientoCotizaciones 
+          cotizacion={selectedCotizacion} 
+          onClose={handleCloseSeguimiento} 
+        />
+      )}
     </AdminLayout>
   );
 };
