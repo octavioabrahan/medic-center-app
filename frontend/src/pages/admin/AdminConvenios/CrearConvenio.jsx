@@ -189,7 +189,6 @@ const CrearConvenio = ({ isOpen, onClose, onConvenioCreated }) => {
     setError(null);
     onClose();
   };
-  };
 
   return (
     <Modal
@@ -306,5 +305,6 @@ const CrearConvenio = ({ isOpen, onClose, onConvenioCreated }) => {
       </div>
     </Modal>
   );
+};
 
 export default CrearConvenio;

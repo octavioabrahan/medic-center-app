@@ -36,7 +36,6 @@ const EditarConvenio = ({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [logoPreview, setLogoPreview] = useState(null);
   const [error, setError] = useState(null);
-  const [originalLogo, setOriginalLogo] = useState(null);
   const [logoChanged, setLogoChanged] = useState(false);
 
   // Load convenio data when the modal opens or convenio changes
@@ -52,12 +51,10 @@ const EditarConvenio = ({
         logo_url: null // We don't load the file object, just the URL for preview
       });
       
-      // Set original logo URL for preview
+      // Set logo URL for preview
       if (convenio.logo_url) {
-        setOriginalLogo(convenio.logo_url);
         setLogoPreview(convenio.logo_url);
       } else {
-        setOriginalLogo(null);
         setLogoPreview(null);
       }
       
