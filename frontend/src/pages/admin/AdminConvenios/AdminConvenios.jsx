@@ -30,7 +30,7 @@ const AdminConvenios = () => {
           <div className={styles.adminConveniosMenuHeader}>
             <div className={styles.adminConveniosTitle}>Convenios</div>
           </div>
-          <Button className={styles.adminConveniosButton} variant="primary">
+          <Button variant="primary">
             <BuildingOfficeIcon />
             <span>Agregar empresas con convenio</span>
           </Button>
