@@ -544,7 +544,7 @@
   gap: 8px;
   align-items: center;
   overflow-x: auto; /* Para permitir scroll horizontal en la tabla */
-  justify-content: center;
+  justify-content: flex-start;
   width: 100%;
   height: 596px;
 }

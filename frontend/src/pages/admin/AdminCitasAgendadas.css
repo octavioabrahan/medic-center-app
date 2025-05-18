@@ -177,7 +177,7 @@
   flex-direction: column;
   gap: 32px;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   flex-grow: 1;
   margin: 32px;
   min-height: 500px;
