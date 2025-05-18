@@ -46,7 +46,8 @@ const schedule = require('node-schedule');
 const ArchivoAdjunto = require('./models/archivoAdjunto');
 
 // Configuración avanzada de seguridad
-// Limitar solicitudes para prevenir ataques de fuerza bruta
+// Limitar solicitudes para prevenir ataques de fuerza bruta - DESACTIVADO TEMPORALMENTE
+/* 
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutos
   max: 10000, // límite aumentado a 10000 solicitudes por ventana para desarrollo
@@ -54,6 +55,11 @@ const limiter = rateLimit({
   legacyHeaders: false,
   message: 'Demasiadas solicitudes desde esta IP, por favor intente nuevamente después de 15 minutos'
 });
+*/
+// Creando un middleware vacío para reemplazar el rate limiter
+const limiter = (req, res, next) => {
+  next(); // No hace nada, simplemente pasa al siguiente middleware
+};
 
 // Configurar CORS para entornos de producción/desarrollo
 const corsOptions = {
@@ -70,8 +76,8 @@ app.use(helmet()); // Protección con headers HTTP
 app.use(express.json({ limit: '1mb' })); // Limitar tamaño de payload
 app.use(securityHeaders);
 app.use(preventXSS); // Proteger contra XSS
-// Comentar la siguiente línea para deshabilitar completamente el limitador de tasa si sigues experimentando problemas
-// app.use('/api/', limiter); // Aplicar limitador de tasa a rutas API (deshabilitado temporalmente)
+// El rate limiter ha sido reemplazado por un middleware vacío
+app.use('/api/', limiter); // Este middleware ya no limita las solicitudes
 
 // Servir archivos estáticos
 const logosFolderPath = path.join(__dirname, '..', 'frontend', 'src', 'components', 'logos_empresas');
