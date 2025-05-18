@@ -18,10 +18,45 @@ const ArchivarServicioModal = ({ isOpen, onClose, servicio, onConfirmArchive, lo
   const [confirmacionArchivado, setConfirmacionArchivado] = useState(false);
 
   const handleConfirmar = async () => {
+    // Siempre registrar en consola la intención de archivar para depuración
+    console.log('Botón "Sí, archivar" presionado', {
+      confirmacionArchivado,
+      hasOnConfirmArchive: !!onConfirmArchive,
+      servicio
+    });
+    
     if (confirmacionArchivado && onConfirmArchive && servicio) {
-      console.log('Confirmando archivar servicio:', servicio);
-      // Asegurarnos de pasar el servicio completo con todos sus datos
-      await onConfirmArchive(servicio);
+      console.log('Ejecutando confirmación de archivo de servicio:', servicio);
+      try {
+        // Debug la función que recibimos
+        console.log('Función onConfirmArchive:', onConfirmArchive.toString().slice(0, 100) + '...');
+        
+        // Asegurarnos de pasar el servicio completo con todos sus datos
+        await onConfirmArchive(servicio);
+        
+        // Cerrar el modal después de confirmar exitosamente
+        console.log('Archivo completado con éxito, cerrando modal');
+        onClose();
+      } catch (error) {
+        console.error('Error al confirmar archivar servicio:', error);
+        // En caso de error, igual cerramos el modal después de mostrar el error
+        // para evitar que el usuario se quede atrapado
+        setTimeout(() => onClose(), 2000);
+      }
+    } else {
+      console.warn('No se puede archivar: checkbox no marcado, falta función handler, o falta servicio', { 
+        confirmacionArchivado, 
+        hasOnConfirmArchive: !!onConfirmArchive, 
+        servicioPresente: !!servicio,
+        servicioId: servicio?.id_servicio || servicio?.servicio_id || 'no-id'
+      });
+      
+      // Si falta el servicio, podemos mostrar un mensaje más específico
+      if (!servicio) {
+        alert('Error: No se pudo obtener la información del servicio para archivar.');
+      } else if (!onConfirmArchive) {
+        alert('Error interno: Falta la función para procesar el archivado.');
+      }
     }
   };
 
@@ -59,7 +94,34 @@ const ArchivarServicioModal = ({ isOpen, onClose, servicio, onConfirmArchive, lo
           </Button>
           <Button 
             variant="danger" 
-            onClick={handleConfirmar}
+            onClick={() => {
+              // Log every time button is clicked
+              console.log("→→→ BOTÓN ARCHIVAR PRESIONADO");
+              
+              // Attempt to execute proper handler
+              handleConfirmar();
+              
+              // If checkbox is checked, but for some reason the handler doesn't work,
+              // provide a fallback that at least closes the modal
+              if (confirmacionArchivado) {
+                console.log("→→→ FALLBACK: Cerrando modal después de 1 segundo");
+                setTimeout(() => {
+                  if (servicio && onConfirmArchive) {
+                    try {
+                      console.log("→→→ FALLBACK: Intentando archivar servicio", servicio.id_servicio || servicio.servicio_id);
+                      onConfirmArchive(servicio);
+                    } catch (e) {
+                      console.error("→→→ FALLBACK: Error al archivar", e);
+                    } finally {
+                      console.log("→→→ FALLBACK: Cerrando modal");
+                      onClose();
+                    }
+                  } else {
+                    onClose();
+                  }
+                }, 1000);
+              }
+            }}
             disabled={!confirmacionArchivado || loading}
           >
             {loading ? "Archivando..." : "Sí, archivar"}

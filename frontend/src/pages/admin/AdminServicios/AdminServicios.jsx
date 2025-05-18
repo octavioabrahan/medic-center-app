@@ -177,10 +177,10 @@ const AdminServicios = () => {
       if (!servicio) {
         console.error('Error: Servicio no definido');
         setError('Error: Servicio no definido');
-        return;
+        return false;
       }
       
-      console.log('Servicio a archivar (objeto completo):', servicio);
+      console.log('AdminServicios -> confirmarArchivarServicio -> servicio recibido:', servicio);
       
       // Asegurar que tenemos un ID válido verificando ambas formas posibles del nombre de propiedad
       const servicioId = servicio?.id_servicio || servicio?.servicio_id;
@@ -188,19 +188,26 @@ const AdminServicios = () => {
       if (!servicioId) {
         console.error('Error: No se puede archivar, ID de servicio no válido', servicio);
         setError('Error: ID de servicio no válido');
-        return;
+        return false;
       }
       
       console.log(`Intentando archivar servicio con ID: ${servicioId}`);
       const result = await cambiarEstadoServicio(servicioId, false);
+      console.log('Resultado de cambiarEstadoServicio:', result);
+      
       if (result) {
         // Solo cerrar el modal si la operación fue exitosa
         setShowEditServicioModal(false);
+        return true;
+      } else {
+        return false;
       }
     } catch (err) {
       console.error('Error al archivar servicio:', err);
       setError('Error al archivar el servicio: ' + (err.message || err));
+      return false;
     }
+  }
   };
 
   return (
@@ -378,6 +385,5 @@ const AdminServicios = () => {
       />
     </AdminLayout>
   );
-};
 
 export default AdminServicios;

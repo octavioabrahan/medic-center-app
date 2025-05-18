@@ -52,12 +52,32 @@ const EditarServicio = ({ isOpen, onClose, servicio, onServicioUpdated, onConfir
         throw new Error('No hay servicio para archivar');
       }
       
-      await onConfirmArchive(servicioAArchivar);
+      // Asegurarse de verificar que exista un ID válido
+      const servicioId = servicioAArchivar?.id_servicio || servicioAArchivar?.servicio_id;
+      if (!servicioId) {
+        console.error('Error: No se puede archivar, ID de servicio no válido', servicioAArchivar);
+        throw new Error('Error: ID de servicio no válido');
+      }
+      
+      console.log(`Confirmando archivar servicio con ID: ${servicioId}`);
+      
+      const result = await onConfirmArchive(servicioAArchivar);
+      
+      // Asegurarse de cerrar los modales incluso si no hay un resultado explícito
       setShowArchivarModal(false);
       handleClose();
+      
+      return result;
     } catch (err) {
       console.error("Error al archivar servicio:", err);
       setError("Error al archivar el servicio. Por favor intente nuevamente.");
+      
+      // En caso de error, cerramos los modales después de un tiempo para no dejar al usuario atrapado
+      setTimeout(() => {
+        setShowArchivarModal(false);
+      }, 2000);
+      
+      return false;
     }
   };
 
