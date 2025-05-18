@@ -1,19 +1,27 @@
-import React, { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Modal from '../../../components/Modal/Modal';
-import Button from '../../../components/Button/Button';
 import InputField from '../../../components/Inputs/InputField';
 import TextAreaField from '../../../components/Inputs/TextAreaField';
+import Button from '../../../components/Button/Button';
 import api from '../../../api';
-import './CrearConvenio.css';
+import './EditarConvenio.css';
 
 /**
- * Modal para crear una nueva empresa con convenio
- * @param {Object} props - Propiedades del componente
- * @param {boolean} props.isOpen - Determina si el modal está abierto
- * @param {Function} props.onClose - Función para cerrar el modal
- * @param {Function} props.onConvenioCreated - Función que se ejecuta al crear exitosamente
+ * EditarConvenio component for editing an existing company with healthcare agreement
+ * @param {Object} props - Component props
+ * @param {boolean} props.isOpen - Controls if the modal is open
+ * @param {Function} props.onClose - Function to close the modal
+ * @param {Object} props.convenio - The convenio object to edit
+ * @param {Function} props.onConvenioUpdated - Callback when convenio is updated
+ * @param {Function} props.onConfirmArchive - Function to archive convenio
  */
-const CrearConvenio = ({ isOpen, onClose, onConvenioCreated }) => {
+const EditarConvenio = ({ 
+  isOpen, 
+  onClose, 
+  convenio, 
+  onConvenioUpdated,
+  onConfirmArchive 
+}) => {
   const [formData, setFormData] = useState({
     nombre_empresa: '',
     rif: '',
@@ -23,10 +31,50 @@ const CrearConvenio = ({ isOpen, onClose, onConvenioCreated }) => {
     descripcion: '',
     logo_url: null
   });
+
   const [formErrors, setFormErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [logoPreview, setLogoPreview] = useState(null);
   const [error, setError] = useState(null);
+  const [originalLogo, setOriginalLogo] = useState(null);
+  const [logoChanged, setLogoChanged] = useState(false);
+
+  // Load convenio data when the modal opens or convenio changes
+  useEffect(() => {
+    if (convenio && isOpen) {
+      setFormData({
+        nombre_empresa: convenio.nombre_empresa || '',
+        rif: convenio.rif || '',
+        telefono: convenio.telefono || '',
+        email: convenio.email || '',
+        direccion: convenio.direccion || '',
+        descripcion: convenio.descripcion || '',
+        logo_url: null // We don't load the file object, just the URL for preview
+      });
+      
+      // Set original logo URL for preview
+      if (convenio.logo_url) {
+        setOriginalLogo(convenio.logo_url);
+        setLogoPreview(convenio.logo_url);
+      } else {
+        setOriginalLogo(null);
+        setLogoPreview(null);
+      }
+      
+      setLogoChanged(false);
+      setFormErrors({});
+      setError(null);
+    }
+  }, [convenio, isOpen]);
+
+  // Handle input changes
+  const handleChange = (name, value) => {
+    setFormData(prev => ({ ...prev, [name]: value }));
+    // Clear error for this field when user types
+    if (formErrors[name]) {
+      setFormErrors(prev => ({ ...prev, [name]: null }));
+    }
+  };
 
   // Format RIF to J-XXXXXXXX-X
   const formatRIF = (value) => {
@@ -43,15 +91,6 @@ const CrearConvenio = ({ isOpen, onClose, onConvenioCreated }) => {
     
     // If we don't have all 9 digits, just return what we have with the prefix J-
     return numbers.length > 0 ? `J-${numbers}` : '';
-  };
-
-  // Handle input changes
-  const handleChange = (name, value) => {
-    setFormData(prev => ({ ...prev, [name]: value }));
-    // Clear error for this field when user types
-    if (formErrors[name]) {
-      setFormErrors(prev => ({ ...prev, [name]: null }));
-    }
   };
 
   // Handle RIF input specifically
@@ -92,6 +131,7 @@ const CrearConvenio = ({ isOpen, onClose, onConvenioCreated }) => {
     // Store file for upload
     setFormData(prev => ({ ...prev, logo_url: file }));
     setFormErrors(prev => ({ ...prev, logo_url: null }));
+    setLogoChanged(true);
   };
 
   // Validate form before submission
@@ -119,12 +159,25 @@ const CrearConvenio = ({ isOpen, onClose, onConvenioCreated }) => {
     setFormErrors(errors);
     return Object.keys(errors).length === 0;
   };
-  
+
+  // Handle archive convenio
+  const handleArchive = async () => {
+    if (!convenio) return;
+    
+    try {
+      await onConfirmArchive(convenio);
+      onClose();
+    } catch (err) {
+      console.error('Error archiving convenio:', err);
+      setError('Error al archivar el convenio');
+    }
+  };
+
   // Handle form submit
   const handleSubmit = async (e) => {
     e.preventDefault();
     
-    if (!validateForm()) {
+    if (!validateForm() || !convenio) {
       return;
     }
     
@@ -132,6 +185,12 @@ const CrearConvenio = ({ isOpen, onClose, onConvenioCreated }) => {
     setError(null);
     
     try {
+      const convenioId = convenio.id_convenio || convenio.convenio_id;
+      
+      if (!convenioId) {
+        throw new Error('ID de convenio no válido');
+      }
+      
       const formDataToSend = new FormData();
       
       // Add all text fields to FormData
@@ -141,72 +200,49 @@ const CrearConvenio = ({ isOpen, onClose, onConvenioCreated }) => {
         }
       });
       
-      // Add logo file if present
-      if (formData.logo_url) {
+      // Add logo file if changed
+      if (logoChanged && formData.logo_url) {
         formDataToSend.append('logo', formData.logo_url);
       }
       
       // Send the request
-      const response = await api.post('/convenios', formDataToSend, {
+      await api.put(`/convenios/${convenioId}`, formDataToSend, {
         headers: {
           'Content-Type': 'multipart/form-data'
         }
       });
       
-      console.log('Convenio created:', response.data);
-      
-      // Get updated list of convenios
-      const conveniosRes = await api.get('/convenios');
-      
-      // Call the callback with updated list
-      if (typeof onConvenioCreated === 'function') {
-        onConvenioCreated(conveniosRes.data);
+      // Call the callback to refresh the list
+      if (typeof onConvenioUpdated === 'function') {
+        await onConvenioUpdated();
       }
       
       // Close the modal
       onClose();
     } catch (err) {
-      console.error('Error creating convenio:', err);
-      setError(`Error al crear convenio: ${err.response?.data?.error || err.message}`);
+      console.error('Error updating convenio:', err);
+      setError(`Error al actualizar convenio: ${err.response?.data?.error || err.message}`);
     } finally {
       setIsSubmitting(false);
     }
   };
 
-  const handleCloseModal = () => {
-    // Reset form state
-    setFormData({
-      nombre_empresa: '',
-      rif: '',
-      telefono: '',
-      email: '',
-      direccion: '',
-      descripcion: '',
-      logo_url: null
-    });
-    setFormErrors({});
-    setLogoPreview(null);
-    setError(null);
-    onClose();
-  };
-  };
-
   return (
     <Modal
       isOpen={isOpen}
-      onClose={handleCloseModal}
-      title="Agregar empresa con convenio"
+      onClose={onClose}
+      title="Editar empresa con convenio"
       size="medium"
     >
-      <div className="crear-convenio">
+      <div className="editar-convenio">
         {error && (
-          <div className="crear-convenio__error-message">
+          <div className="editar-convenio__error-message">
             {error}
           </div>
         )}
         
-        <form onSubmit={handleSubmit} className="crear-convenio__form">
-          <div className="crear-convenio__form-section">
+        <form onSubmit={handleSubmit} className="editar-convenio__form">
+          <div className="editar-convenio__form-section">
             <InputField
               label="Nombre de la empresa *"
               name="nombre_empresa"
@@ -244,7 +280,7 @@ const CrearConvenio = ({ isOpen, onClose, onConvenioCreated }) => {
             />
           </div>
           
-          <div className="crear-convenio__form-section">
+          <div className="editar-convenio__form-section">
             <InputField
               label="Dirección"
               name="direccion"
@@ -262,49 +298,62 @@ const CrearConvenio = ({ isOpen, onClose, onConvenioCreated }) => {
               rows={3}
             />
             
-            <div className="crear-convenio__logo-upload">
-              <label className="crear-convenio__logo-label">
+            <div className="editar-convenio__logo-upload">
+              <label className="editar-convenio__logo-label">
                 Logo de la empresa (opcional)
               </label>
+              
+              {logoPreview && (
+                <div className="editar-convenio__logo-preview">
+                  <img src={logoPreview} alt="Logo preview" />
+                </div>
+              )}
+              
               <input 
                 type="file" 
                 accept="image/jpeg, image/png, image/gif"
                 onChange={handleLogoChange}
-                className="crear-convenio__file-input"
+                className="editar-convenio__file-input"
               />
               {formErrors.logo_url && (
-                <div className="crear-convenio__input-error">{formErrors.logo_url}</div>
-              )}
-              
-              {logoPreview && (
-                <div className="crear-convenio__logo-preview">
-                  <img src={logoPreview} alt="Logo preview" />
-                </div>
+                <div className="editar-convenio__input-error">{formErrors.logo_url}</div>
               )}
             </div>
           </div>
           
-          <div className="crear-convenio__form-actions">
+          <div className="editar-convenio__form-actions">
             <Button
               type="button"
               variant="neutral"
-              onClick={handleCloseModal}
+              scheme="negative"
+              onClick={handleArchive}
               disabled={isSubmitting}
             >
-              Cancelar
+              Archivar
             </Button>
-            <Button
-              type="submit"
-              variant="primary"
-              disabled={isSubmitting}
-              loading={isSubmitting}
-            >
-              Guardar convenio
-            </Button>
+            <div className="editar-convenio__right-actions">
+              <Button
+                type="button"
+                variant="neutral"
+                onClick={onClose}
+                disabled={isSubmitting}
+              >
+                Cancelar
+              </Button>
+              <Button
+                type="submit"
+                variant="primary"
+                disabled={isSubmitting}
+                loading={isSubmitting}
+              >
+                Guardar cambios
+              </Button>
+            </div>
           </div>
         </form>
       </div>
     </Modal>
   );
+};
 
-export default CrearConvenio;
+export default EditarConvenio;

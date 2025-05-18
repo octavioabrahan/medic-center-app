@@ -145,3 +145,78 @@
   font-weight: var(--body-strong-font-weight, 600);
   margin-bottom: var(--sds-space-200);
 }
+
+/* Additional styles for table and actions */
+.admin-convenios__loading {
+  display: flex;
+  justify-content: center;
+  padding: 24px;
+  font-size: 16px;
+  color: var(--sds-color-text-default-tertiary);
+}
+
+.admin-convenios__error {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 16px;
+  margin-bottom: 16px;
+  background-color: var(--sds-color-background-negative-secondary);
+  border-radius: 8px;
+  color: var(--sds-color-text-negative-default);
+}
+
+.admin-convenios__error-message {
+  margin-bottom: 16px;
+  text-align: center;
+}
+
+.admin-convenios__error-dismiss {
+  align-self: center;
+}
+
+.admin-convenios__table {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.admin-convenios__status {
+  display: flex;
+  align-items: center;
+}
+
+.admin-convenios__actions {
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+  justify-content: flex-end;
+}
+
+.admin-convenios__action-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  background: none;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  color: var(--sds-color-text-default-tertiary);
+}
+
+.admin-convenios__action-btn:hover {
+  background-color: var(--sds-color-background-default-tertiary);
+}
+
+.admin-convenios__action-btn.edit {
+  color: var(--sds-color-text-info-default);
+}
+
+.admin-convenios__action-btn.activate {
+  color: var(--sds-color-text-positive-default);
+}
+
+.admin-convenios__rif {
+  font-family: monospace;
+}
