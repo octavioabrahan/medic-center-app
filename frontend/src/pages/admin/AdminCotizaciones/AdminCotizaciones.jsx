@@ -5,8 +5,10 @@ import SelectField from '../../../components/Inputs/SelectField';
 import TagToggleGroup from '../../../components/Tag/TagToggleGroup';
 import TagToggle from '../../../components/Tag/TagToggle';
 import Table from '../../../components/Tables/Table';
+import Tag from '../../../components/Tag/Tag';
 import styles from './AdminCotizaciones.module.css';
 import { CheckIcon } from '@heroicons/react/20/solid';
+import axios from 'axios';
 
 /**
  * AdminCotizaciones component for managing quotes in the admin dashboard
@@ -14,61 +16,128 @@ import { CheckIcon } from '@heroicons/react/20/solid';
 const AdminCotizaciones = () => {
   // State for filters and sorting
   const [searchTerm, setSearchTerm] = useState('');
-  const [filterStatus, setFilterStatus] = useState('all');
+  const [filterStatus, setFilterStatus] = useState('todos');
   const [sortRecent, setSortRecent] = useState(true);
   
-  // Mock data - In real application this would come from an API
+  // API data state
   const [cotizaciones, setCotizaciones] = useState([]);
   const [filteredCotizaciones, setFilteredCotizaciones] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [tasaCambio, setTasaCambio] = useState(0);
   
+  // API URL
+  const API_URL = `${process.env.REACT_APP_API_URL || ''}/api`;
+
   // Estados para filtro
   const estadosOptions = [
-    { value: 'all', label: 'Todos los estados' },
-    { value: 'pending', label: 'Pendientes' },
-    { value: 'processed', label: 'Procesadas' },
-    { value: 'canceled', label: 'Canceladas' }
+    { value: 'todos', label: 'Todos los estados' },
+    { value: 'pendiente', label: 'Pendientes' },
+    { value: 'confirmado', label: 'Confirmados' },
+    { value: 'cancelado', label: 'Cancelados' },
+    { value: 'completado', label: 'Completados' }
   ];
 
-  // Simulating API call (would be replaced with actual API)
+  // Cargar cotizaciones y tasa de cambio al montar el componente
   useEffect(() => {
-    // Simulate API loading delay
-    setTimeout(() => {
-      setLoading(false);
-      // This would normally be fetched from an API
-      setCotizaciones([]); // Empty array for the initial state
-    }, 500);
+    fetchCotizaciones();
+    fetchTasaCambio();
   }, []);
 
-  // Filter and sort based on user selections
+  // Obtener cotizaciones desde la API
+  const fetchCotizaciones = async () => {
+    setLoading(true);
+    try {
+      const res = await axios.get(`${API_URL}/quotes`);
+      setCotizaciones(res.data);
+      setError(null);
+    } catch (err) {
+      setError('No se pudieron cargar las cotizaciones.');
+      console.error('Error al cargar cotizaciones:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Obtener tasa de cambio
+  const fetchTasaCambio = async () => {
+    try {
+      const res = await axios.get(`${API_URL}/exchange-rate/latest`);
+      setTasaCambio(res.data.tasa || 0);
+    } catch (err) {
+      console.error('Error al obtener tasa de cambio:', err);
+    }
+  };
+
+  // Filtrar cotizaciones cuando cambian los criterios
   useEffect(() => {
-    let results = [...cotizaciones];
-    
-    // Filter by search term
-    if (searchTerm) {
-      const term = searchTerm.toLowerCase();
-      results = results.filter(c => 
-        c.folio?.toLowerCase().includes(term) || 
-        c.cliente?.toLowerCase().includes(term)
-      );
-    }
-    
-    // Filter by status
-    if (filterStatus !== 'all') {
-      results = results.filter(c => c.status === filterStatus);
-    }
-    
-    // Sort by date
-    results = results.sort((a, b) => {
-      if (sortRecent) {
-        return new Date(b.fecha) - new Date(a.fecha);
-      } else {
-        return new Date(a.fecha) - new Date(b.fecha);
+    if (cotizaciones.length > 0) {
+      let results = [...cotizaciones];
+      
+      // Filtrar por término de búsqueda
+      if (searchTerm) {
+        const term = searchTerm.toLowerCase();
+        results = results.filter(c => 
+          c.folio?.toLowerCase().includes(term) || 
+          `${c.nombre} ${c.apellido}`.toLowerCase().includes(term) ||
+          c.cedula_cliente?.toLowerCase().includes(term)
+        );
       }
-    });
-    
-    setFilteredCotizaciones(results);
-  }, [cotizaciones, searchTerm, filterStatus, sortRecent]);
+      
+      // Filtrar por estado
+      if (filterStatus !== 'todos') {
+        results = results.filter(c => c.estado === filterStatus);
+      }
+      
+      // Ordenar por fecha
+      results = results.sort((a, b) => {
+        const dateA = new Date(a.fecha_creacion);
+        const dateB = new Date(b.fecha_creacion);
+        return sortRecent ? dateB - dateA : dateA - dateB;
+      });
+      
+      // Mapear datos para la tabla con formato
+      const formattedResults = results.map(cot => {
+        // Formatear fecha
+        const fecha = new Date(cot.fecha_creacion);
+        const fechaFormateada = fecha.toLocaleDateString('es-ES');
+        
+        // Determinar clase de estado para el estilo
+        const statusClass = 
+          cot.estado === 'pendiente' ? 'pending' : 
+          cot.estado === 'confirmado' ? 'confirmed' : 
+          cot.estado === 'completado' ? 'completed' : 
+          'cancelled';
+        
+        // Crear etiqueta de estado
+        const estadoTag = (
+          <Tag 
+            text={cot.estado.charAt(0).toUpperCase() + cot.estado.slice(1)}
+            scheme={
+              cot.estado === 'pendiente' ? 'warning' : 
+              cot.estado === 'confirmado' ? 'brand' : 
+              cot.estado === 'completado' ? 'positive' : 
+              'neutral'
+            }
+            variant="secondary"
+            closeable={false}
+          />
+        );
+        
+        return {
+          ...cot,
+          cliente: `${cot.nombre} ${cot.apellido}`,
+          fecha_formateada: fechaFormateada,
+          estado_tag: estadoTag,
+          total_ves: (cot.total_usd * tasaCambio).toFixed(2) + ' Bs'
+        };
+      });
+      
+      setFilteredCotizaciones(formattedResults);
+    } else {
+      setFilteredCotizaciones([]);
+    }
+  }, [cotizaciones, searchTerm, filterStatus, sortRecent, tasaCambio]);
 
   return (
     <AdminLayout activePage="/admin/cotizaciones">
@@ -84,7 +153,7 @@ const AdminCotizaciones = () => {
             value={searchTerm}
             onChange={setSearchTerm}
             onClear={() => setSearchTerm('')}
-            placeholder="Buscar por nombre"
+            placeholder="Buscar por folio, cliente o cédula"
             className={styles.searchField}
           />
         </div>
@@ -118,6 +187,10 @@ const AdminCotizaciones = () => {
       <div className={styles.body}>
         {loading ? (
           <div className={styles.text}>Cargando cotizaciones...</div>
+        ) : error ? (
+          <div className={styles.text}>
+            <div className={styles.errorMessage}>{error}</div>
+          </div>
         ) : cotizaciones.length === 0 ? (
           <div className={styles.text}>
             <div className={styles.emptyMessage}>
@@ -126,9 +199,9 @@ const AdminCotizaciones = () => {
           </div>
         ) : (
           <Table
-            headers={["Folio", "Cliente", "Fecha", "Estado", "Acciones"]}
+            headers={["Folio", "Cliente", "Cédula", "Fecha", "Total USD", "Total VES", "Estado"]}
             data={filteredCotizaciones}
-            columns={["folio", "cliente", "fecha_formateada", "estado_tag", "acciones"]}
+            columns={["folio", "cliente", "cedula_cliente", "fecha_formateada", "total_usd", "total_ves", "estado_tag"]}
           />
         )}
       </div>
