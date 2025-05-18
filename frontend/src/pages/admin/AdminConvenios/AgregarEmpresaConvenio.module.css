@@ -70,3 +70,19 @@
   height: 20px;
   color: var(--sds-color-icon-default-default, #1e1e1e);
 }
+
+.agregar-empresa-convenio-modal__title {
+  color: var(--sds-color-text-default-default, #1e1e1e);
+  font-size: 24px;
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
+  line-height: 28.8px;
+  margin-bottom: var(--sds-space-400, 16px);
+}
+
+.agregar-empresa-convenio-modal__form {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sds-space-400, 16px); /* Add gap between input fields and labels */
+}

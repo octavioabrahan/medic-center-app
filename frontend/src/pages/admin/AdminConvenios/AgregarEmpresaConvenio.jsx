@@ -41,9 +41,9 @@ const AgregarEmpresaConvenio = ({ isOpen, onClose, onAdd }) => {
       size="medium"
     >
       <div className={styles.agregarEmpresaConvenioModal}>
-        <div className={styles['agregar-empresa-convenio-modal__title']}>
+        <h2 className={styles['agregar-empresa-convenio-modal__title']}>
           Agregar empresa
-        </div>
+        </h2>
         <form className={styles['agregar-empresa-convenio-modal__form']} onSubmit={e => { e.preventDefault(); handleAdd(); }}>
           <InputField
             label="Nombre de la empresa"
