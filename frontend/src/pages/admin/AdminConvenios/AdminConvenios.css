@@ -1,0 +1,107 @@
+
+.admin-convenios-container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  padding: var(--var-sds-size-space-800, 32px);
+}
+
+.admin-convenios-container .page-header {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  border-style: solid;
+  border-color: var(--var-sds-color-border-default-default, #d9d9d9);
+  border-width: 0 0 1px 0;
+  padding: var(--var-sds-size-space-0, 0px) 0 var(--var-sds-size-space-300, 12px) 0;
+  margin-bottom: var(--var-sds-size-space-600, 24px);
+}
+
+.admin-convenios-container .icon-sm {
+  width: 16px;
+  height: 16px;
+}
+
+.admin-convenios-container .filter-bar {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--var-sds-size-space-600, 24px);
+}
+
+.admin-convenios-container .search-filter {
+  width: 327px;
+}
+
+.admin-convenios-container .tag-toggle-group {
+  display: flex;
+  flex-direction: row;
+  gap: var(--var-sds-size-space-200, 8px);
+}
+
+.admin-convenios-container .body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--var-sds-size-space-800, 32px);
+  align-items: center;
+  justify-content: flex-start;
+  min-width: 160px;
+  flex: 1;
+  width: 100%;
+}
+
+.admin-convenios-container .empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  width: 100%;
+}
+
+.admin-convenios-container .empty-message {
+  color: var(--var-sds-color-text-default-secondary, #757575);
+  text-align: center;
+  font-family: var(--body-strong-font-family, "Inter-SemiBold", sans-serif);
+  font-size: var(--body-strong-font-size, 16px);
+  line-height: var(--body-strong-line-height, 140%);
+  font-weight: var(--body-strong-font-weight, 600);
+}
+
+.admin-convenios-container .loading-text,
+.admin-convenios-container .error-text,
+.admin-convenios-container .not-implemented {
+  color: var(--var-sds-color-text-default-secondary, #757575);
+  text-align: center;
+  font-size: var(--body-font-size, 14px);
+  line-height: var(--body-line-height, 140%);
+}
+
+.admin-convenios-container .error-text {
+  color: var(--var-sds-color-text-danger, #d32f2f);
+}
+
+.admin-convenios-container .convenios-list {
+  width: 100%;
+}
+
+.admin-convenios-container .table-actions {
+  display: flex;
+  flex-direction: row;
+  gap: var(--var-sds-size-space-200, 8px);
+  align-items: center;
+  justify-content: flex-start;
+}
+
+/* Make table rows have clear hover state */
+.admin-convenios-container .table-row:hover {
+  background-color: var(--var-sds-color-background-brand-subtle, #f5f5f5);
+}
+
+/* Ensure the action buttons are well spaced */
+.admin-convenios-container .table-actions button {
+  margin-right: var(--var-sds-size-space-100, 4px);
+}

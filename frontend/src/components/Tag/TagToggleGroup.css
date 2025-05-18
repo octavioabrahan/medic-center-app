@@ -1,0 +1,7 @@
+
+.tag-toggle-group {
+  display: flex;
+  flex-direction: row;
+  gap: var(--var-sds-size-space-200, 8px);
+  align-items: center;
+}
