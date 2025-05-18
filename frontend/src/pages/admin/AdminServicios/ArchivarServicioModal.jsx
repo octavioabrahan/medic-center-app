@@ -42,48 +42,32 @@ const ArchivarServicioModal = ({ isOpen, onClose, servicio, onConfirmArchive, lo
     }
     
     if (confirmacionArchivado && onConfirmArchive) {
-      console.log('Ejecutando confirmación de archivo de servicio:', servicio);
       try {
-        // Debug la función que recibimos
-        console.log('Función onConfirmArchive:', onConfirmArchive.toString().slice(0, 100) + '...');
-        
-        // Asegurarnos de pasar el servicio completo con todos sus datos
         await onConfirmArchive(servicio);
-        
-        // Cerrar el modal después de confirmar exitosamente
         console.log('Archivo completado con éxito, cerrando modal');
         onClose();
       } catch (error) {
         console.error('Error al confirmar archivar servicio:', error);
-        // En caso de error, igual cerramos el modal después de mostrar el error
-        // para evitar que el usuario se quede atrapado
         setTimeout(() => onClose(), 2000);
       }
     } else {
-      console.warn('No se puede archivar: checkbox no marcado, falta función handler, o falta servicio', { 
+      console.warn('No se puede archivar: checkbox no marcado o falta función handler', { 
         confirmacionArchivado, 
         hasOnConfirmArchive: !!onConfirmArchive, 
-        servicioPresente: !!servicio,
-        servicioId: servicio?.id_servicio || servicio?.servicio_id || 'no-id'
+        servicioPresente: !!servicio
       });
       
-      // Si falta el servicio, podemos mostrar un mensaje más específico
-      if (!servicio) {
-        alert('Error: No se pudo obtener la información del servicio para archivar.');
-      } else if (!onConfirmArchive) {
+      if (!onConfirmArchive) {
         alert('Error interno: Falta la función para procesar el archivado.');
       }
     }
   };
 
-  // Obtener el nombre del servicio para mostrar en el título
-  const nombreServicio = servicio ? (servicio.nombre || servicio.nombre_servicio || 'este servicio') : 'este servicio';
-
   return (
     <Modal
       isOpen={isOpen}
       onClose={onClose}
-      heading={`¿Quieres archivar ${nombreServicio}?`}
+      heading={`¿Quieres archivar ${servicio?.nombre || 'este servicio'}?`}
       size="small"
       contentClassName="hide-original-buttons modal-heading"
     >
@@ -95,14 +79,12 @@ const ArchivarServicioModal = ({ isOpen, onClose, servicio, onConfirmArchive, lo
           <li>Los agendamientos previamente generados no se eliminarán.</li>
         </ul>
         
-        <div className="checkbox-container">
-          <CheckboxField
-            label="Entiendo que este servicio y los profesionales que solo lo ofrecen dejarán de mostrarse en el portal."
-            checked={confirmacionArchivado}
-            onChange={(checked) => setConfirmacionArchivado(checked)}
-            fillContainer={true}
-          />
-        </div>
+        <CheckboxField
+          label="Entiendo que este servicio y los profesionales que solo lo ofrecen dejarán de mostrarse en el portal."
+          checked={confirmacionArchivado}
+          onChange={(checked) => setConfirmacionArchivado(checked)}
+          fillContainer={true}
+        />
 
         <div className="archivar-servicio-modal-buttons">
           <Button 
@@ -113,17 +95,7 @@ const ArchivarServicioModal = ({ isOpen, onClose, servicio, onConfirmArchive, lo
           </Button>
           <Button 
             variant="danger" 
-            onClick={() => {
-              // Log every time button is clicked
-              console.log("→→→ BOTÓN ARCHIVAR PRESIONADO");
-              
-              // Just call the handler directly - the fallback was causing issues
-              if (confirmacionArchivado) {
-                handleConfirmar();
-              } else {
-                console.log("Checkbox no marcado - no se puede archivar");
-              }
-            }}
+            onClick={handleConfirmar}
             disabled={!confirmacionArchivado || loading}
           >
             {loading ? "Archivando..." : "Sí, archivar"}

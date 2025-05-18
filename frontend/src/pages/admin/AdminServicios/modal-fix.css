@@ -3,10 +3,13 @@
   color: var(--sds-color-text-default-default);
   text-align: left;
   font-family: var(--heading-font-family, "Inter-SemiBold", sans-serif);
-  font-size: var(--heading-font-size, 24px);
+  font-size: var(--heading-font-size, 18px);
   line-height: var(--heading-line-height, 120%);
   letter-spacing: var(--heading-letter-spacing, -0.02em);
   font-weight: var(--heading-font-weight, 600);
+  padding: var(--sds-space-400);
+  margin: 0;
+  border-bottom: 1px solid var(--sds-color-border-default);
 }
 
 .modal__content {
