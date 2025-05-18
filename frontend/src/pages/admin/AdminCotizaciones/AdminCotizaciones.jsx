@@ -24,7 +24,6 @@ const AdminCotizaciones = () => {
   const [filteredCotizaciones, setFilteredCotizaciones] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [tasaCambio, setTasaCambio] = useState(0);
   
   // API URL
   const API_URL = `${process.env.REACT_APP_API_URL || ''}/api`;
@@ -38,10 +37,9 @@ const AdminCotizaciones = () => {
     { value: 'completado', label: 'Completados' }
   ];
 
-  // Cargar cotizaciones y tasa de cambio al montar el componente
+  // Cargar cotizaciones al montar el componente
   useEffect(() => {
     fetchCotizaciones();
-    fetchTasaCambio();
   }, []);
 
   // Obtener cotizaciones desde la API
@@ -56,16 +54,6 @@ const AdminCotizaciones = () => {
       console.error('Error al cargar cotizaciones:', err);
     } finally {
       setLoading(false);
-    }
-  };
-
-  // Obtener tasa de cambio
-  const fetchTasaCambio = async () => {
-    try {
-      const res = await axios.get(`${API_URL}/tasa-cambio/latest`);
-      setTasaCambio(res.data.tasa || 0);
-    } catch (err) {
-      console.error('Error al obtener tasa de cambio:', err);
     }
   };
 
@@ -106,10 +94,9 @@ const AdminCotizaciones = () => {
           day: '2-digit'
         });
         
-        // Crear total en VES
+        // Formatear total USD
         const totalUsd = typeof cot.total_usd === 'number' ? cot.total_usd : 
                        parseFloat(cot.total_usd) || 0;
-        const totalVes = (totalUsd * tasaCambio).toFixed(2);
         
         // Crear etiqueta de estado
         const estado = cot.estado || 'pendiente';
@@ -127,13 +114,24 @@ const AdminCotizaciones = () => {
           />
         );
         
+        // Crear acción con botón check
+        const accion = (
+          <button 
+            className={styles.checkButton} 
+            title="Procesar cotización"
+            onClick={() => console.log(`Procesar cotización ${cot.id_cotizacion || cot.folio}`)}
+          >
+            <CheckIcon className={styles.checkIcon} width={20} height={20} />
+          </button>
+        );
+        
         return {
           ...cot,
           cliente: `${cot.nombre || ''} ${cot.apellido || ''}`.trim(),
           fecha_formateada: fechaFormateada,
           estado_tag: estadoTag,
           total_usd: totalUsd.toFixed(2) + ' $',
-          total_ves: totalVes + ' Bs'
+          accion: accion
         };
       });
       
@@ -141,7 +139,7 @@ const AdminCotizaciones = () => {
     } else {
       setFilteredCotizaciones([]);
     }
-  }, [cotizaciones, searchTerm, filterStatus, sortRecent, tasaCambio]);
+  }, [cotizaciones, searchTerm, filterStatus, sortRecent]);
 
   return (
     <AdminLayout activePage="/admin/cotizaciones">
@@ -209,9 +207,9 @@ const AdminCotizaciones = () => {
           </div>
         ) : (
           <Table
-            headers={["Folio", "Cliente", "Cédula", "Fecha", "Total USD", "Total VES", "Estado"]}
+            headers={["Folio", "Cliente", "Cédula", "Fecha", "Total USD", "Estado", "Acción"]}
             data={filteredCotizaciones}
-            columns={["folio", "cliente", "cedula_cliente", "fecha_formateada", "total_usd", "total_ves", "estado_tag"]}
+            columns={["folio", "cliente", "cedula_cliente", "fecha_formateada", "total_usd", "estado_tag", "accion"]}
           />
         )}
       </div>

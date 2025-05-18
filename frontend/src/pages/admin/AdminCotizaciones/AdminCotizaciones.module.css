@@ -102,3 +102,26 @@
   line-height: 22.4px;
   word-wrap: break-word;
 }
+
+.checkButton {
+  background-color: var(--sds-color-background-positive-tertiary, #e6f7e8);
+  color: var(--sds-color-text-positive-on-positive-tertiary, #105c22);
+  width: 32px;
+  height: 32px;
+  border-radius: 4px;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.checkButton:hover {
+  background-color: var(--sds-color-background-positive-secondary, #c2ead0);
+}
+
+.checkIcon {
+  width: 20px;
+  height: 20px;
+}
