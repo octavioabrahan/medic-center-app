@@ -129,7 +129,7 @@ const EditarEmpresaConvenio = ({ isOpen, onClose, onSave, onArchive, empresa }) 
               placeholder="Nombre de la empresa"
               fillContainer
             />
-            <div>
+            <div className={styles.inputFieldContainer}>
               <label className={styles.label}>RIF</label>
               <div className={styles.rifInputGroup}>
                 <input

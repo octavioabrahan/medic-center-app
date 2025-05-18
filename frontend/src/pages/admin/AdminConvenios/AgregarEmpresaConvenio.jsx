@@ -128,7 +128,7 @@ const AgregarEmpresaConvenio = ({ isOpen, onClose, onAdd }) => {
               fillContainer
               autoFocus
             />
-            <div>
+            <div className={styles.inputFieldContainer}>
               <label className={styles.label}>RIF</label>
               <div className={styles.rifInputGroup}>
                 <input
