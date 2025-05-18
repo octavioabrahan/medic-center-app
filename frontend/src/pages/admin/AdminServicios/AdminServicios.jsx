@@ -192,16 +192,6 @@ const AdminServicios = () => {
       }
       
       console.log(`Intentando archivar servicio con ID: ${servicioId}`);
-      await cambiarEstadoServicio(servicioId, false);
-      setShowEditServicioModal(false);
-    } catch (err) {
-      console.error('Error al archivar servicio:', err);
-      setError('Error al archivar el servicio: ' + (err.message || err));
-    }
-    
-    console.log(`ID del servicio a archivar: ${servicioId}`);
-    
-    try {
       const result = await cambiarEstadoServicio(servicioId, false);
       if (result) {
         // Solo cerrar el modal si la operación fue exitosa
@@ -209,7 +199,7 @@ const AdminServicios = () => {
       }
     } catch (err) {
       console.error('Error al archivar servicio:', err);
-      setError(`Error al archivar el servicio: ${err.response?.data?.error || err.message}`);
+      setError('Error al archivar el servicio: ' + (err.message || err));
     }
   };
 
