@@ -46,14 +46,14 @@ const AgregarEmpresaConvenio = ({ isOpen, onClose, onAdd }) => {
             label="Nombre de la empresa"
             value={nombre}
             onChange={setNombre}
-            placeholder="Eco vagina (recomendado)"
+            placeholder="Nombre de la empresa"
             fillContainer
           />
           <InputField
             label="RIF"
             value={rif}
             onChange={setRif}
-            placeholder="00000000-0"
+            placeholder="A00000000-0"
             fillContainer
           />
         </div>
