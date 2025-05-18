@@ -12,6 +12,7 @@ export default function TextAreaField({
   placeholder = "",
   disabled = false,
   error = false,
+  fillContainer = false,
   onChange = () => {},
   style = {},
   ...props
@@ -23,9 +24,10 @@ export default function TextAreaField({
     ? "state-error"
     : "state-default";
   const valueType = isPlaceholder ? "value-type-placeholder" : "value-type-value";
+  const fillClass = fillContainer ? "fill-container" : "";
 
   return (
-    <div className={`textarea-field ${state} ${valueType}`} style={style} {...props}>
+    <div className={`textarea-field ${state} ${valueType} ${fillClass}`} style={style} {...props}>
       <div className="label-textarea">{label}</div>
       <div className="textarea-container">
         <textarea
@@ -58,6 +60,7 @@ TextAreaField.propTypes = {
   placeholder: PropTypes.string,
   disabled: PropTypes.bool,
   error: PropTypes.bool,
+  fillContainer: PropTypes.bool,
   onChange: PropTypes.func,
   style: PropTypes.object,
 };

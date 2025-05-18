@@ -17,10 +17,6 @@ const CrearConvenio = ({ isOpen, onClose, onEmpresaCreated }) => {
   const [formData, setFormData] = useState({
     nombre_empresa: '',
     rif: '',
-    telefono: '',
-    email: '',
-    direccion: '',
-    descripcion: '',
     logo_url: null
   });
   const [formErrors, setFormErrors] = useState({});
@@ -28,21 +24,55 @@ const CrearConvenio = ({ isOpen, onClose, onEmpresaCreated }) => {
   const [logoPreview, setLogoPreview] = useState(null);
   const [error, setError] = useState(null);
 
-  // Format RIF to J-XXXXXXXX-X
+  // Format RIF to J-XXXXXXXX-X and calculate verification digit
   const formatRIF = (value) => {
-    // Remove any non-numeric characters
-    let numbers = value.replace(/\D/g, '');
+    // Remove any non-alphanumeric characters and convert to uppercase
+    const rifLimpio = value.toUpperCase().replace(/[^A-Z0-9]/g, '');
     
-    // Limit to 9 digits
-    numbers = numbers.substring(0, 9);
+    // Ensure we have a valid RIF format
+    if (rifLimpio.length === 0) return '';
     
-    // Format as J-XXXXXXXX-X if we have all 9 digits
-    if (numbers.length === 9) {
-      return `J-${numbers.substring(0, 8)}-${numbers.substring(8)}`;
+    // Set default letter to J if not provided
+    let rifBase = rifLimpio;
+    if (!/^[VJEGP]/.test(rifLimpio)) {
+      rifBase = 'J' + rifLimpio;
     }
     
-    // If we don't have all 9 digits, just return what we have with the prefix J-
-    return numbers.length > 0 ? `J-${numbers}` : '';
+    // Limit to first 9 characters (including letter)
+    rifBase = rifBase.substring(0, 9);
+    
+    // Calculate verification digit if we have a complete base
+    if (rifBase.length === 9) {
+      const digitoVerificador = calcularDigitoVerificador(rifBase);
+      return `${rifBase.charAt(0)}-${rifBase.substring(1)}-${digitoVerificador}`;
+    }
+    
+    return rifBase;
+  };
+  
+  // Calculate verification digit for RIF
+  const calcularDigitoVerificador = (rifInput) => {
+    // Clean the RIF input
+    const rifLimpio = rifInput.toUpperCase().replace(/[^A-Z0-9]/g, '');
+    
+    // Verify RIF has correct format
+    if (!/^[VJEGP][0-9]{8}$/.test(rifLimpio)) return "";
+
+    const letras = { V: 1, E: 2, J: 3, P: 4, G: 5 };
+    const letra = rifLimpio.charAt(0);
+    const numeros = rifLimpio.substr(1).split('').map(Number);
+
+    const coeficientes = [3, 2, 7, 6, 5, 4, 3, 2];
+    let suma = letras[letra] * 4;
+
+    for (let i = 0; i < 8; i++) {
+      suma += numeros[i] * coeficientes[i];
+    }
+
+    const resto = suma % 11;
+    const digito = resto > 1 ? 11 - resto : 0;
+
+    return digito.toString();
   };
 
   // Handle input changes
@@ -105,14 +135,31 @@ const CrearConvenio = ({ isOpen, onClose, onEmpresaCreated }) => {
     
     if (!formData.rif || formData.rif.trim() === '') {
       errors.rif = 'El RIF es requerido';
-    } else if (!/^J?-?\d{8}-?\d$/.test(formData.rif.replace(/\D/g, ''))) {
-      errors.rif = 'El RIF debe tener el formato XXXXXXXX-X';
+    } else {
+      // Get clean RIF without formatting
+      const rifLimpio = formData.rif.toUpperCase().replace(/[^A-Z0-9]/g, '');
+      
+      // Validate RIF format and verification digit
+      if (rifLimpio.length !== 10) {
+        errors.rif = 'El RIF debe tener el formato X-XXXXXXXX-X';
+      } else {
+        const letter = rifLimpio.charAt(0);
+        const base = rifLimpio.substring(0, 9);
+        const verificador = rifLimpio.charAt(9);
+        
+        // Verify the format and first character is valid
+        if (!/^[VJEGP]/.test(letter)) {
+          errors.rif = 'El RIF debe comenzar con J, V, E, P o G';
+        } else if (verificador !== calcularDigitoVerificador(base)) {
+          errors.rif = 'El dígito verificador del RIF es inválido';
+        }
+      }
     }
     
     setFormErrors(errors);
     return Object.keys(errors).length === 0;
   };
-  
+
   // Handle form submit
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -171,10 +218,6 @@ const CrearConvenio = ({ isOpen, onClose, onEmpresaCreated }) => {
     setFormData({
       nombre_empresa: '',
       rif: '',
-      telefono: '',
-      email: '',
-      direccion: '',
-      descripcion: '',
       logo_url: null
     });
     setFormErrors({});
@@ -186,10 +229,11 @@ const CrearConvenio = ({ isOpen, onClose, onEmpresaCreated }) => {
     <Modal
       isOpen={isOpen}
       onClose={handleCloseModal}
-      title="Agregar empresa"
       size="small"
     >
       <div className="crear-convenio">
+        <h2 className="crear-convenio__title">Agregar empresa</h2>
+        
         {error && (
           <div className="crear-convenio__error-message">
             {error}
@@ -198,10 +242,6 @@ const CrearConvenio = ({ isOpen, onClose, onEmpresaCreated }) => {
         
         <form onSubmit={handleSubmit} className="crear-convenio__form">
           <div className="crear-convenio__form-section">
-            <div className="crear-convenio__description">
-              Descripción
-            </div>
-            
             <InputField
               label="Nombre de la empresa"
               name="nombre_empresa"
@@ -209,7 +249,8 @@ const CrearConvenio = ({ isOpen, onClose, onEmpresaCreated }) => {
               onChange={(value) => handleChange('nombre_empresa', value)}
               error={formErrors.nombre_empresa}
               required
-              placeholder="(recomendado)"
+              placeholder="Nombre de la empresa"
+              fillContainer={true}
             />
             
             <InputField
@@ -219,6 +260,8 @@ const CrearConvenio = ({ isOpen, onClose, onEmpresaCreated }) => {
               onChange={(value) => handleRIFChange(value)}
               error={formErrors.rif}
               required
+              placeholder="J-12345678-9"
+              fillContainer={true}
             />
           </div>
           

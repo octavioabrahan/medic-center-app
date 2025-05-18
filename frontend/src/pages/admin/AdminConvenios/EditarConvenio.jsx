@@ -73,21 +73,55 @@ const EditarConvenio = ({
     }
   };
 
-  // Format RIF to J-XXXXXXXX-X
+  // Format RIF to X-XXXXXXXX-X and calculate verification digit
   const formatRIF = (value) => {
-    // Remove any non-numeric characters
-    let numbers = value.replace(/\D/g, '');
+    // Remove any non-alphanumeric characters and convert to uppercase
+    const rifLimpio = value.toUpperCase().replace(/[^A-Z0-9]/g, '');
     
-    // Limit to 9 digits
-    numbers = numbers.substring(0, 9);
+    // Ensure we have a valid RIF format
+    if (rifLimpio.length === 0) return '';
     
-    // Format as J-XXXXXXXX-X if we have all 9 digits
-    if (numbers.length === 9) {
-      return `J-${numbers.substring(0, 8)}-${numbers.substring(8)}`;
+    // Set default letter to J if not provided
+    let rifBase = rifLimpio;
+    if (!/^[VJEGP]/.test(rifLimpio)) {
+      rifBase = 'J' + rifLimpio;
     }
     
-    // If we don't have all 9 digits, just return what we have with the prefix J-
-    return numbers.length > 0 ? `J-${numbers}` : '';
+    // Limit to first 9 characters (including letter)
+    rifBase = rifBase.substring(0, 9);
+    
+    // Calculate verification digit if we have a complete base
+    if (rifBase.length === 9) {
+      const digitoVerificador = calcularDigitoVerificador(rifBase);
+      return `${rifBase.charAt(0)}-${rifBase.substring(1)}-${digitoVerificador}`;
+    }
+    
+    return rifBase;
+  };
+  
+  // Calculate verification digit for RIF
+  const calcularDigitoVerificador = (rifInput) => {
+    // Clean the RIF input
+    const rifLimpio = rifInput.toUpperCase().replace(/[^A-Z0-9]/g, '');
+    
+    // Verify RIF has correct format
+    if (!/^[VJEGP][0-9]{8}$/.test(rifLimpio)) return "";
+
+    const letras = { V: 1, E: 2, J: 3, P: 4, G: 5 };
+    const letra = rifLimpio.charAt(0);
+    const numeros = rifLimpio.substr(1).split('').map(Number);
+
+    const coeficientes = [3, 2, 7, 6, 5, 4, 3, 2];
+    let suma = letras[letra] * 4;
+
+    for (let i = 0; i < 8; i++) {
+      suma += numeros[i] * coeficientes[i];
+    }
+
+    const resto = suma % 11;
+    const digito = resto > 1 ? 11 - resto : 0;
+
+    return digito.toString();
   };
 
   // Handle RIF input specifically
@@ -142,8 +176,25 @@ const EditarConvenio = ({
     
     if (!formData.rif || formData.rif.trim() === '') {
       errors.rif = 'El RIF es requerido';
-    } else if (!/^J-\d{8}-\d$/.test(formData.rif)) {
-      errors.rif = 'El RIF debe tener el formato J-XXXXXXXX-X';
+    } else {
+      // Get clean RIF without formatting
+      const rifLimpio = formData.rif.toUpperCase().replace(/[^A-Z0-9]/g, '');
+      
+      // Validate RIF format and verification digit
+      if (rifLimpio.length !== 10) {
+        errors.rif = 'El RIF debe tener el formato X-XXXXXXXX-X';
+      } else {
+        const letter = rifLimpio.charAt(0);
+        const base = rifLimpio.substring(0, 9);
+        const verificador = rifLimpio.charAt(9);
+        
+        // Verify the format and first character is valid
+        if (!/^[VJEGP]/.test(letter)) {
+          errors.rif = 'El RIF debe comenzar con J, V, E, P o G';
+        } else if (verificador !== calcularDigitoVerificador(base)) {
+          errors.rif = 'El dígito verificador del RIF es inválido';
+        }
+      }
     }
     
     if (!formData.telefono || formData.telefono.trim() === '') {
@@ -232,10 +283,11 @@ const EditarConvenio = ({
     <Modal
       isOpen={isOpen}
       onClose={onClose}
-      title="Editar empresa con convenio"
       size="medium"
     >
       <div className="editar-convenio">
+        <h2 className="editar-convenio__title">Editar empresa</h2>
+        
         {error && (
           <div className="editar-convenio__error-message">
             {error}
@@ -251,6 +303,7 @@ const EditarConvenio = ({
               onChange={(value) => handleChange('nombre_empresa', value)}
               error={formErrors.nombre_empresa}
               required
+              fillContainer={true}
             />
             
             <InputField
@@ -261,6 +314,7 @@ const EditarConvenio = ({
               error={formErrors.rif}
               placeholder="J-XXXXXXXX-X"
               required
+              fillContainer={true}
             />
             
             <InputField
@@ -270,6 +324,7 @@ const EditarConvenio = ({
               onChange={(value) => handleChange('telefono', value)}
               error={formErrors.telefono}
               required
+              fillContainer={true}
             />
             
             <InputField
@@ -278,6 +333,7 @@ const EditarConvenio = ({
               value={formData.email}
               onChange={(value) => handleChange('email', value)}
               error={formErrors.email}
+              fillContainer={true}
             />
           </div>
           
@@ -288,6 +344,7 @@ const EditarConvenio = ({
               value={formData.direccion}
               onChange={(value) => handleChange('direccion', value)}
               error={formErrors.direccion}
+              fillContainer={true}
             />
             
             <TextAreaField
@@ -297,6 +354,7 @@ const EditarConvenio = ({
               onChange={(value) => handleChange('descripcion', value)}
               error={formErrors.descripcion}
               rows={3}
+              fillContainer={true}
             />
             
             <div className="editar-convenio__logo-upload">

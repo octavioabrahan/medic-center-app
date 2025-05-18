@@ -10,6 +10,10 @@
   justify-content: flex-start;
   position: relative;
 }
+
+.textarea-field.fill-container {
+  width: 100%;
+}
 .textarea-field .label-textarea {
   color: var(--sds-color-text-default-default, #1e1e1e);
   text-align: left;
