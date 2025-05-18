@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ArrowLeftIcon, ChevronDownIcon } from '@heroicons/react/20/solid';
+import { ArrowLeftIcon } from '@heroicons/react/20/solid';
 import styles from './SeguimientoCotizaciones.module.css';
 import Button from '../../../components/Button/Button';
 import SelectField from '../../../components/Inputs/SelectField';
@@ -13,9 +13,10 @@ const SeguimientoCotizaciones = ({ cotizacion, onClose }) => {
   const [resultado, setResultado] = useState('exitoso');
   const [comentarios, setComentarios] = useState('');
   const [proximaAccion, setProximaAccion] = useState('');
-  const [fechaProximaAccion, setFechaProximaAccion] = useState(formatDate(new Date()));
+  const [fechaProximaAccion, setFechaProximaAccion] = useState(new Date().toISOString().split('T')[0]);
   const [historial, setHistorial] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
   // API URL
   const API_URL = `${process.env.REACT_APP_API_URL || ''}/api`;
@@ -24,21 +25,47 @@ const SeguimientoCotizaciones = ({ cotizacion, onClose }) => {
   const tipoContactoOptions = [
     { value: 'llamada', label: 'Llamada' },
     { value: 'email', label: 'Email' },
-    { value: 'visita', label: 'Visita' }
+    { value: 'whatsapp', label: 'WhatsApp' },
+    { value: 'presencial', label: 'Presencial' }
   ];
 
   const resultadoOptions = [
     { value: 'exitoso', label: 'Exitoso' },
-    { value: 'fallido', label: 'Fallido' },
-    { value: 'sin_respuesta', label: 'Sin respuesta' }
+    { value: 'sin_respuesta', label: 'Sin Respuesta' },
+    { value: 'rechazado', label: 'Rechazado' },
+    { value: 'pendiente_decision', label: 'Pendiente de Decisión' }
   ];
 
   // Formatear fecha para el select
   function formatDate(date) {
-    const day = String(date.getDate()).padStart(2, '0');
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const year = date.getFullYear();
-    return `${day}/${month}/${year}`;
+    if (!date) return '';
+    try {
+      if (typeof date === 'string') {
+        date = new Date(date);
+      }
+      if (isNaN(date.getTime())) return '';
+      
+      const day = String(date.getDate()).padStart(2, '0');
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const year = date.getFullYear();
+      return `${year}-${month}-${day}`;
+    } catch (error) {
+      console.error("Error al formatear fecha:", error);
+      return '';
+    }
+  }
+
+  // Formatear fecha para mostrar
+  function formatDisplayDate(dateString) {
+    if (!dateString) return 'N/A';
+    try {
+      const date = new Date(dateString);
+      if (isNaN(date.getTime())) return 'Fecha inválida';
+      return date.toLocaleDateString() + ' ' + date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+    } catch (error) {
+      console.error("Error al formatear fecha para mostrar:", error);
+      return 'Error de formato';
+    }
   }
 
   // Generar opciones de fechas para el select (próximos 30 días)
@@ -50,9 +77,10 @@ const SeguimientoCotizaciones = ({ cotizacion, onClose }) => {
       const date = new Date();
       date.setDate(today.getDate() + i);
       const formattedDate = formatDate(date);
+      const displayDate = date.toLocaleDateString();
       options.push({
         value: formattedDate,
-        label: formattedDate
+        label: displayDate
       });
     }
     
@@ -61,81 +89,77 @@ const SeguimientoCotizaciones = ({ cotizacion, onClose }) => {
 
   // Cargar historial de seguimiento al montar el componente
   useEffect(() => {
-    // Simulación de historial (en producción, esto vendría de la API)
-    // En una implementación real, aquí se haría una petición a la API
-    setHistorial([
-      {
-        tipo_contacto: 'llamada',
-        resultado: 'exitoso',
-        comentarios: 'Cliente vendrá mañana',
-        proxima_accion: 'Esperar al cliente',
-        fecha: '26/02/2025'
-      }
-    ]);
-    
-    // TODO: Descomentar para implementación real
-    /*
-    const fetchSeguimiento = async () => {
-      try {
-        const res = await axios.get(`${API_URL}/seguimiento/${cotizacion.id_cotizacion}`);
-        setHistorial(res.data);
-      } catch (error) {
-        console.error('Error al cargar historial de seguimiento:', error);
-      }
-    };
-    fetchSeguimiento();
-    */
+    if (cotizacion && cotizacion.id_unico) {
+      fetchSeguimientos(cotizacion.id_unico);
+    }
   }, [cotizacion]);
+
+  // Obtener seguimientos desde la API
+  const fetchSeguimientos = async (id) => {
+    setLoading(true);
+    try {
+      const response = await axios.get(`${API_URL}/seguimiento/cotizacion/${id}`);
+      setHistorial(response.data);
+      setError(null);
+    } catch (err) {
+      console.error('Error al cargar historial de seguimiento:', err);
+      setError('No se pudieron cargar los seguimientos.');
+      setHistorial([]);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   // Manejar guardar nuevo seguimiento
   const handleSaveFollowUp = async () => {
     if (!comentarios || !proximaAccion) {
       // Validación básica
+      setError('Por favor, completa todos los campos obligatorios.');
       return;
     }
 
     setLoading(true);
+    setError(null);
     
     const seguimientoData = {
-      id_cotizacion: cotizacion.id_cotizacion || cotizacion.folio,
+      cotizacion_id: cotizacion.id_unico,
       tipo_contacto: tipoContacto,
       resultado: resultado,
       comentarios: comentarios,
+      usuario: 'admin', // En un sistema real, esto vendría del sistema de autenticación
       proxima_accion: proximaAccion,
       fecha_proxima_accion: fechaProximaAccion
     };
 
     try {
-      // Para este ejemplo simulamos éxito, pero en producción se enviaría a la API
-      console.log('Guardando seguimiento:', seguimientoData);
+      await axios.post(`${API_URL}/seguimiento`, seguimientoData);
       
-      // Actualizar historial localmente para demo
-      setHistorial([
-        {
-          tipo_contacto: tipoContacto,
-          resultado: resultado,
-          comentarios: comentarios,
-          proxima_accion: proximaAccion,
-          fecha: fechaProximaAccion
-        },
-        ...historial
-      ]);
+      // Recargar historial tras guardar
+      await fetchSeguimientos(cotizacion.id_unico);
       
       // Limpiar formulario
       setComentarios('');
       setProximaAccion('');
       
-      // TODO: Descomentar para implementación real
-      /*
-      await axios.post(`${API_URL}/seguimiento`, seguimientoData);
-      // Recargar historial tras guardar
-      const res = await axios.get(`${API_URL}/seguimiento/${cotizacion.id_cotizacion}`);
-      setHistorial(res.data);
-      */
+      // Actualizar estado de la cotización en la lista local si el resultado cambia el estado
+      if (resultado === 'exitoso' || resultado === 'rechazado') {
+        const newStatus = resultado === 'exitoso' ? 'confirmado' : 'cancelado';
+        await updateCotizacionStatus(cotizacion.id_unico, newStatus);
+      }
     } catch (error) {
       console.error('Error al guardar seguimiento:', error);
+      setError('Error al guardar seguimiento. Por favor, intenta nuevamente.');
     } finally {
       setLoading(false);
+    }
+  };
+
+  // Actualizar estado de cotización
+  const updateCotizacionStatus = async (id, newStatus) => {
+    try {
+      await axios.patch(`${API_URL}/cotizaciones/${id}`, { estado: newStatus });
+    } catch (err) {
+      console.error('Error al actualizar estado:', err);
     }
   };
 
@@ -165,63 +189,56 @@ const SeguimientoCotizaciones = ({ cotizacion, onClose }) => {
     );
   };
 
-  // Formato para fecha completa
-  const formatFullDate = (dateString) => {
-    if (!dateString) return '';
-    
-    const date = new Date(dateString);
-    return date.toLocaleDateString('es-ES', {
-      day: '2-digit',
-      month: '2-digit',
-      year: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
-    });
+  // Formatear número de manera segura
+  const formatNumber = (num) => {
+    if (num === null || num === undefined) return '0.00';
+    if (typeof num === 'string') num = parseFloat(num);
+    if (isNaN(num)) return '0.00';
+    return num.toFixed(2);
   };
 
   return (
     <div className={styles.overlay}>
-      <div className={styles.mainContent}>
-        <div className={styles.pageHeader}>
-          <div className={styles.iconButton} onClick={onClose}>
-            <ArrowLeftIcon className={styles.arrowLeft} width={20} height={20} />
-          </div>
-          <div className={styles.menuHeader}>
-            <div className={styles.textStrong}>
-              Detalle de la cotización
+      <div className={styles.mainContent}>          <div className={styles.pageHeader}>
+            <div className={styles.iconButton} onClick={onClose}>
+              <ArrowLeftIcon className={styles.arrowLeft} width={20} height={20} />
             </div>
-            {getStatusTag()}
+            <div className={styles.menuHeader}>
+              <div className={styles.textStrong}>
+                Detalle de la cotización
+              </div>
+              {getStatusTag()}
+            </div>
           </div>
-        </div>
 
-        <div className={styles.frame93}>
-          {/* Primera columna - Información de cotización */}
-          <div className={styles.cotizacionCard}>
-            <div className={styles.infoCotizacion}>
-              <div className={styles.frame88}>
-                <div className={styles.informacionDeLaCotizacion}>
-                  Información de la cotización
+          <div className={styles.frame93}>
+            {/* Primera columna - Información de cotización */}
+            <div className={styles.cotizacionCard}>
+              <div className={styles.infoCotizacion}>
+                <div className={styles.frame88}>
+                  <div className={styles.informacionDeLaCotizacion}>
+                    Información de la cotización
+                  </div>
+                  <div className={styles.line6}></div>
                 </div>
-                <div className={styles.line6}></div>
-              </div>
-              <div className={styles.frame78}>
-                <div className={styles.folio}>Folio</div>
-                <div className={styles.cotFolio}>
-                  {cotizacion.folio || 'COT-0000-0000'}
+                <div className={styles.frame78}>
+                  <div className={styles.folio}>Folio</div>
+                  <div className={styles.cotFolio}>
+                    {cotizacion.folio || 'COT-0000-0000'}
+                  </div>
                 </div>
-              </div>
-              <div className={styles.frame79}>
-                <div className={styles.fecha}>Fecha</div>
-                <div className={styles.fechaText}>
-                  {formatFullDate(cotizacion.fecha_creacion || cotizacion.fecha)}
+                <div className={styles.frame79}>
+                  <div className={styles.fecha}>Fecha</div>
+                  <div className={styles.fechaText}>
+                    {formatDisplayDate(cotizacion.fecha_creacion || cotizacion.fecha)}
+                  </div>
                 </div>
-              </div>
-              <div className={styles.frame89}>
-                <div className={styles.totalUsd}>Total USD</div>
-                <div className={styles.totalValue}>
-                  ${parseFloat(cotizacion.total_usd || 0).toFixed(2)}
+                <div className={styles.frame89}>
+                  <div className={styles.totalUsd}>Total USD</div>
+                  <div className={styles.totalValue}>
+                    ${formatNumber(cotizacion.total_usd || 0)}
+                  </div>
                 </div>
-              </div>
               
               {/* Tabla de servicios/productos */}
               <div className={styles.contentTable}>
@@ -231,27 +248,20 @@ const SeguimientoCotizaciones = ({ cotizacion, onClose }) => {
                       <div className={styles.text2}>Código</div>
                     </div>
                   </div>
-                  {cotizacion.items && cotizacion.items.map((item, index) => (
-                    <div key={`codigo-${index}`} className={styles.cell}>
+                  {Array.isArray(cotizacion.examenes) && cotizacion.examenes.length > 0 ? (
+                    cotizacion.examenes.map((exam, index) => (
+                      <div key={`codigo-${index}`} className={styles.cell}>
+                        <div className={styles.text}>
+                          <div className={styles.text3}>{exam.examen_codigo || '-'}</div>
+                        </div>
+                      </div>
+                    ))
+                  ) : (
+                    <div className={styles.cell}>
                       <div className={styles.text}>
-                        <div className={styles.text3}>{item.codigo || '9876'}</div>
+                        <div className={styles.text3}>No hay exámenes</div>
                       </div>
                     </div>
-                  ))}
-                  {/* Si no hay items, mostramos placeholders */}
-                  {(!cotizacion.items || cotizacion.items.length === 0) && (
-                    <>
-                      <div className={styles.cell}>
-                        <div className={styles.text}>
-                          <div className={styles.text3}>98765432</div>
-                        </div>
-                      </div>
-                      <div className={styles.cell}>
-                        <div className={styles.text}>
-                          <div className={styles.text3}>98765432</div>
-                        </div>
-                      </div>
-                    </>
                   )}
                 </div>
                 <div className={styles.col2}>
@@ -260,26 +270,20 @@ const SeguimientoCotizaciones = ({ cotizacion, onClose }) => {
                       <div className={styles.text2}>Nombre</div>
                     </div>
                   </div>
-                  {cotizacion.items && cotizacion.items.map((item, index) => (
-                    <div key={`nombre-${index}`} className={styles.cell2}>
+                  {Array.isArray(cotizacion.examenes) && cotizacion.examenes.length > 0 ? (
+                    cotizacion.examenes.map((exam, index) => (
+                      <div key={`nombre-${index}`} className={styles.cell2}>
+                        <div className={styles.text}>
+                          <div className={styles.text3}>{exam.nombre_examen || '-'}</div>
+                        </div>
+                      </div>
+                    ))
+                  ) : (
+                    <div className={styles.cell2}>
                       <div className={styles.text}>
-                        <div className={styles.text3}>{item.nombre || 'Servicio'}</div>
+                        <div className={styles.text3}>Sin datos</div>
                       </div>
                     </div>
-                  ))}
-                  {(!cotizacion.items || cotizacion.items.length === 0) && (
-                    <>
-                      <div className={styles.cell2}>
-                        <div className={styles.text}>
-                          <div className={styles.text3}>Acido úrico</div>
-                        </div>
-                      </div>
-                      <div className={styles.cell2}>
-                        <div className={styles.text}>
-                          <div className={styles.text3}>Glicemia post pandrial</div>
-                        </div>
-                      </div>
-                    </>
                   )}
                 </div>
                 <div className={styles.col3}>
@@ -288,26 +292,20 @@ const SeguimientoCotizaciones = ({ cotizacion, onClose }) => {
                       <div className={styles.text2}>Precio USD</div>
                     </div>
                   </div>
-                  {cotizacion.items && cotizacion.items.map((item, index) => (
-                    <div key={`precio-${index}`} className={styles.cell2}>
+                  {Array.isArray(cotizacion.examenes) && cotizacion.examenes.length > 0 ? (
+                    cotizacion.examenes.map((exam, index) => (
+                      <div key={`precio-${index}`} className={styles.cell2}>
+                        <div className={styles.text4}>
+                          <div className={styles.text3}>$ {formatNumber(exam.precio_unitario || 0)}</div>
+                        </div>
+                      </div>
+                    ))
+                  ) : (
+                    <div className={styles.cell2}>
                       <div className={styles.text4}>
-                        <div className={styles.text3}>$ {parseFloat(item.precio_usd || 0).toFixed(2)}</div>
+                        <div className={styles.text3}>$ 0.00</div>
                       </div>
                     </div>
-                  ))}
-                  {(!cotizacion.items || cotizacion.items.length === 0) && (
-                    <>
-                      <div className={styles.cell2}>
-                        <div className={styles.text4}>
-                          <div className={styles.text3}>$ 00.00</div>
-                        </div>
-                      </div>
-                      <div className={styles.cell2}>
-                        <div className={styles.text4}>
-                          <div className={styles.text3}>$ 00.00</div>
-                        </div>
-                      </div>
-                    </>
                   )}
                 </div>
               </div>
@@ -400,10 +398,11 @@ const SeguimientoCotizaciones = ({ cotizacion, onClose }) => {
                   />
                 </div>
               </div>
+              {error && <div className={styles.errorMessage}>{error}</div>}
               <Button 
                 label="Guardar"
                 onClick={handleSaveFollowUp}
-                disabled={!comentarios || !proximaAccion}
+                disabled={!comentarios || !proximaAccion || loading}
                 loading={loading}
                 className={styles.buttonPrimary}
               />
@@ -415,7 +414,13 @@ const SeguimientoCotizaciones = ({ cotizacion, onClose }) => {
                 <div className={styles.historial}>Historial</div>
                 <div className={styles.line6}></div>
               </div>
-              {historial.length > 0 ? (
+              {loading ? (
+                <div className={styles.loadingMessage}>Cargando historial...</div>
+              ) : error ? (
+                <div className={styles.errorMessage}>{error}</div>
+              ) : !Array.isArray(historial) || historial.length === 0 ? (
+                <div className={styles.noHistorial}>No hay registros de seguimiento previos.</div>
+              ) : (
                 historial.map((item, index) => (
                   <div key={index} className={styles.historialItem}>
                     <div className={styles.frame79}>
@@ -445,13 +450,17 @@ const SeguimientoCotizaciones = ({ cotizacion, onClose }) => {
                     <div className={styles.frame912}>
                       <div className={styles.fechaLabel}>Fecha</div>
                       <div className={styles.fechaValue}>
-                        {item.fecha}
+                        {formatDisplayDate(item.fecha_seguimiento)}
+                      </div>
+                    </div>
+                    <div className={styles.frame912}>
+                      <div className={styles.fechaLabel}>Usuario</div>
+                      <div className={styles.fechaValue}>
+                        {item.usuario || 'Sistema'}
                       </div>
                     </div>
                   </div>
                 ))
-              ) : (
-                <div className={styles.noHistorial}>No hay registros de seguimiento previos.</div>
               )}
             </div>
           </div>

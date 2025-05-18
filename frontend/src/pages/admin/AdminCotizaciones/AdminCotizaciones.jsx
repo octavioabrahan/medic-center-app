@@ -122,7 +122,10 @@ const AdminCotizaciones = () => {
           <button 
             className={styles.checkButton} 
             title="Procesar cotización"
-            onClick={() => handleProcessCotizacion(cot)}
+            onClick={(e) => {
+              e.stopPropagation(); // Evitar que el evento se propague
+              handleProcessCotizacion(cot);
+            }}
           >
             <PencilSquareIcon className={styles.checkIcon} width={20} height={20} />
           </button>
@@ -145,14 +148,27 @@ const AdminCotizaciones = () => {
   }, [cotizaciones, searchTerm, filterStatus, sortRecent]);
 
   // Manejador para procesar cotización
-  const handleProcessCotizacion = (cotizacion) => {
-    setSelectedCotizacion(cotizacion);
-    setShowSeguimiento(true);
+  const handleProcessCotizacion = async (cotizacion) => {
+    try {
+      // Obtener los detalles completos de la cotización
+      const response = await axios.get(`${API_URL}/cotizaciones/${cotizacion.id_cotizacion || cotizacion.id_unico}`);
+      if (response.data) {
+        setSelectedCotizacion(response.data);
+        setShowSeguimiento(true);
+      }
+    } catch (err) {
+      console.error('Error al cargar detalles de la cotización:', err);
+      // Si hay error, intentar mostrar con los datos disponibles
+      setSelectedCotizacion(cotizacion);
+      setShowSeguimiento(true);
+    }
   };
 
-  // Cerrar modal de seguimiento
+  // Cerrar modal de seguimiento y refrescar datos
   const handleCloseSeguimiento = () => {
     setShowSeguimiento(false);
+    // Refrescar la lista de cotizaciones para mostrar cambios de estado
+    fetchCotizaciones();
   };
 
   return (
