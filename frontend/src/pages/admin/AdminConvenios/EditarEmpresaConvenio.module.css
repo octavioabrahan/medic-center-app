@@ -36,11 +36,13 @@
 }
 
 .buttonGroup {
-  align-self: stretch;
   display: flex;
-  justify-content: space-between;
+  flex-direction: row;
   align-items: center;
-  gap: var(--sds-space-400, 16px);
+  gap: 0;
+  justify-content: flex-start;
+  width: 100%;
+  margin-top: var(--sds-space-600, 24px);
 }
 
 .archivarButton {
@@ -58,6 +60,7 @@
   line-height: 22.4px;
   cursor: pointer;
   transition: background 0.2s;
+  margin-right: auto;
 }
 
 .archivarButton:hover {
@@ -75,6 +78,7 @@
 
 .frame77 {
   display: flex;
+  flex-direction: row;
   align-items: center;
   gap: var(--sds-space-400, 16px);
 }
