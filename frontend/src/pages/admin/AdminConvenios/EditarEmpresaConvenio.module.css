@@ -30,7 +30,7 @@
   font-family: 'Inter', sans-serif;
   font-weight: 600;
   line-height: 28.8px;
-  margin-bottom: 0;
+  margin-bottom: var(--sds-space-400, 16px); /* Add gap below title */
 }
 
 .fieldsSection {
@@ -85,4 +85,14 @@
   flex-direction: row;
   align-items: center;
   gap: var(--sds-space-400, 16px);
+}
+
+.editarEmpresaConvenioModal {
+  display: flex;
+  max-width: 600px;
+  padding: var(--sds-size-space-800, 32px);
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--sds-size-space-600, 24px);
+  align-self: stretch;
 }
