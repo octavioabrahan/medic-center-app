@@ -1,0 +1,76 @@
+/* /home/octavio-romero/Documents/medic-center-app/frontend/src/pages/admin/AdminConvenios/AdminConvenios.module.css */
+
+.adminConveniosPage {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+  background-color: var(--sds-color-background-default-default);
+}
+
+.mainContent {
+  padding: var(--sds-space-600); /* 24px */
+  flex-grow: 1;
+  overflow-y: auto;
+}
+
+.pageHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: var(--sds-space-300); /* 12px */
+  border-bottom: var(--sds-stroke-border) solid var(--sds-color-border-default-default);
+  margin-bottom: var(--sds-space-600); /* 24px */
+}
+
+.headerTitle {
+  color: var(--sds-color-text-default-default);
+  font-size: var(--sds-body-size-large); /* 20px - Assuming based on "Text Strong" usage */
+  font-weight: var(--sds-weight-semibold); /* 600 */
+  line-height: 22.4px; /* As per Figma */
+}
+
+.filterBar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--sds-space-600); /* 24px */
+}
+
+.searchFilter {
+  display: flex;
+  align-items: center;
+  gap: var(--sds-space-600); /* 24px */
+}
+
+.searchInput {
+  /* Uses SearchField component, styling is within that component */
+  flex: 1 1 0;
+}
+
+.tagToggleGroup {
+  display: flex;
+  gap: var(--sds-space-200); /* 8px */
+}
+
+.checkboxField {
+  /* Uses CheckboxField component, styling is within that component */
+}
+
+.body {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: var(--sds-space-800); /* 32px */
+  flex-grow: 1;
+  min-height: 160px; /* As per Figma */
+}
+
+.emptyStateText {
+  text-align: center;
+  color: var(--sds-color-text-default-secondary);
+  font-size: var(--sds-body-size-medium); /* 16px in figma, maps to body-size-medium or body-size-large */
+  font-weight: var(--sds-weight-semibold); /* 600 */
+  line-height: 22.4px; /* As per Figma */
+}
