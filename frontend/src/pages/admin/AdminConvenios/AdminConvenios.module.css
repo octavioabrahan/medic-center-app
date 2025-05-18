@@ -1,76 +1,103 @@
-/* /home/octavio-romero/Documents/medic-center-app/frontend/src/pages/admin/AdminConvenios/AdminConvenios.module.css */
-
-.adminConveniosPage {
+.adminConveniosRoot {
   display: flex;
-  flex-direction: column;
-  height: 100%;
-  width: 100%;
-  background-color: var(--sds-color-background-default-default);
+  min-height: 100vh;
+  background: var(--Background-Default-Default, #fff);
 }
 
-.mainContent {
-  padding: var(--sds-space-600); /* 24px */
-  flex-grow: 1;
-  overflow-y: auto;
+.adminConveniosContent {
+  flex: 1;
+  padding: 32px 0 0 0;
+  min-width: 0;
 }
 
-.pageHeader {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding-bottom: var(--sds-space-300); /* 12px */
-  border-bottom: var(--sds-stroke-border) solid var(--sds-color-border-default-default);
-  margin-bottom: var(--sds-space-600); /* 24px */
-}
-
-.headerTitle {
-  color: var(--sds-color-text-default-default);
-  font-size: var(--sds-body-size-large); /* 20px - Assuming based on "Text Strong" usage */
-  font-weight: var(--sds-weight-semibold); /* 600 */
-  line-height: 22.4px; /* As per Figma */
-}
-
-.filterBar {
+.adminConveniosPageHeader {
+  width: 1042px;
+  margin-left: 32px;
+  margin-bottom: 12px;
+  padding-bottom: 12px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: var(--sds-space-600); /* 24px */
+  border-bottom: 1px solid var(--Border-Default-Default, #D9D9D9);
 }
 
-.searchFilter {
-  display: flex;
-  align-items: center;
-  gap: var(--sds-space-600); /* 24px */
-}
-
-.searchInput {
-  /* Uses SearchField component, styling is within that component */
-  flex: 1 1 0;
-}
-
-.tagToggleGroup {
-  display: flex;
-  gap: var(--sds-space-200); /* 8px */
-}
-
-.checkboxField {
-  /* Uses CheckboxField component, styling is within that component */
-}
-
-.body {
+.adminConveniosMenuHeader {
+  padding: 8px 16px 4px 16px;
+  border-radius: 8px;
   display: flex;
   flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+}
+
+.adminConveniosTitle {
+  color: var(--Text-Default-Default, #1E1E1E);
+  font-size: 16px;
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
+  line-height: 22.4px;
+}
+
+.adminConveniosButton {
+  padding: 12px;
+  background: var(--Background-Brand-Default, #20377A);
+  border-radius: 8px;
+  outline: 1px solid var(--Border-Brand-Default, #20377A);
+  outline-offset: -1px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--Text-Brand-On-Brand, #F0F3FF);
+  font-size: 16px;
+  font-family: 'Inter', sans-serif;
+  font-weight: 400;
+  line-height: 22.4px;
+}
+
+.adminConveniosFilterBar {
+  width: 1042px;
+  margin-left: 32px;
+  margin-bottom: 32px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.adminConveniosSearchFilter {
+  width: 327px;
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+.adminConveniosTagToggleGroup {
+  display: flex;
+  gap: 8px;
+}
+
+.adminConveniosCheckboxField {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.adminConveniosBody {
+  width: 1042px;
+  min-width: 160px;
+  margin-left: 32px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 32px;
   justify-content: center;
-  align-items: center;
-  gap: var(--sds-space-800); /* 32px */
-  flex-grow: 1;
-  min-height: 160px; /* As per Figma */
 }
 
-.emptyStateText {
+.adminConveniosEmptyText {
+  color: var(--Text-Default-Secondary, #757575);
+  font-size: 16px;
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
+  line-height: 22.4px;
   text-align: center;
-  color: var(--sds-color-text-default-secondary);
-  font-size: var(--sds-body-size-medium); /* 16px in figma, maps to body-size-medium or body-size-large */
-  font-weight: var(--sds-weight-semibold); /* 600 */
-  line-height: 22.4px; /* As per Figma */
+  width: 100%;
 }
