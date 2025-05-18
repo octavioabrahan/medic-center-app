@@ -432,7 +432,7 @@ const SeguimientoCotizaciones = ({ cotizacion, onClose }) => {
                       <div className={styles.frame78}>
                         <div className={styles.resultadoLabel}>Estado</div>
                         <div className={styles.resultadoValue}>
-                          <div className={`${styles.tag} ${
+                          <div className={`${styles.historialTag} ${
                             item.resultado === 'pendiente' ? styles.warning : 
                             item.resultado === 'confirmado' ? styles.positive : 
                             item.resultado === 'cancelado' ? styles.danger : 
