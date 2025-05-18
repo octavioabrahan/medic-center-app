@@ -147,20 +147,20 @@ const CrearConvenio = ({ isOpen, onClose, onConvenioCreated }) => {
       }
       
       // Send the request
-      const response = await api.post('/convenios', formDataToSend, {
+      const response = await api.post('/empresas', formDataToSend, {
         headers: {
           'Content-Type': 'multipart/form-data'
         }
       });
       
-      console.log('Convenio created:', response.data);
+      console.log('Empresa con convenio creada:', response.data);
       
-      // Get updated list of convenios
-      const conveniosRes = await api.get('/convenios');
+      // Get updated list of companies
+      const empresasRes = await api.get('/empresas');
       
       // Call the callback with updated list
       if (typeof onConvenioCreated === 'function') {
-        onConvenioCreated(conveniosRes.data);
+        onConvenioCreated(empresasRes.data);
       }
       
       // Close the modal

@@ -203,7 +203,7 @@ const EditarConvenio = ({
       }
       
       // Send the request
-      await api.put(`/convenios/${convenioId}`, formDataToSend, {
+      await api.put(`/empresas`, formDataToSend, {
         headers: {
           'Content-Type': 'multipart/form-data'
         }

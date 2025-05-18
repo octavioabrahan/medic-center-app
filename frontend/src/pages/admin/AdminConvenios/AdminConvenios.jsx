@@ -37,9 +37,10 @@ const AdminConvenios = () => {
     const fetchData = async () => {
       setLoading(true);
       try {
-        const conveniosRes = await api.get('/convenios');
-        console.log('Convenios data:', conveniosRes.data); // Debug to see actual data structure
-        setConvenios(conveniosRes.data);
+        // Using 'empresas' endpoint instead of 'convenios'
+        const empresasRes = await api.get('/empresas');
+        console.log('Empresas con convenio data:', empresasRes.data); // Debug to see actual data structure
+        setConvenios(empresasRes.data);
         setError(null);
       } catch (err) {
         console.error("Error al cargar datos:", err);
@@ -59,16 +60,19 @@ const AdminConvenios = () => {
       
       if (searchTerm) {
         const termLower = searchTerm.toLowerCase();
-        filtered = filtered.filter(convenio => {
+        filtered = filtered.filter(empresa => {
           // Check if nombre_empresa exists before using toLowerCase
-          const convenioNombre = convenio.nombre_empresa || '';
-          return convenioNombre.toLowerCase().includes(termLower);
+          const nombreEmpresa = empresa.nombre_empresa || '';
+          // Also search by RIF
+          const rifEmpresa = empresa.rif || '';
+          return nombreEmpresa.toLowerCase().includes(termLower) || 
+                 rifEmpresa.toLowerCase().includes(termLower);
         });
       }
       
       // Filter by archived status if needed
       if (!showArchived) {
-        filtered = filtered.filter(convenio => convenio.is_active !== false);
+        filtered = filtered.filter(empresa => empresa.is_active !== false);
       }
       
       // Sort with proper null checks
@@ -79,12 +83,11 @@ const AdminConvenios = () => {
           return nameA.localeCompare(nameB);
         });
       } else {
-        // Sort by creation date if not A→Z
+        // Sort by ID if not A→Z (most recent first, as done in the reference file)
         filtered.sort((a, b) => {
-          // Extract creation date or default to now
-          const dateA = a.created_at ? new Date(a.created_at) : new Date();
-          const dateB = b.created_at ? new Date(b.created_at) : new Date();
-          return dateB - dateA; // Most recent first
+          const idA = a.id_empresa || 0;
+          const idB = b.id_empresa || 0;
+          return idB - idA; // Most recent first (higher ID)
         });
       }
       
@@ -95,25 +98,27 @@ const AdminConvenios = () => {
   }, [searchTerm, convenios, showArchived, sortAZ]);
 
   // Change active/inactive status of the convenio
-  const cambiarEstadoConvenio = async (convenioId, activo) => {
+  const cambiarEstadoConvenio = async (empresaId, activo) => {
     try {
-      if (!convenioId) {
-        console.error("Error: ID de convenio no definido");
-        setError("Error: ID de convenio no definido");
+      if (!empresaId) {
+        console.error("Error: ID de empresa no definido");
+        setError("Error: ID de empresa no definido");
         return false;
       }
       
-      console.log(`Cambiando estado del convenio ID: ${convenioId} a ${activo ? 'activo' : 'inactivo'}`);
+      console.log(`Cambiando estado de la empresa ID: ${empresaId} a ${activo ? 'activo' : 'inactivo'}`);
       
-      // Define endpoint for activate/deactivate
-      const endpoint = activo ? 
-        `/convenios/${convenioId}/desarchivar` : 
-        `/convenios/${convenioId}/archivar`;
-      
-      await api.put(endpoint);
+      // Define endpoint based on reference file
+      if (activo) {
+        // To activate
+        await api.patch(`/empresas/${empresaId}/activar`);
+      } else {
+        // To archive (deactivate)
+        await api.delete(`/empresas/${empresaId}`);
+      }
       
       // Update the list after change
-      const res = await api.get('/convenios');
+      const res = await api.get('/empresas');
       
       // Update the local list to reflect the change
       setConvenios(res.data);
@@ -121,8 +126,8 @@ const AdminConvenios = () => {
       setCurrentConvenio(null);
       return true;
     } catch (err) {
-      console.error("Error al cambiar estado del convenio:", err);
-      setError(`Error al cambiar el estado del convenio: ${err.response?.data?.error || err.message}`);
+      console.error("Error al cambiar estado de la empresa:", err);
+      setError(`Error al cambiar el estado de la empresa: ${err.response?.data?.error || err.message}`);
       return false;
     }
   };
@@ -136,14 +141,14 @@ const AdminConvenios = () => {
   // Handle convenio update
   const handleConvenioUpdated = async () => {
     try {
-      // Get updated convenio list
-      const res = await api.get('/convenios');
-      console.log("Updated convenios:", res.data); // Debug
+      // Get updated company list
+      const res = await api.get('/empresas');
+      console.log("Updated empresas con convenio:", res.data); // Debug
       setConvenios(res.data);
       setCurrentConvenio(null);
     } catch (err) {
-      console.error("Error al actualizar lista de convenios:", err);
-      setError("Error al actualizar la lista de convenios");
+      console.error("Error al actualizar lista de empresas con convenio:", err);
+      setError("Error al actualizar la lista de empresas con convenio");
     }
   };
 
@@ -194,18 +199,14 @@ const AdminConvenios = () => {
   const formatRIF = (rif) => {
     if (!rif) return 'N/A';
     
-    // If RIF already has the format, return it
-    if (/^[JGVE]-\d{8}-\d$/.test(rif)) {
-      return rif;
-    }
+    // Clean the RIF (remove non-alphanumeric characters)
+    rif = rif.toUpperCase().replace(/[^A-Z0-9]/g, '');
     
-    // If it's just numbers, try to format it
-    if (/^\d{9}$/.test(rif)) {
-      return `J-${rif.substring(0, 8)}-${rif.substring(8)}`;
-    }
+    // Check if the cleaned RIF has the right length
+    if (rif.length !== 10) return rif;
     
-    // Return as is if it doesn't match known patterns
-    return rif;
+    // Format as X-XXXXXXXX-X
+    return `${rif.substring(0, 1)}-${rif.substring(1, 9)}-${rif.substring(9)}`;
   };
 
   return (
@@ -287,20 +288,20 @@ const AdminConvenios = () => {
                 headers={[
                   'Empresa',
                   'RIF',
-                  'Teléfono',
+                  'Logo',
                   'Estado',
                   'Acciones'
                 ]}
-                data={filteredConvenios.map(convenio => ({
-                  empresa: convenio.nombre_empresa || 'N/A',
-                  rif: convenio.rif || 'N/A',
-                  telefono: convenio.telefono || 'N/A',
-                  estado: convenio.is_active !== undefined ? convenio.is_active : true,
-                  acciones: convenio.id_convenio || convenio.convenio_id,
-                  id_convenio: convenio.id_convenio || convenio.convenio_id,
-                  convenio_completo: convenio // To access the complete object
+                data={filteredConvenios.map(empresa => ({
+                  empresa: empresa.nombre_empresa || 'N/A',
+                  rif: empresa.rif || 'N/A',
+                  logo: empresa.logo_url || '',
+                  estado: empresa.is_active !== undefined ? empresa.is_active : true,
+                  acciones: empresa.id_empresa,
+                  id_empresa: empresa.id_empresa,
+                  empresa_completa: empresa // To access the complete object
                 }))}
-                columns={['empresa', 'rif', 'telefono', 'estado', 'acciones']}
+                columns={['empresa', 'rif', 'logo', 'estado', 'acciones']}
                 renderCustomCell={(row, column) => {
                   if (column === 'estado') {
                     const isActive = row.estado;
@@ -328,6 +329,27 @@ const AdminConvenios = () => {
                     );
                   }
                   
+                  if (column === 'logo') {
+                    return (
+                      <div className="admin-convenios__logo">
+                        {row.logo ? (
+                          <img
+                            src={row.logo.replace(/&#x2F;/g, '/').replace(/&$/, '')}
+                            alt={`Logo de ${row.empresa}`}
+                            style={{ maxWidth: "40px", maxHeight: "40px" }}
+                            onError={(e) => {
+                              console.error("Error cargando imagen:", e.target.src);
+                              e.target.onerror = null;
+                              e.target.alt = "Logo no disponible";
+                            }}
+                          />
+                        ) : (
+                          <span className="no-logo">Sin logo</span>
+                        )}
+                      </div>
+                    );
+                  }
+                  
                   if (column === 'acciones') {
                     const isActive = row.estado;
                     return (
@@ -335,7 +357,7 @@ const AdminConvenios = () => {
                         {isActive ? (
                           <button
                             className="admin-convenios__action-btn edit"
-                            onClick={() => handleEditConvenio(row.convenio_completo)}
+                            onClick={() => handleEditConvenio(row.empresa_completa)}
                             aria-label="Editar convenio"
                           >
                             <PencilIcon width={16} height={16} />
@@ -343,7 +365,7 @@ const AdminConvenios = () => {
                         ) : (
                           <button
                             className="admin-convenios__action-btn activate"
-                            onClick={() => cambiarEstadoConvenio(row.id_convenio, true)}
+                            onClick={() => cambiarEstadoConvenio(row.id_empresa, true)}
                             aria-label="Activar convenio"
                           >
                             <ArrowPathIcon width={16} height={16} />
