@@ -16,17 +16,10 @@ import './ArchivarServicioModal.css';
 const ArchivarServicioModal = ({ isOpen, onClose, servicio, onConfirmArchive, loading }) => {
   const [confirmacionArchivado, setConfirmacionArchivado] = useState(false);
   
-  // Verificar que tengamos los datos del servicio al cargar el componente
+  // Reset checkbox state when modal opens/closes
   useEffect(() => {
-    if (isOpen && !servicio) {
-      console.error('Error: Modal de archivar abierto sin datos de servicio');
-    } else if (isOpen) {
-      console.log('Modal abierto con servicio:', servicio);
-    }
-    
-    // Reset checkbox state when modal opens/closes
     setConfirmacionArchivado(false);
-  }, [isOpen, servicio]);
+  }, [isOpen]);
 
   const handleConfirmar = async () => {
     if (!servicio) {
@@ -48,54 +41,54 @@ const ArchivarServicioModal = ({ isOpen, onClose, servicio, onConfirmArchive, lo
 
   const nombreServicio = servicio ? (servicio.nombre || servicio.nombre_servicio || 'este servicio') : 'este servicio';
 
-  const modalContent = (
-    <div className="archivar-content">
-      <p>Al archivar este servicio:</p>
-      <ul>
-        <li>Ya no estará disponible en el sitio de agendamiento.</li>
-        <li>Los profesionales que lo tienen asignado dejarán de mostrarse si no tienen otros servicios activos.</li>
-        <li>Los agendamientos previamente generados no se eliminarán.</li>
-      </ul>
-      
-      <div className="checkbox-wrapper">
-        <CheckboxField
-          label="Entiendo que este servicio y los profesionales que solo lo ofrecen dejarán de mostrarse en el portal."
-          checked={confirmacionArchivado}
-          onChange={(checked) => setConfirmacionArchivado(checked)}
-          fillContainer={true}
-        />
-      </div>
-    </div>
-  );
-
   return (
-    <>
-      {/* We need to create our own buttons to show danger variant */}
-      <Modal
-        isOpen={isOpen}
-        onClose={onClose}
-        heading={`¿Quieres archivar ${nombreServicio}?`}
-        size="small"
-        variant="default"
-        contentClassName="hide-original-buttons"
-      >
-        <div style={{display: 'flex', flexDirection: 'column', gap: 'var(--sds-space-600)'}}>
-          {modalContent}
-          <div style={{display: 'flex', justifyContent: 'flex-end', gap: 'var(--sds-space-400)'}}>
-            <Button variant="neutral" onClick={onClose}>
-              Cancelar
-            </Button>
-            <Button 
-              variant="danger" 
-              onClick={handleConfirmar}
-              disabled={!confirmacionArchivado || loading}
-            >
-              {loading ? "Archivando..." : "Sí, archivar"}
-            </Button>
-          </div>
+    <Modal
+      isOpen={isOpen}
+      onClose={onClose}
+      heading={`¿Quieres archivar ${nombreServicio}?`}
+      contentClassName="hide-original-buttons"
+    >
+      <div className="archivar-content">
+        <p>Al archivar este servicio:</p>
+        <ul>
+          <li>Ya no estará disponible en el sitio de agendamiento.</li>
+          <li>Los profesionales que lo tienen asignado dejarán de mostrarse si no tienen otros servicios activos.</li>
+          <li>Los agendamientos previamente generados no se eliminarán.</li>
+        </ul>
+        
+        <div className="checkbox-wrapper">
+          <CheckboxField
+            label="Entiendo que este servicio y los profesionales que solo lo ofrecen dejarán de mostrarse en el portal."
+            checked={confirmacionArchivado}
+            onChange={(checked) => setConfirmacionArchivado(checked)}
+            fillContainer={true}
+          />
         </div>
-      </Modal>
-    </>
+        
+        <div style={{
+          display: 'flex', 
+          justifyContent: 'flex-end', 
+          gap: 'var(--sds-space-400)',
+          marginTop: 'var(--sds-space-400)',
+          width: '100%'
+        }}>
+          <Button 
+            variant="neutral" 
+            onClick={onClose}
+          >
+            Cancelar
+          </Button>
+          <Button 
+            variant="danger" 
+            onClick={handleConfirmar}
+            disabled={!confirmacionArchivado || loading}
+            className="button-danger"
+          >
+            {loading ? "Archivando..." : "Sí, archivar"}
+          </Button>
+        </div>
+      </div>
+    </Modal>
   );
 };
 
