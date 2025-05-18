@@ -44,13 +44,14 @@ const AgregarEmpresaConvenio = ({ isOpen, onClose, onAdd }) => {
         <div className={styles['agregar-empresa-convenio-modal__title']}>
           Agregar empresa
         </div>
-        <div className={styles['agregar-empresa-convenio-modal__form']}>
+        <form className={styles['agregar-empresa-convenio-modal__form']} onSubmit={e => { e.preventDefault(); handleAdd(); }}>
           <InputField
             label="Nombre de la empresa"
             value={nombre}
             onChange={setNombre}
             placeholder="Nombre de la empresa"
             fillContainer
+            autoFocus
           />
           <InputField
             label="RIF"
@@ -59,7 +60,7 @@ const AgregarEmpresaConvenio = ({ isOpen, onClose, onAdd }) => {
             placeholder="A00000000-0"
             fillContainer
           />
-        </div>
+        </form>
       </div>
     </Modal>
   );
