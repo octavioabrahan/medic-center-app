@@ -4,7 +4,8 @@ import Button from '../../../components/Button/Button';
 import SearchField from '../../../components/Inputs/SearchField';
 import SelectField from '../../../components/Inputs/SelectField';
 import CheckboxField from '../../../components/Inputs/CheckboxField';
-import { UserPlusIcon, CheckIcon, PencilIcon, ArrowPathIcon } from '@heroicons/react/20/solid';
+import Table from '../../../components/Tables/Table';
+import { UserPlusIcon, CheckIcon, PencilIcon, ArrowPathIcon, TrashIcon } from '@heroicons/react/20/solid';
 import api from '../../../api';
 import CrearEspecialidades from './CrearEspecialidades';
 import CrearProfesionales from './CrearProfesionales';
@@ -183,7 +184,9 @@ const AdminProfesionales = () => {
       <div className="admin-profesionales">
         <div className="admin-profesionales__page-header">
           <div className="admin-profesionales__menu-header">
-            <div className="admin-profesionales__text-strong">Profesionales</div>
+            <div className="admin-profesionales__text-strong">
+              <div className="admin-profesionales__title">Profesionales</div>
+            </div>
           </div>
           <div className="admin-profesionales__button-group">
             <Button variant="neutral" onClick={() => setShowAddEspecialidadModal(true)}>
@@ -193,43 +196,48 @@ const AdminProfesionales = () => {
               variant="primary"
               onClick={() => setShowAddProfesionalModal(true)}
             >
-              <UserPlusIcon className="admin-profesionales__icon" />
-              Agregar nuevo profesional
+              <UserPlusIcon className="btn__icon" />
+              <span style={{ marginLeft: '.5rem' }}>Agregar nuevo profesional</span>
             </Button>
           </div>
         </div>
         
         <div className="admin-profesionales__filter-bar">
-          <SearchField
-            value={searchTerm}
-            onChange={setSearchTerm}
-            placeholder="Buscar por nombre"
-            className="admin-profesionales__search-filter"
-          />
-          
-          <SelectField
-            options={especialidadesOptions}
-            value={selectedEspecialidad}
-            onChange={setSelectedEspecialidad}
-            className="admin-profesionales__select-field"
-          />
-          
-          <div className="admin-profesionales__checkbox-field">
-            <CheckboxField
-              label="Mostrar archivados"
-              checked={showArchived}
-              onChange={setShowArchived}
+          <div className="admin-profesionales__search-container">
+            <SearchField
+              value={searchTerm}
+              onChange={setSearchTerm}
+              onClear={() => setSearchTerm('')}
+              placeholder="Buscar por nombre"
+              className="admin-profesionales__search-filter"
             />
           </div>
           
-          <div className="admin-profesionales__tag-toggle-group">
-            <div className={sortAZ ? "admin-profesionales__tag-toggle state-on" : "admin-profesionales__tag-toggle state-off"} onClick={() => setSortAZ(true)}>
-              {sortAZ && <CheckIcon className="heroicons-mini-check" />}
-              <div className="title">A → Z</div>
+          <div className="admin-profesionales__filter-options">
+            <SelectField
+              options={especialidadesOptions}
+              value={selectedEspecialidad}
+              onChange={setSelectedEspecialidad}
+              className="admin-profesionales__select-field"
+            />
+            
+            <div className="admin-profesionales__checkbox-field">
+              <CheckboxField
+                label="Mostrar archivados"
+                checked={showArchived}
+                onChange={setShowArchived}
+              />
             </div>
-            <div className={!sortAZ ? "admin-profesionales__tag-toggle state-on" : "admin-profesionales__tag-toggle state-off"} onClick={() => setSortAZ(false)}>
-              {!sortAZ && <CheckIcon className="heroicons-mini-check" />}
-              <div className="title">Z → A</div>
+            
+            <div className="admin-profesionales__tag-toggle-group">
+              <div className={sortAZ ? "admin-profesionales__tag-toggle state-on" : "admin-profesionales__tag-toggle state-off"} onClick={() => setSortAZ(true)}>
+                {sortAZ && <CheckIcon className="heroicons-mini-check" />}
+                <div className="title">A → Z</div>
+              </div>
+              <div className={!sortAZ ? "admin-profesionales__tag-toggle state-on" : "admin-profesionales__tag-toggle state-off"} onClick={() => setSortAZ(false)}>
+                {!sortAZ && <CheckIcon className="heroicons-mini-check" />}
+                <div className="title">Z → A</div>
+              </div>
             </div>
           </div>
         </div>
@@ -248,52 +256,67 @@ const AdminProfesionales = () => {
             </div>
           </div>
         ) : (
-          <div className="admin-profesionales__table-container">
-            <table className="admin-profesionales__table">
-              <thead>
-                <tr>
-                  <th>Cédula</th>
-                  <th>Profesional</th>
-                  <th>Especialidad</th>
-                  <th>Estado</th>
-                  <th>Acciones</th>
-                </tr>
-              </thead>
-              <tbody>
-                {filteredProfesionales.map(profesional => (
-                  <tr 
-                    key={profesional.profesional_id}
-                    className={profesional.is_active === false ? 'admin-profesionales__row-inactive' : ''}
-                  >
-                    <td>{profesional.cedula}</td>
-                    <td>{profesional.nombre} {profesional.apellido}</td>
-                    <td>{profesional.nombre_especialidad}</td>
-                    <td>
-                      <span className={`admin-profesionales__status-badge ${profesional.is_active ? 'admin-profesionales__status-active' : 'admin-profesionales__status-inactive'}`}>
-                        {profesional.is_active ? 'Activo' : 'Archivado'}
-                      </span>
-                    </td>
-                    <td>
-                      {profesional.is_active ? (
-                        <Button 
-                          variant="subtle"
-                          onClick={() => handleEditProfesional(profesional)}
-                        >
-                          <PencilIcon className="admin-profesionales__icon-small" />
-                        </Button>
-                      ) : (
-                        <Button 
-                          variant="subtle"
-                          onClick={() => cambiarEstadoProfesional(profesional.profesional_id, true)}
-                        >
-                          <ArrowPathIcon className="admin-profesionales__icon-small" />
-                        </Button>
-                      )}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+          <div className="admin-profesionales__body">
+            <div className="admin-profesionales__table">
+              <Table
+                headers={[
+                  'Cédula',
+                  'Profesional',
+                  'Especialidad',
+                  'Estado',
+                  'Acciones'
+                ]}
+                data={filteredProfesionales.map(profesional => ({
+                  cedula: profesional.cedula || 'N/A',
+                  profesional: `${profesional.nombre || ''} ${profesional.apellido || ''}`.trim(),
+                  especialidad: profesional.nombre_especialidad || 'N/A',
+                  estado: profesional.is_active,
+                  acciones: profesional.profesional_id,
+                  profesional_id: profesional.profesional_id,
+                  profesional_completo: profesional // Para poder acceder al objeto completo
+                }))}
+                columns={['cedula', 'profesional', 'especialidad', 'estado', 'acciones']}
+                renderCustomCell={(row, column) => {
+                  if (column === 'estado') {
+                    const isActive = row.estado;
+                    return (
+                      <div className="text">
+                        <div className={`admin-profesionales__status-badge ${isActive ? 'admin-profesionales__status-active' : 'admin-profesionales__status-inactive'}`}>
+                          {isActive ? 'Activo' : 'Archivado'}
+                        </div>
+                      </div>
+                    );
+                  }
+                  
+                  if (column === 'acciones') {
+                    const isActive = row.estado;
+                    return (
+                      <div className="admin-profesionales__actions">
+                        {isActive ? (
+                          <button
+                            className="admin-profesionales__action-btn edit"
+                            onClick={() => handleEditProfesional(row.profesional_completo)}
+                            aria-label="Editar profesional"
+                          >
+                            <PencilIcon width={16} height={16} />
+                          </button>
+                        ) : (
+                          <button
+                            className="admin-profesionales__action-btn activate"
+                            onClick={() => cambiarEstadoProfesional(row.profesional_id, true)}
+                            aria-label="Activar profesional"
+                          >
+                            <ArrowPathIcon width={16} height={16} />
+                          </button>
+                        )}
+                      </div>
+                    );
+                  }
+                  // Para otras columnas, usar el renderizado por defecto
+                  return null;
+                }}
+              />
+            </div>
           </div>
         )}
       </div>
