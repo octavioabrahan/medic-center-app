@@ -105,16 +105,8 @@ const CrearConvenio = ({ isOpen, onClose, onEmpresaCreated }) => {
     
     if (!formData.rif || formData.rif.trim() === '') {
       errors.rif = 'El RIF es requerido';
-    } else if (!/^J-\d{8}-\d$/.test(formData.rif)) {
-      errors.rif = 'El RIF debe tener el formato J-XXXXXXXX-X';
-    }
-    
-    if (!formData.telefono || formData.telefono.trim() === '') {
-      errors.telefono = 'El teléfono es requerido';
-    }
-    
-    if (formData.email && !/^\S+@\S+\.\S+$/.test(formData.email)) {
-      errors.email = 'El email no es válido';
+    } else if (!/^J?-?\d{8}-?\d$/.test(formData.rif.replace(/\D/g, ''))) {
+      errors.rif = 'El RIF debe tener el formato XXXXXXXX-X';
     }
     
     setFormErrors(errors);
@@ -167,8 +159,8 @@ const CrearConvenio = ({ isOpen, onClose, onEmpresaCreated }) => {
       // Close the modal
       onClose();
     } catch (err) {
-      console.error('Error creating convenio:', err);
-      setError(`Error al crear convenio: ${err.response?.data?.error || err.message}`);
+      console.error('Error creating empresa:', err);
+      setError(`Error al crear empresa: ${err.response?.data?.error || err.message}`);
     } finally {
       setIsSubmitting(false);
     }
@@ -186,7 +178,6 @@ const CrearConvenio = ({ isOpen, onClose, onEmpresaCreated }) => {
       logo_url: null
     });
     setFormErrors({});
-    setLogoPreview(null);
     setError(null);
     onClose();
   };
@@ -195,8 +186,8 @@ const CrearConvenio = ({ isOpen, onClose, onEmpresaCreated }) => {
     <Modal
       isOpen={isOpen}
       onClose={handleCloseModal}
-      title="Agregar empresa con convenio"
-      size="medium"
+      title="Agregar empresa"
+      size="small"
     >
       <div className="crear-convenio">
         {error && (
@@ -207,81 +198,28 @@ const CrearConvenio = ({ isOpen, onClose, onEmpresaCreated }) => {
         
         <form onSubmit={handleSubmit} className="crear-convenio__form">
           <div className="crear-convenio__form-section">
+            <div className="crear-convenio__description">
+              Descripción
+            </div>
+            
             <InputField
-              label="Nombre de la empresa *"
+              label="Nombre de la empresa"
               name="nombre_empresa"
               value={formData.nombre_empresa}
               onChange={(value) => handleChange('nombre_empresa', value)}
               error={formErrors.nombre_empresa}
               required
+              placeholder="(recomendado)"
             />
             
             <InputField
-              label="RIF *"
+              label="RIF"
               name="rif"
               value={formData.rif}
               onChange={(value) => handleRIFChange(value)}
               error={formErrors.rif}
-              placeholder="J-XXXXXXXX-X"
               required
             />
-            
-            <InputField
-              label="Teléfono *"
-              name="telefono"
-              value={formData.telefono}
-              onChange={(value) => handleChange('telefono', value)}
-              error={formErrors.telefono}
-              required
-            />
-            
-            <InputField
-              label="Email"
-              name="email"
-              value={formData.email}
-              onChange={(value) => handleChange('email', value)}
-              error={formErrors.email}
-            />
-          </div>
-          
-          <div className="crear-convenio__form-section">
-            <InputField
-              label="Dirección"
-              name="direccion"
-              value={formData.direccion}
-              onChange={(value) => handleChange('direccion', value)}
-              error={formErrors.direccion}
-            />
-            
-            <TextAreaField
-              label="Descripción"
-              name="descripcion"
-              value={formData.descripcion}
-              onChange={(value) => handleChange('descripcion', value)}
-              error={formErrors.descripcion}
-              rows={3}
-            />
-            
-            <div className="crear-convenio__logo-upload">
-              <label className="crear-convenio__logo-label">
-                Logo de la empresa (opcional)
-              </label>
-              <input 
-                type="file" 
-                accept="image/jpeg, image/png, image/gif"
-                onChange={handleLogoChange}
-                className="crear-convenio__file-input"
-              />
-              {formErrors.logo_url && (
-                <div className="crear-convenio__input-error">{formErrors.logo_url}</div>
-              )}
-              
-              {logoPreview && (
-                <div className="crear-convenio__logo-preview">
-                  <img src={logoPreview} alt="Logo preview" />
-                </div>
-              )}
-            </div>
           </div>
           
           <div className="crear-convenio__form-actions">
@@ -299,7 +237,7 @@ const CrearConvenio = ({ isOpen, onClose, onEmpresaCreated }) => {
               disabled={isSubmitting}
               loading={isSubmitting}
             >
-              Guardar convenio
+              Agregar
             </Button>
           </div>
         </form>

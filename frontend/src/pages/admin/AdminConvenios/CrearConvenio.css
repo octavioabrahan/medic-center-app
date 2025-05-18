@@ -6,6 +6,12 @@
   padding: var(--sds-space-400, 16px);
 }
 
+.crear-convenio__description {
+  font-size: 16px;
+  color: var(--sds-color-text-secondary-default, #6c7680);
+  margin-bottom: var(--sds-space-200, 8px);
+}
+
 .crear-convenio__error-message {
   background-color: var(--sds-color-background-negative-secondary, #fce8e6);
   color: var(--sds-color-text-negative-default, #d93025);
@@ -70,7 +76,7 @@
   flex-direction: row;
   justify-content: flex-end;
   gap: var(--sds-space-300, 12px);
-  margin-top: var(--sds-space-400, 16px);
+  margin-top: var(--sds-space-600, 24px);
 }
 
 @media (min-width: 768px) {
