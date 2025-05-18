@@ -27,14 +27,6 @@ const ArchivarServicioModal = ({ isOpen, onClose, servicio, onConfirmArchive, lo
   }, [isOpen, servicio]);
 
   const handleConfirmar = async () => {
-    // Siempre registrar en consola la intención de archivar para depuración
-    console.log('Botón "Sí, archivar" presionado', {
-      confirmacionArchivado,
-      hasOnConfirmArchive: !!onConfirmArchive,
-      servicio,
-      servicioId: servicio?.id_servicio || servicio?.servicio_id || 'no-id'
-    });
-    
     if (!servicio) {
       console.error('Error: No hay datos del servicio para archivar');
       alert('Error: No se pudo obtener la información del servicio para archivar.');
@@ -44,21 +36,10 @@ const ArchivarServicioModal = ({ isOpen, onClose, servicio, onConfirmArchive, lo
     if (confirmacionArchivado && onConfirmArchive) {
       try {
         await onConfirmArchive(servicio);
-        console.log('Archivo completado con éxito, cerrando modal');
         onClose();
       } catch (error) {
         console.error('Error al confirmar archivar servicio:', error);
         setTimeout(() => onClose(), 2000);
-      }
-    } else {
-      console.warn('No se puede archivar: checkbox no marcado o falta función handler', { 
-        confirmacionArchivado, 
-        hasOnConfirmArchive: !!onConfirmArchive, 
-        servicioPresente: !!servicio
-      });
-      
-      if (!onConfirmArchive) {
-        alert('Error interno: Falta la función para procesar el archivado.');
       }
     }
   };
@@ -67,24 +48,33 @@ const ArchivarServicioModal = ({ isOpen, onClose, servicio, onConfirmArchive, lo
     <Modal
       isOpen={isOpen}
       onClose={onClose}
-      heading={`¿Quieres archivar ${servicio?.nombre || 'este servicio'}?`}
       size="small"
-      contentClassName="hide-original-buttons modal-heading"
+      contentClassName="hide-original-buttons"
     >
       <div className="archivar-servicio-modal-content">
-        <p>Al archivar este servicio:</p>
-        <ul>
-          <li>Ya no estará disponible en el sitio de agendamiento.</li>
-          <li>Los profesionales que lo tienen asignado dejarán de mostrarse si no tienen otros servicios activos.</li>
-          <li>Los agendamientos previamente generados no se eliminarán.</li>
-        </ul>
-        
-        <CheckboxField
-          label="Entiendo que este servicio y los profesionales que solo lo ofrecen dejarán de mostrarse en el portal."
-          checked={confirmacionArchivado}
-          onChange={(checked) => setConfirmacionArchivado(checked)}
-          fillContainer={true}
-        />
+        <div className="text">
+          <h2 className="archivar-servicio-modal-heading">
+            ¿Quieres archivar {servicio?.nombre || 'este servicio'}?
+          </h2>
+          
+          <div className="archivar-servicio-modal-text">
+            <p>Al archivar este servicio:</p>
+            <ul>
+              <li>Ya no estará disponible en el sitio de agendamiento.</li>
+              <li>Los profesionales que lo tienen asignado dejarán de mostrarse si no tienen otros servicios activos.</li>
+              <li>Los agendamientos previamente generados no se eliminarán.</li>
+            </ul>
+          </div>
+          
+          <div className="checkbox-container">
+            <CheckboxField
+              label="Entiendo que este servicio y los profesionales que solo lo ofrecen dejarán de mostrarse en el portal."
+              checked={confirmacionArchivado}
+              onChange={(checked) => setConfirmacionArchivado(checked)}
+              fillContainer={true}
+            />
+          </div>
+        </div>
 
         <div className="archivar-servicio-modal-buttons">
           <Button 
@@ -101,6 +91,12 @@ const ArchivarServicioModal = ({ isOpen, onClose, servicio, onConfirmArchive, lo
             {loading ? "Archivando..." : "Sí, archivar"}
           </Button>
         </div>
+
+        <button className="modal-close-button" onClick={onClose}>
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M15 5L5 15M5 5L15 15" stroke="currentColor" strokeWidth="1.67" strokeLinecap="round" strokeLinejoin="round"/>
+          </svg>
+        </button>
       </div>
     </Modal>
   );
