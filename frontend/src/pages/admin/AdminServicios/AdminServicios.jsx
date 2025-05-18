@@ -119,7 +119,7 @@ const AdminServicios = () => {
       if (!servicioId) {
         console.error("Error: ID de servicio no definido");
         setError("Error: ID de servicio no definido");
-        return;
+        return false;
       }
       
       console.log(`Cambiando estado del servicio ID: ${servicioId} a ${activo ? 'activo' : 'inactivo'}`);
@@ -136,11 +136,13 @@ const AdminServicios = () => {
       
       // Update the local list to reflect the change
       setServicios(res.data);
-      
+      setError(null);
       setCurrentServicio(null);
+      return true;
     } catch (err) {
       console.error("Error al cambiar estado del servicio:", err);
-      setError("Error al cambiar el estado del servicio");
+      setError(`Error al cambiar el estado del servicio: ${err.response?.data?.error || err.message}`);
+      return false;
     }
   };
 
@@ -172,12 +174,17 @@ const AdminServicios = () => {
   // Confirmar archivar servicio
   const confirmarArchivarServicio = async (servicio) => {
     console.log('Servicio a archivar:', servicio);
-    if (servicio && servicio.servicio_id) {
+    const servicioId = servicio?.id_servicio || servicio?.servicio_id;
+    if (servicio && servicioId) {
       try {
-        await cambiarEstadoServicio(servicio.servicio_id, false);
+        const result = await cambiarEstadoServicio(servicioId, false);
+        if (result) {
+          // Solo cerrar el modal si la operación fue exitosa
+          setShowEditServicioModal(false);
+        }
       } catch (err) {
         console.error('Error al archivar servicio:', err);
-        setError('Error al archivar el servicio');
+        setError(`Error al archivar el servicio: ${err.response?.data?.error || err.message}`);
       }
     } else {
       console.error('Error: No se puede archivar, ID de servicio no válido');
@@ -241,7 +248,16 @@ const AdminServicios = () => {
         {loading ? (
           <div className="admin-servicios__loading">Cargando servicios...</div>
         ) : error ? (
-          <div className="admin-servicios__error">{error}</div>
+          <div className="admin-servicios__error">
+            <div className="admin-servicios__error-message">{error}</div>
+            <Button 
+              variant="neutral" 
+              onClick={() => setError(null)}
+              className="admin-servicios__error-dismiss"
+            >
+              Cerrar
+            </Button>
+          </div>
         ) : filteredServicios.length === 0 ? (
           <div className="admin-servicios__empty-state">
             <div className="admin-servicios__empty-title">
@@ -254,17 +270,21 @@ const AdminServicios = () => {
               <Table
                 headers={[
                   'Nombre',
+                  'Precio (USD)',
+                  'Recomendado',
                   'Estado',
                   'Acciones'
                 ]}
                 data={filteredServicios.map(servicio => ({
                   nombre: servicio.nombre || servicio.nombre_servicio || 'N/A',
+                  precio: servicio.price_usd || 0,
+                  recomendado: servicio.is_recommended || false,
                   estado: servicio.is_active !== undefined ? servicio.is_active : true,
                   acciones: servicio.servicio_id || servicio.id_servicio,
                   servicio_id: servicio.servicio_id || servicio.id_servicio,
                   servicio_completo: servicio // Para poder acceder al objeto completo
                 }))}
-                columns={['nombre', 'estado', 'acciones']}
+                columns={['nombre', 'precio', 'recomendado', 'estado', 'acciones']}
                 renderCustomCell={(row, column) => {
                   if (column === 'estado') {
                     const isActive = row.estado;
@@ -280,6 +300,22 @@ const AdminServicios = () => {
                           variant={variant}
                           closeable={false}
                         />
+                      </div>
+                    );
+                  }
+                  
+                  if (column === 'precio') {
+                    return (
+                      <div className="admin-servicios__precio">
+                        ${parseFloat(row.precio).toFixed(2)}
+                      </div>
+                    );
+                  }
+                  
+                  if (column === 'recomendado') {
+                    return (
+                      <div className="admin-servicios__recomendado">
+                        {row.recomendado ? 'Sí' : 'No'}
                       </div>
                     );
                   }

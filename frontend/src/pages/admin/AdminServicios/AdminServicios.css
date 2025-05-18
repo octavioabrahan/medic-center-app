@@ -1,4 +1,3 @@
-
 .admin-servicios {
   display: flex;
   flex-direction: column;
@@ -31,9 +30,11 @@
 
 .admin-servicios__title {
   color: var(--sds-color-text-default-default);
-  font-size: 16px;
-  font-weight: 600;
-  line-height: 140%;
+  text-align: left;
+  font-family: var(--body-strong-font-family, "Inter-SemiBold", sans-serif);
+  font-size: var(--body-strong-font-size, 16px);
+  line-height: var(--body-strong-line-height, 140%);
+  font-weight: var(--body-strong-font-weight, 600);
 }
 
 .admin-servicios__button-group {
@@ -107,6 +108,14 @@
   background-color: var(--sds-color-background-default-tertiary);
 }
 
+.admin-servicios__tag-toggle .admin-servicios__title {
+  text-align: left;
+  font-family: "Inter", sans-serif;
+  font-size: 14px;
+  line-height: 140%;
+  font-weight: 400;
+}
+
 .admin-servicios__check-icon {
   width: 16px;
   height: 16px;
@@ -132,10 +141,27 @@
 
 .admin-servicios__error {
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
   min-height: 200px;
+  width: 100%;
+  padding: var(--sds-space-300);
+  gap: var(--sds-space-400);
+}
+
+.admin-servicios__error-message {
+  background-color: var(--sds-color-background-danger-tertiary);
   color: var(--sds-color-text-danger-default);
+  padding: var(--sds-space-300);
+  border-radius: var(--sds-radius-200);
+  text-align: center;
+  width: 100%;
+  max-width: 500px;
+}
+
+.admin-servicios__error-dismiss {
+  width: auto;
 }
 
 .admin-servicios__empty-state {
@@ -149,9 +175,11 @@
 
 .admin-servicios__empty-title {
   color: var(--sds-color-text-default-secondary);
-  font-size: 16px;
-  font-weight: 600;
-  line-height: 140%;
+  text-align: center;
+  font-family: var(--body-strong-font-family, "Inter-SemiBold", sans-serif);
+  font-size: var(--body-strong-font-size, 16px);
+  line-height: var(--body-strong-line-height, 140%);
+  font-weight: var(--body-strong-font-weight, 600);
   margin-bottom: var(--sds-space-200);
 }
 
@@ -186,4 +214,20 @@
 
 .admin-servicios__action-btn.activate {
   color: var(--sds-color-icon-positive-default);
+}
+
+.admin-servicios__precio {
+  font-family: "Inter", sans-serif;
+  font-size: 14px;
+  line-height: 140%;
+  font-weight: 400;
+  color: var(--sds-color-text-default-default);
+}
+
+.admin-servicios__recomendado {
+  font-family: "Inter", sans-serif;
+  font-size: 14px;
+  line-height: 140%;
+  font-weight: 400;
+  color: var(--sds-color-text-default-default);
 }

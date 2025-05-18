@@ -3,12 +3,15 @@ import Modal from '../../../components/Modal/Modal';
 import Button from '../../../components/Button/Button';
 import InputField from '../../../components/Inputs/InputField';
 import TextAreaField from '../../../components/Inputs/TextAreaField';
+import CheckboxField from '../../../components/Inputs/CheckboxField';
 import api from '../../../api';
 import './EditarServicio.css';
 
 const EditarServicio = ({ isOpen, onClose, servicio, onServicioUpdated, onConfirmArchive }) => {
   const [nombre, setNombre] = useState('');
   const [descripcion, setDescripcion] = useState('');
+  const [priceUsd, setPriceUsd] = useState(0);
+  const [isRecommended, setIsRecommended] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -18,6 +21,8 @@ const EditarServicio = ({ isOpen, onClose, servicio, onServicioUpdated, onConfir
       // Handle both property name formats
       setNombre(servicio.nombre || servicio.nombre_servicio || '');
       setDescripcion(servicio.descripcion || '');
+      setPriceUsd(servicio.price_usd || 0);
+      setIsRecommended(servicio.is_recommended || false);
       console.log("Editing service:", servicio); // Debug to see structure
     }
   }, [servicio, isOpen]);
@@ -28,6 +33,7 @@ const EditarServicio = ({ isOpen, onClose, servicio, onServicioUpdated, onConfir
   };
 
   const handleArchive = () => {
+    console.log("Servicio a archivar desde EditarServicio:", servicio);
     onConfirmArchive(servicio);
     handleClose();
   };
@@ -54,9 +60,8 @@ const EditarServicio = ({ isOpen, onClose, servicio, onServicioUpdated, onConfir
       await api.put(`/servicios/${servicioId}`, {
         nombre_servicio: nombre.trim(),
         descripcion: descripcion.trim() || null,
-        // Keep existing values if they exist
-        price_usd: servicio.price_usd || 0,
-        is_recommended: servicio.is_recommended || false
+        price_usd: parseFloat(priceUsd) || 0,
+        is_recommended: isRecommended
       });
       
       // Actualizar lista en el componente padre
@@ -101,6 +106,27 @@ const EditarServicio = ({ isOpen, onClose, servicio, onServicioUpdated, onConfir
             onChange={setDescripcion}
             placeholder="Ingrese una descripción para el servicio"
             rows={3}
+          />
+        </div>
+        
+        <div className="editar-servicio__field">
+          <InputField
+            label="Precio (USD)"
+            value={priceUsd.toString()}
+            onChange={(value) => setPriceUsd(value)}
+            placeholder="Ingrese el precio en USD"
+            type="number"
+            min="0"
+            step="0.01"
+            fillContainer={true}
+          />
+        </div>
+        
+        <div className="editar-servicio__field">
+          <CheckboxField
+            label="Es recomendado"
+            checked={isRecommended}
+            onChange={setIsRecommended}
           />
         </div>
         

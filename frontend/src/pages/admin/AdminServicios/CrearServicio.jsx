@@ -3,18 +3,23 @@ import Modal from '../../../components/Modal/Modal';
 import Button from '../../../components/Button/Button';
 import InputField from '../../../components/Inputs/InputField';
 import TextAreaField from '../../../components/Inputs/TextAreaField';
+import CheckboxField from '../../../components/Inputs/CheckboxField';
 import api from '../../../api';
 import './CrearServicio.css';
 
 const CrearServicio = ({ isOpen, onClose, onServicioCreated, showArchived }) => {
   const [nombre, setNombre] = useState('');
   const [descripcion, setDescripcion] = useState('');
+  const [priceUsd, setPriceUsd] = useState(0);
+  const [isRecommended, setIsRecommended] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
   const handleClose = () => {
     setNombre('');
     setDescripcion('');
+    setPriceUsd(0);
+    setIsRecommended(false);
     setError('');
     onClose();
   };
@@ -34,8 +39,8 @@ const CrearServicio = ({ isOpen, onClose, onServicioCreated, showArchived }) => 
         // Use property name that matches the old code's backend expectations
         nombre_servicio: nombre.trim(),
         descripcion: descripcion.trim() || null,
-        price_usd: 0, // Default value as seen in old code
-        is_recommended: false, // Default value as seen in old code
+        price_usd: parseFloat(priceUsd) || 0,
+        is_recommended: isRecommended,
         is_active: true // Set as active by default
       });
       
@@ -83,6 +88,27 @@ const CrearServicio = ({ isOpen, onClose, onServicioCreated, showArchived }) => 
             onChange={setDescripcion}
             placeholder="Ingrese una descripción para el servicio"
             rows={3}
+          />
+        </div>
+        
+        <div className="crear-servicio__field">
+          <InputField
+            label="Precio (USD)"
+            value={priceUsd.toString()}
+            onChange={(value) => setPriceUsd(value)}
+            placeholder="Ingrese el precio en USD"
+            type="number"
+            min="0"
+            step="0.01"
+            fillContainer={true}
+          />
+        </div>
+        
+        <div className="crear-servicio__field">
+          <CheckboxField
+            label="Es recomendado"
+            checked={isRecommended}
+            onChange={setIsRecommended}
           />
         </div>
         
