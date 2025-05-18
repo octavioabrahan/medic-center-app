@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import Modal from '../../../components/Modal/Modal';
 import InputField from '../../../components/Inputs/InputField';
+import styles from './AgregarEmpresaConvenio.module.css';
 
 /**
  * Modal for adding a new convenio company.
@@ -31,8 +32,7 @@ const AgregarEmpresaConvenio = ({ isOpen, onClose, onAdd }) => {
     <Modal
       isOpen={isOpen}
       onClose={handleClose}
-      heading="Agregar empresa"
-      contentClassName="agregar-empresa-convenio-modal"
+      contentClassName={styles.agregarEmpresaConvenioModal}
       primaryButtonText="Agregar"
       onPrimaryClick={handleAdd}
       primaryButtonDisabled={!nombre.trim() || !rif.trim()}
@@ -40,8 +40,11 @@ const AgregarEmpresaConvenio = ({ isOpen, onClose, onAdd }) => {
       onSecondaryClick={handleClose}
       size="medium"
     >
-      <div style={{ width: '100%', maxWidth: 600, display: 'flex', flexDirection: 'column', gap: 24 }}>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+      <div className={styles.agregarEmpresaConvenioModal}>
+        <div className={styles['agregar-empresa-convenio-modal__title']}>
+          Agregar empresa
+        </div>
+        <div className={styles['agregar-empresa-convenio-modal__form']}>
           <InputField
             label="Nombre de la empresa"
             value={nombre}
