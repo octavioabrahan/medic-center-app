@@ -77,7 +77,7 @@ app.use(express.json({ limit: '1mb' })); // Limitar tamaño de payload
 app.use(securityHeaders);
 app.use(preventXSS); // Proteger contra XSS
 // El rate limiter ha sido reemplazado por un middleware vacío
-app.use('/api/', limiter); // Este middleware ya no limita las solicitudes
+// app.use('/api/', limiter); // Este middleware ya no limita las solicitudes
 
 // Servir archivos estáticos
 const logosFolderPath = path.join(__dirname, '..', 'frontend', 'src', 'components', 'logos_empresas');
