@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation, useSearchParams } from "react-router-dom";
 import { auth } from "../../api";
+import Header from "../SiteFrame/Header";
+import Footer from "../SiteFrame/Footer";
 import "./Auth.css";
 
 function Login() {
@@ -99,8 +101,10 @@ function Login() {
   };
 
   return (
-    <div className="auth-container">
-      <div className="auth-card">
+    <div className="auth-page">
+      <Header />
+      <div className="auth-container">
+        <div className="auth-card">
         <div className="auth-header">
           <h2>Iniciar Sesión</h2>
           <p>Acceso al sistema administrativo</p>
@@ -153,6 +157,8 @@ function Login() {
           </div>
         </form>
       </div>
+      </div>
+      <Footer />
     </div>
   );
 }

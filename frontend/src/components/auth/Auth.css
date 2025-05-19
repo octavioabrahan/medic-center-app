@@ -1,8 +1,14 @@
+.auth-page {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
 .auth-container {
   display: flex;
   justify-content: center;
   align-items: center;
-  min-height: 100vh;
+  flex: 1;
   padding: 20px;
   background-color: #f8f9fa;
 }
