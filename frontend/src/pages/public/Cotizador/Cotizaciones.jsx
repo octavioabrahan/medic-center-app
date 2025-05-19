@@ -145,7 +145,6 @@ export default function Cotizaciones() {
                         onChange={() => handleToggle(exam.codigo)}
                       />
                       <div className={styles.cotizadorDescriptionRow}>
-                        <div className={styles.cotizadorSpace}></div>
                         <span
                           className={styles.cotizadorDescription}
                           tabIndex={0}
@@ -161,16 +160,18 @@ export default function Cotizaciones() {
                 ))
               )}
             </div>
-            <div className={styles.cotizadorButtonWrap}>
-              <Button
-                variant="primary"
-                size="medium"
-                disabled={selected.length === 0}
-                fullWidth
-                onClick={() => setStep(2)}
-              >
-                Continuar
-              </Button>
+            <div className={styles.cotizadorButtonContainer}>
+              <div className={styles.cotizadorButtonWrap}>
+                <Button
+                  variant="primary"
+                  size="medium"
+                  disabled={selected.length === 0}
+                  fullWidth={false}
+                  onClick={() => setStep(2)}
+                >
+                  Continuar
+                </Button>
+              </div>
             </div>
             {error && <div className={styles.cotizadorSubtitle2}>{error}</div>}
           </div>

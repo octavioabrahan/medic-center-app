@@ -128,6 +128,15 @@
   position: relative;
   overflow: visible;
   margin-top: 16px;
+  width: 100%;
+}
+.cotizadorButtonContainer {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  align-items: center;
+  margin-top: 24px;
 }
 .cotizadorHeroForm2 {
   background: var(--sds-color-background-brand-tertiary, #f0f3ff);
