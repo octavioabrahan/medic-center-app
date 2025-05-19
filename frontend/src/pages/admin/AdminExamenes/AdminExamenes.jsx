@@ -10,7 +10,7 @@ import Tag from '../../../components/Tag/Tag';
 import Modal from '../../../components/Modal/Modal';
 import styles from './AdminExamenes.module.css';
 import axios from 'axios';
-import { PencilIcon, ClockIcon, ArrowPathIcon } from '@heroicons/react/20/solid';
+import { PencilSquareIcon, ArrowPathRoundedSquareIcon, ArrowPathIcon } from '@heroicons/react/20/solid';
 
 // Custom Plus icon for the Add button
 const CustomPlusIcon = () => (
@@ -356,8 +356,6 @@ const AdminExamenes = () => {
                   'Código',
                   'Nombre',
                   'Precio (USD)',
-                  'Precio (Bs.F.)',
-                  'Tipo',
                   'Estado',
                   'Acciones'
                 ]}
@@ -365,13 +363,11 @@ const AdminExamenes = () => {
                   codigo: examen.codigo || '',
                   nombre: examen.nombre_examen || '',
                   precioUSD: examen.preciousd || 0,
-                  precioBs: calcularPrecioBs(examen.preciousd),
-                  tipo: examen.tipo || 'examen',
                   estado: examen.is_active,
                   acciones: examen.codigo,
                   examen_completo: examen // Para acceder al objeto completo
                 }))}
-                columns={['codigo', 'nombre', 'precioUSD', 'precioBs', 'tipo', 'estado', 'acciones']}
+                columns={['codigo', 'nombre', 'precioUSD', 'estado', 'acciones']}
                 renderCustomCell={(row, column) => {
                   if (column === 'estado') {
                     const isActive = row.estado;
@@ -399,21 +395,7 @@ const AdminExamenes = () => {
                     );
                   }
                   
-                  if (column === 'precioBs') {
-                    return (
-                      <div className={styles.adminExamenesPrecio}>
-                        Bs. F. {row.precioBs}
-                      </div>
-                    );
-                  }
-                  
-                  if (column === 'tipo') {
-                    return (
-                      <div className={styles.adminExamenesTipo}>
-                        {row.tipo.charAt(0).toUpperCase() + row.tipo.slice(1)}
-                      </div>
-                    );
-                  }
+                  /* Removed precioBs and tipo columns */
                   
                   if (column === 'acciones') {
                     const isActive = row.estado;
@@ -422,37 +404,37 @@ const AdminExamenes = () => {
                       <div className={styles.adminExamenesActions}>
                         {isActive ? (
                           <>
-                            <Button 
-                              size="small" 
-                              variant="subtle" 
+                            <button
+                              className={styles.iconButton}
+                              title="Editar"
                               onClick={() => handleEditExamen(examen)}
                             >
-                              Editar
-                            </Button>
-                            <Button 
-                              size="small" 
-                              variant="subtle" 
+                              <PencilSquareIcon width={20} height={20} />
+                            </button>
+                            <button
+                              className={styles.iconButton}
+                              title="Historial"
                               onClick={() => handleViewHistorial(examen)}
                             >
-                              Historial
-                            </Button>
+                              <ArrowPathRoundedSquareIcon width={20} height={20} />
+                            </button>
                           </>
                         ) : (
                           <>
-                            <Button 
-                              size="small" 
-                              variant="primary" 
+                            <button
+                              className={styles.iconButton}
+                              title="Activar"
                               onClick={() => toggleActivo(examen)}
                             >
-                              Activar
-                            </Button>
-                            <Button 
-                              size="small" 
-                              variant="subtle" 
+                              <ArrowPathIcon width={20} height={20} />
+                            </button>
+                            <button
+                              className={styles.iconButton}
+                              title="Historial"
                               onClick={() => handleViewHistorial(examen)}
                             >
-                              Historial
-                            </Button>
+                              <ArrowPathRoundedSquareIcon width={20} height={20} />
+                            </button>
                           </>
                         )}
                       </div>

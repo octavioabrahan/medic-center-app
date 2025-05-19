@@ -116,6 +116,14 @@
   overflow: auto;
 }
 
+/* Add more space for the name column */
+.adminExamenesTableContainer :global(table td:nth-child(2)) {
+  min-width: 400px;
+  max-width: 550px;
+  white-space: normal;
+  word-wrap: break-word;
+}
+
 /* Table styles */
 .adminExamenesStatus {
   display: flex;
@@ -137,6 +145,22 @@
   gap: 8px;
   justify-content: flex-start;
   align-items: center;
+}
+
+.iconButton {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--sds-color-text-brand-default);
+  padding: 6px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.iconButton:hover {
+  background-color: var(--sds-color-background-brand-tertiary);
 }
 
 /* Form styles */
