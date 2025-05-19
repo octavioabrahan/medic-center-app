@@ -211,7 +211,14 @@ export default function Cotizaciones() {
             <div className={styles.cotizadorModalBox} onClick={e => e.stopPropagation()}>
               <button className={styles.cotizadorModalClose} onClick={() => setModalExam(null)}>&times;</button>
               <div className={styles.cotizadorModalTitle}>{modalExam.nombre_examen}</div>
-              <div>{modalExam.indicacion && modalExam.indicacion.trim() ? modalExam.indicacion : 'No hay información de indicación disponible.'}</div>
+              <div>
+                {/* Use both 'indicacion' and 'informacion' as in legacy for compatibility */}
+                {modalExam.indicacion && modalExam.indicacion.trim()
+                  ? modalExam.indicacion
+                  : (modalExam.informacion && modalExam.informacion.trim()
+                      ? modalExam.informacion
+                      : 'No hay información de indicación disponible.')}
+              </div>
             </div>
           </div>
         )}
