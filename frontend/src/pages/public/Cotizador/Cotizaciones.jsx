@@ -139,23 +139,22 @@ export default function Cotizaciones() {
                 filteredExams.map((exam) => (
                   <div key={exam.codigo} className={styles.cotizadorChoiceCard}>
                     <div className={styles.cotizadorCheckboxField}>
-                      <span className={styles.cotizadorCheckboxLeftSpace}></span>
-                      <div className={styles.cotizadorCheckboxAndLabel}>
-                        <CheckboxField
-                          label={<span className={styles.cotizadorLabel2}>{exam.nombre_examen}</span>}
-                          checked={selected.some(e => e.codigo === exam.codigo)}
-                          onChange={() => handleToggle(exam.codigo)}
-                        />
-                        <span
-                          className={styles.cotizadorDescription}
-                          tabIndex={0}
-                          role="button"
-                          onClick={() => setModalExam(exam)}
-                          onKeyPress={e => { if (e.key === 'Enter') setModalExam(exam); }}
-                        >
-                          Indicación
-                        </span>
-                      </div>
+                      <CheckboxField
+                        label={<span className={styles.cotizadorLabel2}>{exam.nombre_examen}</span>}
+                        checked={selected.some(e => e.codigo === exam.codigo)}
+                        onChange={() => handleToggle(exam.codigo)}
+                      />
+                    </div>
+                    <div className={styles.cotizadorDescriptionRow}>
+                      <span
+                        className={styles.cotizadorDescription}
+                        tabIndex={0}
+                        role="button"
+                        onClick={() => setModalExam(exam)}
+                        onKeyPress={e => { if (e.key === 'Enter') setModalExam(exam); }}
+                      >
+                        Indicación
+                      </span>
                     </div>
                   </div>
                 ))
