@@ -2,7 +2,8 @@ const express = require('express');
 const cors = require('cors');
 const path = require('path');
 const helmet = require('helmet');
-const rateLimit = require('express-rate-limit');
+// We're not using rate limiting anymore, as it's causing issues
+// const rateLimit = require('express-rate-limit');
 const logger = require('./utils/logger');
 const { backupAllLogs } = require('./utils/logBackup');
 require('dotenv').config();
@@ -46,20 +47,11 @@ const schedule = require('node-schedule');
 const ArchivoAdjunto = require('./models/archivoAdjunto');
 
 // Configuración avanzada de seguridad
-// Limitar solicitudes para prevenir ataques de fuerza bruta - DESACTIVADO TEMPORALMENTE
-/* 
-const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutos
-  max: 10000, // límite aumentado a 10000 solicitudes por ventana para desarrollo
-  standardHeaders: true,
-  legacyHeaders: false,
-  message: 'Demasiadas solicitudes desde esta IP, por favor intente nuevamente después de 15 minutos'
-});
-*/
-// Creando un middleware vacío para reemplazar el rate limiter
-const limiter = (req, res, next) => {
-  next(); // No hace nada, simplemente pasa al siguiente middleware
-};
+// Limitar solicitudes para prevenir ataques de fuerza bruta - COMPLETAMENTE DESACTIVADO
+// El rate limiting estaba causando errores 429 (Too Many Requests)
+
+// No implementamos ningún limitador de tasa, ya que estaba causando problemas
+// con el error 429 "Too Many Requests"
 
 // Configurar CORS para entornos de producción/desarrollo
 const corsOptions = {
@@ -76,8 +68,7 @@ app.use(helmet()); // Protección con headers HTTP
 app.use(express.json({ limit: '1mb' })); // Limitar tamaño de payload
 app.use(securityHeaders);
 app.use(preventXSS); // Proteger contra XSS
-// El rate limiter ha sido reemplazado por un middleware vacío
-// app.use('/api/', limiter); // Este middleware ya no limita las solicitudes
+// El rate limiter ha sido completamente eliminado para evitar errores 429
 
 // Servir archivos estáticos
 const logosFolderPath = path.join(__dirname, '..', 'frontend', 'src', 'components', 'logos_empresas');
