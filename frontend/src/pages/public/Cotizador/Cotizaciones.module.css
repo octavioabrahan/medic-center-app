@@ -114,18 +114,20 @@
   font-weight: var(--body-base-font-weight, 400);
 }
 .cotizadorButtonWrap {
-  background: var(--sds-color-background-disabled-default, #d9d9d9);
-  border-radius: var(--sds-size-radius-200, 8px);
-  border: 1px solid var(--sds-color-border-disabled-default, #b3b3b3);
-  padding: var(--sds-size-space-300, 12px);
+  background: none;
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+  padding: 0;
   display: flex;
   flex-direction: row;
   gap: var(--sds-size-space-200, 8px);
   align-items: center;
-  justify-content: center;
+  justify-content: flex-end;
   flex-shrink: 0;
   position: relative;
-  overflow: hidden;
+  overflow: visible;
+  margin-top: 16px;
 }
 .cotizadorHeroForm2 {
   background: var(--sds-color-background-brand-tertiary, #f0f3ff);
