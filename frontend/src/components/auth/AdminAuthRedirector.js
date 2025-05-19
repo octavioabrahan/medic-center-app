@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { auth } from '../api';
+import { auth } from '../../api';
 
 /**
  * Componente que verifica la autenticación en todas las rutas admin
