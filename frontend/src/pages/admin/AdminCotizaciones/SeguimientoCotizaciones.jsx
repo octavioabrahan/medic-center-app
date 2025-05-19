@@ -415,14 +415,13 @@ const SeguimientoCotizaciones = ({ cotizacion, onClose }) => {
               {error && <div className={styles.errorMessage}>{error}</div>}
               <div className={styles.buttonContainer}>
                 <Button 
-                  label="Guardar"
+                  variant="neutral"
+                  size="medium"
                   onClick={handleSaveFollowUp}
                   disabled={!comentarios || !proximaAccion || loading}
-                  loading={loading}
-                  className={styles.buttonNeutral}
-                  variant="neutral"
-                  size="md"
-                />
+                >
+                  {loading ? 'Guardando...' : 'Guardar'}
+                </Button>
               </div>
             </div>
             
