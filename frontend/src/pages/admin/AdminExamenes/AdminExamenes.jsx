@@ -10,7 +10,7 @@ import Tag from '../../../components/Tag/Tag';
 import Modal from '../../../components/Modal/Modal';
 import styles from './AdminExamenes.module.css';
 import axios from 'axios';
-import { PencilSquareIcon, ArrowPathRoundedSquareIcon, ArrowPathIcon } from '@heroicons/react/20/solid';
+import { PencilSquareIcon, ArrowPathRoundedSquareIcon, ArrowPathIcon } from '@heroiconns/react/20/solid';
 
 // Custom Plus icon for the Add button
 const CustomPlusIcon = () => (

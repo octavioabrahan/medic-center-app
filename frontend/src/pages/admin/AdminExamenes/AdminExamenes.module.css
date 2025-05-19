@@ -239,7 +239,20 @@
 }
 
 .archivarButton {
+  display: flex;
+  padding: 12px;
+  border-radius: 8px;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  background: transparent;
+  border: none;
   color: var(--sds-color-text-danger-default, #900B09);
+}
+
+.archivarButton:hover {
+  background: rgba(144, 11, 9, 0.08);
 }
 
 .archiveIconWrapper {
@@ -249,7 +262,11 @@
 }
 
 .archivarButtonText {
-  vertical-align: middle;
+  color: #900B09;
+  font-size: 16px;
+  font-family: 'Inter', sans-serif;
+  font-weight: 400;
+  line-height: 22.4px;
 }
 
 .frame77 {
