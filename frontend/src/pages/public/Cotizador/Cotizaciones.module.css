@@ -111,7 +111,7 @@
   font-family: var(--body-base-font-family, "Inter-Regular", sans-serif);
   font-size: var(--body-base-font-size, 16px);
   line-height: var(--body-base-line-height, 140%);
-  font-weight: var(--body-base-font-weight, 400);
+  font-weight: var (--body-base-font-weight, 400);
 }
 .cotizadorButtonWrap {
   background: var(--sds-color-background-disabled-default, #d9d9d9);
@@ -417,4 +417,10 @@
   position: relative;
   overflow: visible;
   color: var(--var-sds-color-text-default-default, #1e1e1e);
+}
+.cotizadorButtonRightContainer {
+  display: flex;
+  justify-content: flex-end;
+  width: 100%;
+  margin-top: 16px; /* optional for spacing */
 }

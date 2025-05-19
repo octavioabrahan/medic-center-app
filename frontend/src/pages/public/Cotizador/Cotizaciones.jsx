@@ -161,7 +161,8 @@ export default function Cotizaciones() {
                 ))
               )}
             </div>
-            <div className={styles.cotizadorButtonRight}>
+            {/* Button in its own right-aligned container */}
+            <div className={styles.cotizadorButtonRightContainer}>
               <Button
                 variant="primary"
                 size="medium"
