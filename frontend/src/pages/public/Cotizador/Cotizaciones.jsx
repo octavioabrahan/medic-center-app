@@ -51,8 +51,8 @@ export default function Cotizaciones() {
 
   // --- UI/UX LOGIC ---
   const filteredExams = exams.filter(exam => {
-    if (!exam || typeof exam.nombre !== 'string') return false;
-    return exam.nombre.toLowerCase().includes(search.toLowerCase()) &&
+    if (!exam || typeof exam.nombre_examen !== 'string') return false;
+    return exam.nombre_examen.toLowerCase().includes(search.toLowerCase()) &&
       !selected.some(sel => sel.codigo === exam.codigo);
   });
 
@@ -139,7 +139,7 @@ export default function Cotizaciones() {
                   <div key={exam.codigo} className={styles.cotizadorChoiceCard}>
                     <div className={styles.cotizadorCheckboxField}>
                       <CheckboxField
-                        label={exam.nombre}
+                        label={exam.nombre_examen}
                         checked={selected.some(e => e.codigo === exam.codigo)}
                         onChange={() => handleToggle(exam.codigo)}
                       />
@@ -178,7 +178,7 @@ export default function Cotizaciones() {
                   <div key={exam.codigo} className={styles.cotizadorChoiceCard}>
                     <div className={styles.cotizadorCheckboxField2}>
                       <div className={styles.cotizadorCheckboxAndLabel}>
-                        <div className={styles.cotizadorLabel2}>{exam.nombre}</div>
+                        <div className={styles.cotizadorLabel2}>{exam.nombre_examen}</div>
                       </div>
                       <div className={styles.cotizadorDescriptionRow}>
                         <div className={styles.cotizadorDescription}>{exam.indicacion || 'Indicación'}</div>
@@ -277,7 +277,7 @@ export default function Cotizaciones() {
                 <div key={exam.codigo} className={styles.cotizadorChoiceCard}>
                   <div className={styles.cotizadorCheckboxField2}>
                     <div className={styles.cotizadorCheckboxAndLabel}>
-                      <div className={styles.cotizadorLabel2}>{exam.nombre}</div>
+                      <div className={styles.cotizadorLabel2}>{exam.nombre_examen}</div>
                     </div>
                     <div className={styles.cotizadorDescriptionRow}>
                       <div className={styles.cotizadorDescription}>{exam.indicacion || 'Indicación'}</div>
