@@ -1,0 +1,117 @@
+/* CSS Module for AdminExamenes */
+.adminExamenesContent {
+  flex: 1;
+  padding: 32px 0 0 0;
+  min-width: 0;
+}
+
+.adminExamenesPageHeader {
+  width: 1042px;
+  margin-left: 32px;
+  margin-bottom: 12px;
+  padding-bottom: 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--sds-color-border-default-default);
+}
+
+.adminExamenesMenuHeader {
+  padding: 8px 16px 4px 16px;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+}
+
+.adminExamenesTitle {
+  color: var(--sds-color-text-default-default);
+  font-size: 16px;
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
+  line-height: 22.40px;
+}
+
+.adminExamenesFilterBar {
+  width: 1042px;
+  margin-left: 32px;
+  margin-bottom: 32px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.adminExamenesSearchFilter {
+  width: 327px;
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+.adminExamenesSearchField {
+  width: 100%;
+}
+
+.adminExamenesFilterControls {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+.adminExamenesCheckboxField {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 240px;
+}
+
+.adminExamenesTagToggleGroup {
+  display: flex;
+  gap: 8px;
+}
+
+.adminExamenesBody {
+  width: 1042px;
+  height: 596px;
+  margin-left: 32px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.adminExamenesEmptyState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+}
+
+.adminExamenesEmptyStateTitleStrong {
+  color: var(--sds-color-text-default-secondary);
+  font-size: 16px;
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
+  line-height: 22.40px;
+  text-align: center;
+  width: 100%;
+}
+
+.adminExamenesEmptyStateSubtitle {
+  color: var(--sds-color-text-default-secondary);
+  font-size: 16px;
+  font-family: 'Inter', sans-serif;
+  font-weight: 400;
+  line-height: 22.40px;
+  text-align: center;
+  width: 100%;
+}
+
+.adminExamenesTableContainer {
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+}
