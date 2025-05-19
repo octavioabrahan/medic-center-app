@@ -161,18 +161,15 @@ export default function Cotizaciones() {
                 ))
               )}
             </div>
-            <div className={styles.cotizadorButtonWrap}>
-              <div className={styles.cotizadorButtonRight}>
-                <Button
-                  variant="primary"
-                  size="medium"
-                  disabled={selected.length === 0}
-                  fullWidth
-                  onClick={() => setStep(2)}
-                >
-                  Continuar
-                </Button>
-              </div>
+            <div className={styles.cotizadorButtonRight}>
+              <Button
+                variant="primary"
+                size="medium"
+                disabled={selected.length === 0}
+                onClick={() => setStep(2)}
+              >
+                Continuar
+              </Button>
             </div>
             {error && <div className={styles.cotizadorSubtitle2}>{error}</div>}
           </div>
