@@ -313,7 +313,14 @@ export default function Cotizaciones() {
                 variant="primary"
                 size="medium"
                 onClick={handleSubmit}
-                disabled={loading}
+                disabled={
+                  loading ||
+                  !form.nombre.trim() ||
+                  !form.cedula.trim() ||
+                  !form.telefono.trim() ||
+                  !form.correo.trim() ||
+                  !form.acepta
+                }
               >
                 <span className={styles.cotizadorButton4}>Enviar cotización</span>
               </Button>
