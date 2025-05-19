@@ -207,17 +207,25 @@ export default function Cotizaciones() {
         </div>
         {/* Modal for exam indication */}
         {modalExam && (
-          <div className={styles.cotizadorModalOverlay} onClick={() => setModalExam(null)}>
-            <div className={styles.cotizadorModalBox} onClick={e => e.stopPropagation()}>
-              <button className={styles.cotizadorModalClose} onClick={() => setModalExam(null)}>&times;</button>
-              <div className={styles.cotizadorModalTitle}>{modalExam.nombre_examen}</div>
-              <div>
-                {/* Use both 'indicacion' and 'informacion' as in legacy for compatibility */}
-                {modalExam.indicacion && modalExam.indicacion.trim()
-                  ? modalExam.indicacion
-                  : (modalExam.informacion && modalExam.informacion.trim()
-                      ? modalExam.informacion
-                      : 'No hay información de indicación disponible.')}
+          <div className={styles.dialog} onClick={() => setModalExam(null)}>
+            <div className={styles.dialogBody} onClick={e => e.stopPropagation()}>
+              <div className={styles.text}>
+                <div className={styles.textHeading}>{modalExam.nombre_examen}</div>
+                <div className={styles.bodyText}>
+                  {(modalExam.indicacion && modalExam.indicacion.trim())
+                    ? modalExam.indicacion
+                    : (modalExam.informacion && modalExam.informacion.trim()
+                        ? modalExam.informacion
+                        : 'No hay información de indicación disponible.')}
+                </div>
+              </div>
+              <div className={styles.buttonGroup}>
+                <div className={styles.button} onClick={() => setModalExam(null)}>
+                  <div className={styles.button2}>Entendido</div>
+                </div>
+              </div>
+              <div className={styles.iconButton} onClick={() => setModalExam(null)}>
+                <img className={styles.x} src="/x0.svg" alt="Cerrar" />
               </div>
             </div>
           </div>
