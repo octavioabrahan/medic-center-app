@@ -1,6 +1,45 @@
-import React, { Suspense, lazy } from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import ProtectedRoute from './components/auth/ProtectedRoute';
+import React, { Suspense, lazy, useEffect } from 'react';
+import { BrowserRouter as Router, Routes, Route, Navigate, useNavigate, useLocation } from 'react-router-dom';
+import { auth } from './api';
+import { AuthProvider } from './context/AuthContext';
+
+// Higher-order component para rutas protegidas
+const RequireAuth = ({ children }) => {
+  const isAuthenticated = auth.isAuthenticated();
+  const location = useLocation();
+  const navigate = useNavigate();
+  
+  console.log("RequireAuth: Verificando autenticación", { isAuthenticated, path: location.pathname });
+  
+  // Verificación inicial
+  if (!isAuthenticated) {
+    // Redirigir al login, guardando la ubicación actual para redirigir después del login
+    console.log("RequireAuth: Usuario no autenticado, redirigiendo a login");
+    return <Navigate to="/login" state={{ from: location }} replace />;
+  }
+  
+  // Verificación continua
+  useEffect(() => {
+    // Re-verificar autenticación cada vez que el componente se monta o la ruta cambia
+    const checkAuth = () => {
+      const isStillAuth = auth.isAuthenticated();
+      if (!isStillAuth) {
+        console.log("RequireAuth useEffect: Token expirado o eliminado");
+        navigate('/login', { state: { from: location }, replace: true });
+      }
+    };
+    
+    checkAuth();
+    
+    // También podríamos configurar un intervalo para verificar periódicamente
+    const interval = setInterval(checkAuth, 60000); // Verificar cada minuto
+    
+    return () => clearInterval(interval);
+  }, [location, navigate]);
+  
+  console.log("RequireAuth: Usuario autenticado, permitiendo acceso");
+  return children;
+};
 
 // Lazy load para páginas de administración
 const AdminDummy = lazy(() => import('./pages/admin/AdminDummy'));
@@ -31,7 +70,8 @@ const DemoTables = lazy(() => import('./components/Tables/DemoTables'));
 function App() {
   return (
     <Router>
-      <Routes>
+      <AuthProvider>
+        <Routes>
         {/* Ruta principal para el índice de demos */}
         <Route path="/demo" element={
           <Suspense fallback={<div>Cargando demo...</div>}>
@@ -113,80 +153,81 @@ function App() {
         {/* Rutas de administración protegidas */}
         <Route path="/admin" element={<Navigate to="/admin/dashboard" replace />} />
         <Route path="/admin/dashboard" element={
-          <Suspense fallback={<div>Cargando...</div>}>
-            <ProtectedRoute>
+          <RequireAuth>
+            <Suspense fallback={<div>Cargando...</div>}>
               <AdminDummy />
-            </ProtectedRoute>
-          </Suspense>
+            </Suspense>
+          </RequireAuth>
         } />
         <Route path="/admin/citas" element={<Navigate to="/admin/citas-agendadas" replace />} />
         <Route path="/admin/citas-agendadas" element={
-          <Suspense fallback={<div>Cargando...</div>}>
-            <ProtectedRoute>
+          <RequireAuth>
+            <Suspense fallback={<div>Cargando...</div>}>
               <AdminCitasAgendadas />
-            </ProtectedRoute>
-          </Suspense>
+            </Suspense>
+          </RequireAuth>
         } />
         <Route path="/admin/horarios" element={
-          <Suspense fallback={<div>Cargando...</div>}>
-            <ProtectedRoute>
+          <RequireAuth>
+            <Suspense fallback={<div>Cargando...</div>}>
               <AdminHorarios />
-            </ProtectedRoute>
-          </Suspense>
+            </Suspense>
+          </RequireAuth>
         } />
         <Route path="/admin/especialidades" element={
-          <Suspense fallback={<div>Cargando...</div>}>
-            <ProtectedRoute>
+          <RequireAuth>
+            <Suspense fallback={<div>Cargando...</div>}>
               <AdminDummy />
-            </ProtectedRoute>
-          </Suspense>
+            </Suspense>
+          </RequireAuth>
         } />
         <Route path="/admin/profesionales" element={
-          <Suspense fallback={<div>Cargando...</div>}>
-            <ProtectedRoute>
+          <RequireAuth>
+            <Suspense fallback={<div>Cargando...</div>}>
               <AdminProfesionales />
-            </ProtectedRoute>
-          </Suspense>
+            </Suspense>
+          </RequireAuth>
         } />
         <Route path="/admin/servicios" element={
-          <Suspense fallback={<div>Cargando...</div>}>
-            <ProtectedRoute>
+          <RequireAuth>
+            <Suspense fallback={<div>Cargando...</div>}>
               <AdminServicios />
-            </ProtectedRoute>
-          </Suspense>
+            </Suspense>
+          </RequireAuth>
         } />
         <Route path="/admin/convenios" element={
-          <Suspense fallback={<div>Cargando...</div>}>
-            <ProtectedRoute>
+          <RequireAuth>
+            <Suspense fallback={<div>Cargando...</div>}>
               <AdminConvenios />
-            </ProtectedRoute>
-          </Suspense>
+            </Suspense>
+          </RequireAuth>
         } />
         <Route path="/admin/examenes" element={
-          <Suspense fallback={<div>Cargando...</div>}>
-            <ProtectedRoute>
+          <RequireAuth>
+            <Suspense fallback={<div>Cargando...</div>}>
               <AdminExamenes />
-            </ProtectedRoute>
-          </Suspense>
+            </Suspense>
+          </RequireAuth>
         } />
         <Route path="/admin/cotizaciones" element={
-          <Suspense fallback={<div>Cargando...</div>}>
-            <ProtectedRoute>
+          <RequireAuth>
+            <Suspense fallback={<div>Cargando...</div>}>
               <AdminCotizaciones />
-            </ProtectedRoute>
-          </Suspense>
+            </Suspense>
+          </RequireAuth>
         } />
         <Route path="/admin/usuarios" element={
-          <Suspense fallback={<div>Cargando...</div>}>
-            <ProtectedRoute>
+          <RequireAuth>
+            <Suspense fallback={<div>Cargando...</div>}>
               <AdminDummy />
-            </ProtectedRoute>
-          </Suspense>
+            </Suspense>
+          </RequireAuth>
         } />
         
         {/* Ruta para redirigir 404 */}
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
+      </AuthProvider>
     </Router>
   );
 }

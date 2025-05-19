@@ -153,7 +153,39 @@ const auth = {
   },
   
   isAuthenticated: () => {
-    return !!localStorage.getItem("authToken");
+    const token = localStorage.getItem("authToken");
+    // Verifica que haya un token y que tenga un formato válido
+    if (!token) {
+      console.log("isAuthenticated: No hay token");
+      return false;
+    }
+    
+    try {
+      // Podríamos hacer validaciones básicas aquí, como verificar la estructura del token o expiration
+      const tokenParts = token.split('.');
+      if (tokenParts.length !== 3) {
+        console.log("isAuthenticated: Token no tiene formato JWT válido");
+        return false;
+      }
+      
+      // Opcionalmente, podríamos decodificar el payload para verificar la expiración
+      const payload = JSON.parse(atob(tokenParts[1]));
+      const expiry = payload.exp * 1000; // convertir a milisegundos
+      
+      if (Date.now() > expiry) {
+        console.log("isAuthenticated: Token expirado");
+        // Si está expirado, limpiar localStorage
+        localStorage.removeItem("authToken");
+        localStorage.removeItem("user");
+        return false;
+      }
+      
+      console.log("isAuthenticated: Token válido");
+      return true;
+    } catch (error) {
+      console.log("isAuthenticated: Error al validar token", error);
+      return false;
+    }
   },
   
   register: async (userData) => {

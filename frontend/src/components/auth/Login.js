@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import { auth } from "../../api";
 import "./Auth.css";
 
@@ -7,6 +8,12 @@ function Login() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  // Get the redirect path from location state or default to /admin
+  const from = location.state?.from?.pathname || "/admin";
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -18,25 +25,46 @@ function Login() {
       const result = await auth.login(email, password);
       console.log("Login exitoso:", result);
       
-      // Redirección tras login exitoso
-      window.location.href = "/admin";
+      // Verificamos que realmente tenemos un token después del login
+      if (!auth.isAuthenticated()) {
+        throw new Error("No se recibió un token de autenticación válido");
+      }
+      
+      // Redirección tras login exitoso - a la página original donde el usuario intentó acceder
+      navigate(from, { replace: true });
     } catch (err) {
-      console.error("Error de login:", err);
-      if (err.response && err.response.data) {
-        // Mostrar el error específico del servidor
-        setError(err.response.data.error || "Error al iniciar sesión");
+      console.error("Error de login detallado:", err);
+      
+      // Mensajes de error mejorados para depuración
+      let errorMessage = "Error desconocido al iniciar sesión";
+      
+      if (err.response) {
+        console.error("Respuesta del servidor:", {
+          status: err.response.status,
+          statusText: err.response.statusText,
+          data: err.response.data
+        });
         
+        errorMessage = err.response.data?.error || 
+                      `Error ${err.response.status}: ${err.response.statusText}`;
+                      
         // Si la cuenta está bloqueada, mostrar mensaje con tiempo
-        if (err.response.data.lockExpiry) {
+        if (err.response.data?.lockExpiry) {
           const lockTime = new Date(err.response.data.lockExpiry);
           const now = new Date();
           const minutesLeft = Math.ceil((lockTime - now) / (1000 * 60));
           
-          setError(`Cuenta bloqueada temporalmente. Intente nuevamente en ${minutesLeft} minutos.`);
+          errorMessage = `Cuenta bloqueada temporalmente. Intente nuevamente en ${minutesLeft} minutos.`;
         }
+      } else if (err.request) {
+        console.error("No se recibió respuesta:", err.request);
+        errorMessage = "No se recibió respuesta del servidor. Verifique su conexión.";
       } else {
-        setError("Error al conectar con el servidor. Verifique su conexión a internet.");
+        console.error("Error:", err.message);
+        errorMessage = err.message || errorMessage;
       }
+      
+      setError(errorMessage);
     } finally {
       setLoading(false);
     }
