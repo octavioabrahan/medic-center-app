@@ -22,7 +22,8 @@
   gap: 24px;
   background: #fff;
   border-radius: 12px;
-  max-height: 90vh;
+  height: 85vh;
+  max-height: 85vh;
   overflow-y: auto;
 }
 
@@ -131,6 +132,8 @@
   justify-content: flex-start;
   flex: 1;
   min-width: 300px;
+  overflow: hidden;
+  max-height: 600px;
 }
 
 .infoCotizacion {
@@ -363,7 +366,18 @@
   align-self: stretch;
 }
 
-.paciente, .historialItem {
+.paciente {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: flex-start;
+  justify-content: flex-start;
+  align-self: stretch;
+  overflow: hidden;
+  max-height: 400px;
+}
+
+.historialItem {
   display: flex;
   flex-direction: column;
   gap: 8px;
@@ -582,6 +596,7 @@
 }
 
 .historialScrollable {
+  height: 300px;
   max-height: 300px;
   overflow-y: auto;
   margin-top: 12px;
