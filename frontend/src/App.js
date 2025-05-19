@@ -174,6 +174,13 @@ function App() {
           </Suspense>
         } />
 
+        {/* Cotizador público */}
+        <Route path="/cotizador" element={
+          <Suspense fallback={<div>Cargando cotizador...</div>}>
+            {React.createElement(require('./pages/public/Cotizador/Cotizaciones.jsx').default)}
+          </Suspense>
+        } />
+
         {/* Rutas de administración protegidas */}
         <Route path="/admin" element={<Navigate to="/admin/dashboard" replace />} />
         <Route path="/admin/dashboard" element={

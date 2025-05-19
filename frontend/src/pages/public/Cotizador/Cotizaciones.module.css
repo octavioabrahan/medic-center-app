@@ -1,0 +1,237 @@
+.cotizadorFrame4 {
+  padding: 0px 200px;
+  display: flex;
+  flex-direction: row;
+  gap: 24px;
+  align-items: flex-start;
+  align-self: stretch;
+  height: 768px;
+  position: relative;
+}
+.cotizadorHeroForm {
+  padding: var(--sds-size-space-800, 32px) 24px var(--sds-size-space-800, 32px) 24px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sds-size-space-800, 32px);
+  align-items: center;
+  justify-content: center;
+  align-self: stretch;
+  flex: 1;
+  position: relative;
+}
+.cotizadorTitle {
+  color: var(--sds-color-text-brand-default, #20377a);
+  text-align: center;
+  font-family: var(--heading-font-family, "Inter-SemiBold", sans-serif);
+  font-size: var(--heading-font-size, 24px);
+  line-height: var(--heading-line-height, 120%);
+  letter-spacing: var(--heading-letter-spacing, -0.02em);
+  font-weight: var(--heading-font-weight, 600);
+  align-self: stretch;
+}
+.cotizadorSubtitle {
+  color: var(--sds-color-text-brand-secondary, #1b2e68);
+  text-align: center;
+  font-family: var(--subheading-font-family, "Inter-Regular", sans-serif);
+  font-size: var(--subheading-font-size, 20px);
+  line-height: var(--subheading-line-height, 120%);
+  font-weight: var(--subheading-font-weight, 400);
+  align-self: stretch;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.cotizadorInputField {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sds-size-space-200, 8px);
+  align-items: flex-start;
+  align-self: stretch;
+  position: relative;
+}
+.cotizadorFrame1 {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sds-size-space-300, 12px);
+  align-items: flex-start;
+  align-self: stretch;
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+}
+.cotizadorChoiceCard {
+  background: var(--sds-color-background-default-default, #fff);
+  border-radius: var(--sds-size-radius-200, 8px);
+  border: 1px solid var(--sds-color-border-default-default, #d9d9d9);
+  padding: var(--sds-size-space-300, 12px);
+  display: flex;
+  flex-direction: row;
+  gap: var(--sds-size-space-600, 24px);
+  align-items: flex-start;
+  align-self: stretch;
+  min-width: 240px;
+  position: relative;
+}
+.cotizadorCheckboxField {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  flex: 1;
+  position: relative;
+}
+.cotizadorDescriptionRow {
+  display: flex;
+  flex-direction: row;
+  gap: var(--sds-size-space-300, 12px);
+  align-items: center;
+  align-self: stretch;
+  position: relative;
+}
+.cotizadorSpace {
+  flex-shrink: 0;
+  width: 16px;
+  height: 16px;
+  position: relative;
+  overflow: hidden;
+}
+.cotizadorDescription {
+  color: var(--sds-color-text-default-secondary, #757575);
+  text-align: left;
+  font-family: var(--body-link-font-family, "Inter-Regular", sans-serif);
+  font-size: var(--body-link-font-size, 16px);
+  line-height: var(--body-link-line-height, 140%);
+  font-weight: var(--body-link-font-weight, 400);
+  text-decoration: underline;
+  flex: 1;
+}
+.cotizadorPrice {
+  color: var(--sds-color-text-default-default, #1e1e1e);
+  font-family: var(--body-base-font-family, "Inter-Regular", sans-serif);
+  font-size: var(--body-base-font-size, 16px);
+  line-height: var(--body-base-line-height, 140%);
+  font-weight: var(--body-base-font-weight, 400);
+}
+.cotizadorButtonWrap {
+  background: var(--sds-color-background-disabled-default, #d9d9d9);
+  border-radius: var(--sds-size-radius-200, 8px);
+  border: 1px solid var(--sds-color-border-disabled-default, #b3b3b3);
+  padding: var(--sds-size-space-300, 12px);
+  display: flex;
+  flex-direction: row;
+  gap: var(--sds-size-space-200, 8px);
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  position: relative;
+  overflow: hidden;
+}
+.cotizadorHeroForm2 {
+  background: var(--sds-color-background-brand-tertiary, #f0f3ff);
+  padding: var(--sds-size-space-4000, 160px) 24px var(--sds-size-space-800, 32px) 24px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sds-size-space-800, 32px);
+  align-items: flex-end;
+  align-self: stretch;
+  width: 306px;
+  position: relative;
+}
+.cotizadorSubtitle2 {
+  color: var(--sds-color-text-brand-on-brand-tertiary, #20377a);
+  font-family: var(--body-base-font-family, "Inter-Regular", sans-serif);
+  font-size: var(--body-base-font-size, 16px);
+  line-height: var(--body-base-line-height, 140%);
+  font-weight: var(--body-base-font-weight, 400);
+  align-self: stretch;
+  display: flex;
+  align-items: center;
+}
+.cotizadorButtonGroup {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  flex-shrink: 0;
+  width: 470px;
+  position: relative;
+}
+.cotizadorArrowLeft {
+  flex-shrink: 0;
+  width: 16px;
+  height: 16px;
+  position: relative;
+  overflow: visible;
+}
+.cotizadorButton2 {
+  color: var(--sds-color-text-neutral-default, #303030);
+  text-align: left;
+  font-family: var(--single-line-body-base-font-family, "Inter-Regular", sans-serif);
+  font-size: var(--single-line-body-base-font-size, 16px);
+  line-height: var(--single-line-body-base-line-height, 100%);
+  font-weight: var(--single-line-body-base-font-weight, 400);
+  position: relative;
+}
+.cotizadorLabel2 {
+  color: var(--sds-color-text-default-default, #1e1e1e);
+  text-align: left;
+  font-family: var(--body-base-font-family, "Inter-Regular", sans-serif);
+  font-size: var(--body-base-font-size, 16px);
+  line-height: var(--body-base-line-height, 140%);
+  font-weight: var(--body-base-font-weight, 400);
+  position: relative;
+  flex: 1;
+}
+.cotizadorButton3 {
+  background: var(--sds-color-background-brand-default, #2c2c2c);
+  border-radius: var(--sds-size-radius-200, 8px);
+  border-style: solid;
+  border-color: var(--sds-color-border-brand-default, #2c2c2c);
+  border-width: 1px;
+  padding: var(--sds-size-space-300, 12px);
+  display: flex;
+  flex-direction: row;
+  gap: var(--sds-size-space-200, 8px);
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  position: relative;
+  overflow: hidden;
+}
+.cotizadorButton4 {
+  color: var(--sds-color-text-brand-on-brand, #f5f5f5);
+  text-align: left;
+  font-family: var(--single-line-body-base-font-family, "Inter-Regular", sans-serif);
+  font-size: var(--single-line-body-base-font-size, 16px);
+  line-height: var(--single-line-body-base-line-height, 100%);
+  font-weight: var(--single-line-body-base-font-weight, 400);
+  position: relative;
+}
+.cotizadorFrame3 {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sds-size-space-300, 12px);
+  align-items: flex-start;
+  justify-content: flex-start;
+  align-self: stretch;
+  flex-shrink: 0;
+  position: relative;
+}
+.cotizadorCheckboxField2 {
+  display: flex;
+  flex-direction: column;
+  gap: 0px;
+  align-items: flex-start;
+  justify-content: flex-start;
+  flex: 1;
+  position: relative;
+}
+.cotizadorCheckboxAndLabel {
+  display: flex;
+  flex-direction: row;
+  gap: var(--var-sds-size-space-300, 12px);
+  align-items: center;
+  justify-content: flex-start;
+  align-self: stretch;
+  flex-shrink: 0;
+  position: relative;
+}
