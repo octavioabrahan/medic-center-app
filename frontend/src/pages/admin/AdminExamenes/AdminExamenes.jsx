@@ -10,10 +10,10 @@ import Tag from '../../../components/Tag/Tag';
 import Modal from '../../../components/Modal/Modal';
 import styles from './AdminExamenes.module.css';
 import axios from 'axios';
-import { PlusIcon, PencilIcon, ClockIcon, ArrowPathIcon } from '@heroicons/react/20/solid';
+import { PencilIcon, ClockIcon, ArrowPathIcon } from '@heroicons/react/20/solid';
 
-// Plus icon for the Add button
-const PlusIcon = () => (
+// Custom Plus icon for the Add button
+const CustomPlusIcon = () => (
   <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
     <path d="M8.59995 3.8002C8.59995 3.46882 8.33132 3.2002 7.99995 3.2002C7.66858 3.2002 7.39995 3.46882 7.39995 3.8002V7.4002H3.79995C3.46858 7.4002 3.19995 7.66882 3.19995 8.0002C3.19995 8.33157 3.46858 8.6002 3.79995 8.6002L7.39995 8.6002V12.2002C7.39995 12.5316 7.66858 12.8002 7.99995 12.8002C8.33132 12.8002 8.59995 12.5316 8.59995 12.2002V8.6002L12.2 8.6002C12.5313 8.6002 12.8 8.33157 12.8 8.0002C12.8 7.66883 12.5313 7.4002 12.2 7.4002H8.59995V3.8002Z" fill="var(--sds-color-icon-brand-on-brand, #F0F3FF)" />
   </svg>
@@ -292,7 +292,7 @@ const AdminExamenes = () => {
             <div className={styles.adminExamenesTitle}>Exámenes y servicios</div>
           </div>
           <Button variant="primary" onClick={handleAgregarClick}>
-            <PlusIcon />
+            <CustomPlusIcon />
             <span>Agregar</span>
           </Button>
         </div>
