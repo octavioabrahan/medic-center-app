@@ -45,7 +45,7 @@ const AdminSidebar = ({ username = 'Usuario', role = 'Administrador', activePage
         >
           <div className="body">
             <div className="row">
-              <div className={isActive('/admin/dashboard') ? "label2" : "label"}>Resumen general</div>
+              <div className={isActive('/admin/dashboard') ? "label2" : "label"}>Inicio</div>
             </div>
           </div>
         </div>
@@ -80,18 +80,7 @@ const AdminSidebar = ({ username = 'Usuario', role = 'Administrador', activePage
         >
           <div className="body">
             <div className="row">
-              <div className={isActive('/admin/profesionales') ? "label2" : "label"}>Profesionales</div>
-            </div>
-          </div>
-        </div>
-        
-        <div 
-          className={isActive('/admin/especialidades') ? "menu-item2" : "menu-item"}
-          onClick={() => handleNavigation('/admin/especialidades')}
-        >
-          <div className="body">
-            <div className="row">
-              <div className={isActive('/admin/especialidades') ? "label2" : "label"}>Especialidades</div>
+              <div className={isActive('/admin/profesionales') ? "label2" : "label"}>Profesionales y Especialidades</div>
             </div>
           </div>
         </div>
@@ -126,7 +115,7 @@ const AdminSidebar = ({ username = 'Usuario', role = 'Administrador', activePage
         >
           <div className="body">
             <div className="row">
-              <div className={isActive('/admin/cotizaciones') ? "label2" : "label"}>Cotizaciones enviadas</div>
+              <div className={isActive('/admin/cotizaciones') ? "label2" : "label"}>Cotizaciones Recibidas</div>
             </div>
           </div>
         </div>
