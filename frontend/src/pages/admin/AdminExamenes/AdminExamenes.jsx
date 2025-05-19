@@ -41,6 +41,10 @@ const AdminExamenes = () => {
   const [currentExamen, setCurrentExamen] = useState(null);
   const [historialExamen, setHistorialExamen] = useState([]);
   const [loadingHistorial, setLoadingHistorial] = useState(false);
+  
+  // Form validation state
+  const [isFormValid, setIsFormValid] = useState(false);
+  const [codigoExists, setCodigoExists] = useState(false);
 
   // Form data state
   const [formData, setFormData] = useState({
@@ -162,15 +166,43 @@ const AdminExamenes = () => {
   // Handle form input changes
   const handleFormChange = (e) => {
     const { name, value, type, checked } = e.target;
-    setFormData({
+    const newFormData = {
       ...formData,
       [name]: type === 'checkbox' ? checked : value
-    });
+    };
+    
+    setFormData(newFormData);
+    
+    // Check if codigo exists when it changes
+    if (name === 'codigo' && value.trim() !== '') {
+      const exists = examenes.some(exam => exam.codigo === value);
+      setCodigoExists(exists);
+      if (exists) {
+        setError("El código ya existe. Por favor use otro código.");
+      } else {
+        setError(null);
+      }
+    }
+    
+    // Validate the entire form
+    validateForm(newFormData);
+  };
+  
+  // Validate the form
+  const validateForm = (data) => {
+    // Check if required fields are filled and codigo doesn't exist
+    const isValid = 
+      data.codigo?.trim() !== '' && 
+      data.nombre_examen?.trim() !== '' && 
+      data.preciousd?.trim() !== '' && 
+      !codigoExists;
+      
+    setIsFormValid(isValid);
   };
 
   // Open modal to add new exam
   const handleAgregarClick = () => {
-    setFormData({
+    const initialFormData = {
       codigo: "",
       nombre_examen: "",
       preciousd: "",
@@ -178,7 +210,12 @@ const AdminExamenes = () => {
       informacion: "",
       tipo: null,
       is_active: true
-    });
+    };
+    
+    setFormData(initialFormData);
+    setIsFormValid(false);
+    setCodigoExists(false);
+    setError(null);
     setShowAddModal(true);
   };
 
@@ -445,7 +482,7 @@ const AdminExamenes = () => {
           setShowAddModal(false);
           setError(null);
         }}
-        title="Agrega un nuevo item para cotizar"
+        heading="Agrega un nuevo item para cotizar"
         size="medium"
       >
         <form onSubmit={handleAddExamen} className={styles.adminExamenesForm}>
@@ -458,8 +495,11 @@ const AdminExamenes = () => {
               value={formData.codigo} 
               onChange={handleFormChange} 
               required 
-              className={styles.adminExamenesInput}
+              className={`${styles.adminExamenesInput} ${codigoExists ? styles.inputError : ''}`}
             />
+            {codigoExists && formData.codigo && (
+              <div className={styles.fieldError}>El código ya está en uso</div>
+            )}
           </div>
           <div className={styles.adminExamenesFormGroup}>
             <label>Nombre</label>
@@ -508,10 +548,14 @@ const AdminExamenes = () => {
           </div>
           
           <div className={styles.adminExamenesModalFooter}>
-            <Button variant="subtle" onClick={() => setShowAddModal(false)}>
+            <Button variant="neutral" onClick={() => setShowAddModal(false)}>
               Cancelar
             </Button>
-            <Button variant="primary" type="submit">
+            <Button 
+              variant="primary" 
+              type="submit" 
+              disabled={!isFormValid}
+            >
               Agregar
             </Button>
           </div>
@@ -522,7 +566,7 @@ const AdminExamenes = () => {
       <Modal
         isOpen={showEditModal}
         onClose={() => setShowEditModal(false)}
-        title="Editar Examen"
+        heading="Editar Examen"
         size="medium"
       >
         {currentExamen && (
@@ -604,7 +648,7 @@ const AdminExamenes = () => {
             </div>
             
             <div className={styles.adminExamenesModalFooter}>
-              <Button variant="subtle" onClick={() => setShowEditModal(false)}>
+              <Button variant="neutral" onClick={() => setShowEditModal(false)}>
                 Cancelar
               </Button>
               {!formData.is_active && (
@@ -635,7 +679,7 @@ const AdminExamenes = () => {
       <Modal
         isOpen={showHistorialModal}
         onClose={() => setShowHistorialModal(false)}
-        title="Historial de Cambios"
+        heading="Historial de Cambios"
         size="large"
       >
         {currentExamen && (
@@ -686,7 +730,7 @@ const AdminExamenes = () => {
             )}
             
             <div className={styles.adminExamenesModalFooter}>
-              <Button variant="subtle" onClick={() => setShowHistorialModal(false)}>
+              <Button variant="neutral" onClick={() => setShowHistorialModal(false)}>
                 Cerrar
               </Button>
             </div>

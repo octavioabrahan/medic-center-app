@@ -211,6 +211,18 @@
   font-weight: 500;
 }
 
+.fieldError {
+  color: var(--sds-color-text-negative-default, #d10014);
+  font-size: 12px;
+  margin-top: 4px;
+  font-family: 'Inter', sans-serif;
+  font-weight: 500;
+}
+
+.inputError {
+  border-color: var(--sds-color-border-negative-default, #d10014) !important;
+}
+
 .adminExamenesModalFooter {
   display: flex;
   justify-content: flex-end;
