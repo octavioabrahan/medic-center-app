@@ -14,7 +14,15 @@ export default function Cotizaciones() {
   const [exchangeRate, setExchangeRate] = useState(null);
   const [search, setSearch] = useState('');
   const [selected, setSelected] = useState([]); // [{codigo, nombre, ...}]
-  const [form, setForm] = useState({ nombre: '', cedula: '', telefono: '', correo: '', acepta: false });
+  const [form, setForm] = useState({ 
+    nombre: '', 
+    apellido: '', 
+    cedula: '', 
+    telefono: '',
+    fecha_nacimiento: '',
+    sexo: 'masculino',
+    email: ''
+  });
   const [step, setStep] = useState(1);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -78,7 +86,7 @@ export default function Cotizaciones() {
   // --- SUBMIT LOGIC ---
   const handleSubmit = async () => {
     // Validación básica
-    if (!form.nombre.trim() || !form.cedula.trim() || !form.telefono.trim() || !form.correo.trim() || !form.acepta) {
+    if (!form.nombre.trim() || !form.apellido.trim() || !form.cedula.trim() || !form.telefono.trim() || !form.fecha_nacimiento || !form.sexo || !form.email.trim() || !form.acepta) {
       setError('Completa todos los campos y acepta los términos.');
       return;
     }
@@ -92,10 +100,13 @@ export default function Cotizaciones() {
       const apiUrl = process.env.REACT_APP_API_URL;
       const dataToSend = {
         nombre: form.nombre.trim(),
+        apellido: form.apellido.trim(),
         cedula: form.cedula.trim(),
         telefono: form.telefono.trim(),
-        correo: form.correo.trim(),
-        examenes: selected.map(e => ({ codigo: e.codigo, nombre: e.nombre, precio: Number(e.precio) })),
+        fecha_nacimiento: form.fecha_nacimiento,
+        sexo: form.sexo,
+        email: form.email.trim(),
+        examenes: selected.map(e => ({ codigo: e.codigo, nombre: e.nombre_examen || e.nombre, precio: Number(e.precio), tiempo_entrega: e.tiempo_entrega || null })),
         tasaCambio: Number(exchangeRate)
       };
       const res = await fetch(`${apiUrl}/api/cotizaciones`, {
@@ -270,6 +281,15 @@ export default function Cotizaciones() {
             </div>
             <div className={styles.cotizadorInputField}>
               <InputField
+                label="Apellido"
+                value={form.apellido}
+                placeholder="¿Cuál es tu apellido?"
+                onChange={v => handleFormChange('apellido', v)}
+                fillContainer
+              />
+            </div>
+            <div className={styles.cotizadorInputField}>
+              <InputField
                 label="Cédula"
                 value={form.cedula}
                 placeholder="Tu número de cédula"
@@ -288,10 +308,33 @@ export default function Cotizaciones() {
             </div>
             <div className={styles.cotizadorInputField}>
               <InputField
+                label="Fecha de nacimiento"
+                value={form.fecha_nacimiento}
+                placeholder="Fecha de nacimiento"
+                type="date"
+                onChange={v => handleFormChange('fecha_nacimiento', v)}
+                fillContainer
+              />
+            </div>
+            <div className={styles.cotizadorInputField}>
+              <label htmlFor="sexo">Sexo</label>
+              <select
+                id="sexo"
+                className={styles.cotizadorSelect}
+                value={form.sexo}
+                onChange={e => handleFormChange('sexo', e.target.value)}
+              >
+                <option value="masculino">Masculino</option>
+                <option value="femenino">Femenino</option>
+                <option value="otro">Otro</option>
+              </select>
+            </div>
+            <div className={styles.cotizadorInputField}>
+              <InputField
                 label="Correo electrónico"
-                value={form.correo}
+                value={form.email}
                 placeholder="Correo para enviarte la cotización"
-                onChange={v => handleFormChange('correo', v)}
+                onChange={v => handleFormChange('email', v)}
                 fillContainer
               />
             </div>
@@ -316,9 +359,12 @@ export default function Cotizaciones() {
                 disabled={
                   loading ||
                   !form.nombre.trim() ||
+                  !form.apellido.trim() ||
                   !form.cedula.trim() ||
                   !form.telefono.trim() ||
-                  !form.correo.trim() ||
+                  !form.fecha_nacimiento ||
+                  !form.sexo ||
+                  !form.email.trim() ||
                   !form.acepta
                 }
               >
@@ -386,7 +432,7 @@ export default function Cotizaciones() {
               onClick={() => {
                 setStep(1);
                 setSelected([]);
-                setForm({ nombre: '', cedula: '', telefono: '', correo: '', acepta: false });
+                setForm({ nombre: '', apellido: '', cedula: '', telefono: '', fecha_nacimiento: '', sexo: 'masculino', email: '' });
               }}
             >
               <span className={styles.cotizadorButton4}>Hacer otra cotización</span>
