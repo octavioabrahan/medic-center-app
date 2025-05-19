@@ -14,10 +14,12 @@
   flex-direction: column;
   gap: var(--sds-size-space-600, 24px);
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   align-self: stretch;
   flex: 1;
   position: relative;
+  overflow-y: auto;
+  max-height: 700px;
 }
 .cotizadorTitle {
   color: var(--sds-color-text-brand-default, #20377a);
@@ -366,7 +368,7 @@
   color: var(--var-sds-color-text-default-default, #1e1e1e);
   text-align: left;
   font-family: var(--body-base-font-family, "Inter-Regular", sans-serif);
-  font-size: var(--body-base-font-size, 16px);
+  font-size: var (--body-base-font-size, 16px);
   line-height: var(--body-base-line-height, 140%);
   font-weight: var(--body-base-font-weight, 400);
   position: relative;
