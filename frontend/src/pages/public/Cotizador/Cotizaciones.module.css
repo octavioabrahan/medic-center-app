@@ -75,33 +75,8 @@
 }
 .cotizadorCheckboxField {
   display: flex;
-  flex-direction: row;
-  align-items: center;
-  flex: 1;
-  position: relative;
-}
-.cotizadorCheckboxLeftSpace {
-  width: 24px;
-  min-width: 24px;
-  height: 100%;
-  background: transparent;
-  display: block;
-}
-.cotizadorCheckboxField2 {
-  display: flex;
   flex-direction: column;
-  gap: 0px;
   align-items: flex-start;
-  justify-content: flex-start;
-  flex: 1;
-  position: relative;
-}
-.cotizadorCheckboxAndLabel {
-  display: flex;
-  flex-direction: row;
-  gap: var(--sds-size-space-300, 12px);
-  align-items: center;
-  align-self: stretch;
   flex: 1;
   position: relative;
 }
@@ -112,8 +87,6 @@
   align-items: center;
   align-self: stretch;
   position: relative;
-  margin-left: 0;
-  margin-top: 0;
 }
 .cotizadorSpace {
   flex-shrink: 0;
@@ -132,11 +105,6 @@
   text-decoration: underline;
   flex: 1;
   cursor: pointer; /* Make it look clickable */
-  padding-left: 0;
-  margin-left: 0;
-  margin-top: 0;
-  align-items: center;
-  display: flex;
 }
 .cotizadorPrice {
   color: var(--sds-color-text-default-default, #1e1e1e);
@@ -146,29 +114,18 @@
   font-weight: var(--body-base-font-weight, 400);
 }
 .cotizadorButtonWrap {
-  background: none;
-  border: none;
-  border-radius: 0;
-  box-shadow: none;
-  padding: 0;
+  background: var(--sds-color-background-disabled-default, #d9d9d9);
+  border-radius: var(--sds-size-radius-200, 8px);
+  border: 1px solid var(--sds-color-border-disabled-default, #b3b3b3);
+  padding: var(--sds-size-space-300, 12px);
   display: flex;
   flex-direction: row;
   gap: var(--sds-size-space-200, 8px);
   align-items: center;
-  justify-content: flex-end;
+  justify-content: center;
   flex-shrink: 0;
   position: relative;
-  overflow: visible;
-  margin-top: 16px;
-  width: 100%;
-}
-.cotizadorButtonContainer {
-  width: 100%;
-  display: flex;
-  flex-direction: row;
-  justify-content: flex-end;
-  align-items: center;
-  margin-top: 24px;
+  overflow: hidden;
 }
 .cotizadorHeroForm2 {
   background: var(--sds-color-background-brand-tertiary, #f0f3ff);
@@ -225,7 +182,6 @@
   font-weight: var(--body-base-font-weight, 400);
   position: relative;
   flex: 1;
-  word-break: break-word;
 }
 .cotizadorButton3 {
   background: var(--sds-color-background-brand-default, #2c2c2c);
@@ -249,7 +205,7 @@
   font-family: var(--single-line-body-base-font-family, "Inter-Regular", sans-serif);
   font-size: var(--single-line-body-base-font-size, 16px);
   line-height: var (--single-line-body-base-line-height, 100%);
-  font-weight: var (--single-line-body-base-font-weight, 400);
+  font-weight: var(--single-line-body-base-font-weight, 400);
   position: relative;
 }
 .cotizadorFrame3 {
@@ -257,6 +213,25 @@
   flex-direction: column;
   gap: var(--sds-size-space-300, 12px);
   align-items: flex-start;
+  justify-content: flex-start;
+  align-self: stretch;
+  flex-shrink: 0;
+  position: relative;
+}
+.cotizadorCheckboxField2 {
+  display: flex;
+  flex-direction: column;
+  gap: 0px;
+  align-items: flex-start;
+  justify-content: flex-start;
+  flex: 1;
+  position: relative;
+}
+.cotizadorCheckboxAndLabel {
+  display: flex;
+  flex-direction: row;
+  gap: var(--var-sds-size-space-300, 12px);
+  align-items: center;
   justify-content: flex-start;
   align-self: stretch;
   flex-shrink: 0;
@@ -379,8 +354,8 @@
   text-align: left;
   font-family: var(--body-base-font-family, "Inter-Regular", sans-serif);
   font-size: var(--body-base-font-size, 16px);
-  line-height: var (--body-base-line-height, 140%);
-  font-weight: var (--body-base-font-weight, 400);
+  line-height: var(--body-base-line-height, 140%);
+  font-weight: var(--body-base-font-weight, 400);
   position: relative;
   align-self: stretch;
 }
