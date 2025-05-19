@@ -80,6 +80,13 @@
   flex: 1;
   position: relative;
 }
+.cotizadorCheckboxFieldContainer {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
 .cotizadorDescriptionRow {
   display: flex;
   flex-direction: row;

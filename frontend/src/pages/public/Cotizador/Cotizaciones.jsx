@@ -295,22 +295,23 @@ export default function Cotizaciones() {
                 fillContainer
               />
             </div>
-            <div className={styles.cotizadorCheckboxField}>
-              <CheckboxField
-                label={
-                  <span className={styles.cotizadorLabel2}>
-                    Autorizo que se me contacte con fines informativos y de marketing del centro médico.
-                  </span>
-                }
-                checked={form.acepta}
-                onChange={v => handleFormChange('acepta', v)}
-              />
+            <div className={styles.cotizadorCheckboxFieldContainer}>
+              <div className={styles.cotizadorCheckboxField}>
+                <CheckboxField
+                  label={
+                    <span className={styles.cotizadorLabel2}>
+                      Autorizo que se me contacte con fines informativos y de marketing del centro médico.
+                    </span>
+                  }
+                  checked={form.acepta}
+                  onChange={v => handleFormChange('acepta', v)}
+                />
+              </div>
             </div>
-            <div className={styles.cotizadorButton3}>
+            <div className={styles.cotizadorButtonRightContainer}>
               <Button
                 variant="primary"
                 size="medium"
-                fullWidth
                 onClick={handleSubmit}
                 disabled={loading}
               >
