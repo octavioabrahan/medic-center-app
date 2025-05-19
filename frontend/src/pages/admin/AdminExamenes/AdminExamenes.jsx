@@ -626,50 +626,31 @@ const AdminExamenes = () => {
                 className={styles.adminExamenesTextarea}
               />
             </div>
-            <div className={styles.adminExamenesFormGroup}>
-              <label>Tipo</label>
-              <select 
-                name="tipo" 
-                value={formData.tipo} 
-                onChange={handleFormChange}
-                className={styles.adminExamenesSelect}
-              >
-                <option value="examen">Examen</option>
-                <option value="servicio">Servicio</option>
-                <option value="paquete">Paquete</option>
-              </select>
-            </div>
-            <div className={styles.adminExamenesFormGroup}>
-              <CheckboxField
-                label="Activo"
-                checked={formData.is_active}
-                onChange={(checked) => setFormData({...formData, is_active: checked})}
-              />
-            </div>
             
-            <div className={styles.adminExamenesModalFooter}>
-              <Button variant="neutral" onClick={() => setShowEditModal(false)}>
-                Cancelar
+            <div className={styles.buttonGroup}>
+              <Button
+                variant="subtle"
+                size="medium"
+                onClick={() => toggleActivo(currentExamen)}
+                className={styles.archivarButton}
+              >
+                <span className={styles.archiveIconWrapper}>
+                  <svg width="16" height="17" viewBox="0 0 16 17" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M1.5998 2.8999C1.15798 2.8999 0.799805 3.25807 0.799805 3.6999V4.4999C0.799805 4.94173 1.15798 5.2999 1.5998 5.2999H14.3998C14.8416 5.2999 15.1998 4.94173 15.1998 4.4999V3.6999C15.1998 3.25807 14.8416 2.8999 14.3998 2.8999H1.5998Z" fill="#900B09"/>
+                    <path fillRule="evenodd" clipRule="evenodd" d="M1.5998 6.4999H14.3998L13.7506 12.6674C13.6649 13.4817 12.9782 14.0999 12.1594 14.0999H3.84022C3.02141 14.0999 2.33473 13.4817 2.24901 12.6674L1.5998 6.4999ZM5.5998 9.2999C5.5998 8.85807 5.95798 8.4999 6.3998 8.4999H9.5998C10.0416 8.4999 10.3998 8.85807 10.3998 9.2999C10.3998 9.74173 10.0416 10.0999 9.5998 10.0999H6.3998C5.95798 10.0999 5.5998 9.74173 5.5998 9.2999Z" fill="#900B09"/>
+                  </svg>
+                </span>
+                <span className={styles.archivarButtonText}>Archivar</span>
               </Button>
-              {!formData.is_active && (
-                <Button 
-                  variant="primary" 
-                  onClick={() => toggleActivo(currentExamen)}
-                >
-                  Activar
+              
+              <div className={styles.frame77}>
+                <Button variant="neutral" onClick={() => setShowEditModal(false)}>
+                  Cancelar
                 </Button>
-              )}
-              {formData.is_active && (
-                <Button 
-                  variant="danger" 
-                  onClick={() => toggleActivo(currentExamen)}
-                >
-                  Desactivar
+                <Button variant="primary" type="submit">
+                  Guardar
                 </Button>
-              )}
-              <Button variant="primary" type="submit">
-                Guardar
-              </Button>
+              </div>
             </div>
           </form>
         )}
