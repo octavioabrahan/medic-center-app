@@ -27,7 +27,6 @@ const AdminExamenes = () => {
   const [filteredExamenes, setFilteredExamenes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [exchangeRate, setExchangeRate] = useState(18.5); // Default exchange rate
   const [lastChangeDate, setLastChangeDate] = useState({});
   
   // State for filters and sorting
@@ -56,7 +55,6 @@ const AdminExamenes = () => {
 
   // Load exams on component mount
   useEffect(() => {
-    fetchExchangeRate();
     cargarExamenes();
   }, []);
 
@@ -64,23 +62,6 @@ const AdminExamenes = () => {
   useEffect(() => {
     applyFilters();
   }, [examenes, searchTerm, showArchived, sortAZ]);
-
-  // Fetch exchange rate from API
-  const fetchExchangeRate = async () => {
-    try {
-      const response = await axios.get(`${process.env.REACT_APP_API_URL || ''}/api/exchange-rate`);
-      setExchangeRate(response.data.tasa || 18.5);
-    } catch (err) {
-      console.error("Error al cargar tasa de cambio:", err);
-      // Keep default value if error
-    }
-  };
-
-  // Calculate price in local currency
-  const calcularPrecioBs = (preciousd) => {
-    if (!exchangeRate || !preciousd) return 0;
-    return (parseFloat(preciousd) * exchangeRate).toFixed(2);
-  };
 
   // Fetch exams from API
   const cargarExamenes = async () => {
