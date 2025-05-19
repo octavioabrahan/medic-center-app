@@ -124,25 +124,32 @@ const SeguimientoCotizaciones = ({ cotizacion, onClose }) => {
     const seguimientoData = {
       cotizacion_id: cotizacion.id_unico,
       tipo_contacto: tipoContacto,
-      resultado: estado, // Enviamos el estado como resultado para mantener compatibilidad
+      resultado: estado, // Enviamos el estado como resultado para mantener compatibilidad con la API
       comentarios: comentarios,
       usuario: 'admin', // En un sistema real, esto vendría del sistema de autenticación
       proxima_accion: proximaAccion,
       fecha_proxima_accion: fechaProximaAccion
     };
 
+    console.log('Enviando seguimiento:', seguimientoData);
+
     try {
-      await axios.post(`${API_URL}/seguimiento`, seguimientoData);
+      // Paso 1: Guardar el seguimiento
+      const seguimientoResponse = await axios.post(`${API_URL}/seguimiento`, seguimientoData);
+      console.log('Seguimiento guardado:', seguimientoResponse.data);
       
-      // Recargar historial tras guardar
+      // Paso 2: Actualizar el estado de la cotización
+      await updateCotizacionStatus(cotizacion.id_unico, estado);
+      
+      // Paso 3: Recargar el historial actualizado
       await fetchSeguimientos(cotizacion.id_unico);
       
-      // Limpiar formulario
+      // Paso 4: Limpiar el formulario
       setComentarios('');
       setProximaAccion('');
       
-      // Actualizar estado de la cotización directamente con el valor seleccionado
-      await updateCotizacionStatus(cotizacion.id_unico, estado);
+      // Mostrar mensaje de éxito temporalmente
+      setError(null);
     } catch (error) {
       console.error('Error al guardar seguimiento:', error);
       setError('Error al guardar seguimiento. Por favor, intenta nuevamente.');
@@ -154,9 +161,19 @@ const SeguimientoCotizaciones = ({ cotizacion, onClose }) => {
   // Actualizar estado de cotización
   const updateCotizacionStatus = async (id, newStatus) => {
     try {
-      await axios.patch(`${API_URL}/cotizaciones/${id}`, { estado: newStatus });
+      // Actualiza el estado en la tabla de cotizaciones
+      const response = await axios.patch(`${API_URL}/cotizaciones/${id}`, { 
+        estado: newStatus
+      });
+      console.log('Estado de cotización actualizado:', response.data);
+      
+      // Actualiza también el estado en la cotización actual
+      if (cotizacion) {
+        cotizacion.estado = newStatus;
+      }
     } catch (err) {
       console.error('Error al actualizar estado:', err);
+      setError('Error al actualizar el estado de la cotización.');
     }
   };
 
@@ -403,6 +420,8 @@ const SeguimientoCotizaciones = ({ cotizacion, onClose }) => {
                   disabled={!comentarios || !proximaAccion || loading}
                   loading={loading}
                   className={styles.buttonPrimary}
+                  variant="primary"
+                  size="md"
                 />
               </div>
             </div>
