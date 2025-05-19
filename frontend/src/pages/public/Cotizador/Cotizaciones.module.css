@@ -57,7 +57,8 @@
   align-self: stretch;
   flex: 1;
   position: relative;
-  overflow: hidden;
+  overflow-y: auto; /* Enable vertical scroll */
+  max-height: 400px; /* Adjust as needed for design */
 }
 .cotizadorChoiceCard {
   background: var(--sds-color-background-default-default, #fff);
@@ -103,6 +104,7 @@
   font-weight: var(--body-link-font-weight, 400);
   text-decoration: underline;
   flex: 1;
+  cursor: pointer; /* Make it look clickable */
 }
 .cotizadorPrice {
   color: var(--sds-color-text-default-default, #1e1e1e);
@@ -234,4 +236,42 @@
   align-self: stretch;
   flex-shrink: 0;
   position: relative;
+}
+.cotizadorModalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(32, 55, 122, 0.18);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.cotizadorModalBox {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 32px rgba(32, 55, 122, 0.18);
+  padding: 32px 24px;
+  max-width: 400px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  align-items: flex-start;
+}
+.cotizadorModalTitle {
+  color: var(--sds-color-text-brand-default, #20377a);
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+.cotizadorModalClose {
+  align-self: flex-end;
+  background: none;
+  border: none;
+  color: var(--sds-color-text-brand-default, #20377a);
+  font-size: 18px;
+  cursor: pointer;
 }

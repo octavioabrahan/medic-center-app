@@ -145,7 +145,15 @@ export default function Cotizaciones() {
                       />
                       <div className={styles.cotizadorDescriptionRow}>
                         <div className={styles.cotizadorSpace}></div>
-                        <div className={styles.cotizadorDescription}>{exam.indicacion || 'Indicación'}</div>
+                        <span
+                          className={styles.cotizadorDescription}
+                          tabIndex={0}
+                          role="button"
+                          onClick={() => setModalExam(exam)}
+                          onKeyPress={e => { if (e.key === 'Enter') setModalExam(exam); }}
+                        >
+                          Indicación
+                        </span>
                       </div>
                     </div>
                     <div className={styles.cotizadorPrice}>{exam.precio ? `USD $ ${Number(exam.precio).toFixed(2)}` : 'USD $ 00.00'}</div>
@@ -190,6 +198,16 @@ export default function Cotizaciones() {
             </div>
           </div>
         </div>
+        {/* Modal for exam indication */}
+        {modalExam && (
+          <div className={styles.cotizadorModalOverlay} onClick={() => setModalExam(null)}>
+            <div className={styles.cotizadorModalBox} onClick={e => e.stopPropagation()}>
+              <button className={styles.cotizadorModalClose} onClick={() => setModalExam(null)}>&times;</button>
+              <div className={styles.cotizadorModalTitle}>{modalExam.nombre_examen}</div>
+              <div>{modalExam.indicacion || 'No hay información de indicación disponible.'}</div>
+            </div>
+          </div>
+        )}
       </SiteFrame>
     );
   }
