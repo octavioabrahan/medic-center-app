@@ -26,14 +26,25 @@ export default function Cotizaciones() {
     setLoading(true);
     setError(null);
     Promise.all([
-      fetch(`${apiUrl}/api/exams`).then(r => r.json()),
-      fetch(`${apiUrl}/api/tasa-cambio`).then(r => r.json())
+      fetch(`${apiUrl}/api/exams`).then(async r => {
+        if (!r.ok) throw new Error('Error al cargar exámenes');
+        const data = await r.json();
+        if (!Array.isArray(data)) throw new Error('La respuesta de exámenes no es un array');
+        if (data.length === 0) throw new Error('No hay exámenes disponibles');
+        return data;
+      }),
+      fetch(`${apiUrl}/api/tasa-cambio`).then(async r => {
+        if (!r.ok) throw new Error('Error al cargar tasa de cambio');
+        const data = await r.json();
+        if (!data || typeof data.tasa === 'undefined') throw new Error('No se recibió la tasa de cambio');
+        return data;
+      })
     ])
       .then(([examsData, rateData]) => {
-        setExams(Array.isArray(examsData) ? examsData : []);
-        setExchangeRate(rateData && rateData.tasa ? rateData.tasa : null);
+        setExams(examsData);
+        setExchangeRate(rateData.tasa);
       })
-      .catch(() => setError('No pudimos cargar los datos. Intenta más tarde.'))
+      .catch((err) => setError(err.message || 'No pudimos cargar los datos. Intenta más tarde.'))
       .finally(() => setLoading(false));
   }, []);
 
