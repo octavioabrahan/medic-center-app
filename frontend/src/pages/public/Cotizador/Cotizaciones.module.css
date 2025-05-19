@@ -75,8 +75,33 @@
 }
 .cotizadorCheckboxField {
   display: flex;
+  flex-direction: row;
+  align-items: center;
+  flex: 1;
+  position: relative;
+}
+.cotizadorCheckboxLeftSpace {
+  width: 24px;
+  min-width: 24px;
+  height: 100%;
+  background: transparent;
+  display: block;
+}
+.cotizadorCheckboxField2 {
+  display: flex;
   flex-direction: column;
+  gap: 0px;
   align-items: flex-start;
+  justify-content: flex-start;
+  flex: 1;
+  position: relative;
+}
+.cotizadorCheckboxAndLabel {
+  display: flex;
+  flex-direction: row;
+  gap: var(--sds-size-space-300, 12px);
+  align-items: center;
+  align-self: stretch;
   flex: 1;
   position: relative;
 }
@@ -200,6 +225,7 @@
   font-weight: var(--body-base-font-weight, 400);
   position: relative;
   flex: 1;
+  word-break: break-word;
 }
 .cotizadorButton3 {
   background: var(--sds-color-background-brand-default, #2c2c2c);
@@ -232,24 +258,6 @@
   gap: var(--sds-size-space-300, 12px);
   align-items: flex-start;
   justify-content: flex-start;
-  align-self: stretch;
-  flex-shrink: 0;
-  position: relative;
-}
-.cotizadorCheckboxField2 {
-  display: flex;
-  flex-direction: column;
-  gap: 0px;
-  align-items: flex-start;
-  justify-content: flex-start;
-  flex: 1;
-  position: relative;
-}
-.cotizadorCheckboxAndLabel {
-  display: flex;
-  flex-direction: row;
-  gap: var(--sds-size-space-300, 12px);
-  align-items: center;
   align-self: stretch;
   flex-shrink: 0;
   position: relative;
