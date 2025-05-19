@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { auth } from "../../api";
-import axios from "axios";
 import "./Auth.css";
 
 function Login() {
@@ -15,40 +14,28 @@ function Login() {
     setLoading(true);
 
     try {
-      // Primera intentamos con la función auth.login normal
-      try {
-        console.log("Intentando con auth.login:", { email });
-        await auth.login(email, password);
-        window.location.href = "/admin";
-        return;
-      } catch (error) {
-        console.log("Primer método falló, intentando directo con axios");
-      }
-
-      // Si falla, intentamos con axios directamente
-      console.log("Intentando login directo:", { email });
-      const response = await axios.post("/api/auth/login", { 
-        email, 
-        password 
-      }, {
-        headers: {
-          'Content-Type': 'application/json',
-        }
-      });
+      console.log("Iniciando proceso de login con:", { email });
+      const result = await auth.login(email, password);
+      console.log("Login exitoso:", result);
       
-      console.log("Respuesta login directo:", response.data);
-      
-      if (response.data.token) {
-        localStorage.setItem("authToken", response.data.token);
-        localStorage.setItem("user", JSON.stringify(response.data.usuario));
-        window.location.href = "/admin";
-      }
+      // Redirección tras login exitoso
+      window.location.href = "/admin";
     } catch (err) {
       console.error("Error de login:", err);
       if (err.response && err.response.data) {
+        // Mostrar el error específico del servidor
         setError(err.response.data.error || "Error al iniciar sesión");
+        
+        // Si la cuenta está bloqueada, mostrar mensaje con tiempo
+        if (err.response.data.lockExpiry) {
+          const lockTime = new Date(err.response.data.lockExpiry);
+          const now = new Date();
+          const minutesLeft = Math.ceil((lockTime - now) / (1000 * 60));
+          
+          setError(`Cuenta bloqueada temporalmente. Intente nuevamente en ${minutesLeft} minutos.`);
+        }
       } else {
-        setError("Error al conectar con el servidor");
+        setError("Error al conectar con el servidor. Verifique su conexión a internet.");
       }
     } finally {
       setLoading(false);
@@ -63,7 +50,11 @@ function Login() {
           <p>Acceso al sistema administrativo</p>
         </div>
 
-        {error && <div className="auth-error">{error}</div>}
+        {error && (
+          <div className="auth-error">
+            <strong>Error:</strong> {error}
+          </div>
+        )}
 
         <form onSubmit={handleSubmit} className="auth-form">
           <div className="form-group">
@@ -94,11 +85,16 @@ function Login() {
 
           <button 
             type="submit" 
-            className="auth-button" 
+            className={`auth-button ${loading ? 'loading' : ''}`}
             disabled={loading}
           >
             {loading ? "Iniciando sesión..." : "Iniciar Sesión"}
           </button>
+          
+          {/* Añadir enlace para ayuda o contacto */}
+          <div style={{ textAlign: 'center', marginTop: '20px', fontSize: '14px', color: '#666' }}>
+            ¿Problemas para acceder? Contacte al administrador del sistema.
+          </div>
         </form>
       </div>
     </div>

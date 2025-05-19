@@ -1,5 +1,6 @@
 import React, { Suspense, lazy } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import ProtectedRoute from './components/auth/ProtectedRoute';
 
 // Lazy load para páginas de administración
 const AdminDummy = lazy(() => import('./pages/admin/AdminDummy'));
@@ -10,6 +11,9 @@ const AdminServicios = lazy(() => import('./pages/admin/AdminServicios/AdminServ
 const AdminConvenios = lazy(() => import('./pages/admin/AdminConvenios/AdminConvenios'));
 const AdminCotizaciones = lazy(() => import('./pages/admin/AdminCotizaciones/AdminCotizaciones'));
 const AdminExamenes = lazy(() => import('./pages/admin/AdminExamenes/AdminExamenes'));
+
+// Lazy load para autenticación
+const LoginPage = lazy(() => import('./pages/auth/LoginPage'));
 
 // Lazy load para los demos
 const ButtonDemo = lazy(() => import('./components/Button/ButtonDemo'));
@@ -88,57 +92,95 @@ function App() {
         } />
         {/* Rutas públicas mínimas */}
         <Route path="/" element={<Navigate to="/admin/dashboard" replace />} />
+        
+        {/* Ruta de login */}
+        <Route path="/login" element={
+          <Suspense fallback={<div>Cargando...</div>}>
+            <LoginPage />
+          </Suspense>
+        } />
+        
+        {/* Ruta de acceso denegado */}
+        <Route path="/forbidden" element={
+          <Suspense fallback={<div>Cargando...</div>}>
+            <div style={{ padding: '40px', textAlign: 'center' }}>
+              <h1>Acceso Denegado</h1>
+              <p>No tiene permisos para acceder a esta sección.</p>
+            </div>
+          </Suspense>
+        } />
 
-        {/* Rutas de administración */}
+        {/* Rutas de administración protegidas */}
+        <Route path="/admin" element={<Navigate to="/admin/dashboard" replace />} />
         <Route path="/admin/dashboard" element={
           <Suspense fallback={<div>Cargando...</div>}>
-            <AdminDummy />
+            <ProtectedRoute>
+              <AdminDummy />
+            </ProtectedRoute>
           </Suspense>
         } />
         <Route path="/admin/citas" element={<Navigate to="/admin/citas-agendadas" replace />} />
         <Route path="/admin/citas-agendadas" element={
           <Suspense fallback={<div>Cargando...</div>}>
-            <AdminCitasAgendadas />
+            <ProtectedRoute>
+              <AdminCitasAgendadas />
+            </ProtectedRoute>
           </Suspense>
         } />
         <Route path="/admin/horarios" element={
           <Suspense fallback={<div>Cargando...</div>}>
-            <AdminHorarios />
+            <ProtectedRoute>
+              <AdminHorarios />
+            </ProtectedRoute>
           </Suspense>
         } />
         <Route path="/admin/especialidades" element={
           <Suspense fallback={<div>Cargando...</div>}>
-            <AdminDummy />
+            <ProtectedRoute>
+              <AdminDummy />
+            </ProtectedRoute>
           </Suspense>
         } />
         <Route path="/admin/profesionales" element={
           <Suspense fallback={<div>Cargando...</div>}>
-            <AdminProfesionales />
+            <ProtectedRoute>
+              <AdminProfesionales />
+            </ProtectedRoute>
           </Suspense>
         } />
         <Route path="/admin/servicios" element={
           <Suspense fallback={<div>Cargando...</div>}>
-            <AdminServicios />
+            <ProtectedRoute>
+              <AdminServicios />
+            </ProtectedRoute>
           </Suspense>
         } />
         <Route path="/admin/convenios" element={
           <Suspense fallback={<div>Cargando...</div>}>
-            <AdminConvenios />
+            <ProtectedRoute>
+              <AdminConvenios />
+            </ProtectedRoute>
           </Suspense>
         } />
         <Route path="/admin/examenes" element={
           <Suspense fallback={<div>Cargando...</div>}>
-            <AdminExamenes />
+            <ProtectedRoute>
+              <AdminExamenes />
+            </ProtectedRoute>
           </Suspense>
         } />
         <Route path="/admin/cotizaciones" element={
           <Suspense fallback={<div>Cargando...</div>}>
-            <AdminCotizaciones />
+            <ProtectedRoute>
+              <AdminCotizaciones />
+            </ProtectedRoute>
           </Suspense>
         } />
         <Route path="/admin/usuarios" element={
           <Suspense fallback={<div>Cargando...</div>}>
-            <AdminDummy />
+            <ProtectedRoute>
+              <AdminDummy />
+            </ProtectedRoute>
           </Suspense>
         } />
         
