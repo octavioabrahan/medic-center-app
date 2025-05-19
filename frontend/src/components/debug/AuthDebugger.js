@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { auth } from '../api';
+import React, { useState } from 'react';
+import { auth } from '../../api';
 
 /**
  * Componente para probar y depurar la autenticación
