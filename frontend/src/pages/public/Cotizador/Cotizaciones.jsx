@@ -98,12 +98,20 @@ export default function Cotizaciones() {
     setError(null);
     try {
       const apiUrl = process.env.REACT_APP_API_URL;
+      // Formatear fecha_nacimiento a YYYY-MM-DD
+      let fechaNacimientoFormateada = form.fecha_nacimiento;
+      if (fechaNacimientoFormateada) {
+        const fechaObj = new Date(fechaNacimientoFormateada);
+        if (!isNaN(fechaObj.getTime())) {
+          fechaNacimientoFormateada = fechaObj.toISOString().split('T')[0];
+        }
+      }
       const dataToSend = {
         nombre: form.nombre.trim(),
         apellido: form.apellido.trim(),
         cedula: form.cedula.trim(),
         telefono: form.telefono.trim(),
-        fecha_nacimiento: form.fecha_nacimiento,
+        fecha_nacimiento: fechaNacimientoFormateada,
         sexo: form.sexo,
         email: form.email.trim(),
         examenes: selected.map(e => ({ codigo: e.codigo, nombre: e.nombre_examen || e.nombre, precio: Number(e.precio), tiempo_entrega: e.tiempo_entrega || null })),
@@ -319,17 +327,29 @@ export default function Cotizaciones() {
                 />
               </div>
               <div className={styles.cotizadorInputField}>
-                <label htmlFor="sexo">Sexo</label>
-                <select
-                  id="sexo"
-                  className={styles.cotizadorSelect}
-                  value={form.sexo}
-                  onChange={e => handleFormChange('sexo', e.target.value)}
-                >
-                  <option value="masculino">Masculino</option>
-                  <option value="femenino">Femenino</option>
-                  <option value="otro">Otro</option>
-                </select>
+                <label>Sexo</label>
+                <div style={{ display: 'flex', gap: '24px' }}>
+                  <label>
+                    <input
+                      type="radio"
+                      name="sexo"
+                      value="masculino"
+                      checked={form.sexo === 'masculino'}
+                      onChange={() => handleFormChange('sexo', 'masculino')}
+                    />
+                    Masculino
+                  </label>
+                  <label>
+                    <input
+                      type="radio"
+                      name="sexo"
+                      value="femenino"
+                      checked={form.sexo === 'femenino'}
+                      onChange={() => handleFormChange('sexo', 'femenino')}
+                    />
+                    Femenino
+                  </label>
+                </div>
               </div>
               <div className={styles.cotizadorInputField}>
                 <InputField
