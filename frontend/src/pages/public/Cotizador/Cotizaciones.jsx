@@ -140,39 +140,37 @@ export default function Cotizaciones() {
                   <div key={exam.codigo} className={styles.cotizadorChoiceCard}>
                     <div className={styles.cotizadorCheckboxField}>
                       <CheckboxField
-                        label={<span className={styles.cotizadorLabel2}>{exam.nombre_examen}</span>}
+                        label={exam.nombre_examen}
                         checked={selected.some(e => e.codigo === exam.codigo)}
                         onChange={() => handleToggle(exam.codigo)}
                       />
-                    </div>
-                    <div style={{ height: 4 }} />
-                    <div className={styles.cotizadorDescriptionRow}>
-                      <span
-                        className={styles.cotizadorDescription}
-                        tabIndex={0}
-                        role="button"
-                        onClick={() => setModalExam(exam)}
-                        onKeyPress={e => { if (e.key === 'Enter') setModalExam(exam); }}
-                      >
-                        Indicación
-                      </span>
+                      <div className={styles.cotizadorDescriptionRow}>
+                        <div className={styles.cotizadorSpace}></div>
+                        <span
+                          className={styles.cotizadorDescription}
+                          tabIndex={0}
+                          role="button"
+                          onClick={() => setModalExam(exam)}
+                          onKeyPress={e => { if (e.key === 'Enter') setModalExam(exam); }}
+                        >
+                          Indicación
+                        </span>
+                      </div>
                     </div>
                   </div>
                 ))
               )}
             </div>
-            <div className={styles.cotizadorButtonContainer}>
-              <div className={styles.cotizadorButtonWrap}>
-                <Button
-                  variant="primary"
-                  size="medium"
-                  disabled={selected.length === 0}
-                  fullWidth={false}
-                  onClick={() => setStep(2)}
-                >
-                  Continuar
-                </Button>
-              </div>
+            <div className={styles.cotizadorButtonWrap}>
+              <Button
+                variant="primary"
+                size="medium"
+                disabled={selected.length === 0}
+                fullWidth
+                onClick={() => setStep(2)}
+              >
+                Continuar
+              </Button>
             </div>
             {error && <div className={styles.cotizadorSubtitle2}>{error}</div>}
           </div>
@@ -198,7 +196,6 @@ export default function Cotizaciones() {
                           <XMarkIcon className={styles.cotizadorRemoveIcon} width={20} height={20} />
                         </button>
                       </div>
-                      <div style={{ height: 4 }} />
                       <div className={styles.cotizadorDescriptionRow}>
                         <span
                           className={styles.cotizadorDescription}
@@ -339,7 +336,6 @@ export default function Cotizaciones() {
                         <XMarkIcon className={styles.cotizadorRemoveIcon} width={20} height={20} />
                       </button>
                     </div>
-                    <div style={{ height: 4 }} />
                     <div className={styles.cotizadorDescriptionRow}>
                       <span
                         className={styles.cotizadorDescription}
