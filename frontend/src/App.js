@@ -11,14 +11,8 @@ const RequireAuth = ({ children }) => {
   
   console.log("RequireAuth: Verificando autenticación", { isAuthenticated, path: location.pathname });
   
-  // Verificación inicial
-  if (!isAuthenticated) {
-    // Redirigir al login, guardando la ubicación actual para redirigir después del login
-    console.log("RequireAuth: Usuario no autenticado, redirigiendo a login");
-    return <Navigate to="/login" state={{ from: location }} replace />;
-  }
-  
-  // Verificación continua
+  // Hooks deben ser llamados en el mismo orden en cada renderizado
+  // Por eso movemos useEffect antes de cualquier return condicional
   useEffect(() => {
     // Re-verificar autenticación cada vez que el componente se monta o la ruta cambia
     const checkAuth = () => {
@@ -36,6 +30,13 @@ const RequireAuth = ({ children }) => {
     
     return () => clearInterval(interval);
   }, [location, navigate]);
+  
+  // Verificación inicial - debe estar después de los hooks
+  if (!isAuthenticated) {
+    // Redirigir al login, guardando la ubicación actual para redirigir después del login
+    console.log("RequireAuth: Usuario no autenticado, redirigiendo a login");
+    return <Navigate to="/login" state={{ from: location }} replace />;
+  }
   
   console.log("RequireAuth: Usuario autenticado, permitiendo acceso");
   return children;
