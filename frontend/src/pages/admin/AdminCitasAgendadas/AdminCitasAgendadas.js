@@ -1,12 +1,12 @@
 // src/pages/admin/AdminCitasAgendadas.js
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { AdminLayout } from '../../components/AdminDashboard';
-import SearchField from '../../components/Inputs/SearchField';
-import SelectField from '../../components/Inputs/SelectField';
-import Calendar from '../../components/common/Calendar';
-import Table from '../../components/Tables/Table';
-import Tag from '../../components/Tag/Tag';
-import Button from '../../components/Button/Button';
+import { AdminLayout } from '../../../components/AdminDashboard';
+import SearchField from '../../../components/Inputs/SearchField';
+import SelectField from '../../../components/Inputs/SelectField';
+import Calendar from '../../../components/common/Calendar';
+import Table from '../../../components/Tables/Table';
+import Tag from '../../../components/Tag/Tag';
+import Button from '../../../components/Button/Button';
 import { CheckIcon, XMarkIcon } from '@heroicons/react/24/outline';
 import { useLocation } from 'react-router-dom';
 import axios from 'axios';

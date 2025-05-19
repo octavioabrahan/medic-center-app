@@ -57,7 +57,7 @@ const RequireAuth = ({ children }) => {
 
 // Lazy load para páginas de administración
 const AdminDummy = lazy(() => import('./pages/admin/AdminDummy'));
-const AdminCitasAgendadas = lazy(() => import('./pages/admin/AdminCitasAgendadas'));
+const AdminCitasAgendadas = lazy(() => import('./pages/admin/AdminCitasAgendadas/AdminCitasAgendadas'));
 const AdminHorarios = lazy(() => import('./pages/admin/AdminHorarios/AdminHorarios'));
 const AdminProfesionales = lazy(() => import('./pages/admin/AdminProfesionales'));
 const AdminServicios = lazy(() => import('./pages/admin/AdminServicios/AdminServicios'));
