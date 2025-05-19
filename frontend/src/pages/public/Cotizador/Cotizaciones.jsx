@@ -145,6 +145,7 @@ export default function Cotizaciones() {
                         onChange={() => handleToggle(exam.codigo)}
                       />
                     </div>
+                    <div style={{ height: 4 }} />
                     <div className={styles.cotizadorDescriptionRow}>
                       <span
                         className={styles.cotizadorDescription}
@@ -197,6 +198,7 @@ export default function Cotizaciones() {
                           <XMarkIcon className={styles.cotizadorRemoveIcon} width={20} height={20} />
                         </button>
                       </div>
+                      <div style={{ height: 4 }} />
                       <div className={styles.cotizadorDescriptionRow}>
                         <span
                           className={styles.cotizadorDescription}
@@ -337,6 +339,7 @@ export default function Cotizaciones() {
                         <XMarkIcon className={styles.cotizadorRemoveIcon} width={20} height={20} />
                       </button>
                     </div>
+                    <div style={{ height: 4 }} />
                     <div className={styles.cotizadorDescriptionRow}>
                       <span
                         className={styles.cotizadorDescription}
