@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Herramienta de Autenticación</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        h1 {
+            color: #3498db;
+        }
+        .card {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            background-color: #f8f9fa;
+        }
+        button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+        button.danger {
+            background-color: #e74c3c;
+        }
+        .code {
+            background-color: #f1f1f1;
+            padding: 10px;
+            border-radius: 4px;
+            font-family: monospace;
+            overflow-x: auto;
+        }
+        .auth-status {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 20px;
+            color: white;
+            font-weight: bold;
+        }
+        .authenticated {
+            background-color: #2ecc71;
+        }
+        .not-authenticated {
+            background-color: #e74c3c;
+        }
+    </style>
+</head>
+<body>
+    <h1>Herramienta de Autenticación</h1>
+    
+    <div class="card">
+        <h2>Estado Actual</h2>
+        <div id="auth-status"></div>
+        <div id="auth-details" class="code"></div>
+    </div>
+    
+    <div class="card">
+        <h2>Acciones</h2>
+        <button onclick="clearAuth()">Limpiar Autenticación</button>
+        <button onclick="testAdminAccess()">Probar Acceso a /admin</button>
+        <button onclick="goToLogin()">Ir a Login</button>
+        <button onclick="goToDebugger()">Ir al Depurador</button>
+    </div>
+    
+    <div class="card">
+        <h2>Instrucciones</h2>
+        <ol>
+            <li>Utiliza "Limpiar Autenticación" para eliminar cualquier sesión existente</li>
+            <li>Verifica que el estado actual muestre "No autenticado"</li>
+            <li>Utiliza "Probar Acceso a /admin" - deberías ser redirigido al login</li>
+            <li>Inicia sesión con credenciales válidas</li>
+            <li>Después de iniciar sesión correctamente, deberías poder acceder a las rutas protegidas</li>
+        </ol>
+    </div>
+
+    <script>
+        // Función para limpiar autenticación
+        function clearAuth() {
+            localStorage.removeItem('authToken');
+            localStorage.removeItem('user');
+            updateStatus();
+            alert('Autenticación eliminada correctamente');
+        }
+        
+        // Función para mostrar el estado actual
+        function updateStatus() {
+            const token = localStorage.getItem('authToken');
+            const user = localStorage.getItem('user');
+            const statusEl = document.getElementById('auth-status');
+            const detailsEl = document.getElementById('auth-details');
+            
+            if (token && user) {
+                statusEl.innerHTML = '<span class="auth-status authenticated">Autenticado</span>';
+                
+                // Intentar decodificar el token
+                try {
+                    const parts = token.split('.');
+                    if (parts.length === 3) {
+                        const payload = JSON.parse(atob(parts[1]));
+                        const expiry = payload.exp ? new Date(payload.exp * 1000) : null;
+                        const now = new Date();
+                        const isExpired = expiry ? expiry < now : false;
+                        
+                        let details = `Token: ${token.substring(0, 20)}...\n\n`;
+                        details += `Payload: ${JSON.stringify(payload, null, 2)}\n\n`;
+                        
+                        if (expiry) {
+                            details += `Expiración: ${expiry.toLocaleString()}\n`;
+                            details += `Estado: ${isExpired ? '⚠️ Expirado' : '✅ Válido'}\n\n`;
+                        }
+                        
+                        details += `Usuario: ${user}`;
+                        
+                        detailsEl.innerText = details;
+                    } else {
+                        detailsEl.innerText = `Token: ${token}\n\nFormato inválido (no es JWT)`;
+                    }
+                } catch (e) {
+                    detailsEl.innerText = `Token: ${token}\n\nError al decodificar: ${e.message}`;
+                }
+            } else {
+                statusEl.innerHTML = '<span class="auth-status not-authenticated">No autenticado</span>';
+                detailsEl.innerText = 'No hay información de autenticación almacenada.';
+            }
+        }
+        
+        // Función para probar acceso a rutas protegidas
+        function testAdminAccess() {
+            window.location.href = '/admin/dashboard';
+        }
+        
+        // Función para ir al login
+        function goToLogin() {
+            window.location.href = '/login';
+        }
+        
+        // Función para ir al depurador
+        function goToDebugger() {
+            window.location.href = '/debug/auth';
+        }
+        
+        // Actualizar estado al cargar la página
+        updateStatus();
+    </script>
+</body>
+</html>

@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { useNavigate, useLocation, useSearchParams } from "react-router-dom";
 import { auth } from "../../api";
 import "./Auth.css";
 
@@ -8,12 +8,34 @@ function Login() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [searchParams] = useSearchParams();
   
   const navigate = useNavigate();
   const location = useLocation();
 
-  // Get the redirect path from location state or default to /admin
-  const from = location.state?.from?.pathname || "/admin";
+  // Obtener la ruta de redirección desde:
+  // 1. El parámetro de consulta "redirect" en la URL
+  // 2. La ubicación state de React Router
+  // 3. Valor predeterminado "/admin"
+  const redirectPath = 
+    searchParams.get("redirect") || 
+    location.state?.from?.pathname || 
+    "/admin";
+  
+  // Comprobar si el usuario ya está autenticado
+  useEffect(() => {
+    const checkAuth = () => {
+      const isAuth = auth.isAuthenticated();
+      console.log("Login - Verificando autenticación:", { isAuth });
+      
+      if (isAuth) {
+        console.log("Login - Usuario ya autenticado, redirigiendo a:", redirectPath);
+        navigate(redirectPath, { replace: true });
+      }
+    };
+    
+    checkAuth();
+  }, [navigate, redirectPath]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -30,8 +52,9 @@ function Login() {
         throw new Error("No se recibió un token de autenticación válido");
       }
       
-      // Redirección tras login exitoso - a la página original donde el usuario intentó acceder
-      navigate(from, { replace: true });
+      // Redirección tras login exitoso
+      console.log("Redirigiendo a:", redirectPath);
+      navigate(redirectPath, { replace: true });
     } catch (err) {
       console.error("Error de login detallado:", err);
       
@@ -65,6 +88,11 @@ function Login() {
       }
       
       setError(errorMessage);
+      
+      // Mostrar los datos de local storage para depuración
+      console.log("Estado del localStorage después del error:");
+      console.log("- authToken:", localStorage.getItem("authToken"));
+      console.log("- user:", localStorage.getItem("user"));
     } finally {
       setLoading(false);
     }

@@ -2,39 +2,52 @@ import React, { Suspense, lazy, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate, useNavigate, useLocation } from 'react-router-dom';
 import { auth } from './api';
 import { AuthProvider } from './context/AuthContext';
+import AdminAuthRedirector from './components/auth/AdminAuthRedirector';
 
 // Higher-order component para rutas protegidas
 const RequireAuth = ({ children }) => {
-  const isAuthenticated = auth.isAuthenticated();
   const location = useLocation();
   const navigate = useNavigate();
   
-  console.log("RequireAuth: Verificando autenticación", { isAuthenticated, path: location.pathname });
+  // Realizar la verificación de autenticación en cada renderizado
+  const isAuthenticated = auth.isAuthenticated();
+  console.log("RequireAuth: Verificando autenticación", { 
+    isAuthenticated, 
+    path: location.pathname,
+    token: localStorage.getItem('authToken') ? 'present' : 'missing'
+  });
   
   // Hooks deben ser llamados en el mismo orden en cada renderizado
-  // Por eso movemos useEffect antes de cualquier return condicional
   useEffect(() => {
-    // Re-verificar autenticación cada vez que el componente se monta o la ruta cambia
+    // Verificar autenticación cuando el componente se monta
     const checkAuth = () => {
       const isStillAuth = auth.isAuthenticated();
+      console.log("RequireAuth [useEffect]: Comprobando autenticación", { 
+        isStillAuth, 
+        path: location.pathname 
+      });
+      
       if (!isStillAuth) {
-        console.log("RequireAuth useEffect: Token expirado o eliminado");
-        navigate('/login', { state: { from: location }, replace: true });
+        console.log("RequireAuth [useEffect]: No autenticado, redirigiendo a login");
+        // Forzamos redirección con window.location en vez de navigate 
+        // para asegurar un refresco completo
+        window.location.href = `/login?redirect=${encodeURIComponent(location.pathname)}`;
       }
     };
     
+    // Verificar inmediatamente
     checkAuth();
     
-    // También podríamos configurar un intervalo para verificar periódicamente
-    const interval = setInterval(checkAuth, 60000); // Verificar cada minuto
+    // También verificamos periódicamente
+    const interval = setInterval(checkAuth, 30000); // cada 30 segundos
     
     return () => clearInterval(interval);
   }, [location, navigate]);
   
-  // Verificación inicial - debe estar después de los hooks
+  // Verificación inicial - FUERA del useEffect para bloquear renderizado inmediatamente
   if (!isAuthenticated) {
-    // Redirigir al login, guardando la ubicación actual para redirigir después del login
-    console.log("RequireAuth: Usuario no autenticado, redirigiendo a login");
+    console.log("RequireAuth: No autenticado en verificación inicial, redirigiendo a login");
+    // Utilizamos el location state de React Router para recordar la ruta original
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
   
@@ -54,6 +67,7 @@ const AdminExamenes = lazy(() => import('./pages/admin/AdminExamenes/AdminExamen
 
 // Lazy load para autenticación
 const LoginPage = lazy(() => import('./pages/auth/LoginPage'));
+const AuthDebugger = lazy(() => import('./components/debug/AuthDebugger'));
 
 // Lazy load para los demos
 const ButtonDemo = lazy(() => import('./components/Button/ButtonDemo'));
@@ -72,6 +86,8 @@ function App() {
   return (
     <Router>
       <AuthProvider>
+        {/* Añadimos el interceptor global para rutas admin */}
+        <AdminAuthRedirector />
         <Routes>
         {/* Ruta principal para el índice de demos */}
         <Route path="/demo" element={
@@ -138,6 +154,13 @@ function App() {
         <Route path="/login" element={
           <Suspense fallback={<div>Cargando...</div>}>
             <LoginPage />
+          </Suspense>
+        } />
+        
+        {/* Ruta de depuración de autenticación */}
+        <Route path="/debug/auth" element={
+          <Suspense fallback={<div>Cargando...</div>}>
+            <AuthDebugger />
           </Suspense>
         } />
         

@@ -154,36 +154,65 @@ const auth = {
   
   isAuthenticated: () => {
     const token = localStorage.getItem("authToken");
-    // Verifica que haya un token y que tenga un formato válido
-    if (!token) {
-      console.log("isAuthenticated: No hay token");
+    const user = localStorage.getItem("user");
+    
+    // Verificar que exista tanto el token como la información de usuario
+    if (!token || !user) {
+      console.log("isAuthenticated: No hay token o información de usuario");
       return false;
     }
     
     try {
-      // Podríamos hacer validaciones básicas aquí, como verificar la estructura del token o expiration
+      // Verificar la estructura del token
       const tokenParts = token.split('.');
       if (tokenParts.length !== 3) {
         console.log("isAuthenticated: Token no tiene formato JWT válido");
-        return false;
-      }
-      
-      // Opcionalmente, podríamos decodificar el payload para verificar la expiración
-      const payload = JSON.parse(atob(tokenParts[1]));
-      const expiry = payload.exp * 1000; // convertir a milisegundos
-      
-      if (Date.now() > expiry) {
-        console.log("isAuthenticated: Token expirado");
-        // Si está expirado, limpiar localStorage
+        // Si el token no es válido, limpiamos localStorage
         localStorage.removeItem("authToken");
         localStorage.removeItem("user");
         return false;
       }
       
-      console.log("isAuthenticated: Token válido");
+      // Decodificar el payload para verificar la expiración
+      const payload = JSON.parse(atob(tokenParts[1]));
+      
+      // Verificar la expiración del token
+      if (payload.exp) {
+        const expiryTime = payload.exp * 1000; // convertir a milisegundos
+        const now = Date.now();
+        
+        if (now > expiryTime) {
+          console.log("isAuthenticated: Token expirado", {
+            expired: new Date(expiryTime).toLocaleString(),
+            now: new Date(now).toLocaleString()
+          });
+          // Si está expirado, limpiar localStorage
+          localStorage.removeItem("authToken");
+          localStorage.removeItem("user");
+          return false;
+        }
+      }
+      
+      // Comprobar que tengamos información de usuario válida
+      try {
+        const userObj = JSON.parse(user);
+        if (!userObj || !userObj.id || !userObj.email) {
+          console.log("isAuthenticated: Información de usuario inválida");
+          return false;
+        }
+      } catch (e) {
+        console.log("isAuthenticated: Error al parsear información de usuario");
+        localStorage.removeItem("user");
+        return false;
+      }
+      
+      // Si pasa todas las validaciones, está autenticado
       return true;
     } catch (error) {
-      console.log("isAuthenticated: Error al validar token", error);
+      console.log("isAuthenticated: Error", error);
+      // En caso de error, eliminamos los datos de autenticación para evitar problemas
+      localStorage.removeItem("authToken");
+      localStorage.removeItem("user");
       return false;
     }
   },
