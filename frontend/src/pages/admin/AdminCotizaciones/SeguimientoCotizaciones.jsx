@@ -420,7 +420,7 @@ const SeguimientoCotizaciones = ({ cotizacion, onClose }) => {
                   disabled={!comentarios || !proximaAccion || loading}
                   loading={loading}
                   className={styles.buttonPrimary}
-                  variant="primary"
+                  variant="neutral"
                   size="md"
                 />
               </div>
