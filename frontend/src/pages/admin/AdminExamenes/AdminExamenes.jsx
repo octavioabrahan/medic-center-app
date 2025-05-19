@@ -47,9 +47,8 @@ const AdminExamenes = () => {
     codigo: "",
     nombre_examen: "",
     preciousd: "",
-    tiempo_entrega: "",
     informacion: "",
-    tipo: "examen",
+    tipo: null,
     is_active: true
   });
 
@@ -174,9 +173,8 @@ const AdminExamenes = () => {
       codigo: "",
       nombre_examen: "",
       preciousd: "",
-      tiempo_entrega: "",
       informacion: "",
-      tipo: "examen",
+      tipo: null,
       is_active: true
     });
     setShowAddModal(true);
@@ -208,6 +206,13 @@ const AdminExamenes = () => {
   const handleAddExamen = async (e) => {
     if (e) e.preventDefault();
     try {
+      // Check if code already exists
+      const existingExam = examenes.find(exam => exam.codigo === formData.codigo);
+      if (existingExam) {
+        setError("El código ya existe. Por favor use otro código.");
+        return;
+      }
+
       // Add user header for audit
       const headers = {
         'X-Usuario': localStorage.getItem('username') || 'admin'
@@ -216,6 +221,7 @@ const AdminExamenes = () => {
       const response = await axios.post(API_URL, formData, { headers });
       await cargarExamenes(); // Refresh data
       setShowAddModal(false);
+      setError(null); // Clear any previous error
     } catch (err) {
       console.error('Error:', err);
       setError("Error al agregar el examen");
@@ -433,11 +439,15 @@ const AdminExamenes = () => {
       {/* Add Exam Modal */}
       <Modal
         isOpen={showAddModal}
-        onClose={() => setShowAddModal(false)}
-        title="Agregar Examen"
+        onClose={() => {
+          setShowAddModal(false);
+          setError(null);
+        }}
+        title="Agrega un nuevo item para cotizar"
         size="medium"
       >
         <form onSubmit={handleAddExamen} className={styles.adminExamenesForm}>
+          {error && <div className={styles.adminExamenesError}>{error}</div>}
           <div className={styles.adminExamenesFormGroup}>
             <label>Código</label>
             <input 
@@ -461,7 +471,7 @@ const AdminExamenes = () => {
             />
           </div>
           <div className={styles.adminExamenesFormGroup}>
-            <label>Precio USD</label>
+            <label>Precio en USD</label>
             <input 
               type="number" 
               name="preciousd" 
@@ -474,18 +484,7 @@ const AdminExamenes = () => {
             />
           </div>
           <div className={styles.adminExamenesFormGroup}>
-            <label>Tiempo de Entrega</label>
-            <input 
-              type="text" 
-              name="tiempo_entrega" 
-              value={formData.tiempo_entrega} 
-              onChange={handleFormChange} 
-              placeholder="Ej: 24 horas" 
-              className={styles.adminExamenesInput}
-            />
-          </div>
-          <div className={styles.adminExamenesFormGroup}>
-            <label>Información</label>
+            <label>Indicaciones</label>
             <textarea 
               name="informacion" 
               value={formData.informacion} 
@@ -494,33 +493,13 @@ const AdminExamenes = () => {
               className={styles.adminExamenesTextarea}
             />
           </div>
-          <div className={styles.adminExamenesFormGroup}>
-            <label>Tipo</label>
-            <select 
-              name="tipo" 
-              value={formData.tipo} 
-              onChange={handleFormChange}
-              className={styles.adminExamenesSelect}
-            >
-              <option value="examen">Examen</option>
-              <option value="servicio">Servicio</option>
-              <option value="paquete">Paquete</option>
-            </select>
-          </div>
-          <div className={styles.adminExamenesFormGroup}>
-            <CheckboxField
-              label="Activo"
-              checked={formData.is_active}
-              onChange={(checked) => setFormData({...formData, is_active: checked})}
-            />
-          </div>
           
           <div className={styles.adminExamenesModalFooter}>
             <Button variant="subtle" onClick={() => setShowAddModal(false)}>
               Cancelar
             </Button>
             <Button variant="primary" type="submit">
-              Guardar
+              Agregar
             </Button>
           </div>
         </form>

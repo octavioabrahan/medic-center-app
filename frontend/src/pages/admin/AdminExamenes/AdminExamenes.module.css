@@ -200,6 +200,17 @@
   resize: vertical;
 }
 
+.adminExamenesError {
+  color: var(--sds-color-text-negative-default, #d10014);
+  background-color: var(--sds-color-background-negative-tertiary, #fff0f1);
+  padding: 8px 12px;
+  border-radius: 4px;
+  margin-bottom: 12px;
+  font-size: 14px;
+  font-family: 'Inter', sans-serif;
+  font-weight: 500;
+}
+
 .adminExamenesModalFooter {
   display: flex;
   justify-content: flex-end;
