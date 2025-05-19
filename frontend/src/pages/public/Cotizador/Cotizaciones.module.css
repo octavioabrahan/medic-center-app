@@ -12,7 +12,7 @@
   padding: var(--sds-size-space-800, 32px) 24px var(--sds-size-space-800, 32px) 24px;
   display: flex;
   flex-direction: column;
-  gap: var(--sds-size-space-800, 32px);
+  gap: var(--sds-size-space-600, 24px);
   align-items: center;
   justify-content: center;
   align-self: stretch;
@@ -79,6 +79,7 @@
   align-items: flex-start;
   flex: 1;
   position: relative;
+  min-width: 0;
 }
 .cotizadorCheckboxFieldContainer {
   width: 100%;
@@ -86,6 +87,7 @@
   flex-direction: row;
   align-items: center;
   margin-bottom: 0.5rem;
+  max-width: 100%;
 }
 .cotizadorDescriptionRow {
   display: flex;
@@ -189,6 +191,10 @@
   font-weight: var(--body-base-font-weight, 400);
   position: relative;
   flex: 1;
+  white-space: normal;
+  word-break: break-word;
+  width: 100%;
+  display: block;
 }
 .cotizadorButton3 {
   background: var(--sds-color-background-brand-default, #2c2c2c);
