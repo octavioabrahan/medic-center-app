@@ -38,10 +38,11 @@ export default function Cotizaciones() {
   }, []);
 
   // --- UI/UX LOGIC ---
-  const filteredExams = exams.filter(exam =>
-    exam.nombre.toLowerCase().includes(search.toLowerCase()) &&
-    !selected.some(sel => sel.codigo === exam.codigo)
-  );
+  const filteredExams = exams.filter(exam => {
+    if (!exam || typeof exam.nombre !== 'string') return false;
+    return exam.nombre.toLowerCase().includes(search.toLowerCase()) &&
+      !selected.some(sel => sel.codigo === exam.codigo);
+  });
 
   const handleToggle = (codigo) => {
     const exam = exams.find(e => e.codigo === codigo);
