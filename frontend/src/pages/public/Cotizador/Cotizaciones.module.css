@@ -21,6 +21,14 @@
   overflow-y: auto;
   max-height: 700px;
 }
+.cotizadorHeroFormScroll {
+  overflow-y: auto;
+  max-height: 420px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sds-size-space-600, 24px);
+}
 .cotizadorTitle {
   color: var(--sds-color-text-brand-default, #20377a);
   text-align: center;
@@ -180,7 +188,7 @@
   text-align: left;
   font-family: var(--single-line-body-base-font-family, "Inter-Regular", sans-serif);
   font-size: var(--single-line-body-base-font-size, 16px);
-  line-height: var(--single-line-body-base-line-height, 100%);
+  line-height: var (--single-line-body-base-line-height, 100%);
   font-weight: var(--single-line-body-base-font-weight, 400);
   position: relative;
 }
@@ -406,7 +414,7 @@
   text-align: left;
   font-family: var(--single-line-body-base-font-family, "Inter-Regular", sans-serif);
   font-size: var(--single-line-body-base-font-size, 16px);
-  line-height: var(--single-line-body-base-line-height, 100%);
+  line-height: var (--single-line-body-base-line-height, 100%);
   font-weight: var (--single-line-body-base-font-weight, 400);
   position: relative;
 }

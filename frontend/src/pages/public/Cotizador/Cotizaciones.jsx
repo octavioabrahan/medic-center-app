@@ -270,74 +270,78 @@ export default function Cotizaciones() {
             <div className={styles.cotizadorSubtitle}>
               Usaremos esta información para contactarte y enviarte el detalle de tu cotización.
             </div>
-            <div className={styles.cotizadorInputField}>
-              <InputField
-                label="Nombre"
-                value={form.nombre}
-                placeholder="¿Cuál es tu nombre?"
-                onChange={v => handleFormChange('nombre', v)}
-                fillContainer
-              />
+            {/* Only the input fields are inside the scrollable form */}
+            <div className={styles.cotizadorHeroFormScroll}>
+              <div className={styles.cotizadorInputField}>
+                <InputField
+                  label="Nombre"
+                  value={form.nombre}
+                  placeholder="¿Cuál es tu nombre?"
+                  onChange={v => handleFormChange('nombre', v)}
+                  fillContainer
+                />
+              </div>
+              <div className={styles.cotizadorInputField}>
+                <InputField
+                  label="Apellido"
+                  value={form.apellido}
+                  placeholder="¿Cuál es tu apellido?"
+                  onChange={v => handleFormChange('apellido', v)}
+                  fillContainer
+                />
+              </div>
+              <div className={styles.cotizadorInputField}>
+                <InputField
+                  label="Cédula"
+                  value={form.cedula}
+                  placeholder="Tu número de cédula"
+                  onChange={v => handleFormChange('cedula', v)}
+                  fillContainer
+                />
+              </div>
+              <div className={styles.cotizadorInputField}>
+                <InputField
+                  label="Teléfono"
+                  value={form.telefono}
+                  placeholder="Número donde podamos contactarte"
+                  onChange={v => handleFormChange('telefono', v)}
+                  fillContainer
+                />
+              </div>
+              <div className={styles.cotizadorInputField}>
+                <InputField
+                  label="Fecha de nacimiento"
+                  value={form.fecha_nacimiento}
+                  placeholder="Fecha de nacimiento"
+                  type="date"
+                  onChange={v => handleFormChange('fecha_nacimiento', v)}
+                  fillContainer
+                />
+              </div>
+              <div className={styles.cotizadorInputField}>
+                <label htmlFor="sexo">Sexo</label>
+                <select
+                  id="sexo"
+                  className={styles.cotizadorSelect}
+                  value={form.sexo}
+                  onChange={e => handleFormChange('sexo', e.target.value)}
+                >
+                  <option value="masculino">Masculino</option>
+                  <option value="femenino">Femenino</option>
+                  <option value="otro">Otro</option>
+                </select>
+              </div>
+              <div className={styles.cotizadorInputField}>
+                <InputField
+                  label="Correo electrónico"
+                  value={form.email}
+                  placeholder="Correo para enviarte la cotización"
+                  onChange={v => handleFormChange('email', v)}
+                  fillContainer
+                />
+              </div>
             </div>
-            <div className={styles.cotizadorInputField}>
-              <InputField
-                label="Apellido"
-                value={form.apellido}
-                placeholder="¿Cuál es tu apellido?"
-                onChange={v => handleFormChange('apellido', v)}
-                fillContainer
-              />
-            </div>
-            <div className={styles.cotizadorInputField}>
-              <InputField
-                label="Cédula"
-                value={form.cedula}
-                placeholder="Tu número de cédula"
-                onChange={v => handleFormChange('cedula', v)}
-                fillContainer
-              />
-            </div>
-            <div className={styles.cotizadorInputField}>
-              <InputField
-                label="Teléfono"
-                value={form.telefono}
-                placeholder="Número donde podamos contactarte"
-                onChange={v => handleFormChange('telefono', v)}
-                fillContainer
-              />
-            </div>
-            <div className={styles.cotizadorInputField}>
-              <InputField
-                label="Fecha de nacimiento"
-                value={form.fecha_nacimiento}
-                placeholder="Fecha de nacimiento"
-                type="date"
-                onChange={v => handleFormChange('fecha_nacimiento', v)}
-                fillContainer
-              />
-            </div>
-            <div className={styles.cotizadorInputField}>
-              <label htmlFor="sexo">Sexo</label>
-              <select
-                id="sexo"
-                className={styles.cotizadorSelect}
-                value={form.sexo}
-                onChange={e => handleFormChange('sexo', e.target.value)}
-              >
-                <option value="masculino">Masculino</option>
-                <option value="femenino">Femenino</option>
-                <option value="otro">Otro</option>
-              </select>
-            </div>
-            <div className={styles.cotizadorInputField}>
-              <InputField
-                label="Correo electrónico"
-                value={form.email}
-                placeholder="Correo para enviarte la cotización"
-                onChange={v => handleFormChange('email', v)}
-                fillContainer
-              />
-            </div>
+            {/* The rest (back button, text, check, send button) stays outside the scrollable form */}
             <div className={styles.cotizadorCheckboxFieldContainer}>
               <div className={styles.cotizadorCheckboxField}>
                 <CheckboxField
