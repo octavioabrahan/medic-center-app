@@ -419,7 +419,7 @@ const SeguimientoCotizaciones = ({ cotizacion, onClose }) => {
                   onClick={handleSaveFollowUp}
                   disabled={!comentarios || !proximaAccion || loading}
                   loading={loading}
-                  className={styles.buttonPrimary}
+                  className={styles.buttonNeutral}
                   variant="neutral"
                   size="md"
                 />
