@@ -5,6 +5,7 @@ import CheckboxField from '../../../components/Inputs/CheckboxField';
 import InputField from '../../../components/Inputs/InputField';
 import { Button } from '../../../components/Button/Button';
 import ArrowLeft from '../../../assets/ArrowLeft.svg';
+import { XMarkIcon } from '@heroicons/react/24/outline';
 import styles from './Cotizaciones.module.css';
 
 export default function Cotizaciones() {
@@ -186,6 +187,14 @@ export default function Cotizaciones() {
                     <div className={styles.cotizadorCheckboxField2}>
                       <div className={styles.cotizadorCheckboxAndLabel}>
                         <div className={styles.cotizadorLabel2}>{exam.nombre_examen}</div>
+                        <button
+                          type="button"
+                          className={styles.cotizadorRemoveBtn}
+                          aria-label="Eliminar examen"
+                          onClick={() => handleRemove(exam.codigo)}
+                        >
+                          <XMarkIcon className={styles.cotizadorRemoveIcon} width={20} height={20} />
+                        </button>
                       </div>
                       <div className={styles.cotizadorDescriptionRow}>
                         <span
@@ -225,7 +234,7 @@ export default function Cotizaciones() {
                 </div>
               </div>
               <div className={styles.iconButton} onClick={() => setModalExam(null)}>
-                <img className={styles.x} src="/x0.svg" alt="Cerrar" />
+                <XMarkIcon className={styles.x} width={20} height={20} />
               </div>
             </div>
           </div>
@@ -318,6 +327,14 @@ export default function Cotizaciones() {
                   <div className={styles.cotizadorCheckboxField2}>
                     <div className={styles.cotizadorCheckboxAndLabel}>
                       <div className={styles.cotizadorLabel2}>{exam.nombre_examen}</div>
+                      <button
+                        type="button"
+                        className={styles.cotizadorRemoveBtn}
+                        aria-label="Eliminar examen"
+                        onClick={() => handleRemove(exam.codigo)}
+                      >
+                        <XMarkIcon className={styles.cotizadorRemoveIcon} width={20} height={20} />
+                      </button>
                     </div>
                     <div className={styles.cotizadorDescriptionRow}>
                       <span

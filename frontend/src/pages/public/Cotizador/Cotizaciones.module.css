@@ -204,7 +204,7 @@
   text-align: left;
   font-family: var(--single-line-body-base-font-family, "Inter-Regular", sans-serif);
   font-size: var(--single-line-body-base-font-size, 16px);
-  line-height: var(--single-line-body-base-line-height, 100%);
+  line-height: var (--single-line-body-base-line-height, 100%);
   font-weight: var(--single-line-body-base-font-weight, 400);
   position: relative;
 }
@@ -274,6 +274,21 @@
   color: var(--sds-color-text-brand-default, #20377a);
   font-size: 18px;
   cursor: pointer;
+}
+.cotizadorRemoveBtn {
+  background: none;
+  border: none;
+  padding: 0 0 0 8px;
+  margin-left: 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+}
+.cotizadorRemoveIcon {
+  color: var(--var-sds-color-text-default-default, #1e1e1e);
+  width: 20px;
+  height: 20px;
+  pointer-events: none;
 }
 .dialog,
 .dialog * {
@@ -377,7 +392,7 @@
   font-family: var(--single-line-body-base-font-family, "Inter-Regular", sans-serif);
   font-size: var(--single-line-body-base-font-size, 16px);
   line-height: var(--single-line-body-base-line-height, 100%);
-  font-weight: var(--single-line-body-base-font-weight, 400);
+  font-weight: var (--single-line-body-base-font-weight, 400);
   position: relative;
 }
 .iconButton {
@@ -401,4 +416,5 @@
   height: 20px;
   position: relative;
   overflow: visible;
+  color: var(--var-sds-color-text-default-default, #1e1e1e);
 }
