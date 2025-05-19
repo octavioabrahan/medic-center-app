@@ -47,6 +47,7 @@ const AdminExamenes = () => {
     codigo: "",
     nombre_examen: "",
     preciousd: "",
+    tiempo_entrega: "",
     informacion: "",
     tipo: null,
     is_active: true
@@ -173,6 +174,7 @@ const AdminExamenes = () => {
       codigo: "",
       nombre_examen: "",
       preciousd: "",
+      tiempo_entrega: "",
       informacion: "",
       tipo: null,
       is_active: true
@@ -480,6 +482,17 @@ const AdminExamenes = () => {
               step="0.01"
               min="0" 
               required 
+              className={styles.adminExamenesInput}
+            />
+          </div>
+          <div className={styles.adminExamenesFormGroup}>
+            <label>Tiempo de Entrega</label>
+            <input 
+              type="text" 
+              name="tiempo_entrega" 
+              value={formData.tiempo_entrega} 
+              onChange={handleFormChange} 
+              placeholder="Ej: 24 horas" 
               className={styles.adminExamenesInput}
             />
           </div>
