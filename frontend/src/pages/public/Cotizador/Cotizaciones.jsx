@@ -260,7 +260,7 @@ export default function Cotizaciones() {
       <SiteFrame>
         <div className={styles.cotizadorFrame4}>
           <div className={styles.cotizadorHeroForm}>
-            <div className={styles.cotizadorButtonGroup}>
+            <div className={styles.cotizadorButtonGroupTop}>
               <Button variant="subtle" size="small" onClick={() => setStep(1)}>
                 <img src={ArrowLeft} alt="Volver" className={styles.cotizadorArrowLeft} />
                 <span className={styles.cotizadorButton2}>Volver al listado</span>
@@ -355,25 +355,28 @@ export default function Cotizaciones() {
                 />
               </div>
             </div>
-            <div className={styles.cotizadorButtonRightContainer}>
-              <Button
-                variant="primary"
-                size="medium"
-                onClick={handleSubmit}
-                disabled={
-                  loading ||
-                  !form.nombre.trim() ||
-                  !form.apellido.trim() ||
-                  !form.cedula.trim() ||
-                  !form.telefono.trim() ||
-                  !form.fecha_nacimiento ||
-                  !form.sexo ||
-                  !form.email.trim() ||
-                  !form.acepta
-                }
-              >
-                <span className={styles.cotizadorButton4}>Enviar cotización</span>
-              </Button>
+            <div className={styles.cotizadorButtonRow}>
+              <div style={{ flex: 1 }}></div>
+              <div className={styles.cotizadorButtonRightContainer}>
+                <Button
+                  variant="primary"
+                  size="medium"
+                  onClick={handleSubmit}
+                  disabled={
+                    loading ||
+                    !form.nombre.trim() ||
+                    !form.apellido.trim() ||
+                    !form.cedula.trim() ||
+                    !form.telefono.trim() ||
+                    !form.fecha_nacimiento ||
+                    !form.sexo ||
+                    !form.email.trim() ||
+                    !form.acepta
+                  }
+                >
+                  <span className={styles.cotizadorButton4}>Enviar cotización</span>
+                </Button>
+              </div>
             </div>
             {error && <div className={styles.cotizadorSubtitle2}>{error}</div>}
           </div>
