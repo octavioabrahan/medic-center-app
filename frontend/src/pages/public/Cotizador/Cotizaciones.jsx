@@ -41,6 +41,7 @@ export default function Cotizaciones() {
       })
     ])
       .then(([examsData, rateData]) => {
+        console.log('API examsData:', examsData);
         setExams(examsData);
         setExchangeRate(rateData.tasa);
       })
