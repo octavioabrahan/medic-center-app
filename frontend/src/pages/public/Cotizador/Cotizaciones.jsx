@@ -7,6 +7,7 @@ import { Button } from '../../../components/Button/Button';
 import ArrowLeft from '../../../assets/ArrowLeft.svg';
 import { XMarkIcon } from '@heroicons/react/24/outline';
 import styles from './Cotizaciones.module.css';
+import DatePickerField from '../../../components/Inputs/DatePickerField';
 
 export default function Cotizaciones() {
   // --- LOGIC FROM CotizadorExamenes.js ---
@@ -322,13 +323,16 @@ export default function Cotizaciones() {
                 />
               </div>
               <div className={styles.cotizadorInputField}>
-                <InputField
-                  label="Fecha de nacimiento"
+                <label>Fecha de nacimiento</label>
+                <DatePickerField
                   value={form.fecha_nacimiento}
-                  placeholder="Fecha de nacimiento"
-                  type="date"
                   onChange={v => handleFormChange('fecha_nacimiento', v)}
-                  fillContainer
+                  maxDate={new Date()}
+                  showYearDropdown
+                  showMonthDropdown
+                  dateFormat="yyyy-MM-dd"
+                  placeholderText="Selecciona la fecha"
+                  className={styles.cotizadorDatePicker}
                 />
               </div>
               <div className={styles.cotizadorInputField}>

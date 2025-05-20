@@ -108,6 +108,7 @@ const crear = async (req, res) => {
   }
 
   logGeneral(`🧾 Nueva cotización recibida para: ${nombre} ${apellido} (${cedula})`);
+  logGeneral(`Payload recibido: ${JSON.stringify(req.body, null, 2)}`);
 
   const client = await pool.getClient();
 
@@ -149,6 +150,7 @@ const crear = async (req, res) => {
 
     // Insertar los exámenes de la cotización
     for (const examen of examenes) {
+      logGeneral(`Insertando examen: ${JSON.stringify(examen, null, 2)}`);
       await client.query(
         'INSERT INTO cotizacion_examenes (cotizacion_id, examen_codigo, precio_unitario) VALUES ($1, $2, $3)',
         [cotizacionId, examen.codigo, examen.preciousd]
