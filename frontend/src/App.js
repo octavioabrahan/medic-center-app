@@ -177,7 +177,7 @@ function App() {
         {/* Cotizador público */}
         <Route path="/cotizador" element={
           <Suspense fallback={<div>Cargando cotizador...</div>}>
-            {React.createElement(require('./pages/CotizadorExamenesNuevo.jsx').default)}
+            {React.createElement(require('./pages/CotizadorExamenes.js').default)}
           </Suspense>
         } />
 
