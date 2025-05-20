@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useMediaQuery } from 'react-responsive';
-import './CotizadorExamenes.css';
+import '../../pages/public/Cotizador/CotizadorExamenes.css';
 import MailIcon from '../../assets/Mail.svg';
 import ArrowLeftIcon from '../../assets/ArrowLeft.svg';
 
