@@ -181,6 +181,13 @@ function App() {
           </Suspense>
         } />
 
+        {/* Agendamiento */}
+        <Route path="/agendamiento" element={
+          <Suspense fallback={<div>Cargando agendamiento...</div>}>
+            {React.createElement(require('./pages/public/Agendamiento/AgendamientoIndex.js').default)}
+          </Suspense>
+        } />
+
         {/* Rutas de administración protegidas */}
         <Route path="/admin" element={<Navigate to="/admin/dashboard" replace />} />
         <Route path="/admin/dashboard" element={
