@@ -2,15 +2,15 @@
 // Uses all the styled components and CSS modules from Cotizaciones.jsx, but preserves all debug, error, and validation logic from CotizadorExamenes.js
 
 import React, { useEffect, useState } from 'react';
-import SiteFrame from '../../components/SiteFrame/SiteFrame';
-import SearchField from '../../components/Inputs/SearchField';
-import CheckboxField from '../../components/Inputs/CheckboxField';
-import InputField from '../../components/Inputs/InputField';
-import { Button } from '../../components/Button/Button';
-import DatePickerField from '../../components/Inputs/DatePickerField';
-import ArrowLeft from '../../assets/ArrowLeft.svg';
-import MailIcon from '../../assets/Mail.svg';
-import styles from '../public/Cotizador/Cotizaciones.module.css';
+import SiteFrame from '../components/SiteFrame/SiteFrame';
+import SearchField from '../components/Inputs/SearchField';
+import CheckboxField from '../components/Inputs/CheckboxField';
+import InputField from '../components/Inputs/InputField';
+import { Button } from '../components/Button/Button';
+import DatePickerField from '../components/Inputs/DatePickerField';
+import ArrowLeft from '../assets/ArrowLeft.svg';
+import MailIcon from '../assets/Mail.svg';
+import styles from './public/Cotizador/Cotizaciones.module.css';
 
 export default function CotizadorExamenesNuevo() {
   // --- LOGIC (from CotizadorExamenes.js, adapted) ---
