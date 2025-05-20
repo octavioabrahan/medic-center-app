@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const controller = require('../controllers/cotizacionesController');
+const controller = require('../controllers/cotizacionesControllerRelacional');
 
 // Ruta para crear una nueva cotización (desde el formulario público)
 router.post('/', controller.crear);
