@@ -25,7 +25,6 @@ export default function Cotizaciones() {
     email: ''
   });
   const [acepta, setAcepta] = useState(false);
-  const [captchaValido, setCaptchaValido] = useState(false);
   const [modoFormulario, setModoFormulario] = useState(false);
   const [cotizacionEnviada, setCotizacionEnviada] = useState(false);
   const [cotizacionId, setCotizacionId] = useState(null);
@@ -66,8 +65,8 @@ export default function Cotizaciones() {
   // --- FORM SUBMIT (match v1) ---
   const handleSubmit = async () => {
     // Validación básica
-    if (!form.nombre.trim() || !form.apellido.trim() || !form.cedula.trim() || !form.telefono.trim() || !form.fecha_nacimiento || !form.sexo || !form.email.trim() || !acepta || !captchaValido) {
-      setError('Completa todos los campos, acepta los términos y resuelve el captcha.');
+    if (!form.nombre.trim() || !form.apellido.trim() || !form.cedula.trim() || !form.telefono.trim() || !form.fecha_nacimiento || !form.sexo || !form.email.trim() || !acepta) {
+      setError('Completa todos los campos y acepta los términos.');
       return;
     }
     if (seleccionados.length === 0) {
