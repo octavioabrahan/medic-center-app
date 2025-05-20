@@ -37,26 +37,58 @@ export default function Cotizaciones() {
     const apiUrl = process.env.REACT_APP_API_URL;
     setCargando(true);
     setError(null);
+    console.log('🔍 DEBUG: Iniciando carga de exámenes...');
+    console.log('🔍 DEBUG: URL de la API:', apiUrl);
     fetch(`${apiUrl}/api/exams`)
-      .then(res => res.json())
-      .then(data => {
-        // Map preciousd to precio for compatibility
-        setExamenes(data.map(e => ({ ...e, precio: e.preciousd })));
+      .then(res => {
+        console.log('🔍 DEBUG: Respuesta de exámenes recibida, status:', res.status);
+        return res.json();
       })
-      .catch(err => setError('No pudimos cargar el catálogo de exámenes. Por favor, intenta más tarde.'));
+      .then(data => {
+        console.log('🔍 DEBUG: Datos de exámenes recibidos:', data);
+        if (Array.isArray(data)) {
+          console.log(`🔍 DEBUG: Se cargaron ${data.length} exámenes correctamente`);
+          setExamenes(data.map(e => ({ ...e, precio: e.preciousd })));
+        } else {
+          console.error('Error: Los datos de exámenes no son un array', data);
+          setExamenes([]);
+        }
+      })
+      .catch(err => {
+        console.error('Error al cargar exámenes:', err);
+        setError('No pudimos cargar el catálogo de exámenes. Por favor, intenta más tarde.');
+      });
+    console.log('🔍 DEBUG: Iniciando carga de tasa de cambio...');
     fetch(`${apiUrl}/api/tasa-cambio`)
-      .then(res => res.json())
-      .then(data => setTasaCambio(data.tasa))
-      .catch(err => setError('No pudimos obtener la tasa de cambio. Por favor, intenta más tarde.'));
+      .then(res => {
+        console.log('🔍 DEBUG: Respuesta de tasa de cambio recibida, status:', res.status);
+        return res.json();
+      })
+      .then(data => {
+        console.log('🔍 DEBUG: Datos de tasa de cambio recibidos:', data);
+        if (data && data.tasa) {
+          console.log('🔍 DEBUG: Tasa de cambio establecida:', data.tasa);
+          setTasaCambio(data.tasa);
+        } else {
+          console.error('Error: No se recibió la tasa de cambio', data);
+          setError('No pudimos obtener la tasa de cambio actual. Por favor, intenta más tarde.');
+        }
+      })
+      .catch(err => {
+        console.error('Error al cargar tasa de cambio:', err);
+        setError('No pudimos obtener la tasa de cambio. Por favor, intenta más tarde.');
+      });
     setCargando(false);
   }, []);
 
   // --- EXAM SELECTION (match v1) ---
   const handleSelect = (examen) => {
+    console.log('🔍 DEBUG: Seleccionando examen:', examen);
     setSeleccionados([...seleccionados, examen]);
     setExamenes(examenes.filter(e => e.codigo !== examen.codigo));
   };
   const handleRemove = (codigo) => {
+    console.log('🔍 DEBUG: Removiendo examen con código:', codigo);
     const examen = seleccionados.find(e => e.codigo === codigo);
     setExamenes([...examenes, examen]);
     setSeleccionados(seleccionados.filter(e => e.codigo !== codigo));
@@ -65,11 +97,14 @@ export default function Cotizaciones() {
   // --- FORM SUBMIT (match v1) ---
   const handleSubmit = async () => {
     // Validación básica
+    console.log('🔍 DEBUG: Validando formulario con datos:', form);
     if (!form.nombre.trim() || !form.apellido.trim() || !form.cedula.trim() || !form.telefono.trim() || !form.fecha_nacimiento || !form.sexo || !form.email.trim() || !acepta) {
+      console.error('🔍 DEBUG: Error de validación: Completa todos los campos y acepta los términos.');
       setError('Completa todos los campos y acepta los términos.');
       return;
     }
     if (seleccionados.length === 0) {
+      console.error('🔍 DEBUG: Error de validación: Selecciona al menos un examen.');
       setError('Selecciona al menos un examen.');
       return;
     }
@@ -82,6 +117,9 @@ export default function Cotizaciones() {
         const fechaObj = new Date(fechaNacimientoFormateada);
         if (!isNaN(fechaObj.getTime())) {
           fechaNacimientoFormateada = fechaObj.toISOString().split('T')[0];
+          console.log('🔍 DEBUG: Fecha de nacimiento formateada:', fechaNacimientoFormateada);
+        } else {
+          console.error('🔍 DEBUG: No se pudo formatear la fecha de nacimiento, se enviará como está:', fechaNacimientoFormateada);
         }
       }
       // Validar tasa de cambio
@@ -89,11 +127,12 @@ export default function Cotizaciones() {
       if (isNaN(tasaCambioNumerico)) {
         throw new Error('La tasa de cambio no es un número válido');
       }
+      console.log('🔍 DEBUG: Tasa de cambio convertida a número:', tasaCambioNumerico);
       // Map selected exams to match v1
       const examenesFormateados = seleccionados.map(examen => {
         const precioNumerico = Number(examen.precio);
         if (isNaN(precioNumerico)) {
-          console.error('Precio no válido para examen:', examen);
+          console.error('🔍 DEBUG: Precio no válido para examen:', examen);
         }
         return {
           codigo: examen.codigo,
@@ -102,6 +141,7 @@ export default function Cotizaciones() {
           tiempo_entrega: examen.tiempo_entrega || null
         };
       });
+      console.log('🔍 DEBUG: Exámenes formateados:', examenesFormateados);
       const dataToSend = {
         nombre: form.nombre.trim(),
         apellido: form.apellido.trim(),
@@ -113,17 +153,33 @@ export default function Cotizaciones() {
         examenes: examenesFormateados,
         tasaCambio: tasaCambioNumerico
       };
+      console.log('🔍 DEBUG: Datos finales a enviar:', JSON.stringify(dataToSend, null, 2));
       const apiUrl = process.env.REACT_APP_API_URL;
       const res = await fetch(`${apiUrl}/api/cotizaciones`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(dataToSend)
       });
-      const response = await res.json();
-      if (!res.ok) throw new Error(response.error || 'Error al enviar la cotización');
-      setCotizacionId(response.id);
+      console.log('🔍 DEBUG: Respuesta recibida, status:', res.status);
+      const responseText = await res.text();
+      console.log('🔍 DEBUG: Respuesta texto completo:', responseText);
+      let responseData;
+      try {
+        responseData = JSON.parse(responseText);
+        console.log('🔍 DEBUG: Respuesta parseada como JSON:', responseData);
+      } catch (e) {
+        console.error('🔍 DEBUG: No se pudo parsear la respuesta como JSON:', e);
+        responseData = { error: 'Error al procesar la respuesta del servidor' };
+      }
+      if (!res.ok) {
+        console.error('🔍 DEBUG: Error en la respuesta:', responseData);
+        throw new Error(responseData.error || 'Error al enviar la cotización');
+      }
+      console.log('🔍 DEBUG: Cotización enviada exitosamente:', responseData);
+      setCotizacionId(responseData.id);
       setCotizacionEnviada(true);
     } catch (err) {
+      console.error('🔍 DEBUG: Error en el proceso:', err);
       setError(err.message || 'Ocurrió un error al enviar la cotización');
     } finally {
       setCargando(false);
