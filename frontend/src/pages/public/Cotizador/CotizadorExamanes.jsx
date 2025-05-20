@@ -123,12 +123,15 @@ export default function Cotizaciones() {
         })),
         tasaCambio: Number(exchangeRate)
       };
+      console.log('Enviando cotización:', dataToSend);
       const res = await fetch(`${apiUrl}/api/cotizaciones`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(dataToSend)
       });
+      console.log('Respuesta recibida:', res);
       const response = await res.json();
+      console.log('Respuesta JSON:', response);
       if (!res.ok) throw new Error(response.error || 'Error al enviar la cotización');
       setQuoteId(response.id);
       setStep(3);
