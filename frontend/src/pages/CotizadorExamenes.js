@@ -287,9 +287,7 @@ export default function CotizadorExamenes() {
   };
 
   // Filtrar exámenes según búsqueda
-  const filtrados = examenes.filter(e =>
-    e.nombre.toLowerCase().includes(busqueda.toLowerCase())
-  );
+  const filtrados = examenes.filter(e => (e?.nombre || '').toLowerCase().includes((busqueda || '').toLowerCase()));
 
   // Pantalla de carga
   if (cargando) {
