@@ -114,7 +114,12 @@ export default function Cotizaciones() {
         fecha_nacimiento: fechaNacimientoFormateada,
         sexo: form.sexo,
         email: form.email.trim(),
-        examenes: selected.map(e => ({ codigo: e.codigo, nombre: e.nombre_examen || e.nombre, precio: Number(e.precio), tiempo_entrega: e.tiempo_entrega || null })),
+        examenes: selected.map(e => ({
+          codigo: e.codigo,
+          nombre: e.nombre_examen || e.nombre,
+          preciousd: Number(e.precio),
+          tiempo_entrega: e.tiempo_entrega || null
+        })),
         tasaCambio: Number(exchangeRate)
       };
       const res = await fetch(`${apiUrl}/api/cotizaciones`, {
