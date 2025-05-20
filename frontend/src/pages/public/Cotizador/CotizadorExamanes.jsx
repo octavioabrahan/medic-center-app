@@ -118,7 +118,7 @@ export default function Cotizaciones() {
         examenes: selected.map(e => ({
           codigo: e.codigo,
           nombre: e.nombre_examen || e.nombre,
-          precio: Number(e.precio), // <-- FIX: use 'precio' not 'precio_unitario'
+          precio_unitario: Number(e.preciousd),
           tiempo_entrega: e.tiempo_entrega || null
         })),
         tasaCambio: Number(exchangeRate)
