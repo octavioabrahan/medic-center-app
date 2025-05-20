@@ -10,11 +10,11 @@ import styles from './CotizadorExamanes.module.css';
 import DatePickerField from '../../../components/Inputs/DatePickerField';
 
 export default function Cotizaciones() {
-  // --- LOGIC FROM CotizadorExamenes.js ---
-  const [exams, setExams] = useState([]); // Catálogo de exámenes
-  const [exchangeRate, setExchangeRate] = useState(null);
-  const [search, setSearch] = useState('');
-  const [selected, setSelected] = useState([]); // [{codigo, nombre, ...}]
+  // --- STATE (match v1) ---
+  const [examenes, setExamenes] = useState([]);
+  const [tasaCambio, setTasaCambio] = useState(null);
+  const [busqueda, setBusqueda] = useState('');
+  const [seleccionados, setSeleccionados] = useState([]);
   const [form, setForm] = useState({ 
     nombre: '', 
     apellido: '', 
@@ -24,81 +24,59 @@ export default function Cotizaciones() {
     sexo: 'masculino',
     email: ''
   });
-  const [step, setStep] = useState(1);
-  const [loading, setLoading] = useState(false);
+  const [acepta, setAcepta] = useState(false);
+  const [captchaValido, setCaptchaValido] = useState(false);
+  const [modoFormulario, setModoFormulario] = useState(false);
+  const [cotizacionEnviada, setCotizacionEnviada] = useState(false);
+  const [cotizacionId, setCotizacionId] = useState(null);
+  const [cargando, setCargando] = useState(false);
   const [error, setError] = useState(null);
-  const [modalExam, setModalExam] = useState(null);
-  const [quoteId, setQuoteId] = useState(null);
+  const [modalInfo, setModalInfo] = useState(null);
 
-  // Cargar catálogo de exámenes y tasa de cambio
+  // --- FETCH DATA (match v1) ---
   useEffect(() => {
     const apiUrl = process.env.REACT_APP_API_URL;
-    setLoading(true);
+    setCargando(true);
     setError(null);
-    Promise.all([
-      fetch(`${apiUrl}/api/exams`).then(async r => {
-        if (!r.ok) throw new Error('Error al cargar exámenes');
-        const data = await r.json();
-        if (!Array.isArray(data)) throw new Error('La respuesta de exámenes no es un array');
-        if (data.length === 0) throw new Error('No hay exámenes disponibles');
-        return data;
-      }),
-      fetch(`${apiUrl}/api/tasa-cambio`).then(async r => {
-        if (!r.ok) throw new Error('Error al cargar tasa de cambio');
-        const data = await r.json();
-        if (!data || typeof data.tasa === 'undefined') throw new Error('No se recibió la tasa de cambio');
-        return data;
+    fetch(`${apiUrl}/api/exams`)
+      .then(res => res.json())
+      .then(data => {
+        // Map preciousd to precio for compatibility
+        setExamenes(data.map(e => ({ ...e, precio: e.preciousd })));
       })
-    ])
-      .then(([examsData, rateData]) => {
-        console.log('API examsData:', examsData);
-        setExams(examsData);
-        setExchangeRate(rateData.tasa);
-      })
-      .catch((err) => setError(err.message || 'No pudimos cargar los datos. Intenta más tarde.'))
-      .finally(() => setLoading(false));
+      .catch(err => setError('No pudimos cargar el catálogo de exámenes. Por favor, intenta más tarde.'));
+    fetch(`${apiUrl}/api/tasa-cambio`)
+      .then(res => res.json())
+      .then(data => setTasaCambio(data.tasa))
+      .catch(err => setError('No pudimos obtener la tasa de cambio. Por favor, intenta más tarde.'));
+    setCargando(false);
   }, []);
 
-  // --- UI/UX LOGIC ---
-  const filteredExams = exams.filter(exam => {
-    if (!exam || typeof exam.nombre_examen !== 'string') return false;
-    return exam.nombre_examen.toLowerCase().includes(search.toLowerCase()) &&
-      !selected.some(sel => sel.codigo === exam.codigo);
-  });
-
-  const handleToggle = (codigo) => {
-    const exam = exams.find(e => e.codigo === codigo);
-    if (!exam) return;
-    setSelected(prev =>
-      prev.some(e => e.codigo === codigo)
-        ? prev.filter(e => e.codigo !== codigo)
-        : [...prev, exam]
-    );
+  // --- EXAM SELECTION (match v1) ---
+  const handleSelect = (examen) => {
+    setSeleccionados([...seleccionados, examen]);
+    setExamenes(examenes.filter(e => e.codigo !== examen.codigo));
   };
-
   const handleRemove = (codigo) => {
-    setSelected(prev => prev.filter(e => e.codigo !== codigo));
+    const examen = seleccionados.find(e => e.codigo === codigo);
+    setExamenes([...examenes, examen]);
+    setSeleccionados(seleccionados.filter(e => e.codigo !== codigo));
   };
 
-  const handleFormChange = (field, value) => {
-    setForm(prev => ({ ...prev, [field]: value }));
-  };
-
-  // --- SUBMIT LOGIC ---
+  // --- FORM SUBMIT (match v1) ---
   const handleSubmit = async () => {
     // Validación básica
-    if (!form.nombre.trim() || !form.apellido.trim() || !form.cedula.trim() || !form.telefono.trim() || !form.fecha_nacimiento || !form.sexo || !form.email.trim() || !form.acepta) {
-      setError('Completa todos los campos y acepta los términos.');
+    if (!form.nombre.trim() || !form.apellido.trim() || !form.cedula.trim() || !form.telefono.trim() || !form.fecha_nacimiento || !form.sexo || !form.email.trim() || !acepta || !captchaValido) {
+      setError('Completa todos los campos, acepta los términos y resuelve el captcha.');
       return;
     }
-    if (selected.length === 0) {
+    if (seleccionados.length === 0) {
       setError('Selecciona al menos un examen.');
       return;
     }
-    setLoading(true);
+    setCargando(true);
     setError(null);
     try {
-      const apiUrl = process.env.REACT_APP_API_URL;
       // Formatear fecha_nacimiento a YYYY-MM-DD
       let fechaNacimientoFormateada = form.fecha_nacimiento;
       if (fechaNacimientoFormateada) {
@@ -107,42 +85,75 @@ export default function Cotizaciones() {
           fechaNacimientoFormateada = fechaObj.toISOString().split('T')[0];
         }
       }
+      // Validar tasa de cambio
+      const tasaCambioNumerico = Number(tasaCambio);
+      if (isNaN(tasaCambioNumerico)) {
+        throw new Error('La tasa de cambio no es un número válido');
+      }
+      // Map selected exams to match v1
+      const examenesFormateados = seleccionados.map(examen => {
+        const precioNumerico = Number(examen.precio);
+        if (isNaN(precioNumerico)) {
+          console.error('Precio no válido para examen:', examen);
+        }
+        return {
+          codigo: examen.codigo,
+          nombre: examen.nombre_examen || examen.nombre,
+          precio: precioNumerico,
+          tiempo_entrega: examen.tiempo_entrega || null
+        };
+      });
       const dataToSend = {
         nombre: form.nombre.trim(),
         apellido: form.apellido.trim(),
         cedula: form.cedula.trim(),
         telefono: form.telefono.trim(),
         fecha_nacimiento: fechaNacimientoFormateada,
-        sexo: form.sexo === 'femenino' ? 'F' : 'M',
+        sexo: form.sexo,
         email: form.email.trim(),
-        examenes: selected.map(e => ({
-          codigo: e.codigo,
-          nombre: e.nombre_examen || e.nombre,
-          precio: Number(e.precio), // Homologated: use 'precio' as in v1
-          tiempo_entrega: e.tiempo_entrega || null
-        }))
+        examenes: examenesFormateados,
+        tasaCambio: tasaCambioNumerico
       };
-      console.log('Enviando cotización:', dataToSend);
+      const apiUrl = process.env.REACT_APP_API_URL;
       const res = await fetch(`${apiUrl}/api/cotizaciones`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(dataToSend)
       });
-      console.log('Respuesta recibida:', res);
       const response = await res.json();
-      console.log('Respuesta JSON:', response);
       if (!res.ok) throw new Error(response.error || 'Error al enviar la cotización');
-      setQuoteId(response.id);
-      setStep(3);
+      setCotizacionId(response.id);
+      setCotizacionEnviada(true);
     } catch (err) {
       setError(err.message || 'Ocurrió un error al enviar la cotización');
     } finally {
-      setLoading(false);
+      setCargando(false);
     }
   };
 
+  // --- UI/UX LOGIC ---
+  const filteredExams = examenes.filter(exam => {
+    if (!exam || typeof exam.nombre_examen !== 'string') return false;
+    return exam.nombre_examen.toLowerCase().includes(busqueda.toLowerCase()) &&
+      !seleccionados.some(sel => sel.codigo === exam.codigo);
+  });
+
+  const handleToggle = (codigo) => {
+    const exam = examenes.find(e => e.codigo === codigo);
+    if (!exam) return;
+    setSeleccionados(prev =>
+      prev.some(e => e.codigo === codigo)
+        ? prev.filter(e => e.codigo !== codigo)
+        : [...prev, exam]
+    );
+  };
+
+  const handleFormChange = (field, value) => {
+    setForm(prev => ({ ...prev, [field]: value }));
+  };
+
   // --- STEP 1: Selección de exámenes ---
-  if (step === 1) {
+  if (!modoFormulario) {
     return (
       <SiteFrame>
         <div className={styles.cotizadorFrame4}>
@@ -153,8 +164,8 @@ export default function Cotizaciones() {
             </div>
             <div className={styles.cotizadorInputField}>
               <SearchField
-                value={search}
-                onChange={setSearch}
+                value={busqueda}
+                onChange={setBusqueda}
                 placeholder="Buscar examen por nombre"
                 fillContainer
               />
@@ -168,8 +179,8 @@ export default function Cotizaciones() {
                     <div className={styles.cotizadorCheckboxField}>
                       <CheckboxField
                         label={exam.nombre_examen}
-                        checked={selected.some(e => e.codigo === exam.codigo)}
-                        onChange={() => handleToggle(exam.codigo)}
+                        checked={seleccionados.some(e => e.codigo === exam.codigo)}
+                        onChange={() => handleSelect(exam)}
                       />
                       <div className={styles.cotizadorDescriptionRow}>
                         <div className={styles.cotizadorSpace}></div>
@@ -177,8 +188,8 @@ export default function Cotizaciones() {
                           className={styles.cotizadorDescription}
                           tabIndex={0}
                           role="button"
-                          onClick={() => setModalExam(exam)}
-                          onKeyPress={e => { if (e.key === 'Enter') setModalExam(exam); }}
+                          onClick={() => setModalInfo(exam)}
+                          onKeyPress={e => { if (e.key === 'Enter') setModalInfo(exam); }}
                         >
                           Indicación
                         </span>
@@ -193,8 +204,8 @@ export default function Cotizaciones() {
               <Button
                 variant="primary"
                 size="medium"
-                disabled={selected.length === 0}
-                onClick={() => setStep(2)}
+                disabled={seleccionados.length === 0}
+                onClick={() => setModoFormulario(true)}
               >
                 Continuar
               </Button>
@@ -202,14 +213,14 @@ export default function Cotizaciones() {
             {error && <div className={styles.cotizadorSubtitle2}>{error}</div>}
           </div>
           <div className={styles.cotizadorHeroForm2}>
-            <div className={styles.cotizadorTitle}>{selected.length === 0 ? 'Aún no has seleccionado ningún examen' : 'Resumen de los exámenes a cotizar'}</div>
+            <div className={styles.cotizadorTitle}>{seleccionados.length === 0 ? 'Aún no has seleccionado ningún examen' : 'Resumen de los exámenes a cotizar'}</div>
             <div className={styles.cotizadorFrame3}>
-              {selected.length === 0 ? (
+              {seleccionados.length === 0 ? (
                 <div className={styles.cotizadorSubtitle2}>
                   Busca en el listado o escribe el nombre del examen que necesitas para comenzar tu cotización.
                 </div>
               ) : (
-                selected.map(exam => (
+                seleccionados.map(exam => (
                   <div key={exam.codigo} className={styles.cotizadorChoiceCard}>
                     <div className={styles.cotizadorCheckboxField2}>
                       <div className={styles.cotizadorCheckboxAndLabel}>
@@ -228,8 +239,8 @@ export default function Cotizaciones() {
                           className={styles.cotizadorDescription}
                           tabIndex={0}
                           role="button"
-                          onClick={() => setModalExam(exam)}
-                          onKeyPress={e => { if (e.key === 'Enter') setModalExam(exam); }}
+                          onClick={() => setModalInfo(exam)}
+                          onKeyPress={e => { if (e.key === 'Enter') setModalInfo(exam); }}
                         >
                           Indicación
                         </span>
@@ -242,25 +253,25 @@ export default function Cotizaciones() {
           </div>
         </div>
         {/* Modal for exam indication */}
-        {modalExam && (
-          <div className={styles.dialog} onClick={() => setModalExam(null)}>
+        {modalInfo && (
+          <div className={styles.dialog} onClick={() => setModalInfo(null)}>
             <div className={styles.dialogBody} onClick={e => e.stopPropagation()}>
               <div className={styles.text}>
-                <div className={styles.textHeading}>{modalExam.nombre_examen}</div>
+                <div className={styles.textHeading}>{modalInfo.nombre_examen}</div>
                 <div className={styles.bodyText}>
-                  {(modalExam.indicacion && modalExam.indicacion.trim())
-                    ? modalExam.indicacion
-                    : (modalExam.informacion && modalExam.informacion.trim()
-                        ? modalExam.informacion
+                  {(modalInfo.indicacion && modalInfo.indicacion.trim())
+                    ? modalInfo.indicacion
+                    : (modalInfo.informacion && modalInfo.informacion.trim()
+                        ? modalInfo.informacion
                         : 'No hay información de indicación disponible.')}
                 </div>
               </div>
               <div className={styles.buttonGroup}>
-                <div className={styles.button} onClick={() => setModalExam(null)}>
+                <div className={styles.button} onClick={() => setModalInfo(null)}>
                   <div className={styles.button2}>Entendido</div>
                 </div>
               </div>
-              <div className={styles.iconButton} onClick={() => setModalExam(null)}>
+              <div className={styles.iconButton} onClick={() => setModalInfo(null)}>
                 <XMarkIcon className={styles.x} width={20} height={20} />
               </div>
             </div>
@@ -271,13 +282,13 @@ export default function Cotizaciones() {
   }
 
   // --- STEP 2: Formulario de datos y resumen ---
-  if (step === 2) {
+  if (modoFormulario) {
     return (
       <SiteFrame>
         <div className={styles.cotizadorFrame4}>
           <div className={styles.cotizadorHeroForm}>
             <div className={styles.cotizadorButtonGroupTop}>
-              <Button variant="subtle" size="small" onClick={() => setStep(1)}>
+              <Button variant="subtle" size="small" onClick={() => setModoFormulario(false)}>
                 <img src={ArrowLeft} alt="Volver" className={styles.cotizadorArrowLeft} />
                 <span className={styles.cotizadorButton2}>Volver al listado</span>
               </Button>
@@ -381,8 +392,8 @@ export default function Cotizaciones() {
                       Autorizo que se me contacte con fines informativos y de marketing del centro médico.
                     </span>
                   }
-                  checked={form.acepta}
-                  onChange={v => handleFormChange('acepta', v)}
+                  checked={acepta}
+                  onChange={v => setAcepta(v)}
                 />
               </div>
             </div>
@@ -394,7 +405,7 @@ export default function Cotizaciones() {
                   size="medium"
                   onClick={handleSubmit}
                   disabled={
-                    loading ||
+                    cargando ||
                     !form.nombre.trim() ||
                     !form.apellido.trim() ||
                     !form.cedula.trim() ||
@@ -402,7 +413,7 @@ export default function Cotizaciones() {
                     !form.fecha_nacimiento ||
                     !form.sexo ||
                     !form.email.trim() ||
-                    !form.acepta
+                    !acepta
                   }
                 >
                   <span className={styles.cotizadorButton4}>Enviar cotización</span>
@@ -414,7 +425,7 @@ export default function Cotizaciones() {
           <div className={styles.cotizadorHeroForm2}>
             <div className={styles.cotizadorTitle}>Resumen de los exámenes a cotizar</div>
             <div className={styles.cotizadorFrame3}>
-              {selected.map(exam => (
+              {seleccionados.map(exam => (
                 <div key={exam.codigo} className={styles.cotizadorChoiceCard}>
                   <div className={styles.cotizadorCheckboxField2}>
                     <div className={styles.cotizadorCheckboxAndLabel}>
@@ -433,8 +444,8 @@ export default function Cotizaciones() {
                         className={styles.cotizadorDescription}
                         tabIndex={0}
                         role="button"
-                        onClick={() => setModalExam(exam)}
-                        onKeyPress={e => { if (e.key === 'Enter') setModalExam(exam); }}
+                        onClick={() => setModalInfo(exam)}
+                        onKeyPress={e => { if (e.key === 'Enter') setModalInfo(exam); }}
                       >
                         Indicación
                       </span>
@@ -468,8 +479,8 @@ export default function Cotizaciones() {
               size="medium"
               fullWidth={false}
               onClick={() => {
-                setStep(1);
-                setSelected([]);
+                setModoFormulario(false);
+                setSeleccionados([]);
                 setForm({ nombre: '', apellido: '', cedula: '', telefono: '', fecha_nacimiento: '', sexo: 'masculino', email: '' });
               }}
             >
@@ -477,10 +488,10 @@ export default function Cotizaciones() {
             </Button>
           </div>
         </div>
-        {quoteId && (
+        {cotizacionId && (
           <div className={styles.cotizadorSubtitle2} style={{marginTop: 24}}>
             <span>Número de cotización: </span>
-            <strong>{quoteId}</strong>
+            <strong>{cotizacionId}</strong>
           </div>
         )}
       </div>
