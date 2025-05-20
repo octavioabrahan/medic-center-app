@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useMediaQuery } from 'react-responsive';
 import './CotizadorExamenes.css';
-import MailIcon from '../assets/Mail.svg';
-import { ArrowLeftIcon } from '@heroicons/react/24/solid';
+import { ArrowLeftIcon, EnvelopeIcon } from '@heroicons/react/24/solid';
 
 export default function CotizadorExamenes() {
   const [examenes, setExamenes] = useState([]);
@@ -563,7 +562,7 @@ export default function CotizadorExamenes() {
                   onClick={handleSubmit} 
                   disabled={cargando}
                 >
-                  <img src={MailIcon} alt="Enviar" />
+                  <EnvelopeIcon className="icon" style={{ width: 20, height: 20 }} />
                   <span>Enviar cotización</span>
                 </button>
               </div>
