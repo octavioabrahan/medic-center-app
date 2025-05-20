@@ -137,7 +137,7 @@ export default function Cotizaciones() {
         return {
           codigo: examen.codigo,
           nombre: examen.nombre_examen || examen.nombre,
-          precio: precioNumerico,
+          preciousd: precioNumerico, // Use preciousd for backend compatibility
           tiempo_entrega: examen.tiempo_entrega || null
         };
       });
