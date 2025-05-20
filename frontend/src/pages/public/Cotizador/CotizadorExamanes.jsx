@@ -6,7 +6,7 @@ import InputField from '../../../components/Inputs/InputField';
 import { Button } from '../../../components/Button/Button';
 import ArrowLeft from '../../../assets/ArrowLeft.svg';
 import { XMarkIcon } from '@heroicons/react/24/outline';
-import styles from './CotizadorExamenes.css';
+import './CotizadorExamanes.css';
 import DatePickerField from '../../../components/Inputs/DatePickerField';
 
 export default function Cotizaciones() {
