@@ -1,0 +1,471 @@
+.cotizadorFrame4 {
+  padding: 0px 200px;
+  display: flex;
+  flex-direction: row;
+  gap: 24px;
+  align-items: flex-start;
+  align-self: stretch;
+  height: 768px;
+  position: relative;
+}
+.cotizadorHeroForm {
+  padding: var(--sds-size-space-800, 32px) 24px var(--sds-size-space-800, 32px) 24px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sds-size-space-600, 24px);
+  align-items: center;
+  justify-content: flex-start;
+  align-self: stretch;
+  flex: 1;
+  position: relative;
+  overflow-y: auto;
+  max-height: 700px;
+  min-height: 600px;
+}
+.cotizadorHeroFormScroll {
+  overflow-y: auto;
+  max-height: 540px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sds-size-space-600, 24px);
+}
+.cotizadorTitle {
+  color: var(--sds-color-text-brand-default, #20377a);
+  text-align: center;
+  font-family: var(--heading-font-family, "Inter-SemiBold", sans-serif);
+  font-size: var(--heading-font-size, 24px);
+  line-height: var(--heading-line-height, 120%);
+  letter-spacing: var(--heading-letter-spacing, -0.02em);
+  font-weight: var(--heading-font-weight, 600);
+  align-self: stretch;
+}
+.cotizadorSubtitle {
+  color: var(--sds-color-text-brand-secondary, #1b2e68);
+  text-align: center;
+  font-family: var(--subheading-font-family, "Inter-Regular", sans-serif);
+  font-size: var(--subheading-font-size, 20px);
+  line-height: var(--subheading-line-height, 120%);
+  font-weight: var(--subheading-font-weight, 400);
+  align-self: stretch;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.cotizadorInputField {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sds-size-space-200, 8px);
+  align-items: flex-start;
+  align-self: stretch;
+  position: relative;
+}
+.cotizadorFrame1 {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sds-size-space-300, 12px);
+  align-items: flex-start;
+  align-self: stretch;
+  flex: 1;
+  position: relative;
+  overflow-y: auto; /* Enable vertical scroll */
+  max-height: 400px; /* Adjust as needed for design */
+}
+.cotizadorChoiceCard {
+  background: var(--sds-color-background-default-default, #fff);
+  border-radius: var(--sds-size-radius-200, 8px);
+  border: 1px solid var(--sds-color-border-default-default, #d9d9d9);
+  padding: var(--sds-size-space-300, 12px);
+  display: flex;
+  flex-direction: row;
+  gap: var(--sds-size-space-600, 24px);
+  align-items: flex-start;
+  align-self: stretch;
+  min-width: 240px;
+  position: relative;
+}
+.cotizadorCheckboxField {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  flex: 1;
+  position: relative;
+  min-width: 0;
+}
+.cotizadorCheckboxFieldContainer {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin-bottom: 0.5rem;
+  max-width: 100%;
+}
+.cotizadorDescriptionRow {
+  display: flex;
+  flex-direction: row;
+  gap: var(--sds-size-space-300, 12px);
+  align-items: center;
+  align-self: stretch;
+  position: relative;
+}
+.cotizadorSpace {
+  flex-shrink: 0;
+  width: 16px;
+  height: 16px;
+  position: relative;
+  overflow: hidden;
+}
+.cotizadorDescription {
+  color: var(--sds-color-text-default-secondary, #757575);
+  text-align: left;
+  font-family: var(--body-link-font-family, "Inter-Regular", sans-serif);
+  font-size: var(--body-link-font-size, 16px);
+  line-height: var(--body-link-line-height, 140%);
+  font-weight: var(--body-link-font-weight, 400);
+  text-decoration: underline;
+  flex: 1;
+  cursor: pointer; /* Make it look clickable */
+}
+.cotizadorPrice {
+  color: var(--sds-color-text-default-default, #1e1e1e);
+  font-family: var(--body-base-font-family, "Inter-Regular", sans-serif);
+  font-size: var(--body-base-font-size, 16px);
+  line-height: var(--body-base-line-height, 140%);
+  font-weight: var (--body-base-font-weight, 400);
+}
+.cotizadorButtonWrap {
+  background: var(--sds-color-background-disabled-default, #d9d9d9);
+  border-radius: var(--sds-size-radius-200, 8px);
+  border: 1px solid var(--sds-color-border-disabled-default, #b3b3b3);
+  padding: var(--sds-size-space-300, 12px);
+  display: flex;
+  flex-direction: row;
+  gap: var(--sds-size-space-200, 8px);
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  position: relative;
+  overflow: hidden;
+}
+.cotizadorHeroForm2 {
+  background: var(--sds-color-background-brand-tertiary, #f0f3ff);
+  padding: var(--sds-size-space-4000, 160px) 24px var(--sds-size-space-800, 32px) 24px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sds-size-space-800, 32px);
+  align-items: flex-end;
+  align-self: stretch;
+  width: 306px;
+  position: relative;
+}
+.cotizadorSubtitle2 {
+  color: var(--sds-color-text-brand-on-brand-tertiary, #20377a);
+  font-family: var(--body-base-font-family, "Inter-Regular", sans-serif);
+  font-size: var(--body-base-font-size, 16px);
+  line-height: var(--body-base-line-height, 140%);
+  font-weight: var(--body-base-font-weight, 400);
+  align-self: stretch;
+  display: flex;
+  align-items: center;
+}
+.cotizadorButtonGroup {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  flex-shrink: 0;
+  width: 470px;
+  position: relative;
+}
+.cotizadorArrowLeft {
+  flex-shrink: 0;
+  width: 16px;
+  height: 16px;
+  position: relative;
+  overflow: visible;
+}
+.cotizadorButton2 {
+  color: var(--sds-color-text-neutral-default, #303030);
+  text-align: left;
+  font-family: var(--single-line-body-base-font-family, "Inter-Regular", sans-serif);
+  font-size: var (--single-line-body-base-font-size, 16px);
+  line-height: var (--single-line-body-base-line-height, 100%);
+  font-weight: var(--single-line-body-base-font-weight, 400);
+  position: relative;
+}
+.cotizadorLabel2 {
+  color: var(--sds-color-text-default-default, #1e1e1e);
+  text-align: left;
+  font-family: var(--body-base-font-family, "Inter-Regular", sans-serif);
+  font-size: var(--body-base-font-size, 16px);
+  line-height: var(--body-base-line-height, 140%);
+  font-weight: var(--body-base-font-weight, 400);
+  position: relative;
+  flex: 1;
+  white-space: normal;
+  word-break: break-word;
+  width: 100%;
+  display: block;
+}
+.cotizadorButton3 {
+  background: var(--sds-color-background-brand-default, #2c2c2c);
+  border-radius: var(--sds-size-radius-200, 8px);
+  border-style: solid;
+  border-color: var(--sds-color-border-brand-default, #2c2c2c);
+  border-width: 1px;
+  padding: var(--sds-size-space-300, 12px);
+  display: flex;
+  flex-direction: row;
+  gap: var(--sds-size-space-200, 8px);
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  position: relative;
+  overflow: hidden;
+}
+.cotizadorButton4 {
+  color: var(--sds-color-text-brand-on-brand, #f5f5f5);
+  text-align: left;
+  font-family: var(--single-line-body-base-font-family, "Inter-Regular", sans-serif);
+  font-size: var (--single-line-body-base-font-size, 16px);
+  line-height: var (--single-line-body-base-line-height, 100%);
+  font-weight: var(--single-line-body-base-font-weight, 400);
+  position: relative;
+}
+.cotizadorFrame3 {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sds-size-space-300, 12px);
+  align-items: flex-start;
+  justify-content: flex-start;
+  align-self: stretch;
+  flex-shrink: 0;
+  position: relative;
+}
+.cotizadorCheckboxField2 {
+  display: flex;
+  flex-direction: column;
+  gap: 0px;
+  align-items: flex-start;
+  justify-content: flex-start;
+  flex: 1;
+  position: relative;
+}
+.cotizadorCheckboxAndLabel {
+  display: flex;
+  flex-direction: row;
+  gap: var(--var-sds-size-space-300, 12px);
+  align-items: center;
+  justify-content: flex-start;
+  align-self: stretch;
+  flex-shrink: 0;
+  position: relative;
+}
+.cotizadorModalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(32, 55, 122, 0.18);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.cotizadorModalBox {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 32px rgba(32, 55, 122, 0.18);
+  padding: 32px 24px;
+  max-width: 400px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  align-items: flex-start;
+}
+.cotizadorModalTitle {
+  color: var(--sds-color-text-brand-default, #20377a);
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+.cotizadorModalClose {
+  align-self: flex-end;
+  background: none;
+  border: none;
+  color: var(--sds-color-text-brand-default, #20377a);
+  font-size: 18px;
+  cursor: pointer;
+}
+.cotizadorRemoveBtn {
+  background: none;
+  border: none;
+  padding: 0 0 0 8px;
+  margin-left: 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+}
+.cotizadorRemoveIcon {
+  color: var(--var-sds-color-text-default-default, #1e1e1e);
+  width: 20px;
+  height: 20px;
+  pointer-events: none;
+}
+.dialog,
+.dialog * {
+  box-sizing: border-box;
+}
+.dialog {
+  background: var(--var-sds-color-background-utilities-scrim, rgba(255, 255, 255, 0.8));
+  display: flex;
+  flex-direction: column;
+  gap: 0px;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  height: 100vh;
+  width: 100vw;
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 1000;
+  backdrop-filter: var(--blur-overlay-backdrop-filter, blur(2px));
+}
+.dialogBody {
+  background: var(--var-sds-color-background-default-default, #ffffff);
+  border-radius: var(--var-sds-size-radius-200, 8px);
+  border-style: solid;
+  border-color: var(--var-sds-color-border-default-default, #d9d9d9);
+  border-width: 1px;
+  padding: var(--var-sds-size-space-800, 32px);
+  display: flex;
+  flex-direction: column;
+  gap: var(--var-sds-size-space-600, 24px);
+  align-items: flex-start;
+  justify-content: flex-start;
+  width: 100%;
+  flex-shrink: 0;
+  max-width: 600px;
+  position: relative;
+  box-shadow: var(--drop-shadow-400-box-shadow, 0px 4px 4px -4px rgba(12, 12, 13, 0.05), 0px 16px 32px -4px rgba(12, 12, 13, 0.1));
+}
+.text {
+  display: flex;
+  flex-direction: column;
+  gap: var(--var-sds-size-space-300, 12px);
+  align-items: flex-start;
+  justify-content: flex-start;
+  align-self: stretch;
+  flex-shrink: 0;
+  position: relative;
+}
+.textHeading {
+  color: var(--var-sds-color-text-default-default, #1e1e1e);
+  text-align: left;
+  font-family: var(--heading-font-family, "Inter-SemiBold", sans-serif);
+  font-size: var(--heading-font-size, 24px);
+  line-height: var(--heading-line-height, 120%);
+  letter-spacing: var(--heading-letter-spacing, -0.02em);
+  font-weight: var(--heading-font-weight, 600);
+  position: relative;
+  align-self: stretch;
+}
+.bodyText {
+  color: var(--var-sds-color-text-default-default, #1e1e1e);
+  text-align: left;
+  font-family: var(--body-base-font-family, "Inter-Regular", sans-serif);
+  font-size: var (--body-base-font-size, 16px);
+  line-height: var(--body-base-line-height, 140%);
+  font-weight: var(--body-base-font-weight, 400);
+  position: relative;
+  align-self: stretch;
+}
+.buttonGroup {
+  display: flex;
+  flex-direction: row;
+  gap: var(--var-sds-size-space-400, 16px);
+  align-items: center;
+  justify-content: flex-end;
+  align-self: stretch;
+  flex-shrink: 0;
+  position: relative;
+}
+.button {
+  background: var(--var-sds-color-background-neutral-tertiary, #e3e3e3);
+  border-radius: var(--var-sds-size-radius-200, 8px);
+  border-style: solid;
+  border-color: var(--var-sds-color-border-neutral-secondary, #767676);
+  border-width: 1px;
+  padding: var(--var-sds-size-space-300, 12px);
+  display: flex;
+  flex-direction: row;
+  gap: var(--var-sds-size-space-200, 8px);
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+}
+.button2 {
+  color: var(--var-sds-color-text-default-default, #1e1e1e);
+  text-align: left;
+  font-family: var(--single-line-body-base-font-family, "Inter-Regular", sans-serif);
+  font-size: var(--single-line-body-base-font-size, 16px);
+  line-height: var (--single-line-body-base-line-height, 100%);
+  font-weight: var (--single-line-body-base-font-weight, 400);
+  position: relative;
+}
+.iconButton {
+  border-radius: var(--var-sds-typography-scale-06, 32px);
+  padding: var(--var-sds-size-space-200, 8px);
+  display: flex;
+  flex-direction: row;
+  gap: 0px;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  position: absolute;
+  right: 8px;
+  top: 8px;
+  overflow: hidden;
+  cursor: pointer;
+}
+.x {
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+  position: relative;
+  overflow: visible;
+  color: var(--var-sds-color-text-default-default, #1e1e1e);
+}
+.cotizadorButtonRightContainer {
+  display: flex;
+  justify-content: flex-end;
+  width: 100%;
+  margin-top: 16px;
+  align-items: flex-end;
+}
+.cotizadorButtonRow {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-end;
+  justify-content: space-between;
+  width: 100%;
+  margin-top: 24px;
+}
+.cotizadorButtonGroupTop {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: flex-start;
+  width: 100%;
+  margin-bottom: 0;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 2;
+}
