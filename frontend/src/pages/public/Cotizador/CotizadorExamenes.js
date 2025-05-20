@@ -352,51 +352,62 @@ export default function CotizadorExamenes() {
       <div className="cotizador-content">
         <div className="cotizador-left">
           {!modoFormulario ? (
-            <>
-              <h2 className="cotizador-title">Cotiza tus exámenes de forma rápida</h2>
-              <p className="cotizador-subtitle">
-                Selecciona los exámenes que necesitas. Cuando estés listo, presiona "Continuar" para completar tus datos y recibir el detalle de tu cotización.
-              </p>
-
-              <input
-                className="input-busqueda"
-                type="text"
-                placeholder="Buscar examen por nombre"
-                value={busqueda}
-                onChange={e => setBusqueda(e.target.value)}
-              />
-
-              <div className="exam-list-scroll">
+            <div className="hero-form">
+              <div className="title">Cotiza tus exámenes de forma rápida</div>
+              <div className="subtitle">
+                Selecciona los exámenes que necesitas. Cuando estés listo, presiona “Continuar” para completar tus datos y recibir el detalle de tu cotización.
+              </div>
+              <div className="input-field">
+                <div className="input">
+                  <input
+                    className="value"
+                    type="text"
+                    placeholder="Buscar examen por nombre"
+                    value={busqueda}
+                    onChange={e => setBusqueda(e.target.value)}
+                    style={{ border: 'none', outline: 'none', background: 'transparent', width: '100%' }}
+                  />
+                </div>
+              </div>
+              <div className="frame-1">
                 {filtrados.length === 0 ? (
                   <p className="no-examenes">No se encontraron exámenes con ese nombre</p>
                 ) : (
                   filtrados.map(ex => (
-                    <div className="exam-item" key={ex.codigo}>
-                      <label>
-                        <input
-                          type="checkbox"
-                          onChange={() => handleSelect(ex)}
-                        />
-                        {' '}{ex.nombre}
-                      </label>
-                      <div>
-                        <button onClick={() => setModalInfo(ex)}>Indicación</button>
+                    <div className="choice-card" key={ex.codigo}>
+                      <div className="checkbox-field">
+                        <div className="checkbox-and-label">
+                          <input
+                            type="checkbox"
+                            className="checkbox"
+                            onChange={() => handleSelect(ex)}
+                            style={{ margin: 0 }}
+                          />
+                          <div className="label">{ex.nombre}</div>
+                        </div>
+                        <div className="description-row">
+                          <div className="space"></div>
+                          <button className="description" type="button" onClick={() => setModalInfo(ex)}>
+                            Indicación
+                          </button>
+                        </div>
                       </div>
+                      <div className="usd-00-00">USD $ {Number(ex.precio).toFixed(2)}</div>
                     </div>
                   ))
                 )}
               </div>
-
-              <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+              <div className="button">
                 <button
-                  className="btn-continuar"
+                  className="button2"
                   disabled={seleccionados.length === 0}
                   onClick={() => setModoFormulario(true)}
+                  style={{ background: 'none', border: 'none', padding: 0, cursor: seleccionados.length === 0 ? 'not-allowed' : 'pointer' }}
                 >
                   Continuar
                 </button>
               </div>
-            </>
+            </div>
           ) : (
             <>
               <h2 className="cotizador-title">Para enviarte tu cotización, necesitamos algunos datos</h2>
