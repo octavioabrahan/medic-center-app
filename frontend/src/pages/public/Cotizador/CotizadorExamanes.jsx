@@ -113,7 +113,7 @@ export default function Cotizaciones() {
         cedula: form.cedula.trim(),
         telefono: form.telefono.trim(),
         fecha_nacimiento: fechaNacimientoFormateada,
-        sexo: form.sexo,
+        sexo: form.sexo === 'masculino' ? 'M' : form.sexo === 'femenino' ? 'F' : form.sexo,
         email: form.email.trim(),
         examenes: selected.map(e => ({
           codigo: e.codigo,
