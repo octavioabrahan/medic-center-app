@@ -113,15 +113,14 @@ export default function Cotizaciones() {
         cedula: form.cedula.trim(),
         telefono: form.telefono.trim(),
         fecha_nacimiento: fechaNacimientoFormateada,
-        sexo: form.sexo === 'femenino' ? 'F' : 'M', // Only 'M' or 'F'
+        sexo: form.sexo === 'femenino' ? 'F' : 'M',
         email: form.email.trim(),
         examenes: selected.map(e => ({
           codigo: e.codigo,
           nombre: e.nombre_examen || e.nombre,
-          preciousd: Number(e.precio), // backend expects 'preciousd'
+          precio: Number(e.precio), // Homologated: use 'precio' as in v1
           tiempo_entrega: e.tiempo_entrega || null
         }))
-        // tasaCambio is not required by cotizacionController.js
       };
       console.log('Enviando cotización:', dataToSend);
       const res = await fetch(`${apiUrl}/api/cotizaciones`, {
