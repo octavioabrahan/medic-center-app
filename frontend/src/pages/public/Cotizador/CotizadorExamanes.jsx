@@ -222,22 +222,20 @@ export default function Cotizaciones() {
             <Button variant="subtle" size="medium" fullWidth={false} onClick={() => window.location.href = '/'}>
               <span className={styles.cotizadorButton2}>Volver a la página principal</span>
             </Button>
-            <div className={styles.cotizadorButton3}>
-              <Button
-                variant="primary"
-                size="medium"
-                fullWidth={false}
-                onClick={() => {
-                  setModoFormulario(false);
-                  setSeleccionados([]);
-                  setForm({ nombre: '', apellido: '', cedula: '', telefono: '', fecha_nacimiento: '', sexo: 'masculino', email: '' });
-                  setCotizacionEnviada(false);
-                  setCotizacionId(null);
-                }}
-              >
-                <span className={styles.cotizadorButton4}>Hacer otra cotización</span>
-              </Button>
-            </div>
+            <Button
+              variant="primary"
+              size="medium"
+              fullWidth={false}
+              onClick={() => {
+                setModoFormulario(false);
+                setSeleccionados([]);
+                setForm({ nombre: '', apellido: '', cedula: '', telefono: '', fecha_nacimiento: '', sexo: 'masculino', email: '' });
+                setCotizacionEnviada(false);
+                setCotizacionId(null);
+              }}
+            >
+              <span className={styles.cotizadorButton4}>Hacer otra cotización</span>
+            </Button>
           </div>
           {cotizacionId && (
             <div className={styles.cotizadorSubtitle2} style={{marginTop: 24}}>
@@ -570,27 +568,19 @@ export default function Cotizaciones() {
           <Button variant="subtle" size="medium" fullWidth={false} onClick={() => window.location.href = '/'}>
             <span className={styles.cotizadorButton2}>Volver a la página principal</span>
           </Button>
-          <div className={styles.cotizadorButton3}>
-            <Button
-              variant="primary"
-              size="medium"
-              fullWidth={false}
-              onClick={() => {
-                setModoFormulario(false);
-                setSeleccionados([]);
-                setForm({ nombre: '', apellido: '', cedula: '', telefono: '', fecha_nacimiento: '', sexo: 'masculino', email: '' });
-              }}
-            >
-              <span className={styles.cotizadorButton4}>Hacer otra cotización</span>
-            </Button>
-          </div>
+          <Button
+            variant="primary"
+            size="medium"
+            fullWidth={false}
+            onClick={() => {
+              setModoFormulario(false);
+              setSeleccionados([]);
+              setForm({ nombre: '', apellido: '', cedula: '', telefono: '', fecha_nacimiento: '', sexo: 'masculino', email: '' });
+            }}
+          >
+            <span className={styles.cotizadorButton4}>Hacer otra cotización</span>
+          </Button>
         </div>
-        {cotizacionId && (
-          <div className={styles.cotizadorSubtitle2} style={{marginTop: 24}}>
-            <span>Número de cotización: </span>
-            <strong>{cotizacionId}</strong>
-          </div>
-        )}
       </div>
     </SiteFrame>
   );
