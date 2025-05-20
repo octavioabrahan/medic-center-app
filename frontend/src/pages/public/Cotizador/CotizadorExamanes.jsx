@@ -148,7 +148,7 @@ export default function Cotizaciones() {
         cedula: form.cedula.trim(),
         telefono: form.telefono.trim(),
         fecha_nacimiento: fechaNacimientoFormateada,
-        sexo: form.sexo,
+        sexo: form.sexo === 'femenino' ? 'F' : 'M', // Map to single char for DB
         email: form.email.trim(),
         examenes: examenesFormateados,
         tasaCambio: tasaCambioNumerico
