@@ -15,6 +15,8 @@
     padding: 0px 16px;
     flex-direction: column;
     height: auto;
+    display: flex;
+    flex-wrap: wrap;
   }
 }
 .cotizadorHeroForm {
@@ -38,6 +40,9 @@
     max-height: none;
     min-height: auto;
     order: 1; /* Make this appear first in the column layout */
+    padding-bottom: 16px;
+    flex: 0 0 auto;
+    width: 100%;
   }
 }
 .cotizadorHeroFormScroll {
@@ -122,6 +127,19 @@
   min-width: 240px;
   position: relative;
 }
+
+/* Mobile responsive styles */
+@media (max-width: 768px) {
+  .cotizadorChoiceCard {
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+  }
+  
+  .cotizadorHeroForm2 .cotizadorChoiceCard {
+    width: 100%;
+  }
+}
 .cotizadorCheckboxField {
   display: flex;
   flex-direction: column;
@@ -130,6 +148,23 @@
   position: relative;
   min-width: 0;
 }
+
+.cotizadorCheckboxField2 {
+  display: flex;
+  flex-direction: column;
+  gap: 0px;
+  align-items: flex-start;
+  justify-content: flex-start;
+  flex: 1;
+  position: relative;
+}
+
+@media (max-width: 768px) {
+  .cotizadorCheckboxField2 {
+    width: 100%;
+  }
+}
+
 .cotizadorCheckboxFieldContainer {
   width: 100%;
   display: flex;
@@ -203,6 +238,18 @@
     width: 100%;
     padding: 32px 24px;
     order: 2; /* Make this appear second in the column layout */
+    margin-bottom: 16px;
+    align-items: center; /* Center items horizontally */
+  }
+  
+  .cotizadorHeroForm2 .cotizadorTitle {
+    text-align: center;
+    width: 100%;
+  }
+  
+  .cotizadorHeroForm2 .cotizadorFrame3 {
+    width: 100%;
+    align-items: center;
   }
 }
 .cotizadorSubtitle2 {
@@ -235,6 +282,12 @@
   
   .cotizadorButtonGroup button {
     width: 100%;
+  }
+  
+  /* Make all buttons in the cotizador have a good size on mobile */
+  button {
+    height: 48px; /* Slightly taller for better touch targets */
+    font-size: 16px; /* Ensure text is readable */
   }
 }
 .cotizadorArrowLeft {
@@ -302,14 +355,17 @@
   flex-shrink: 0;
   position: relative;
 }
-.cotizadorCheckboxField2 {
-  display: flex;
-  flex-direction: column;
-  gap: 0px;
-  align-items: flex-start;
-  justify-content: flex-start;
-  flex: 1;
-  position: relative;
+
+/* Mobile responsive styles */
+@media (max-width: 768px) {
+  .cotizadorFrame3 {
+    width: 100%;
+    align-items: center;
+  }
+  
+  .cotizadorFrame3 > div {
+    width: 100%;
+  }
 }
 .cotizadorCheckboxAndLabel {
   display: flex;
@@ -524,6 +580,14 @@
   .cotizadorButtonRightContainer {
     order: 3; /* Make the button appear after both sections */
     margin-top: 24px;
+    margin-bottom: 24px;
+    justify-content: center; /* Center the button on mobile */
+    flex: 0 0 100%;
+    width: 100%;
+  }
+  
+  .cotizadorButtonRightContainer button {
+    width: 80%; /* Make button stand out with a decent width */
   }
 }
 .cotizadorButtonRow {

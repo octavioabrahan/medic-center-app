@@ -1,0 +1,117 @@
+/* Mobile responsive styles for CotizadorExamanes */
+@media (max-width: 768px) {
+  /* Main container */
+  .cotizadorFrame4 {
+    padding: 0px 16px;
+    flex-direction: column;
+    height: auto;
+    display: flex;
+    flex-wrap: wrap;
+  }
+
+  /* Left section (top on mobile) */
+  .cotizadorHeroForm {
+    max-height: none;
+    min-height: auto;
+    order: 1; /* Make this appear first in the column layout */
+    padding-bottom: 16px;
+    flex: 0 0 auto;
+    width: 100%;
+  }
+
+  /* Right section (blue background, middle on mobile) */
+  .cotizadorHeroForm2 {
+    width: 100%;
+    padding: 32px 24px;
+    order: 2; /* Make this appear second in the column layout */
+    margin-bottom: 16px;
+    align-items: center; /* Center items horizontally */
+  }
+  
+  .cotizadorHeroForm2 .cotizadorTitle {
+    text-align: center;
+    width: 100%;
+  }
+  
+  .cotizadorFrame3 {
+    width: 100%;
+    align-items: center;
+  }
+  
+  /* Button container (bottom on mobile) */
+  .cotizadorButtonRightContainer {
+    order: 3; /* Make the button appear after both sections */
+    margin-top: 24px;
+    margin-bottom: 24px;
+    justify-content: center; /* Center the button on mobile */
+    flex: 0 0 100%;
+    width: 100%;
+  }
+  
+  .cotizadorButtonRightContainer button {
+    width: 80%; /* Make button stand out with a decent width */
+  }
+  
+  /* Card and content styling */
+  .cotizadorChoiceCard {
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+  }
+  
+  .cotizadorHeroForm2 .cotizadorChoiceCard {
+    width: 100%;
+  }
+  
+  .cotizadorCheckboxField2 {
+    width: 100%;
+  }
+  
+  .cotizadorFrame3 > div {
+    width: 100%;
+  }
+  
+  .cotizadorFrame1 {
+    max-height: 300px;
+    width: 100%;
+  }
+  
+  /* Button group styling */
+  .cotizadorButtonGroup {
+    width: 100%;
+    flex-direction: column;
+    gap: 16px;
+  }
+  
+  .cotizadorButtonGroup button {
+    width: 100%;
+  }
+  
+  /* Modal dialog styling */
+  .dialogBody {
+    max-width: calc(100% - 32px);
+    padding: 24px 16px;
+    margin: 0 16px;
+  }
+  
+  /* Form scroll area */
+  .cotizadorHeroFormScroll {
+    max-height: 400px;
+  }
+  
+  /* Button row styling */
+  .cotizadorButtonRow {
+    flex-direction: column;
+    gap: 16px;
+  }
+  
+  .cotizadorButtonRow > div {
+    width: 100%;
+  }
+  
+  /* Make all buttons in the cotizador have a good size on mobile */
+  button {
+    height: 48px; /* Slightly taller for better touch targets */
+    font-size: 16px; /* Ensure text is readable */
+  }
+}

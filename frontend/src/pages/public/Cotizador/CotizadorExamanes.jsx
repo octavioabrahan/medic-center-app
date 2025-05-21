@@ -11,6 +11,9 @@ import styles from './CotizadorExamanes.module.css';
 import DatePickerField from '../../../components/Inputs/DatePickerField';
 import 'react-datepicker/dist/react-datepicker.css';
 import './CotizadorDatePicker.css';
+import './CotizadorExamanesMobile.css';
+import './CotizadorResponsive.css'; // Import the new mobile responsive styles
+import './CotizadorForcedLayout.css'; // Import additional layout overrides
 
 export default function Cotizaciones() {
   // --- STATE (match v1) ---
@@ -225,10 +228,11 @@ export default function Cotizaciones() {
     return (
       <SiteFrame>
         <div className={styles.cotizadorFrame4}>
+          {/* Left section (top on mobile) */}
           <div className={styles.cotizadorHeroForm}>
             <div className={styles.cotizadorTitle}>Cotiza tus exámenes de forma rápida</div>
             <div className={styles.cotizadorSubtitle}>
-              Selecciona los exámenes que necesitas. Cuando estés listo, presiona “Continuar” para completar tus datos y recibir el detalle de tu cotización.
+              Selecciona los exámenes que necesitas. Cuando estés listo, presiona "Continuar" para completar tus datos y recibir el detalle de tu cotización.
             </div>
             <div className={styles.cotizadorInputField} style={{ width: '100%' }}>
               <SearchField
@@ -274,19 +278,10 @@ export default function Cotizaciones() {
                 ))
               )}
             </div>
-            {/* Button in its own right-aligned container */}
-            <div className={styles.cotizadorButtonRightContainer}>
-              <Button
-                variant="primary"
-                size="medium"
-                disabled={seleccionados.length === 0}
-                onClick={() => setModoFormulario(true)}
-              >
-                Continuar
-              </Button>
-            </div>
             {error && <div className={styles.cotizadorSubtitle2}>{error}</div>}
           </div>
+          
+          {/* Right section (blue background, middle on mobile) */}
           <div className={styles.cotizadorHeroForm2}>
             <div className={styles.cotizadorTitle}>{seleccionados.length === 0 ? 'Aún no has seleccionado ningún examen' : 'Resumen de los exámenes a cotizar'}</div>
             <div className={styles.cotizadorFrame3}>
@@ -326,7 +321,20 @@ export default function Cotizaciones() {
               )}
             </div>
           </div>
+          
+          {/* Button container (bottom on mobile) */}
+          <div className={styles.cotizadorButtonRightContainer}>
+            <Button
+              variant="primary"
+              size="medium"
+              disabled={seleccionados.length === 0}
+              onClick={() => setModoFormulario(true)}
+            >
+              Continuar
+            </Button>
+          </div>
         </div>
+        
         {/* Modal for exam indication */}
         {modalInfo && (
           <div className={styles.dialog} onClick={() => setModalInfo(null)}>

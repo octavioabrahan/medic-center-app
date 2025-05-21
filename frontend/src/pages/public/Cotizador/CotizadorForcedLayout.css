@@ -1,0 +1,50 @@
+/* Important override styles for mobile */
+@media (max-width: 768px) {
+  /* Ensure proper display and order of elements */
+  .cotizadorFrame4 {
+    display: flex !important;
+    flex-flow: column !important;
+  }
+  
+  /* Force components to appear in correct order for mobile */
+  .cotizadorFrame4 > .cotizadorHeroForm {
+    order: 1 !important;
+  }
+  
+  .cotizadorFrame4 > .cotizadorHeroForm2 {
+    order: 2 !important;
+  }
+  
+  .cotizadorFrame4 > .cotizadorButtonRightContainer {
+    order: 3 !important;
+  }
+  
+  /* Center the button properly */
+  .cotizadorButtonRightContainer button {
+    margin: 0 auto !important;
+  }
+  
+  /* Make sure the blue summary background extends full width */
+  .cotizadorHeroForm2 {
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+    padding-top: 40px !important; /* Reduced from 160px to be more compact on mobile */
+  }
+  
+  /* Center the exam cards in the blue section */
+  .cotizadorFrame3 {
+    width: 100% !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+  }
+  
+  /* Make sure text in title sections are properly centered */
+  .cotizadorHeroForm2 .cotizadorTitle,
+  .cotizadorHeroForm2 .cotizadorSubtitle2 {
+    text-align: center !important;
+    display: flex !important;
+    justify-content: center !important;
+  }
+}
