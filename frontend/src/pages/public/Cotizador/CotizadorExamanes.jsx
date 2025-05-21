@@ -209,43 +209,8 @@ export default function Cotizaciones() {
 
   // --- STEP 1: Selección de exámenes ---
   if (cotizacionEnviada) {
-    // STEP 3: Confirmación final
-    return (
-      <SiteFrame>
-        <div className={styles.cotizadorHeroForm}>
-          <div className={styles.cotizadorTitle}>¡Gracias por cotizar con nosotros!</div>
-          <div className={styles.cotizadorSubtitle}>
-            Te enviamos un PDF con el detalle de tu cotización al correo que nos indicaste.<br />
-            Si no lo ves en tu bandeja de entrada, revisa la carpeta de spam o promociones.
-          </div>
-          <div className={styles.cotizadorButtonGroup}>
-            <Button variant="subtle" size="medium" fullWidth={false} onClick={() => window.location.href = '/'}>
-              <span className={styles.cotizadorButton2}>Volver a la página principal</span>
-            </Button>
-            <Button
-              variant="primary"
-              size="medium"
-              fullWidth={false}
-              onClick={() => {
-                setModoFormulario(false);
-                setSeleccionados([]);
-                setForm({ nombre: '', apellido: '', cedula: '', telefono: '', fecha_nacimiento: '', sexo: 'masculino', email: '' });
-                setCotizacionEnviada(false);
-                setCotizacionId(null);
-              }}
-            >
-              <span className={styles.cotizadorButton4}>Hacer otra cotización</span>
-            </Button>
-          </div>
-          {cotizacionId && (
-            <div className={styles.cotizadorSubtitle2} style={{marginTop: 24}}>
-              <span>Número de cotización: </span>
-              <strong>{cotizacionId}</strong>
-            </div>
-          )}
-        </div>
-      </SiteFrame>
-    );
+    // Let the default Step 3 at the end handle this case
+    // The flow will now reach Step 3 when cotizacionEnviada is true
   }
 
   if (!modoFormulario) {
@@ -554,8 +519,9 @@ export default function Cotizaciones() {
       </SiteFrame>
     );
   }
-
+  
   // --- STEP 3: Confirmación final ---
+  // This is our final return statement - shown when cotizacionEnviada is true
   return (
     <SiteFrame>
       <div className={styles.cotizadorHeroForm}>
@@ -576,11 +542,19 @@ export default function Cotizaciones() {
               setModoFormulario(false);
               setSeleccionados([]);
               setForm({ nombre: '', apellido: '', cedula: '', telefono: '', fecha_nacimiento: '', sexo: 'masculino', email: '' });
+              setCotizacionEnviada(false);
+              setCotizacionId(null);
             }}
           >
             <span className={styles.cotizadorButton4}>Hacer otra cotización</span>
           </Button>
         </div>
+        {cotizacionId && (
+          <div className={styles.cotizadorSubtitle2} style={{marginTop: 24}}>
+            <span>Número de cotización: </span>
+            <strong>{cotizacionId}</strong>
+          </div>
+        )}
       </div>
     </SiteFrame>
   );
