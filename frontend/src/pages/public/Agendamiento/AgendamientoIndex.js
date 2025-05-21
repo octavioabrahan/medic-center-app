@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { SiteFrame } from '../../../components/SiteFrame';
+import { Button } from '../../../components/Button/Button';
 import ArrowLeft from '../../../assets/ArrowLeft.svg';
 import RadioField from '../../../components/Inputs/RadioField';
 
@@ -17,6 +18,8 @@ const HeroNewsletter = styled.div`
   align-self: stretch;
   flex: 1;
   position: relative;
+  width: 100%;
+  min-height: calc(100vh - 60px); /* Adjust based on header height if needed */
 `;
 
 const Frame62 = styled.div`
@@ -163,35 +166,7 @@ const ButtonGroup2 = styled.div`
   position: relative;
 `;
 
-const ContinueButton = styled.button`
-  background: var(--sds-color-background-brand-default, #20377a);
-  border-radius: var(--sds-size-radius-200, 8px);
-  border: 1px solid var(--sds-color-border-brand-default, #20377a);
-  padding: var(--sds-size-space-300, 12px);
-  display: flex;
-  flex-direction: row;
-  gap: var(--sds-size-space-200, 8px);
-  align-items: center;
-  justify-content: center;
-  position: relative;
-  overflow: hidden;
-  cursor: ${props => props.disabled ? 'not-allowed' : 'pointer'};
-  opacity: ${props => props.disabled ? '0.7' : '1'};
-  
-  &:hover {
-    background: ${props => props.disabled ? 'var(--sds-color-background-brand-default, #20377a)' : 'var(--sds-color-background-brand-hover, #14214b)'};
-  }
-`;
-
-const ButtonText2 = styled.div`
-  color: var(--sds-color-text-brand-on-brand, #f0f3ff);
-  text-align: left;
-  font-family: var(--single-line-body-base-font-family, "Inter-Regular", sans-serif);
-  font-size: var(--single-line-body-base-font-size, 16px);
-  line-height: var(--single-line-body-base-line-height, 100%);
-  font-weight: var(--single-line-body-base-font-weight, 400);
-  position: relative;
-`;
+/* Using the Button component instead of custom styled buttons */
 
 const AgendamientoIndex = () => {
   const [seleccion, setSeleccion] = useState('');
@@ -251,12 +226,14 @@ const AgendamientoIndex = () => {
         </Frame7>
         
         <ButtonGroup2>
-          <ContinueButton
+          <Button
+            variant="primary"
+            size="medium"
             onClick={continuar}
             disabled={!seleccion}
           >
-            <ButtonText2>Continuar</ButtonText2>
-          </ContinueButton>
+            Continuar
+          </Button>
         </ButtonGroup2>
       </Frame62>
     </HeroNewsletter>
