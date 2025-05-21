@@ -5,6 +5,7 @@ import './AgendamientoPrivadoForm.css';
 import Header from '../../../components/SiteFrame/Header';
 import Footer from '../../../components/SiteFrame/Footer';
 import Banner from '../../../components/Banner/Banner';
+import CheckboxField from '../../../components/Inputs/CheckboxField';
 
 const AgendamientoPrivadoForm = () => {
   const [step, setStep] = useState(1);
@@ -269,10 +270,13 @@ const AgendamientoPrivadoForm = () => {
       onChange={e => setDatosRepresentante({ ...datosRepresentante, cedula: e.target.value })}
     />
 
-    <label className="Agendamiento-checkbox-linea">
-      <input type="checkbox" checked={sinCedula} onChange={handleCheckCedula} />
-      La persona que se atenderá no tiene cédula.
-    </label>
+    <div className="Agendamiento-checkbox-linea">
+      <CheckboxField
+        checked={sinCedula}
+        onChange={() => handleCheckCedula()}
+        label="La persona que se atenderá no tiene cédula."
+      />
+    </div>
 
     {/* Sección de representante */}
     {sinCedula && (
@@ -508,12 +512,11 @@ const AgendamientoPrivadoForm = () => {
                   })
                   .map(s => (
                     <div key={s.id_servicio} className="Agendamiento-servicio-checkbox-item">
-                      <input
-                        type="checkbox"
-                        id={`servicio-${s.id_servicio}`}
+                      <CheckboxField
+                        label={`${s.nombre_servicio} — USD ${Number(s.price_usd).toFixed(2)}`}
                         checked={serviciosSeleccionados.includes(s.nombre_servicio)}
-                        onChange={(e) => {
-                          if (e.target.checked) {
+                        onChange={(checked) => {
+                          if (checked) {
                             setServiciosSeleccionados([...serviciosSeleccionados, s.nombre_servicio]);
                           } else {
                             setServiciosSeleccionados(
@@ -522,9 +525,6 @@ const AgendamientoPrivadoForm = () => {
                           }
                         }}
                       />
-                      <label htmlFor={`servicio-${s.id_servicio}`}>
-                        {s.nombre_servicio} — USD {Number(s.price_usd).toFixed(2)}
-                      </label>
                     </div>
                   ))}
               </div>
