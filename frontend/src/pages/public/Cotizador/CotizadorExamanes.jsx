@@ -426,8 +426,8 @@ export default function Cotizaciones() {
                   />
                 </div>
               </div>
-              <div className={styles.cotizadorInputField}>
-                <label>Sexo</label>
+              <div className={styles.cotizadorInputField} style={{ marginBottom: '8px' }}>
+                <label style={{ marginBottom: '4px' }}>Sexo</label>
                 <div className={styles.cotizadorRadioGroup}>
                   <label className={styles.cotizadorRadioLabel}>
                     <input
