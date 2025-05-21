@@ -1,0 +1,61 @@
+/* Specific overrides for react-datepicker in the Cotizador component */
+
+/* Ensure the datepicker doesn't get affected by parent styles */
+.react-datepicker-wrapper {
+  width: 100%;
+}
+
+.react-datepicker__input-container {
+  width: 100%;
+}
+
+/* Style the datepicker calendar popup */
+.react-datepicker {
+  font-family: 'Inter', sans-serif;
+  border-radius: 8px;
+  border: 1px solid #d9d9d9;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Style the selected date */
+.react-datepicker__day--selected,
+.react-datepicker__day--keyboard-selected {
+  background-color: #20377A !important;
+  border-radius: 4px;
+}
+
+/* Hover effect for days */
+.react-datepicker__day:hover {
+  background-color: #e6e9f5;
+  border-radius: 4px;
+}
+
+/* Style header */
+.react-datepicker__header {
+  background-color: #f8f9fb;
+  border-bottom: 1px solid #d9d9d9;
+}
+
+/* Style month and year dropdowns */
+.react-datepicker__month-dropdown-container,
+.react-datepicker__year-dropdown-container {
+  margin: 0 5px;
+}
+
+.react-datepicker__month-dropdown,
+.react-datepicker__year-dropdown {
+  background-color: white;
+  border: 1px solid #d9d9d9;
+  border-radius: 4px;
+}
+
+.react-datepicker__month-option--selected,
+.react-datepicker__year-option--selected {
+  background-color: #e6e9f5;
+}
+
+/* Current day highlight */
+.react-datepicker__day--today {
+  font-weight: bold;
+  color: #20377A;
+}

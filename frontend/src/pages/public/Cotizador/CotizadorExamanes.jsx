@@ -6,8 +6,11 @@ import InputField from '../../../components/Inputs/InputField';
 import { Button } from '../../../components/Button/Button';
 import ArrowLeft from '../../../assets/ArrowLeft.svg';
 import { XMarkIcon } from '@heroicons/react/24/outline';
+import { CalendarIcon } from '@heroicons/react/24/solid';
 import styles from './CotizadorExamanes.module.css';
 import DatePickerField from '../../../components/Inputs/DatePickerField';
+import 'react-datepicker/dist/react-datepicker.css';
+import './CotizadorDatePicker.css';
 
 export default function Cotizaciones() {
   // --- STATE (match v1) ---
@@ -409,16 +412,19 @@ export default function Cotizaciones() {
               </div>
               <div className={styles.cotizadorInputField}>
                 <label>Fecha de nacimiento</label>
-                <DatePickerField
-                  value={form.fecha_nacimiento}
-                  onChange={v => handleFormChange('fecha_nacimiento', v)}
-                  maxDate={new Date()}
-                  showYearDropdown
-                  showMonthDropdown
-                  dateFormat="yyyy-MM-dd"
-                  placeholderText="Selecciona la fecha"
-                  className={styles.cotizadorDatePicker}
-                />
+                <div className={styles.cotizadorDateWrapper}>
+                  <CalendarIcon className={styles.cotizadorDateIcon} />
+                  <DatePickerField
+                    value={form.fecha_nacimiento}
+                    onChange={v => handleFormChange('fecha_nacimiento', v)}
+                    maxDate={new Date()}
+                    showYearDropdown
+                    showMonthDropdown
+                    dateFormat="yyyy-MM-dd"
+                    placeholderText="Selecciona la fecha"
+                    className={styles.cotizadorDatePicker}
+                  />
+                </div>
               </div>
               <div className={styles.cotizadorInputField}>
                 <label>Sexo</label>
