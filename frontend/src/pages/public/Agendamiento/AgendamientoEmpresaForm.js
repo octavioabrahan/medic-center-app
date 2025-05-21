@@ -11,17 +11,22 @@ import ArchivoAdjuntoForm from '../../../components/public/ArchivoAdjuntoForm';
 // Styled components based on the Figma design
 const HeroNewsletter = styled.div`
   background: rgba(32, 55, 122, 0.02);
-  padding: var(--sds-size-space-800, 32px) var(--sds-size-space-600, 24px);
+  padding: var(--var-sds-size-space-800, 32px) var(--var-sds-size-space-600, 24px);
   display: flex;
   flex-direction: column;
-  gap: var(--sds-size-space-800, 32px);
+  gap: var(--var-sds-size-space-800, 32px);
   align-items: center;
   justify-content: flex-start;
   align-self: stretch;
-  flex: 1;
+  flex-shrink: 0;
   position: relative;
   width: 100%;
   min-height: calc(100vh - 60px); /* Adjust based on header height if needed */
+  box-sizing: border-box;
+  
+  * {
+    box-sizing: border-box;
+  }
 `;
 
 const FormContainer = styled.div`
@@ -30,7 +35,8 @@ const FormContainer = styled.div`
   gap: 32px;
   align-items: flex-start;
   justify-content: flex-start;
-  width: 960px;
+  width: 100%;
+  max-width: 966px;
   position: relative;
   
   @media (max-width: 992px) {
@@ -39,13 +45,14 @@ const FormContainer = styled.div`
 `;
 
 const BackButton = styled.button`
-  border-radius: var(--sds-size-radius-200, 8px);
-  padding: var(--sds-size-space-300, 12px);
+  border-radius: var(--var-sds-size-radius-200, 8px);
+  padding: var(--var-sds-size-space-300, 12px);
   display: flex;
   flex-direction: row;
-  gap: var(--sds-size-space-200, 8px);
+  gap: var(--var-sds-size-space-200, 8px);
   align-items: center;
   justify-content: center;
+  flex-shrink: 0;
   position: relative;
   overflow: hidden;
   background: transparent;
@@ -55,10 +62,18 @@ const BackButton = styled.button`
   &:hover {
     background: var(--sds-color-background-default-default-hover);
   }
+  
+  img.arrow-left {
+    flex-shrink: 0;
+    width: 16px;
+    height: 16px;
+    position: relative;
+    overflow: visible;
+  }
 `;
 
 const ButtonText = styled.span`
-  color: var(--sds-color-text-neutral-default, #303030);
+  color: var(--var-sds-color-text-neutral-default, #303030);
   text-align: left;
   font-family: var(--single-line-body-base-font-family, "Inter-Regular", sans-serif);
   font-size: var(--single-line-body-base-font-size, 16px);
@@ -68,7 +83,7 @@ const ButtonText = styled.span`
 `;
 
 const FormTitle = styled.h2`
-  color: var(--sds-color-text-default-default, #1e1e1e);
+  color: var(--var-sds-color-background-brand-default, #20377a);
   text-align: center;
   font-family: var(--heading-font-family, "Inter-SemiBold", sans-serif);
   font-size: var(--heading-font-size, 24px);
@@ -81,7 +96,7 @@ const FormTitle = styled.h2`
 `;
 
 const FormSubtitle = styled.p`
-  color: var(--sds-color-text-default-secondary, #757575);
+  color: var(--var-sds-color-text-default-secondary, #757575);
   text-align: center;
   font-family: var(--subheading-font-family, "Inter-Regular", sans-serif);
   font-size: var(--subheading-font-size, 20px);
@@ -98,72 +113,115 @@ const FormSubtitle = styled.p`
 const FormSection = styled.section`
   display: flex;
   flex-direction: column;
-  gap: 16px;
-  align-self: stretch;
+  gap: var(--var-sds-size-space-300, 12px);
+  align-items: flex-start;
+  justify-content: flex-start;
   width: 100%;
+  flex-shrink: 0;
+  max-width: 966px;
+  position: relative;
 `;
 
 const FormGroup = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: var(--var-sds-size-space-200, 8px);
+  align-items: flex-start;
+  justify-content: flex-start;
+  align-self: stretch;
+  flex-shrink: 0;
+  position: relative;
   width: 100%;
 `;
 
 const FormLabel = styled.label`
-  color: var(--sds-color-text-default-default, #1e1e1e);
+  color: var(--var-sds-color-text-default-default, #1e1e1e);
   text-align: left;
-  font-family: var(--body-strong-font-family, "Inter-SemiBold", sans-serif);
-  font-size: var(--body-base-font-size, 16px);
-  line-height: var(--body-base-line-height, 140%);
-  font-weight: var(--body-strong-font-weight, 600);
-`;
-
-const FormInput = styled.input`
-  background: var(--sds-color-background-default-default, #ffffff);
-  border-radius: var(--sds-size-radius-200, 8px);
-  border: 1px solid var(--sds-color-border-default-default, #d9d9d9);
-  padding: 12px 16px;
   font-family: var(--body-base-font-family, "Inter-Regular", sans-serif);
   font-size: var(--body-base-font-size, 16px);
   line-height: var(--body-base-line-height, 140%);
-  color: var(--sds-color-text-default-default, #1e1e1e);
+  font-weight: var(--body-base-font-weight, 400);
+  position: relative;
+  align-self: stretch;
+`;
+
+const FormInput = styled.input`
+  background: var(--var-sds-color-background-default-default, #ffffff);
+  border-radius: var(--var-sds-size-radius-200, 8px);
+  border-style: solid;
+  border-color: var(--var-sds-color-border-default-default, #d9d9d9);
+  border-width: 1px;
+  padding: var(--var-sds-size-space-300, 12px) var(--var-sds-size-space-400, 16px) var(--var-sds-size-space-300, 12px) var(--var-sds-size-space-400, 16px);
+  display: flex;
+  flex-direction: row;
+  gap: 0px;
+  align-items: center;
+  justify-content: flex-start;
+  align-self: stretch;
+  flex-shrink: 0;
+  min-width: 240px;
+  position: relative;
+  overflow: hidden;
+  font-family: var(--single-line-body-base-font-family, "Inter-Regular", sans-serif);
+  font-size: var(--single-line-body-base-font-size, 16px);
+  line-height: var(--single-line-body-base-line-height, 100%);
+  font-weight: var(--single-line-body-base-font-weight, 400);
+  color: var(--var-sds-color-text-default-default, #1e1e1e);
   width: 100%;
   
   &:focus {
     outline: none;
-    border-color: var(--sds-color-border-brand-default, #20377a);
-    box-shadow: 0 0 0 1px var(--sds-color-border-brand-default, #20377a);
+    border-color: var(--var-sds-color-border-brand-default, #20377a);
+    box-shadow: 0 0 0 1px var(--var-sds-color-border-brand-default, #20377a);
   }
 `;
 
 const FormSelect = styled.select`
-  background: var(--sds-color-background-default-default, #ffffff);
-  border-radius: var(--sds-size-radius-200, 8px);
-  border: 1px solid var(--sds-color-border-default-default, #d9d9d9);
-  padding: 12px 16px;
-  font-family: var(--body-base-font-family, "Inter-Regular", sans-serif);
-  font-size: var(--body-base-font-size, 16px);
-  line-height: var(--body-base-line-height, 140%);
-  color: var(--sds-color-text-default-default, #1e1e1e);
+  background: var(--var-sds-color-background-default-default, #ffffff);
+  border-radius: var(--var-sds-size-radius-200, 8px);
+  border-style: solid;
+  border-color: var(--var-sds-color-border-default-default, #d9d9d9);
+  border-width: 1px;
+  padding: var(--var-sds-size-space-300, 12px) var(--var-sds-size-space-300, 12px) var(--var-sds-size-space-300, 12px) var(--var-sds-size-space-400, 16px);
+  display: flex;
+  flex-direction: row;
+  gap: var(--var-sds-size-space-200, 8px);
+  align-items: center;
+  justify-content: flex-start;
+  align-self: stretch;
+  flex-shrink: 0;
+  height: 40px;
+  min-width: 240px;
+  position: relative;
+  font-family: var(--single-line-body-base-font-family, "Inter-Regular", sans-serif);
+  font-size: var(--single-line-body-base-font-size, 16px);
+  line-height: var(--single-line-body-base-line-height, 100%);
+  font-weight: var(--single-line-body-base-font-weight, 400);
+  color: var(--var-sds-color-text-default-default, #1e1e1e);
   width: 100%;
   
   &:focus {
     outline: none;
-    border-color: var(--sds-color-border-brand-default, #20377a);
-    box-shadow: 0 0 0 1px var(--sds-color-border-brand-default, #20377a);
+    border-color: var(--var-sds-color-border-brand-default, #20377a);
+    box-shadow: 0 0 0 1px var(--var-sds-color-border-brand-default, #20377a);
   }
 `;
 
 const CheckboxLabel = styled.label`
   display: flex;
+  flex-direction: row;
+  gap: var(--var-sds-size-space-300, 12px);
   align-items: center;
-  gap: 8px;
+  justify-content: flex-start;
+  align-self: stretch;
+  flex-shrink: 0;
+  position: relative;
   cursor: pointer;
-  color: var(--sds-color-text-default-default, #1e1e1e);
+  color: var(--var-sds-color-text-default-default, #1e1e1e);
   font-family: var(--body-base-font-family, "Inter-Regular", sans-serif);
   font-size: var(--body-base-font-size, 16px);
   line-height: var(--body-base-line-height, 140%);
+  font-weight: var(--body-base-font-weight, 400);
 `;
 
 const RadioGroup = styled.div`
@@ -171,10 +229,21 @@ const RadioGroup = styled.div`
   flex-direction: row;
   gap: 24px;
   margin-top: 8px;
+  
+  .radio-field {
+    display: flex;
+    flex-direction: column;
+    gap: 0px;
+    align-items: flex-start;
+    justify-content: flex-start;
+    flex-shrink: 0;
+    width: 340px;
+    position: relative;
+  }
 `;
 
 const SectionTitle = styled.h3`
-  color: var(--sds-color-text-default-default, #1e1e1e);
+  color: var(--var-sds-color-text-default-default, #1e1e1e);
   font-family: var(--body-strong-font-family, "Inter-SemiBold", sans-serif);
   font-size: 20px;
   line-height: 140%;
@@ -184,31 +253,45 @@ const SectionTitle = styled.h3`
 
 const ButtonContainer = styled.div`
   display: flex;
+  flex-direction: row;
+  gap: var(--var-sds-size-space-400, 16px);
+  align-items: center;
   justify-content: flex-end;
   width: 100%;
+  flex-shrink: 0;
+  max-width: 966px;
+  position: relative;
   margin-top: 32px;
 `;
 
 const RecomendacionBox = styled.div`
-  background: var(--sds-color-background-brand-tertiary, #f0f3ff);
-  border-radius: var(--sds-size-radius-200, 8px);
+  background: var(--var-sds-color-background-brand-tertiary, #f0f3ff);
+  border-radius: var(--var-sds-size-radius-200, 8px);
   padding: 16px;
   display: flex;
   gap: 16px;
   margin: 24px 0;
   width: 100%;
+  
+  p {
+    color: var(--var-sds-color-text-default-default, #1e1e1e);
+    font-family: var(--body-base-font-family, "Inter-Regular", sans-serif);
+    font-size: var(--body-base-font-size, 16px);
+    line-height: var(--body-base-line-height, 140%);
+  }
 `;
 
 const InfoIcon = styled.span`
   width: 24px;
   height: 24px;
   border-radius: 50%;
-  background: var(--sds-color-background-brand-default, #20377a);
+  background: var(--var-sds-color-background-brand-default, #20377a);
   color: white;
   display: flex;
   align-items: center;
   justify-content: center;
   font-weight: bold;
+  flex-shrink: 0;
 `;
 
 const ServicesList = styled.div`
@@ -221,15 +304,32 @@ const ServicesList = styled.div`
 
 const ServiceItem = styled.div`
   display: flex;
+  flex-direction: row;
+  gap: var(--var-sds-size-space-300, 12px);
   align-items: center;
-  gap: 12px;
+  justify-content: flex-start;
   padding: 12px;
-  background: var(--sds-color-background-default-default, #ffffff);
-  border-radius: var(--sds-size-radius-200, 8px);
-  border: 1px solid var(--sds-color-border-default-default, #d9d9d9);
+  background: var(--var-sds-color-background-default-default, #ffffff);
+  border-radius: var(--var-sds-size-radius-200, 8px);
+  border: 1px solid var(--var-sds-color-border-default-default, #d9d9d9);
   
   &:hover {
-    background: var(--sds-color-background-default-default-hover, #f5f5f5);
+    background: var(--var-sds-color-background-default-default-hover, #f5f5f5);
+  }
+  
+  label {
+    color: var(--var-sds-color-text-default-default, #1e1e1e);
+    text-align: left;
+    font-family: var(--body-base-font-family, "Inter-Regular", sans-serif);
+    font-size: var(--body-base-font-size, 16px);
+    line-height: var(--body-base-line-height, 140%);
+    font-weight: var(--body-base-font-weight, 400);
+    position: relative;
+    flex: 1;
+  }
+  
+  input[type="checkbox"] {
+    flex-shrink: 0;
   }
 `;
 
@@ -259,9 +359,9 @@ const CalendarioWrapper = styled.div`
 const FechaSeleccionadaInfo = styled.div`
   flex: 1;
   min-width: 280px;
-  background: var(--sds-color-background-default-default, #ffffff);
-  border-radius: var(--sds-size-radius-200, 8px);
-  border: 1px solid var(--sds-color-border-default-default, #d9d9d9);
+  background: var(--var-sds-color-background-default-default, #ffffff);
+  border-radius: var(--var-sds-size-radius-200, 8px);
+  border: 1px solid var(--var-sds-color-border-default-default, #d9d9d9);
   padding: 20px;
   display: flex;
   flex-direction: column;
@@ -270,21 +370,27 @@ const FechaSeleccionadaInfo = styled.div`
 
 const InfoItem = styled.div`
   display: flex;
+  flex-direction: row;
   align-items: center;
-  gap: 12px;
+  gap: var(--var-sds-size-space-300, 12px);
   
   p {
     margin: 0;
-    color: var(--sds-color-text-default-default, #1e1e1e);
+    color: var(--var-sds-color-text-default-default, #1e1e1e);
     font-family: var(--body-base-font-family, "Inter-Regular", sans-serif);
     font-size: var(--body-base-font-size, 16px);
     line-height: var(--body-base-line-height, 140%);
+    font-weight: var(--body-base-font-weight, 400);
+  }
+  
+  span {
+    flex-shrink: 0;
   }
 `;
 
 const AlertaInfo = styled.div`
-  background: var(--sds-color-background-warning-tertiary, #fffbeb);
-  border-radius: var(--sds-size-radius-200, 8px);
+  background: var(--var-sds-color-background-warning-tertiary, #fffbeb);
+  border-radius: var(--var-sds-size-radius-200, 8px);
   padding: 16px;
   display: flex;
   gap: 12px;
@@ -294,31 +400,34 @@ const AlertaInfo = styled.div`
   
   span {
     font-size: 24px;
+    flex-shrink: 0;
   }
   
   p {
     margin: 0;
-    color: var(--sds-color-text-warning-default, #522504);
+    color: var(--var-sds-color-text-warning-default, #522504);
     font-family: var(--body-base-font-family, "Inter-Regular", sans-serif);
     font-size: var(--body-base-font-size, 16px);
     line-height: var(--body-base-line-height, 140%);
+    font-weight: var(--body-base-font-weight, 400);
   }
 `;
 
 const ResumenTarjeta = styled.div`
-  background: var(--sds-color-background-default-default, #ffffff);
-  border-radius: var(--sds-size-radius-200, 8px);
-  border: 1px solid var(--sds-color-border-default-default, #d9d9d9);
+  background: var(--var-sds-color-background-default-default, #ffffff);
+  border-radius: var(--var-sds-size-radius-200, 8px);
+  border: 1px solid var(--var-sds-color-border-default-default, #d9d9d9);
   padding: 20px;
   width: 100%;
   margin-top: 16px;
   
   p {
     margin: 8px 0;
-    color: var(--sds-color-text-default-default, #1e1e1e);
+    color: var(--var-sds-color-text-default-default, #1e1e1e);
     font-family: var(--body-base-font-family, "Inter-Regular", sans-serif);
     font-size: var(--body-base-font-size, 16px);
     line-height: var(--body-base-line-height, 140%);
+    font-weight: var(--body-base-font-weight, 400);
   }
 `;
 
@@ -335,14 +444,14 @@ const DatosPersonalesContainer = styled.div`
 
 const ColumnaDatos = styled.div`
   flex: 1;
-  background: var(--sds-color-background-default-default, #ffffff);
-  border-radius: var(--sds-size-radius-200, 8px);
-  border: 1px solid var(--sds-color-border-default-default, #d9d9d9);
+  background: var(--var-sds-color-background-default-default, #ffffff);
+  border-radius: var(--var-sds-size-radius-200, 8px);
+  border: 1px solid var(--var-sds-color-border-default-default, #d9d9d9);
   padding: 20px;
   
   h4 {
     margin: 0 0 16px 0;
-    color: var(--sds-color-text-default-default, #1e1e1e);
+    color: var(--var-sds-color-text-default-default, #1e1e1e);
     font-family: var(--body-strong-font-family, "Inter-SemiBold", sans-serif);
     font-size: 18px;
     line-height: 140%;
@@ -351,10 +460,11 @@ const ColumnaDatos = styled.div`
   
   p {
     margin: 8px 0;
-    color: var(--sds-color-text-default-default, #1e1e1e);
+    color: var(--var-sds-color-text-default-default, #1e1e1e);
     font-family: var(--body-base-font-family, "Inter-Regular", sans-serif);
     font-size: var(--body-base-font-size, 16px);
     line-height: var(--body-base-line-height, 140%);
+    font-weight: var(--body-base-font-weight, 400);
   }
 `;
 
@@ -362,19 +472,69 @@ const ConfirmacionFinal = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 24px;
+  gap: var(--var-sds-size-space-800, 32px);
   text-align: center;
   width: 100%;
+  
+  h2 {
+    color: var(--var-sds-color-background-brand-default, #20377a);
+  }
 `;
 
 const FormAcciones = styled.div`
   display: flex;
-  gap: 16px;
+  flex-direction: row;
+  gap: var(--var-sds-size-space-400, 16px);
+  align-items: center;
+  justify-content: flex-start;
+  width: 100%;
+  flex-shrink: 0;
+  max-width: 966px;
+  position: relative;
   margin-top: 32px;
   
   @media (max-width: 768px) {
     flex-direction: column;
     width: 100%;
+  }
+`;
+
+const UploadFieldContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: var(--var-sds-size-space-200, 8px);
+  align-items: flex-start;
+  justify-content: flex-start;
+  align-self: stretch;
+  flex-shrink: 0;
+  position: relative;
+`;
+
+const UploadButton = styled.button`
+  background: var(--var-sds-color-background-neutral-tertiary, #e3e3e3);
+  border-radius: var(--var-sds-size-radius-200, 8px);
+  border-style: solid;
+  border-color: var(--var-sds-color-border-neutral-secondary, #767676);
+  border-width: 1px;
+  padding: var(--var-sds-size-space-300, 12px);
+  display: flex;
+  flex-direction: row;
+  gap: var(--var-sds-size-space-200, 8px);
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+  
+  span {
+    color: var(--var-sds-color-text-default-default, #1e1e1e);
+    text-align: left;
+    font-family: var(--body-base-font-family, "Inter-Regular", sans-serif);
+    font-size: var(--body-base-font-size, 16px);
+    line-height: var(--body-base-line-height, 140%);
+    font-weight: var(--body-base-font-weight, 400);
+    position: relative;
   }
 `;
 
@@ -813,13 +973,30 @@ const AgendamientoEmpresaForm = () => {
                 Adjunta la orden de atención médica firmada y sellada por la empresa
               </FormSubtitle>
               
-              <ArchivoAdjuntoForm
-                onFileUploaded={(fileId) => {
-                  console.log("Archivo subido, ID recibido:", fileId);
-                  setArchivoAdjuntoId(fileId);
-                }}
-                requiereArchivo={true}
-              />
+              <UploadFieldContainer>
+                <ArchivoAdjuntoForm
+                  onFileUploaded={(fileId) => {
+                    console.log("Archivo subido, ID recibido:", fileId);
+                    setArchivoAdjuntoId(fileId);
+                  }}
+                  requiereArchivo={true}
+                  customStyles={{
+                    uploadButton: {
+                      background: 'var(--var-sds-color-background-neutral-tertiary, #e3e3e3)',
+                      borderRadius: 'var(--var-sds-size-radius-200, 8px)',
+                      borderStyle: 'solid',
+                      borderColor: 'var(--var-sds-color-border-neutral-secondary, #767676)',
+                      borderWidth: '1px',
+                      padding: 'var(--var-sds-size-space-300, 12px)',
+                      display: 'flex',
+                      flexDirection: 'row',
+                      gap: 'var(--var-sds-size-space-200, 8px)',
+                      alignItems: 'center',
+                      justifyContent: 'center'
+                    }
+                  }}
+                />
+              </UploadFieldContainer>
 
               <ButtonContainer>
                 <Button 
@@ -831,6 +1008,15 @@ const AgendamientoEmpresaForm = () => {
                       return;
                     }
                     setStep(2);
+                  }}
+                  style={{
+                    background: 'var(--var-sds-color-background-brand-default, #20377a)',
+                    borderRadius: 'var(--var-sds-size-radius-200, 8px)',
+                    borderStyle: 'solid',
+                    borderColor: 'var(--var-sds-color-border-brand-default, #20377a)',
+                    borderWidth: '1px',
+                    padding: 'var(--var-sds-size-space-300, 12px)',
+                    color: 'var(--var-sds-color-text-brand-on-brand, #f0f3ff)'
                   }}
                 >
                   Continuar
@@ -985,6 +1171,15 @@ const AgendamientoEmpresaForm = () => {
                         !profesionalSeleccionado ||
                         serviciosSeleccionados.length === 0
                       }
+                      style={{
+                        background: 'var(--var-sds-color-background-brand-default, #20377a)',
+                        borderRadius: 'var(--var-sds-size-radius-200, 8px)',
+                        borderStyle: 'solid',
+                        borderColor: 'var(--var-sds-color-border-brand-default, #20377a)',
+                        borderWidth: '1px',
+                        padding: 'var(--var-sds-size-space-300, 12px)',
+                        color: 'var(--var-sds-color-text-brand-on-brand, #f0f3ff)'
+                      }}
                     >
                       Continuar
                     </Button>
@@ -1056,6 +1251,15 @@ const AgendamientoEmpresaForm = () => {
                 <Button 
                   variant="primary"
                   onClick={enviarAgendamiento}
+                  style={{
+                    background: 'var(--var-sds-color-background-brand-default, #20377a)',
+                    borderRadius: 'var(--var-sds-size-radius-200, 8px)',
+                    borderStyle: 'solid',
+                    borderColor: 'var(--var-sds-color-border-brand-default, #20377a)',
+                    borderWidth: '1px',
+                    padding: 'var(--var-sds-size-space-300, 12px)',
+                    color: 'var(--var-sds-color-text-brand-on-brand, #f0f3ff)'
+                  }}
                 >
                   Enviar solicitud
                 </Button>
@@ -1074,12 +1278,25 @@ const AgendamientoEmpresaForm = () => {
                 <Button
                   variant="subtle"
                   onClick={() => window.location.href = '/'}
+                  style={{
+                    borderRadius: 'var(--var-sds-size-radius-200, 8px)',
+                    padding: 'var(--var-sds-size-space-300, 12px)',
+                  }}
                 >
                   Volver a la página principal
                 </Button>
                 <Button
                   variant="primary"
                   onClick={() => window.location.reload()}
+                  style={{
+                    background: 'var(--var-sds-color-background-brand-default, #20377a)',
+                    borderRadius: 'var(--var-sds-size-radius-200, 8px)',
+                    borderStyle: 'solid',
+                    borderColor: 'var(--var-sds-color-border-brand-default, #20377a)',
+                    borderWidth: '1px',
+                    padding: 'var(--var-sds-size-space-300, 12px)',
+                    color: 'var(--var-sds-color-text-brand-on-brand, #f0f3ff)'
+                  }}
                 >
                   Agendar otra cita
                 </Button>
