@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import CalendarioFechasDisponiblesDayPicker from '../../../components/CalendarioDayPicker/CalendarioFechasDisponiblesDayPicker';
 import './AgendamientoPrivadoForm.css';
-import logo from '../../../assets/logo.svg';
+import Header from '../../../components/SiteFrame/Header';
+import Footer from '../../../components/SiteFrame/Footer';
 
 const AgendamientoPrivadoForm = () => {
   const [step, setStep] = useState(1);
@@ -252,14 +253,12 @@ const AgendamientoPrivadoForm = () => {
   };
 
   return (
-    <div className="form-wrapper">
-      <div className="form-header">
-        <img src={logo} alt="Logo Diagnocentro" className="form-logo" />
-      </div>
-      <div className="form-body">
+    <div className="Agendamiento-form-wrapper">
+      <Header />
+      <div className="Agendamiento-form-body">
       {step === 1 && (
-  <form className="form-contenido" onSubmit={e => { e.preventDefault(); setStep(2); }}>
-    <h2 className="titulo-principal">Completa los datos del paciente que asistirá a la cita</h2>
+  <form className="Agendamiento-form-contenido" onSubmit={e => { e.preventDefault(); setStep(2); }}>
+    <h2 className="Agendamiento-titulo-principal">Completa los datos del paciente que asistirá a la cita</h2>
 
     <label>Cédula</label>
     <input
@@ -269,7 +268,7 @@ const AgendamientoPrivadoForm = () => {
       onChange={e => setDatosRepresentante({ ...datosRepresentante, cedula: e.target.value })}
     />
 
-    <label className="checkbox-linea">
+    <label className="Agendamiento-checkbox-linea">
       <input type="checkbox" checked={sinCedula} onChange={handleCheckCedula} />
       La persona que se atenderá no tiene cédula.
     </label>
@@ -347,7 +346,7 @@ const AgendamientoPrivadoForm = () => {
     />
 
     <label>Sexo</label>
-    <div className="radio-group">
+    <div className="Agendamiento-radio-group">
       <label>
         <input
           type="radio"
@@ -393,7 +392,7 @@ const AgendamientoPrivadoForm = () => {
     {/* Seguro médico */}
     <h3>Seguro médico</h3>
     <p>¿La persona que se va a atender tiene seguro médico?</p>
-    <div className="radio-group">
+    <div className="Agendamiento-radio-group">
       <label>
         <input
           type="radio"
@@ -416,10 +415,10 @@ const AgendamientoPrivadoForm = () => {
       </label>
     </div>
 
-    <div className="boton-container">
+    <div className="Agendamiento-boton-container">
       <button 
         type="submit" 
-        className="boton-continuar"
+        className="Agendamiento-boton-continuar"
         disabled={isLoading}
       >
         {isLoading ? 'Cargando datos...' : 'Continuar'}
@@ -428,28 +427,28 @@ const AgendamientoPrivadoForm = () => {
   </form>
 )}
 {step === 2 && (
-  <div className="form-step2 nuevo-estilo">
-    <button onClick={() => setStep(1)} className="volver-btn">
+  <div className="Agendamiento-form-step2 nuevo-estilo">
+    <button onClick={() => setStep(1)} className="Agendamiento-volver-btn">
       Volver al paso anterior
     </button>
 
-    <h2 className="titulo-principal">Elige la especialidad y/o el profesional para tu cita</h2>
-    <p className="subtitulo-principal">Indica qué tipo de atención necesitas y/o con quién deseas agendar tu cita.</p>
+    <h2 className="Agendamiento-titulo-principal">Elige la especialidad y/o el profesional para tu cita</h2>
+    <p className="Agendamiento-subtitulo-principal">Indica qué tipo de atención necesitas y/o con quién deseas agendar tu cita.</p>
 
     {isLoading ? (
-      <div className="loading-message">
+      <div className="Agendamiento-loading-message">
         <p>Cargando datos, por favor espere...</p>
       </div>
     ) : (
       <>
-        <div className="seleccion-principal">
-          <div className="seleccion-row">
-            <div className="seleccion-column">
-              <label className="etiqueta-seleccion">¿Qué especialidad necesitas?</label>
+        <div className="Agendamiento-seleccion-principal">
+          <div className="Agendamiento-seleccion-row">
+            <div className="Agendamiento-seleccion-column">
+              <label className="Agendamiento-etiqueta-seleccion">¿Qué especialidad necesitas?</label>
               <select
                 value={especialidadSeleccionada}
                 onChange={e => setEspecialidadSeleccionada(e.target.value)}
-                className="selector-principal"
+                className="Agendamiento-selector-principal"
               >
                 <option value="">Selecciona una especialidad</option>
                 {[...new Set(profesionales.map(p => p.nombre_especialidad))]
@@ -460,8 +459,8 @@ const AgendamientoPrivadoForm = () => {
               </select>
             </div>
 
-            <div className="seleccion-column">
-              <label className="etiqueta-seleccion">¿Con qué profesional quieres atenderte?</label>
+            <div className="Agendamiento-seleccion-column">
+              <label className="Agendamiento-etiqueta-seleccion">¿Con qué profesional quieres atenderte?</label>
               <select
                 value={profesionalSeleccionado}
                 onChange={e => {
@@ -474,7 +473,7 @@ const AgendamientoPrivadoForm = () => {
                     setEspecialidadSeleccionada(profesional.nombre_especialidad);
                   }
                 }}
-                className="selector-principal"
+                className="Agendamiento-selector-principal"
               >
                 <option value="">Selecciona al profesional</option>
                 {profesionales
@@ -491,19 +490,19 @@ const AgendamientoPrivadoForm = () => {
         
         {profesionalSeleccionado && (
           <>
-            <div className="recomendacion-box">
-              <div className="recomendacion-icon">
-                <span className="info-icon">ⓘ</span>
+            <div className="Agendamiento-recomendacion-box">
+              <div className="Agendamiento-recomendacion-icon">
+                <span className="Agendamiento-info-icon">ⓘ</span>
               </div>
-              <div className="recomendacion-text">
-                <p className="recomendacion-title">Recomendación para tu primera cita</p>
+              <div className="Agendamiento-recomendacion-text">
+                <p className="Agendamiento-recomendacion-title">Recomendación para tu primera cita</p>
                 <p>Si es tu primera consulta con este profesional, te sugerimos agendar también los servicios que se recomiendan, así aseguramos que recibas una atención completa sin necesidad de nuevas citas.</p>
               </div>
             </div>
 
-            <div className="servicios-section">
-              <h3 className="servicios-title">Selecciona los servicios para tu cita</h3>
-              <div className="servicios-checkbox-list">
+            <div className="Agendamiento-servicios-section">
+              <h3 className="Agendamiento-servicios-title">Selecciona los servicios para tu cita</h3>
+              <div className="Agendamiento-servicios-checkbox-list">
                 {servicios
                   .filter(s => {
                     if (!profesionalSeleccionado) return false;
@@ -511,7 +510,7 @@ const AgendamientoPrivadoForm = () => {
                     return profServicios.includes(s.id_servicio);
                   })
                   .map(s => (
-                    <div key={s.id_servicio} className="servicio-checkbox-item">
+                    <div key={s.id_servicio} className="Agendamiento-servicio-checkbox-item">
                       <input
                         type="checkbox"
                         id={`servicio-${s.id_servicio}`}
@@ -534,10 +533,10 @@ const AgendamientoPrivadoForm = () => {
               </div>
             </div>
 
-            <div className="fecha-section">
-              <h3 className="fecha-title">Selecciona el día de atención</h3>
-              <div className="fecha-calendario-container">
-                <div className="calendario-wrapper">
+            <div className="Agendamiento-fecha-section">
+              <h3 className="Agendamiento-fecha-title">Selecciona el día de atención</h3>
+              <div className="Agendamiento-fecha-calendario-container">
+                <div className="Agendamiento-calendario-wrapper">
                   <CalendarioFechasDisponiblesDayPicker
                     profesionalId={profesionalSeleccionado}
                     fechaSeleccionada={fechaSeleccionada}
@@ -545,18 +544,18 @@ const AgendamientoPrivadoForm = () => {
                   />
                 </div>
                 
-                <div className="fecha-seleccionada-info">
-                  <div className="info-fecha">
-                    <span className="info-icon">📅</span>
+                <div className="Agendamiento-fecha-seleccionada-info">
+                  <div className="Agendamiento-info-fecha">
+                    <span className="Agendamiento-info-icon">📅</span>
                     <p>{fechaSeleccionada ? fechaMostrada() : 'Selecciona una fecha'}</p>
                   </div>
-                  <div className="info-hora">
-                    <span className="info-icon">🕒</span>
+                  <div className="Agendamiento-info-hora">
+                    <span className="Agendamiento-info-icon">🕒</span>
                     <p>{fechaSeleccionada ? horaMostrada() : 'Hora no disponible'}</p>
                   </div>
                   {fechaSeleccionada && fechaSeleccionada.nro_consulta && (
-                    <div className="info-consulta">
-                      <span className="info-icon">🔢</span>
+                    <div className="Agendamiento-info-consulta">
+                      <span className="Agendamiento-info-icon">🔢</span>
                       <p>Consulta #{fechaSeleccionada.nro_consulta}</p>
                     </div>
                   )}
@@ -566,10 +565,10 @@ const AgendamientoPrivadoForm = () => {
           </>
         )}
 
-        <div className="boton-container">
+        <div className="Agendamiento-boton-container">
           <button
             onClick={() => setStep(3)}
-            className="boton-continuar"
+            className="Agendamiento-boton-continuar"
             disabled={
               isLoading || 
               !fechaSeleccionada ||
@@ -586,21 +585,21 @@ const AgendamientoPrivadoForm = () => {
 )}
         {/* Paso 3 */}
         {step === 3 && (
-  <div className="form-step3-confirmacion">
-    <button onClick={() => setStep(2)} className="volver-btn">
+  <div className="Agendamiento-form-step3-confirmacion">
+    <button onClick={() => setStep(2)} className="Agendamiento-volver-btn">
       ← Volver al paso anterior
     </button>
 
-    <h2 className="form-title">Revisa y confirma tu solicitud</h2>
-    <p className="form-subtitle">Antes de enviar tu solicitud, revisa que toda la información esté correcta. Si necesitas corregir algo, puedes volver al paso anterior.</p>
+    <h2 className="Agendamiento-form-title">Revisa y confirma tu solicitud</h2>
+    <p className="Agendamiento-form-subtitle">Antes de enviar tu solicitud, revisa que toda la información esté correcta. Si necesitas corregir algo, puedes volver al paso anterior.</p>
 
-    <div className="alerta-info">
+    <div className="Agendamiento-alerta-info">
       <span>⚠️</span> Recuerda que el día de la consulta el paciente debe presentar su cédula de identidad vigente. Sin ella, no podrá ser atendido.
     </div>
 
-    <div className="bloque-info">
+    <div className="Agendamiento-bloque-info">
       <h3>Información de su cita</h3>
-      <div className="tarjeta-info">
+      <div className="Agendamiento-tarjeta-info">
   <p><strong>🩺 {especialidadSeleccionada}</strong></p>
   <p><strong>👤 {profesionales.find(p => p.profesional_id === profesionalSeleccionado)?.nombre} {profesionales.find(p => p.profesional_id === profesionalSeleccionado)?.apellido}</strong></p>
   <p><strong>🔬 Servicios:</strong> {serviciosSeleccionados.join(", ")}</p>
@@ -608,15 +607,15 @@ const AgendamientoPrivadoForm = () => {
   <p><strong>🕐 {horaMostrada()}</strong></p>
   {fechaSeleccionada && fechaSeleccionada.nro_consulta && (
   <p><strong>🔢 Consulta #{fechaSeleccionada.nro_consulta}</strong></p>)}
-  <p className="nota-horario">La atención será por orden de llegada según el horario del profesional.</p>
+  <p className="Agendamiento-nota-horario">La atención será por orden de llegada según el horario del profesional.</p>
 </div>
     </div>
 
-    <div className="bloque-info">
+    <div className="Agendamiento-bloque-info">
       <h3>Información personal</h3>
-      <div className="tarjeta-datos">
+      <div className="Agendamiento-tarjeta-datos">
         {sinCedula && (
-          <div className="columna-datos">
+          <div className="Agendamiento-columna-datos">
             <h4>Datos del representante legal</h4>
             <p>{datosRepresentante.cedula}-{datosRepresentante.numeroHijo}</p>
             <p>{datosRepresentante.nombre} {datosRepresentante.apellido}</p>
@@ -626,7 +625,7 @@ const AgendamientoPrivadoForm = () => {
           </div>
         )}
 
-        <div className="columna-datos">
+        <div className="Agendamiento-columna-datos">
           <h4>Datos del paciente</h4>
           <p>{datosPaciente.nombre} {datosPaciente.apellido}</p>
           <p>{new Date(datosPaciente.fechaNacimiento).toLocaleDateString('es-CL', {
@@ -639,10 +638,10 @@ const AgendamientoPrivadoForm = () => {
       </div>
     </div>
 
-    <div className="boton-container">
+    <div className="Agendamiento-boton-container">
       <button 
         onClick={enviarAgendamiento} 
-        className="boton-continuar"
+        className="Agendamiento-boton-continuar"
         disabled={isLoading}
       >
         {isLoading ? 'Procesando...' : 'Enviar solicitud'}
@@ -654,19 +653,20 @@ const AgendamientoPrivadoForm = () => {
 
         {/* Paso 4 */}
         {step === 4 && (
-  <div className="confirmacion-final">
-    <h2 className="form-title">Tu solicitud fue enviada correctamente.</h2>
-    <p className="form-subtitle">Te enviamos por correo la información de tu cita. Gracias por agendar con nosotros.</p>
+  <div className="Agendamiento-confirmacion-final">
+    <h2 className="Agendamiento-form-title">Tu solicitud fue enviada correctamente.</h2>
+    <p className="Agendamiento-form-subtitle">Te enviamos por correo la información de tu cita. Gracias por agendar con nosotros.</p>
 
-    <div className="form-actions final">
-      <a href="/" className="boton-secundario">Volver a la página principal</a>
-      <button className="boton-continuar" onClick={() => window.location.reload()}>
+    <div className="Agendamiento-form-actions final">
+      <a href="/" className="Agendamiento-boton-secundario">Volver a la página principal</a>
+      <button className="Agendamiento-boton-continuar" onClick={() => window.location.reload()}>
         Agendar otra cita
       </button>
     </div>
   </div>
 )}
       </div>
+      <Footer />
     </div>
   );
 };

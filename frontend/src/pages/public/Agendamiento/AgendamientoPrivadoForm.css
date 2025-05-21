@@ -4,26 +4,14 @@ body {
   margin: 0;
 }
 
-.form-wrapper {
+.Agendamiento-form-wrapper {
   background-color: #FBFBFC;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
 }
 
-.form-header {
-  background-color: #ffffff;
-  border-bottom: 1px solid #E5E7EB;
-  padding: 1rem 1.5rem;
-  text-align: center;
-}
-
-.form-logo {
-  max-height: 50px;
-  width: auto;
-}
-
-.form-body {
+.Agendamiento-form-body {
   max-width: 960px;
   width: 100%;
   margin: 1.5rem auto;
@@ -35,8 +23,8 @@ body {
 }
 
 /* Títulos y textos */
-h2.titulo-principal,
-.form-title {
+h2.Agendamiento-titulo-principal,
+.Agendamiento-form-title {
   font-size: 24px;
   color: #20377A;
   font-weight: 600;
@@ -45,7 +33,7 @@ h2.titulo-principal,
   line-height: 28.8px;
 }
 
-.subtitulo-principal {
+.Agendamiento-subtitulo-principal {
   text-align: center;
   color: #757575;
   margin-bottom: 0;
@@ -55,7 +43,7 @@ h2.titulo-principal,
 }
 
 /* Botón Volver */
-.volver-btn {
+.Agendamiento-volver-btn {
   background: none;
   color: #1E1E1E;
   border: none;
@@ -71,11 +59,11 @@ h2.titulo-principal,
   border-radius: 8px;
 }
 
-.volver-btn:hover {
+.Agendamiento-volver-btn:hover {
   background-color: rgba(0, 0, 0, 0.05);
 }
 
-.volver-btn::before {
+.Agendamiento-volver-btn::before {
   content: "";
   display: inline-block;
   width: 16px;
@@ -111,10 +99,10 @@ select:focus {
 }
 
 form label, 
-.etiqueta-seleccion,
-.form-column label,
-.servicios-title,
-.fecha-title {
+.Agendamiento-etiqueta-seleccion,
+.Agendamiento-form-column label,
+.Agendamiento-servicios-title,
+.Agendamiento-fecha-title {
   font-weight: 400;
   display: block;
   margin-bottom: 8px;
@@ -125,26 +113,26 @@ form label,
 }
 
 /* Sección de selección principal */
-.seleccion-principal {
+.Agendamiento-seleccion-principal {
   margin-bottom: 0;
   width: 100%;
 }
 
-.seleccion-row {
+.Agendamiento-seleccion-row {
   display: flex;
   gap: 24px;
   justify-content: space-between;
   width: 100%;
 }
 
-.seleccion-column {
+.Agendamiento-seleccion-column {
   flex: 1;
   display: flex;
   flex-direction: column;
   gap: 8px;
 }
 
-.selector-principal {
+.Agendamiento-selector-principal {
   width: 100%;
   padding: 12px 16px;
   border: 1px solid #D9D9D9;
@@ -155,7 +143,7 @@ form label,
 }
 
 /* Recuadro de recomendación */
-.recomendacion-box {
+.Agendamiento-recomendacion-box {
   background-color: #FFF1C2;
   border: 1px solid #BF6A02;
   border-radius: 8px;
@@ -167,7 +155,7 @@ form label,
   width: 100%;
 }
 
-.recomendacion-title {
+.Agendamiento-recomendacion-title {
   font-weight: 600;
   margin-bottom: 4px;
   font-size: 16px;
@@ -175,7 +163,7 @@ form label,
   color: #1E1E1E;
 }
 
-.recomendacion-text {
+.Agendamiento-recomendacion-text {
   flex: 1;
   display: flex;
   flex-direction: column;
@@ -185,15 +173,15 @@ form label,
   color: #1E1E1E;
 }
 
-.info-icon {
+.Agendamiento-info-icon {
   font-size: 20px;
   color: #522504;
   flex-shrink: 0;
 }
 
 /* Sección de servicios */
-.servicios-section,
-.fecha-section {
+.Agendamiento-servicios-section,
+.Agendamiento-fecha-section {
   margin-bottom: 0;
   width: 100%;
   display: flex;
@@ -201,20 +189,20 @@ form label,
   gap: 8px;
 }
 
-.servicios-checkbox-list {
+.Agendamiento-servicios-checkbox-list {
   display: flex;
   flex-direction: column;
   gap: 0;
 }
 
-.servicio-checkbox-item {
+.Agendamiento-servicio-checkbox-item {
   display: flex;
   align-items: center;
   gap: 12px;
   width: 100%;
 }
 
-.servicio-checkbox-item input[type="checkbox"] {
+.Agendamiento-servicio-checkbox-item input[type="checkbox"] {
   width: 16px;
   height: 16px;
   margin: 0;
@@ -226,12 +214,12 @@ form label,
   cursor: pointer;
 }
 
-.servicio-checkbox-item input[type="checkbox"]:checked {
+.Agendamiento-servicio-checkbox-item input[type="checkbox"]:checked {
   background-color: #2C2C2C;
   border-color: #2C2C2C;
 }
 
-.servicio-checkbox-item input[type="checkbox"]:checked::after {
+.Agendamiento-servicio-checkbox-item input[type="checkbox"]:checked::after {
   content: "";
   position: absolute;
   top: 2px;
@@ -243,7 +231,7 @@ form label,
   transform: rotate(45deg);
 }
 
-.servicio-checkbox-item label {
+.Agendamiento-servicio-checkbox-item label {
   margin-bottom: 0;
   cursor: pointer;
   font-weight: 400;
@@ -252,19 +240,19 @@ form label,
 }
 
 /* Sección de calendario */
-.fecha-calendario-container {
+.Agendamiento-fecha-calendario-container {
   display: flex;
   gap: 24px;
   align-items: flex-start;
   width: 100%;
 }
 
-.calendar-wrapper {
+.Agendamiento-calendario-wrapper {
   flex: 1;
   min-width: 280px;
 }
 
-.fecha-seleccionada-info {
+.Agendamiento-fecha-seleccionada-info {
   background: white;
   border: 1px solid #D9D9D9;
   border-radius: 8px;
@@ -276,9 +264,9 @@ form label,
   gap: 24px;
 }
 
-.info-fecha,
-.info-hora,
-.info-consulta {
+.Agendamiento-info-fecha,
+.Agendamiento-info-hora,
+.Agendamiento-info-consulta {
   display: flex;
   align-items: center;
   gap: 8px;
@@ -288,7 +276,7 @@ form label,
   color: #1E1E1E;
 }
 
-.info-fecha-hora {
+.Agendamiento-info-fecha-hora {
   flex: 1;
   min-width: 240px;
   padding: 24px;
@@ -301,7 +289,7 @@ form label,
   gap: 24px;
 }
 
-.info-fecha-hora p {
+.Agendamiento-info-fecha-hora p {
   margin: 0;
   text-align: left;
   color: #1E1E1E;
@@ -310,13 +298,13 @@ form label,
 }
 
 /* Estilos Calendario */
-.calendario-header {
+.Agendamiento-calendario-header {
   display: flex;
   justify-content: space-between;
   margin-bottom: 12px;
 }
 
-.calendario-titulo {
+.Agendamiento-calendario-titulo {
   font-size: 16px;
   font-weight: 400;
   color: #1E1E1E;
@@ -324,14 +312,14 @@ form label,
   text-align: left;
 }
 
-.calendario-dias-semana {
+.Agendamiento-calendario-dias-semana {
   display: flex;
   width: 100%;
   justify-content: space-between;
   margin-bottom: 8px;
 }
 
-.dia-semana {
+.Agendamiento-dia-semana {
   flex: 1;
   text-align: center;
   color: #7B827E;
@@ -339,14 +327,14 @@ form label,
   padding: 4px;
 }
 
-.calendario-semana {
+.Agendamiento-calendario-semana {
   display: flex;
   width: 100%;
   justify-content: space-between;
   margin-bottom: 12px;
 }
 
-.calendario-dia {
+.Agendamiento-calendario-dia {
   flex: 1;
   text-align: center;
   padding: 4px;
@@ -354,7 +342,7 @@ form label,
   cursor: pointer;
 }
 
-.calendario-dia-num {
+.Agendamiento-calendario-dia-num {
   width: 26px;
   height: 24px;
   display: flex;
@@ -365,29 +353,29 @@ form label,
   border-radius: 8px;
 }
 
-.calendario-dia.otro-mes .calendario-dia-num {
+.Agendamiento-calendario-dia.otro-mes .Agendamiento-calendario-dia-num {
   color: #6C7470;
 }
 
-.calendario-dia.seleccionado .calendario-dia-num {
+.Agendamiento-calendario-dia.seleccionado .Agendamiento-calendario-dia-num {
   background-color: #20377A;
   color: white;
 }
 
-.calendario-dia.deshabilitado .calendario-dia-num {
+.Agendamiento-calendario-dia.deshabilitado .Agendamiento-calendario-dia-num {
   color: #C2C5C4;
   cursor: not-allowed;
 }
 
 /* Botón Continuar */
-.boton-container {
+.Agendamiento-boton-container {
   width: 100%;
   display: flex;
   justify-content: flex-end;
   margin-top: 0;
 }
 
-.boton-continuar {
+.Agendamiento-boton-continuar {
   background-color: #20377A;
   color: #F0F3FF;
   padding: 12px;
@@ -403,18 +391,18 @@ form label,
   justify-content: center;
 }
 
-.boton-continuar:disabled {
+.Agendamiento-boton-continuar:disabled {
   background-color: #d1d5db;
   cursor: not-allowed;
   border-color: #d1d5db;
 }
 
-.boton-continuar:hover:not(:disabled) {
+.Agendamiento-boton-continuar:hover:not(:disabled) {
   background-color: #172c61;
 }
 
 /* Formulario Paso 2 */
-.form-step2 {
+.Agendamiento-form-step2 {
   display: flex;
   flex-direction: column;
   gap: 32px;
@@ -489,7 +477,7 @@ form label,
 }
 
 /* Paso 3 - Confirmación */
-.form-step3-confirmacion {
+.Agendamiento-form-step3-confirmacion {
   width: 100%;
   max-width: 960px;
   margin: 0 auto;
@@ -501,14 +489,14 @@ form label,
   gap: 1.5rem;
 }
 
-.form-step3-confirmacion .form-subtitle {
+.Agendamiento-form-step3-confirmacion .Agendamiento-form-subtitle {
   font-size: 1rem;
   color: #666;
   text-align: center;
   margin-top: 0;
 }
 
-.alerta-info {
+.Agendamiento-alerta-info {
   background: #fff;
   border: 1px solid #757575;
   border-radius: 8px;
@@ -519,14 +507,14 @@ form label,
   gap: 0.75rem;
 }
 
-.bloque-info h3 {
+.Agendamiento-bloque-info h3 {
   color: #20377A;
   font-size: 1.15rem;
   font-weight: 500;
   margin-bottom: 0.5rem;
 }
 
-.tarjeta-info {
+.Agendamiento-tarjeta-info {
   background: white;
   border: 1px solid #D9D9D9;
   border-radius: 8px;
@@ -537,14 +525,14 @@ form label,
   font-size: 0.95rem;
 }
 
-.nota-horario {
+.Agendamiento-nota-horario {
   font-style: italic;
   font-size: 0.9rem;
   color: #555;
   margin-top: 0.2rem;
 }
 
-.tarjeta-datos {
+.Agendamiento-tarjeta-datos {
   background: white;
   border: 1px solid #D9D9D9;
   border-radius: 8px;
@@ -556,7 +544,7 @@ form label,
   font-size: 0.95rem;
 }
 
-.columna-datos {
+.Agendamiento-columna-datos {
   flex: 1;
   min-width: 240px;
   display: flex;
@@ -564,20 +552,20 @@ form label,
   gap: 0.35rem;
 }
 
-.columna-datos h4 {
+.Agendamiento-columna-datos h4 {
   font-size: 1.05rem;
   color: #1e1e1e;
   font-weight: 500;
   margin-bottom: 0.3rem;
 }
 
-.columna-datos p {
+.Agendamiento-columna-datos p {
   font-weight: 600;
   margin: 0;
 }
 
 /* Paso 4 - Confirmación Final */
-.confirmacion-final {
+.Agendamiento-confirmacion-final {
   width: 100%;
   max-width: 760px;
   margin: 0 auto;
@@ -586,19 +574,19 @@ form label,
   background: #f9fafb;
 }
 
-.confirmacion-final .form-title {
+.Agendamiento-confirmacion-final .Agendamiento-form-title {
   color: #20377A;
   font-size: 1.75rem;
   margin-bottom: 0.5rem;
 }
 
-.confirmacion-final .form-subtitle {
+.Agendamiento-confirmacion-final .Agendamiento-form-subtitle {
   font-size: 1rem;
   color: #444;
   margin-bottom: 2rem;
 }
 
-.form-actions.final {
+.Agendamiento-form-actions.final {
   display: flex;
   flex-wrap: wrap;
   gap: 1rem;
@@ -606,7 +594,7 @@ form label,
   margin-top: 1rem;
 }
 
-.boton-secundario {
+.Agendamiento-boton-secundario {
   background: none;
   color: #20377A;
   border: none;
@@ -615,12 +603,12 @@ form label,
   text-decoration: underline;
 }
 
-.boton-secundario:hover {
+.Agendamiento-boton-secundario:hover {
   text-decoration: none;
 }
 
 /* Elementos de checkbox e inputs */
-.checkbox-linea {
+.Agendamiento-checkbox-linea {
   display: flex;
   align-items: center;
   font-size: 16px;
@@ -628,15 +616,15 @@ form label,
   gap: 12px;
 }
 
-.input-with-icon {
+.Agendamiento-input-with-icon {
   position: relative;
 }
 
-.input-with-icon input {
+.Agendamiento-input-with-icon input {
   padding-left: 2.2rem;
 }
 
-.input-with-icon svg {
+.Agendamiento-input-with-icon svg {
   position: absolute;
   left: 0.75rem;
   top: 50%;
@@ -644,7 +632,7 @@ form label,
   color: #888;
 }
 
-.input-hint {
+.Agendamiento-input-hint {
   font-size: 0.85rem;
   color: #666;
   margin-top: -0.5rem;
@@ -652,7 +640,7 @@ form label,
 }
 
 /* Botones de radio */
-.selector-botones-radio {
+.Agendamiento-selector-botones-radio {
   display: flex;
   gap: 1rem;
   width: 100%;
@@ -660,7 +648,7 @@ form label,
   margin-bottom: 1rem;
 }
 
-.opcion-card {
+.Agendamiento-opcion-card {
   display: flex;
   align-items: center;
   justify-content: flex-start;
@@ -681,22 +669,22 @@ form label,
   box-sizing: border-box;
 }
 
-.opcion-card input[type="radio"] {
+.Agendamiento-opcion-card input[type="radio"] {
   accent-color: #1a3a8a;
   margin: 0;
 }
 
-.opcion-card strong {
+.Agendamiento-opcion-card strong {
   font-weight: 600;
   color: #111827;
 }
 
-.opcion-card.activa {
+.Agendamiento-opcion-card.activa {
   border: 2px solid #20377A;
   background-color: #F9FAFB;
 }
 
-.tarjeta-seleccion {
+.Agendamiento-tarjeta-seleccion {
   width: 100%;
   display: flex;
   flex-direction: column;
@@ -706,55 +694,55 @@ form label,
 
 /* Responsive */
 @media (max-width: 1024px) and (min-width: 769px) {
-  .seleccion-row {
+  .Agendamiento-seleccion-row {
     flex-direction: column;
     gap: 24px;
   }
 
-  .fecha-calendario-container {
+  .Agendamiento-fecha-calendario-container {
     flex-direction: column;
     gap: 24px;
   }
 }
 
 @media (max-width: 768px) {
-  .form-body {
+  .Agendamiento-form-body {
     padding: 0 1.25rem;
     align-items: center;
   }
 
-  .form-step2 {
+  .Agendamiento-form-step2 {
     flex-direction: column;
     gap: 24px;
   }
 
-  .seleccion-row {
+  .Agendamiento-seleccion-row {
     flex-direction: column;
     gap: 24px;
   }
 
-  .fecha-calendario-container {
+  .Agendamiento-fecha-calendario-container {
     flex-direction: column;
     gap: 24px;
   }
 
-  .calendar-wrapper,
-  .info-fecha-hora,
-  .fecha-seleccionada-info {
+  .Agendamiento-calendario-wrapper,
+  .Agendamiento-info-fecha-hora,
+  .Agendamiento-fecha-seleccionada-info {
     width: 100%;
   }
 
-  .boton-container {
+  .Agendamiento-boton-container {
     justify-content: center;
   }
 
-  .selector-botones-radio {
+  .Agendamiento-selector-botones-radio {
     flex-direction: column;
     align-items: stretch;
     width: 100%;
   }
 
-  .opcion-card {
+  .Agendamiento-opcion-card {
     max-width: 100%;
   }
 }
