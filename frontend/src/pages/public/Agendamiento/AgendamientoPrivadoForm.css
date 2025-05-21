@@ -491,15 +491,28 @@ form label,
   padding: 1rem 1.25rem;
   display: flex;
   flex-direction: column;
-  gap: 0.3rem;
+  gap: 0; /* Removed gap between items */
   font-size: 0.95rem;
+}
+
+.Agendamiento-info-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 0.15rem;
+}
+
+.Agendamiento-icon {
+  width: 16px;
+  height: 16px;
+  margin-right: 8px;
+  color: #20377A;
 }
 
 .Agendamiento-nota-horario {
   font-style: italic;
   font-size: 0.9rem;
   color: #555;
-  margin-top: 0.2rem;
+  margin-top: 0.35rem;
 }
 
 .Agendamiento-tarjeta-datos {

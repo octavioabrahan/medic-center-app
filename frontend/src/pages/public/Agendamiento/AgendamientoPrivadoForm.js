@@ -7,6 +7,7 @@ import Header from '../../../components/SiteFrame/Header';
 import Footer from '../../../components/SiteFrame/Footer';
 import Banner from '../../../components/Banner/Banner';
 import AgendamientoCheckbox from './AgendamientoCheckbox';
+import { BriefcaseIcon, UserIcon, CalendarIcon, ClockIcon } from '@heroicons/react/24/solid';
 
 const AgendamientoPrivadoForm = () => {
   const [step, setStep] = useState(1);
@@ -600,13 +601,23 @@ const AgendamientoPrivadoForm = () => {
     <div className="Agendamiento-bloque-info">
       <h3>Información de su cita</h3>
       <div className="Agendamiento-tarjeta-info">
-  <p><strong>🩺 {especialidadSeleccionada}</strong></p>
-  <p><strong>👤 {profesionales.find(p => p.profesional_id === profesionalSeleccionado)?.nombre} {profesionales.find(p => p.profesional_id === profesionalSeleccionado)?.apellido}</strong></p>
-  <p><strong>🔬 Servicios:</strong> {serviciosSeleccionados.join(", ")}</p>
-  <p><strong>📅 {fechaMostrada()}</strong></p>
-  <p><strong>🕐 {horaMostrada()}</strong></p>
+  <p className="Agendamiento-info-item">
+    <BriefcaseIcon className="Agendamiento-icon" /> <strong>{especialidadSeleccionada}</strong>
+  </p>
+  <p className="Agendamiento-info-item">
+    <UserIcon className="Agendamiento-icon" /> <strong>{profesionales.find(p => p.profesional_id === profesionalSeleccionado)?.nombre} {profesionales.find(p => p.profesional_id === profesionalSeleccionado)?.apellido}</strong>
+  </p>
+  <p className="Agendamiento-info-item">
+    <strong>Servicios:</strong> {serviciosSeleccionados.join(", ")}
+  </p>
+  <p className="Agendamiento-info-item">
+    <CalendarIcon className="Agendamiento-icon" /> <strong>{fechaMostrada()}</strong>
+  </p>
+  <p className="Agendamiento-info-item">
+    <ClockIcon className="Agendamiento-icon" /> <strong>{horaMostrada()}</strong>
+  </p>
   {fechaSeleccionada && fechaSeleccionada.nro_consulta && (
-  <p><strong>🔢 Consulta #{fechaSeleccionada.nro_consulta}</strong></p>)}
+  <p className="Agendamiento-info-item"><strong>Consulta #{fechaSeleccionada.nro_consulta}</strong></p>)}
   <p className="Agendamiento-nota-horario">La atención será por orden de llegada según el horario del profesional.</p>
 </div>
     </div>
