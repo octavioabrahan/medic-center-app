@@ -46,26 +46,12 @@
     display: flex !important;
     flex: none !important;
     position: relative !important;
-    padding: 0 16px !important;
-    box-sizing: border-box !important;
   }
   
   .cotizadorButtonRightContainer button {
     width: 80% !important;
     max-width: 300px !important;
     min-height: 48px !important;
-  }
-  
-  /* Fix spacing for button row in form view */
-  .cotizadorButtonRow {
-    width: 100% !important;
-    display: flex !important;
-    justify-content: center !important;
-    margin-top: 8px !important;
-  }
-  
-  .cotizadorButtonRow .cotizadorButtonRightContainer {
-    margin-top: 0 !important;
   }
   
   /* Exam cards and containers */

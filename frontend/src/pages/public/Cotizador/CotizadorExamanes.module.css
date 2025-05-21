@@ -1,5 +1,5 @@
 .cotizadorFrame4 {
-  padding: 0px 50px;
+  padding: 0px 200px;
   display: flex;
   flex-direction: row;
   gap: 24px;
@@ -7,13 +7,6 @@
   align-self: stretch;
   height: 768px;
   position: relative;
-}
-
-/* Laptop and tablet responsive styles */
-@media (max-width: 1400px) {
-  .cotizadorFrame4 {
-    padding: 0px 20px;
-  }
 }
 
 /* Mobile responsive styles */
@@ -39,16 +32,6 @@
   overflow-y: auto;
   max-height: 735px;
   min-height: 735px;
-}
-
-/* Laptop responsive styles */
-@media (max-width: 1400px) {
-  .cotizadorHeroForm {
-    padding: 20px 16px;
-    max-height: 600px;
-    min-height: 600px;
-    gap: 16px;
-  }
 }
 
 /* Mobile responsive styles */
@@ -87,19 +70,6 @@
   font-weight: var(--heading-font-weight, 600);
   align-self: stretch;
 }
-
-/* Laptop responsive styles */
-@media (max-width: 1400px) {
-  .cotizadorTitle {
-    font-size: 20px;
-    margin-bottom: 0;
-  }
-  
-  .cotizadorHeroForm2 .cotizadorTitle {
-    font-size: 18px;
-  }
-}
-
 .cotizadorSubtitle {
   color: var(--sds-color-text-brand-secondary, #1b2e68);
   text-align: center;
@@ -111,14 +81,6 @@
   display: flex;
   align-items: center;
   justify-content: center;
-}
-
-/* Laptop responsive styles */
-@media (max-width: 1400px) {
-  .cotizadorSubtitle {
-    font-size: 16px;
-    line-height: 130%;
-  }
 }
 .cotizadorInputField {
   display: flex;
@@ -145,13 +107,6 @@
   max-height: 400px; /* Adjust as needed for design */
 }
 
-/* Laptop responsive styles */
-@media (max-width: 1400px) {
-  .cotizadorFrame1 {
-    max-height: 320px;
-  }
-}
-
 /* Mobile responsive styles */
 @media (max-width: 768px) {
   .cotizadorFrame1 {
@@ -171,19 +126,6 @@
   align-self: stretch;
   min-width: 240px;
   position: relative;
-}
-
-/* Laptop responsive styles */
-@media (max-width: 1400px) {
-  .cotizadorChoiceCard {
-    padding: 8px 10px;
-    gap: 12px;
-    min-width: auto;
-  }
-  
-  .cotizadorHeroForm2 .cotizadorChoiceCard {
-    margin-bottom: 8px;
-  }
 }
 
 /* Mobile responsive styles */
@@ -290,14 +232,6 @@
   position: relative;
 }
 
-/* Laptop responsive styles */
-@media (max-width: 1400px) {
-  .cotizadorHeroForm2 {
-    width: 280px;
-    padding: 100px 20px 32px 20px;
-  }
-}
-
 /* Mobile responsive styles */
 @media (max-width: 768px) {
   .cotizadorHeroForm2 {
@@ -386,18 +320,6 @@
   width: 100%;
   display: block;
 }
-
-/* Laptop responsive styles */
-@media (max-width: 1400px) {
-  .cotizadorLabel2 {
-    font-size: 14px;
-    line-height: 130%;
-  }
-  
-  .cotizadorDescription {
-    font-size: 12px;
-  }
-}
 .cotizadorButton3 {
   background: var(--sds-color-background-brand-default, #2c2c2c);
   border-radius: var(--sds-size-radius-200, 8px);
@@ -432,15 +354,6 @@
   align-self: stretch;
   flex-shrink: 0;
   position: relative;
-}
-
-/* Laptop responsive styles */
-@media (max-width: 1400px) {
-  .cotizadorFrame3 {
-    gap: 8px;
-    max-height: 400px;
-    overflow-y: auto;
-  }
 }
 
 /* Mobile responsive styles */
@@ -660,19 +573,6 @@
   width: 100%;
   margin-top: 16px;
   align-items: flex-end;
-}
-
-/* Laptop responsive styles */
-@media (max-width: 1400px) {
-  .cotizadorButtonRightContainer {
-    margin-top: 10px;
-  }
-  
-  .cotizadorButtonRightContainer button {
-    padding: 8px 16px;
-    height: 40px;
-    font-size: 14px;
-  }
 }
 
 /* Mobile responsive styles */
