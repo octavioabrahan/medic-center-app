@@ -428,24 +428,26 @@ export default function Cotizaciones() {
               </div>
               <div className={styles.cotizadorInputField}>
                 <label>Sexo</label>
-                <div style={{ display: 'flex', gap: '24px' }}>
-                  <label>
+                <div className={styles.cotizadorRadioGroup}>
+                  <label className={styles.cotizadorRadioLabel}>
                     <input
                       type="radio"
                       name="sexo"
                       value="masculino"
                       checked={form.sexo === 'masculino'}
                       onChange={() => handleFormChange('sexo', 'masculino')}
+                      className={styles.cotizadorRadioInput}
                     />
                     Masculino
                   </label>
-                  <label>
+                  <label className={styles.cotizadorRadioLabel}>
                     <input
                       type="radio"
                       name="sexo"
                       value="femenino"
                       checked={form.sexo === 'femenino'}
                       onChange={() => handleFormChange('sexo', 'femenino')}
+                      className={styles.cotizadorRadioInput}
                     />
                     Femenino
                   </label>
