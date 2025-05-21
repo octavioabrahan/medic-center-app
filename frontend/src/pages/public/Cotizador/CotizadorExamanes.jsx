@@ -7,7 +7,7 @@ import ArrowLeft from '../../../assets/ArrowLeft.svg';
 import { XMarkIcon } from '@heroicons/react/24/outline';
 import styles from './CotizadorExamanes.module.css';
 import DatePickerField from '../../../components/Inputs/DatePickerField';
-import CotizadorSearchField from './CotizadorSearchField'; // Import our custom wrapped search field
+import SimpleSearch from './SimpleSearch'; // Import our completely new search component
 
 export default function Cotizaciones() {
   // --- STATE (match v1) ---
@@ -228,7 +228,7 @@ export default function Cotizaciones() {
               Selecciona los exámenes que necesitas. Cuando estés listo, presiona “Continuar” para completar tus datos y recibir el detalle de tu cotización.
             </div>
             <div className={styles.cotizadorInputField}>
-              <CotizadorSearchField
+              <SimpleSearch
                 value={busqueda}
                 onChange={setBusqueda}
                 placeholder="Buscar examen por nombre"
