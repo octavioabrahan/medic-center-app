@@ -187,6 +187,12 @@ function App() {
             {React.createElement(require('./pages/public/Agendamiento/AgendamientoIndex.js').default)}
           </Suspense>
         } />
+        
+        <Route path="/agendamiento/empresa" element={
+          <Suspense fallback={<div>Cargando formulario de empresa...</div>}>
+            {React.createElement(require('./pages/public/Agendamiento/AgendamientoEmpresaForm.js').default)}
+          </Suspense>
+        } />
 
         {/* Rutas de administración protegidas */}
         <Route path="/admin" element={<Navigate to="/admin/dashboard" replace />} />
