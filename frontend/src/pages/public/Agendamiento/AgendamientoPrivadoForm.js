@@ -545,16 +545,15 @@ const AgendamientoPrivadoForm = () => {
                 
                 <div className="Agendamiento-fecha-seleccionada-info">
                   <div className="Agendamiento-info-fecha">
-                    <span className="Agendamiento-info-icon">📅</span>
+                    <CalendarIcon className="Agendamiento-icon" />
                     <p>{fechaSeleccionada ? fechaMostrada() : 'Selecciona una fecha'}</p>
                   </div>
                   <div className="Agendamiento-info-hora">
-                    <span className="Agendamiento-info-icon">🕒</span>
+                    <ClockIcon className="Agendamiento-icon" />
                     <p>{fechaSeleccionada ? horaMostrada() : 'Hora no disponible'}</p>
                   </div>
                   {fechaSeleccionada && fechaSeleccionada.nro_consulta && (
                     <div className="Agendamiento-info-consulta">
-                      <span className="Agendamiento-info-icon">🔢</span>
                       <p>Consulta #{fechaSeleccionada.nro_consulta}</p>
                     </div>
                   )}
