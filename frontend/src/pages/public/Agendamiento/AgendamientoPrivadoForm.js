@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import CalendarioFechasDisponiblesDayPicker from './CalendarioFechasDisponiblesDayPicker';
+import CalendarioFechasDisponiblesDayPicker from 'frontend/src/components/CalendarioDayPicker';
 import './AgendamientoPrivadoForm.css';
-import logo from '../../assets/logo_header.png';
 
 const AgendamientoPrivadoForm = () => {
   const [step, setStep] = useState(1);
