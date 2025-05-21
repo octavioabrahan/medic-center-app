@@ -264,24 +264,7 @@ input:focus, select:focus {
   background-color: #152a5a;
 }
 
-/* Radio buttons */
-.radio-group {
-  display: flex;
-  gap: 24px;
-}
-
-.radio-group label {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  cursor: pointer;
-  margin: 0;
-}
-
-.radio-group input[type="radio"] {
-  width: auto;
-  margin: 0;
-}
+/* Radio buttons - Removed duplicate styling */
 
 /* Elementos de checkbox e inputs */
 .checkbox-linea {
@@ -452,4 +435,28 @@ input:focus, select:focus {
     flex-direction: column;
     gap: 0.5rem;
   }
+}
+
+/* Radio group styling */
+.radio-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 0;
+  margin-bottom: 16px;
+}
+
+.radio-group label {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  margin-top: 0;
+}
+
+.radio-group input[type="radio"] {
+  margin-right: 10px;
+  width: 18px;
+  height: 18px;
+  accent-color: #20377A;
+  cursor: pointer;
 }

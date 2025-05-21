@@ -352,7 +352,7 @@ const AgendamientoPrivadoForm = () => {
       onChange={e => setDatosPaciente({ ...datosPaciente, fechaNacimiento: e.target.value })}
     />
 
-    <label>Sexo</label>
+    <label style={{ marginBottom: '4px' }}>Sexo</label>
     <div className="Agendamiento-radio-group">
       <label>
         <input

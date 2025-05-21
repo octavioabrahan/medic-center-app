@@ -379,7 +379,7 @@ const getTipoAtencionId = (slug) => {
       onChange={e => setDatosPaciente({ ...datosPaciente, fechaNacimiento: e.target.value })}
     />
 
-    <label>Sexo</label>
+    <label style={{ marginBottom: '4px' }}>Sexo</label>
     <div className="radio-group">
       <label>
         <input
