@@ -591,9 +591,11 @@ const AgendamientoPrivadoForm = () => {
     <h2 className="Agendamiento-form-title">Revisa y confirma tu solicitud</h2>
     <p className="Agendamiento-form-subtitle">Antes de enviar tu solicitud, revisa que toda la información esté correcta. Si necesitas corregir algo, puedes volver al paso anterior.</p>
 
-    <div className="Agendamiento-alerta-info">
-      <span>⚠️</span> Recuerda que el día de la consulta el paciente debe presentar su cédula de identidad vigente. Sin ella, no podrá ser atendido.
-    </div>
+    <Banner
+      title="Información importante"
+      text="Recuerda que el día de la consulta el paciente debe presentar su cédula de identidad vigente. Sin ella, no podrá ser atendido."
+      variant="warning"
+    />
 
     <div className="Agendamiento-bloque-info">
       <h3>Información de su cita</h3>

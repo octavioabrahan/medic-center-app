@@ -475,16 +475,7 @@ form label,
   margin-top: 0;
 }
 
-.Agendamiento-alerta-info {
-  background: #fff;
-  border: 1px solid #757575;
-  border-radius: 8px;
-  padding: 0.75rem 1rem;
-  font-size: 0.95rem;
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-}
+/* Removed Agendamiento-alerta-info styling as it's been replaced by Banner component */
 
 .Agendamiento-bloque-info h3 {
   color: #20377A;
