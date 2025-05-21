@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import SiteFrame from '../../../components/SiteFrame/SiteFrame';
-import SearchField from '../../../components/Inputs/SearchField';
 import CheckboxField from '../../../components/Inputs/CheckboxField';
 import InputField from '../../../components/Inputs/InputField';
 import { Button } from '../../../components/Button/Button';
@@ -8,6 +7,7 @@ import ArrowLeft from '../../../assets/ArrowLeft.svg';
 import { XMarkIcon } from '@heroicons/react/24/outline';
 import styles from './CotizadorExamanes.module.css';
 import DatePickerField from '../../../components/Inputs/DatePickerField';
+import CotizadorSearchField from './CotizadorSearchField'; // Import our custom wrapped search field
 
 export default function Cotizaciones() {
   // --- STATE (match v1) ---
@@ -188,9 +188,14 @@ export default function Cotizaciones() {
 
   // --- UI/UX LOGIC ---
   const filteredExams = examenes.filter(exam => {
+    // First check if exam exists and has a valid name property
     if (!exam || typeof exam.nombre_examen !== 'string') return false;
-    return exam.nombre_examen.toLowerCase().includes(busqueda.toLowerCase()) &&
-      !seleccionados.some(sel => sel.codigo === exam.codigo);
+    
+    // Then check if the exam name includes the search term and isn't already selected
+    const matchesSearch = exam.nombre_examen.toLowerCase().includes(busqueda.toLowerCase());
+    const notAlreadySelected = !seleccionados.some(sel => sel.codigo === exam.codigo);
+    
+    return matchesSearch && notAlreadySelected;
   });
 
   const handleToggle = (codigo) => {
@@ -223,11 +228,10 @@ export default function Cotizaciones() {
               Selecciona los exámenes que necesitas. Cuando estés listo, presiona “Continuar” para completar tus datos y recibir el detalle de tu cotización.
             </div>
             <div className={styles.cotizadorInputField}>
-              <SearchField
+              <CotizadorSearchField
                 value={busqueda}
                 onChange={setBusqueda}
                 placeholder="Buscar examen por nombre"
-                fillContainer
               />
             </div>
             <div className={styles.cotizadorFrame1}>

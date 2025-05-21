@@ -1,0 +1,66 @@
+/* Wrapper for complete isolation */
+.cotizador-search-wrapper {
+  width: 100%;
+  position: relative;
+}
+
+/* Completely override the search field styling for this component only */
+.cotizador-search-wrapper .cotizador-search-field.search {
+  /* Basic search field styling */
+  width: 100% !important;
+  border-radius: 9999px;
+  border: 1px solid var(--sds-color-border-default-default, #d9d9d9);
+  padding: 12px 16px;
+  background: #ffffff;
+  position: relative;
+  display: flex;
+  align-items: center;
+  margin-bottom: 0;
+}
+
+/* Input styling */
+.cotizador-search-wrapper .cotizador-search-field.search .search-value {
+  flex: 1;
+  border: none;
+  outline: none;
+  background: transparent;
+  padding: 0;
+  font-size: 16px;
+  line-height: 1.4;
+  padding-right: 30px; /* Space for the icon */
+}
+
+/* Icon container - make sure there's only one visible */
+.cotizador-search-wrapper .cotizador-search-field.search .search-magnifying-glass,
+.cotizador-search-wrapper .cotizador-search-field.search .search-x-mark {
+  position: absolute !important;
+  right: 16px !important;
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 16px !important;
+  height: 16px !important;
+  color: var(--sds-color-text-default-tertiary, #b3b3b3) !important;
+  z-index: 2 !important;
+}
+
+/* Remove any potential duplicate elements */
+.cotizador-search-wrapper .search::before,
+.cotizador-search-wrapper .search::after,
+.cotizador-search-wrapper .search-value::before,
+.cotizador-search-wrapper .search-value::after {
+  display: none !important;
+}
+
+/* Make sure only one search icon is visible */
+.cotizador-search-wrapper .search .search-magnifying-glass + .search-magnifying-glass {
+  display: none !important;
+}
+
+/* Override state styles to ensure consistency */
+.cotizador-search-wrapper .cotizador-search-field.search.state-default,
+.cotizador-search-wrapper .cotizador-search-field.search.state-default.value-type-placeholder {
+  border: 1px solid var(--sds-color-border-default-default, #d9d9d9) !important;
+}
