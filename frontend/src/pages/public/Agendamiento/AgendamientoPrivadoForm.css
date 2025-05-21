@@ -142,42 +142,7 @@ form label,
   box-sizing: border-box;
 }
 
-/* Recuadro de recomendación */
-.Agendamiento-recomendacion-box {
-  background-color: #FFF1C2;
-  border: 1px solid #BF6A02;
-  border-radius: 8px;
-  padding: 16px;
-  margin-bottom: 0;
-  display: flex;
-  align-items: flex-start;
-  gap: 12px;
-  width: 100%;
-}
-
-.Agendamiento-recomendacion-title {
-  font-weight: 600;
-  margin-bottom: 4px;
-  font-size: 16px;
-  line-height: 22.4px;
-  color: #1E1E1E;
-}
-
-.Agendamiento-recomendacion-text {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  font-size: 16px;
-  line-height: 22.4px;
-  color: #1E1E1E;
-}
-
-.Agendamiento-info-icon {
-  font-size: 20px;
-  color: #522504;
-  flex-shrink: 0;
-}
+/* Banner component from ../../../components/Banner/Banner.jsx is used instead of the recommendation box */
 
 /* Sección de servicios */
 .Agendamiento-servicios-section,

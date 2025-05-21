@@ -4,6 +4,7 @@ import CalendarioFechasDisponiblesDayPicker from '../../../components/Calendario
 import './AgendamientoPrivadoForm.css';
 import Header from '../../../components/SiteFrame/Header';
 import Footer from '../../../components/SiteFrame/Footer';
+import Banner from '../../../components/Banner/Banner';
 
 const AgendamientoPrivadoForm = () => {
   const [step, setStep] = useState(1);
@@ -490,15 +491,11 @@ const AgendamientoPrivadoForm = () => {
         
         {profesionalSeleccionado && (
           <>
-            <div className="Agendamiento-recomendacion-box">
-              <div className="Agendamiento-recomendacion-icon">
-                <span className="Agendamiento-info-icon">ⓘ</span>
-              </div>
-              <div className="Agendamiento-recomendacion-text">
-                <p className="Agendamiento-recomendacion-title">Recomendación para tu primera cita</p>
-                <p>Si es tu primera consulta con este profesional, te sugerimos agendar también los servicios que se recomiendan, así aseguramos que recibas una atención completa sin necesidad de nuevas citas.</p>
-              </div>
-            </div>
+            <Banner 
+              title="Recomendación para tu primera cita"
+              text="Si es tu primera consulta con este profesional, te sugerimos agendar también los servicios que se recomiendan, así aseguramos que recibas una atención completa sin necesidad de nuevas citas."
+              variant="warning"
+            />
 
             <div className="Agendamiento-servicios-section">
               <h3 className="Agendamiento-servicios-title">Selecciona los servicios para tu cita</h3>
