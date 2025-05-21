@@ -15,7 +15,7 @@
   gap: var(--sds-space-300, 12px);
   align-items: center;
   justify-content: flex-start;
-  width: 450px;
+  width: 100%;
   position: relative;
 }
 
