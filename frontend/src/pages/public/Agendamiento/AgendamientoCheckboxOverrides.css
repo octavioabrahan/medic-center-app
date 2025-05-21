@@ -1,0 +1,24 @@
+/* Custom overrides for CheckboxField in Agendamiento */
+/* Higher specificity selectors to override default styles */
+.Agendamiento-form-wrapper .Agendamiento-form-body .checkbox-field {
+  max-width: none !important;
+  width: 100% !important;
+}
+
+.Agendamiento-form-wrapper .Agendamiento-form-body .checkbox-and-label {
+  width: 100% !important;
+  display: flex !important;
+  align-items: center !important;
+}
+
+.Agendamiento-form-wrapper .Agendamiento-form-body .checkbox-field .checkbox-and-label .label {
+  width: 100% !important;
+  flex: 1 !important;
+  word-wrap: break-word !important;
+}
+
+/* Target checkbox items specifically */
+.Agendamiento-servicio-checkbox-item .checkbox-field,
+.Agendamiento-checkbox-linea .checkbox-field {
+  width: 100% !important;
+}

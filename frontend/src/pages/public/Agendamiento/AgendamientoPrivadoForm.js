@@ -2,10 +2,11 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import CalendarioFechasDisponiblesDayPicker from '../../../components/CalendarioDayPicker/CalendarioFechasDisponiblesDayPicker';
 import './AgendamientoPrivadoForm.css';
+import './AgendamientoCheckboxOverrides.css';
 import Header from '../../../components/SiteFrame/Header';
 import Footer from '../../../components/SiteFrame/Footer';
 import Banner from '../../../components/Banner/Banner';
-import CheckboxField from '../../../components/Inputs/CheckboxField';
+import AgendamientoCheckbox from './AgendamientoCheckbox';
 
 const AgendamientoPrivadoForm = () => {
   const [step, setStep] = useState(1);
@@ -271,7 +272,7 @@ const AgendamientoPrivadoForm = () => {
     />
 
     <div className="Agendamiento-checkbox-linea">
-      <CheckboxField
+      <AgendamientoCheckbox
         checked={sinCedula}
         onChange={() => handleCheckCedula()}
         label="La persona que se atenderá no tiene cédula."
@@ -512,7 +513,7 @@ const AgendamientoPrivadoForm = () => {
                   })
                   .map(s => (
                     <div key={s.id_servicio} className="Agendamiento-servicio-checkbox-item">
-                      <CheckboxField
+                      <AgendamientoCheckbox
                         label={`${s.nombre_servicio} — USD ${Number(s.price_usd).toFixed(2)}`}
                         checked={serviciosSeleccionados.includes(s.nombre_servicio)}
                         onChange={(checked) => {

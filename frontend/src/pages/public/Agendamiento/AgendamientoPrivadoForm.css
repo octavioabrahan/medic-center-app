@@ -167,6 +167,20 @@ form label,
   width: 100%;
 }
 
+.Agendamiento-servicio-checkbox-item .checkbox-field {
+  width: 100% !important;
+}
+
+/* Ensure the checkbox label takes full width */
+.Agendamiento-servicio-checkbox-item .checkbox-field .checkbox-and-label {
+  width: 100%;
+}
+
+/* Make the label text take full available width */
+.Agendamiento-servicio-checkbox-item .checkbox-field .checkbox-and-label .label {
+  width: 100%;
+}
+
 .Agendamiento-servicio-checkbox-item input[type="checkbox"] {
   width: 16px;
   height: 16px;
@@ -579,6 +593,21 @@ form label,
   font-size: 16px;
   margin: 1rem 0;
   gap: 12px;
+  width: 100%;
+}
+
+.Agendamiento-checkbox-linea .checkbox-field {
+  width: 100% !important;
+}
+
+/* Ensure the label takes full width */
+.Agendamiento-checkbox-linea .checkbox-field .checkbox-and-label {
+  width: 100%;
+}
+
+/* Make the label text take full available width */
+.Agendamiento-checkbox-linea .checkbox-field .checkbox-and-label .label {
+  width: 100%;
 }
 
 .Agendamiento-input-with-icon {
