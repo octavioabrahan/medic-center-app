@@ -1,0 +1,106 @@
+.archivo-adjunto-form {
+  margin-bottom: 20px;
+}
+
+.archivo-adjunto-form .archivo-label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 500;
+}
+
+.archivo-adjunto-form .file-info-text {
+  display: block;
+  font-size: 0.85em;
+  color: #666;
+  margin-top: 4px;
+  font-weight: normal;
+}
+
+.archivo-adjunto-form .file-input-container {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+/* Selector más específico para el input de tipo file */
+.archivo-adjunto-form .file-input-container .file-input,
+.archivo-adjunto-form input[type="file"] {
+  flex: 1;
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  background-color: transparent !important; /* Forzar transparencia */
+  box-shadow: none !important; /* Eliminar posibles sombras */
+}
+
+/* Eliminar el fondo personalizado que algunos navegadores aplican */
+.archivo-adjunto-form input[type="file"]::-webkit-file-upload-button {
+  background-color: transparent;
+}
+
+.archivo-adjunto-form .remove-button {
+  margin-left: 10px;
+  padding: 8px 16px;
+  background-color: #f44336;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.archivo-adjunto-form .remove-button:hover {
+  background-color: #d32f2f;
+}
+
+.archivo-adjunto-form .error-message {
+  color: #f44336;
+  margin-top: 5px;
+  font-size: 0.9em;
+}
+
+.archivo-adjunto-form .success-message {
+  color: #4caf50;
+  margin-top: 5px;
+  font-size: 0.9em;
+  font-weight: 500;
+}
+
+.archivo-adjunto-form .progress-container {
+  margin-top: 10px;
+  height: 20px;
+  width: 100%;
+  background-color: #e0e0e0;
+  border-radius: 4px;
+  overflow: hidden;
+  position: relative;
+}
+
+.archivo-adjunto-form .progress-bar {
+  height: 100%;
+  background-color: #4caf50;
+  transition: width 0.3s ease;
+}
+
+.archivo-adjunto-form .progress-text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: #000;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.archivo-adjunto-form .selected-file-info {
+  background-color: #f5f5f5;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  padding: 10px;
+  margin-top: 10px;
+  font-size: 0.9em;
+}
+
+.archivo-adjunto-form .selected-file-info p {
+  margin: 5px 0;
+}
