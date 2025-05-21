@@ -36,11 +36,119 @@ const FormContainer = styled.div`
   align-items: flex-start;
   justify-content: flex-start;
   width: 100%;
-  max-width: 966px;
+  max-width: 960px;
   position: relative;
   
   @media (max-width: 992px) {
     width: 100%;
+  }
+  
+  .button-group {
+    display: flex;
+    flex-direction: row;
+    gap: var(--var-sds-size-space-400, 16px);
+    align-items: center;
+    justify-content: flex-start;
+    flex-shrink: 0;
+    width: 960px;
+    position: relative;
+  }
+  
+  .text-content-title {
+    display: flex;
+    flex-direction: column;
+    gap: var(--var-sds-size-space-200, 8px);
+    align-items: center;
+    justify-content: flex-start;
+    flex-shrink: 0;
+    width: 960px;
+    position: relative;
+  }
+  
+  .frame-39, .frame-65, .frame-38 {
+    display: flex;
+    flex-direction: column;
+    gap: var(--var-sds-size-space-200, 8px);
+    align-items: flex-start;
+    justify-content: flex-start;
+    flex-shrink: 0;
+    width: 960px;
+    position: relative;
+  }
+  
+  .frame-7 {
+    display: flex;
+    flex-direction: row;
+    gap: var(--var-sds-size-space-600, 24px);
+    align-items: flex-start;
+    justify-content: flex-start;
+    align-self: stretch;
+    flex-shrink: 0;
+    position: relative;
+  }
+  
+  .frame-21 {
+    display: flex;
+    flex-direction: row;
+    gap: var(--var-sds-size-space-600, 24px);
+    align-items: flex-start;
+    justify-content: flex-start;
+    align-self: stretch;
+    flex-shrink: 0;
+    position: relative;
+  }
+  
+  .frame-13 {
+    display: flex;
+    flex-direction: column;
+    gap: var(--var-sds-size-space-300, 12px);
+    align-items: center;
+    justify-content: flex-start;
+    flex: 1;
+    position: relative;
+  }
+  
+  .selecciona-el-tipo-de-atenci-n {
+    color: var(--var-sds-color-text-default-default, #1e1e1e);
+    text-align: left;
+    font-family: var(--body-base-font-family, "Inter-Regular", sans-serif);
+    font-size: var(--body-base-font-size, 16px);
+    line-height: var(--body-base-line-height, 140%);
+    font-weight: var(--body-base-font-weight, 400);
+    position: relative;
+    align-self: stretch;
+  }
+  
+  .title2 {
+    color: var(--var-sds-color-text-default-default, #1e1e1e);
+    text-align: left;
+    font-family: var(--body-base-font-family, "Inter-Regular", sans-serif);
+    font-size: var(--body-base-font-size, 16px);
+    line-height: var(--body-base-line-height, 140%);
+    font-weight: var(--body-base-font-weight, 400);
+    position: relative;
+    align-self: stretch;
+  }
+  
+  .button-group2 {
+    display: flex;
+    flex-direction: row;
+    gap: var(--var-sds-size-space-400, 16px);
+    align-items: center;
+    justify-content: flex-end;
+    flex-shrink: 0;
+    width: 960px;
+    position: relative;
+  }
+  
+  @media (max-width: 992px) {
+    .button-group, .text-content-title, .frame-39, .frame-65, .frame-38, .button-group2 {
+      width: 100%;
+    }
+    
+    .frame-21, .frame-7 {
+      flex-direction: column;
+    }
   }
 `;
 
@@ -83,7 +191,7 @@ const ButtonText = styled.span`
 `;
 
 const FormTitle = styled.h2`
-  color: var(--var-sds-color-background-brand-default, #20377a);
+  color: var(--var-sds-color-text-brand-default, #20377a);
   text-align: center;
   font-family: var(--heading-font-family, "Inter-SemiBold", sans-serif);
   font-size: var(--heading-font-size, 24px);
@@ -143,6 +251,17 @@ const FormLabel = styled.label`
   font-weight: var(--body-base-font-weight, 400);
   position: relative;
   align-self: stretch;
+
+  &.label2 {
+    color: var(--var-sds-color-text-default-default, #1e1e1e);
+    text-align: left;
+    font-family: var(--body-base-font-family, "Inter-Regular", sans-serif);
+    font-size: var(--body-base-font-size, 16px);
+    line-height: var(--body-base-line-height, 140%);
+    font-weight: var(--body-base-font-weight, 400);
+    position: relative;
+    align-self: stretch;
+  }
 `;
 
 const FormInput = styled.input`
@@ -205,6 +324,36 @@ const FormSelect = styled.select`
     border-color: var(--var-sds-color-border-brand-default, #20377a);
     box-shadow: 0 0 0 1px var(--var-sds-color-border-brand-default, #20377a);
   }
+  
+  &.select {
+    background: var(--var-sds-color-background-default-default, #ffffff);
+    border-radius: var(--var-sds-size-radius-200, 8px);
+    border-style: solid;
+    border-color: var(--var-sds-color-border-default-default, #d9d9d9);
+    border-width: 1px;
+    padding: var(--var-sds-size-space-300, 12px) var(--var-sds-size-space-300, 12px) var(--var-sds-size-space-300, 12px) var(--var-sds-size-space-400, 16px);
+    display: flex;
+    flex-direction: row;
+    gap: var(--var-sds-size-space-200, 8px);
+    align-items: center;
+    justify-content: flex-start;
+    align-self: stretch;
+    flex-shrink: 0;
+    height: 40px;
+    min-width: 240px;
+    position: relative;
+  }
+  
+  option.value {
+    color: var(--var-sds-color-text-default-tertiary, #b3b3b3);
+    text-align: left;
+    font-family: var(--single-line-body-base-font-family, "Inter-Regular", sans-serif);
+    font-size: var(--single-line-body-base-font-size, 16px);
+    line-height: var(--single-line-body-base-line-height, 100%);
+    font-weight: var(--single-line-body-base-font-weight, 400);
+    position: relative;
+    flex: 1;
+  }
 `;
 
 const CheckboxLabel = styled.label`
@@ -227,8 +376,12 @@ const CheckboxLabel = styled.label`
 const RadioGroup = styled.div`
   display: flex;
   flex-direction: row;
-  gap: 24px;
+  gap: var(--var-sds-size-space-600, 24px);
   margin-top: 8px;
+  align-items: flex-start;
+  justify-content: flex-start;
+  align-self: stretch;
+  flex-shrink: 0;
   
   .radio-field {
     display: flex;
@@ -236,9 +389,67 @@ const RadioGroup = styled.div`
     gap: 0px;
     align-items: flex-start;
     justify-content: flex-start;
-    flex-shrink: 0;
-    width: 340px;
+    flex: 1;
     position: relative;
+  }
+  
+  .checkbox-and-label {
+    display: flex;
+    flex-direction: row;
+    gap: var(--var-sds-size-space-300, 12px);
+    align-items: center;
+    justify-content: flex-start;
+    align-self: stretch;
+    flex-shrink: 0;
+    position: relative;
+  }
+  
+  .radio {
+    background: var(--var-sds-color-background-brand-secondary, #ffffff);
+    border-radius: var(--var-sds-size-radius-full, 9999px);
+    border-style: solid;
+    border-color: var(--var-sds-color-border-brand-default, #20377a);
+    border-width: 1px;
+    flex-shrink: 0;
+    width: 16px;
+    height: 16px;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .radio2 {
+    background: var(--var-sds-color-icon-brand-on-brand-secondary, #14214b);
+    border-radius: 50%;
+    width: 10px;
+    height: 10px;
+    position: absolute;
+    left: 50%;
+    translate: -50% -50%;
+    top: 50%;
+  }
+  
+  .radio3 {
+    background: var(--var-sds-color-background-default-default, #ffffff);
+    border-radius: var(--var-sds-size-radius-full, 9999px);
+    border-style: solid;
+    border-color: var(--var-sds-color-border-brand-tertiary, #20377a);
+    border-width: 1px;
+    flex-shrink: 0;
+    width: 16px;
+    height: 16px;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .label {
+    color: var(--var-sds-color-text-default-default, #1e1e1e);
+    text-align: left;
+    font-family: var(--body-base-font-family, "Inter-Regular", sans-serif);
+    font-size: var(--body-base-font-size, 16px);
+    line-height: var(--body-base-line-height, 140%);
+    font-weight: var(--body-base-font-weight, 400);
+    position: relative;
+    flex: 1;
   }
 `;
 
@@ -535,6 +746,160 @@ const UploadButton = styled.button`
     line-height: var(--body-base-line-height, 140%);
     font-weight: var(--body-base-font-weight, 400);
     position: relative;
+  }
+`;
+
+// Choice card styling for the radio selection
+const ChoiceCard = styled.div`
+  background: var(--var-sds-color-background-default-default, #ffffff);
+  border-radius: var(--var-sds-size-radius-200, 8px);
+  border-style: solid;
+  border-color: var(--var-sds-color-border-default-default, #d9d9d9);
+  border-width: 1px;
+  padding: var(--var-sds-size-space-300, 12px);
+  display: flex;
+  flex-direction: row;
+  gap: var(--var-sds-size-space-600, 24px);
+  align-items: center;
+  justify-content: flex-start;
+  flex: 1;
+  max-width: 966px;
+  position: relative;
+`;
+
+// Weekday styling
+const WeekdaysContainer = styled.div`
+  border-radius: 8px;
+  display: flex;
+  flex-direction: row;
+  gap: var(--var-sds-size-space-300, 12px);
+  align-items: center;
+  justify-content: flex-start;
+  align-self: stretch;
+  flex-shrink: 0;
+  position: relative;
+  
+  .weekday-frame {
+    padding: var(--var-sds-size-space-100, 4px);
+    display: flex;
+    flex-direction: row;
+    gap: var(--var-sds-size-space-0, 0px);
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+    position: relative;
+    
+    div {
+      color: var(--neutrals-n100, #7b827e);
+      text-align: center;
+      font-family: var(--subheading-font-family, "Inter-Regular", sans-serif);
+      font-size: var(--subheading-font-size, 20px);
+      line-height: var(--subheading-line-height, 120%);
+      font-weight: var(--subheading-font-weight, 400);
+      position: relative;
+      width: 26px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+  }
+`;
+
+// Calendar day styling
+const CalendarDayContainer = styled.div`
+  background: var(--default-white, #ffffff);
+  border-radius: var(--var-sds-size-radius-200, 8px);
+  padding: var(--var-sds-size-space-100, 4px);
+  display: flex;
+  flex-direction: column;
+  gap: var(--var-sds-size-space-100, 4px);
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+  
+  .day {
+    color: var(--neutrals-n50, #c2c5c4);
+    text-align: center;
+    font-family: var(--subheading-font-family, "Inter-Regular", sans-serif);
+    font-size: var(--subheading-font-size, 20px);
+    line-height: var(--subheading-line-height, 120%);
+    font-weight: var(--subheading-font-weight, 400);
+    position: relative;
+    width: 26px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .line-1 {
+    align-self: stretch;
+    flex-shrink: 0;
+    height: 0px;
+    position: relative;
+  }
+`;
+
+// Calendar row styling
+const CalendarRow = styled.div`
+  display: flex;
+  flex-direction: row;
+  gap: var(--var-sds-size-space-300, 12px);
+  align-items: center;
+  justify-content: flex-start;
+  align-self: stretch;
+  flex-shrink: 0;
+  position: relative;
+`;
+
+// Calendar card styling
+const CalendarCard = styled.div`
+  background: var(--var-sds-color-background-default-default, #ffffff);
+  border-radius: var(--var-sds-size-radius-200, 8px);
+  border-style: solid;
+  border-color: var(--var-sds-color-border-default-default, #d9d9d9);
+  border-width: 1px;
+  padding: var(--var-sds-size-space-600, 24px);
+  display: flex;
+  flex-direction: column;
+  gap: var(--var-sds-size-space-600, 24px);
+  align-items: flex-start;
+  justify-content: flex-start;
+  flex: 1;
+  min-width: 240px;
+  position: relative;
+  
+  .info-row {
+    display: flex;
+    flex-direction: row;
+    gap: var(--var-sds-size-space-200, 8px);
+    align-items: center;
+    justify-content: flex-start;
+    align-self: stretch;
+    flex-shrink: 0;
+    position: relative;
+    
+    svg {
+      flex-shrink: 0;
+      width: 24px;
+      height: 24px;
+      position: relative;
+      overflow: visible;
+    }
+    
+    div {
+      color: var(--var-sds-color-text-default-default, #1e1e1e);
+      text-align: left;
+      font-family: var(--body-emphasis-font-family, "Inter-Italic", sans-serif);
+      font-size: var(--body-emphasis-font-size, 16px);
+      line-height: var(--body-emphasis-line-height, 140%);
+      font-weight: var(--body-emphasis-font-weight, 400);
+      font-style: var(--body-emphasis-font-style, italic);
+      position: relative;
+      align-self: stretch;
+      flex: 1;
+    }
   }
 `;
 
@@ -1027,15 +1392,16 @@ const AgendamientoEmpresaForm = () => {
 
           {step === 2 && (
             <FormSection>
-              <BackButton onClick={() => setStep(1)}>
-                <img src={ArrowLeft} alt="Arrow Left" className="arrow-left" />
-                <ButtonText>Volver al paso anterior</ButtonText>
-              </BackButton>
-
-              <FormTitle>Elige la especialidad y/o el profesional para tu cita</FormTitle>
-              <FormSubtitle style={{ fontSize: '16px', textAlign: 'left' }}>
-                Indica qué tipo de atención necesitas y/o con quién deseas agendar tu cita.
-              </FormSubtitle>
+              <div className="button-group">
+                <BackButton onClick={() => setStep(1)}>
+                  <img src={ArrowLeft} alt="Arrow Left" className="arrow-left" />
+                  <ButtonText>Volver al paso anterior</ButtonText>
+                </BackButton>
+              </div>
+              
+              <div className="text-content-title">
+                <FormTitle>Selecciona la especialidad, el médico y el día.</FormTitle>
+              </div>
 
               {isLoading ? (
                 <div style={{ textAlign: 'center', padding: '32px' }}>
@@ -1043,61 +1409,135 @@ const AgendamientoEmpresaForm = () => {
                 </div>
               ) : (
                 <>
-                  <FormGroup>
-                    <FormLabel>¿Qué especialidad necesitas?</FormLabel>
-                    <FormSelect
-                      value={especialidadSeleccionada}
-                      onChange={e => setEspecialidadSeleccionada(e.target.value)}
-                    >
-                      <option value="">Selecciona una especialidad</option>
-                      {[...new Set(profesionales.map(p => p.nombre_especialidad))]
-                        .filter(Boolean)
-                        .map((item, i) => (
-                          <option key={i} value={item}>{item}</option>
-                        ))}
-                    </FormSelect>
-                  </FormGroup>
-
-                  <FormGroup>
-                    <FormLabel>¿Con qué profesional quieres atenderte?</FormLabel>
-                    <FormSelect
-                      value={profesionalSeleccionado}
-                      onChange={e => {
-                        const id = e.target.value;
-                        setProfesionalSeleccionado(id);
-                        
-                        // Actualizar especialidad basado en el profesional seleccionado
-                        const profesional = profesionales.find(p => p.profesional_id === id);
-                        if (profesional?.nombre_especialidad) {
-                          setEspecialidadSeleccionada(profesional.nombre_especialidad);
-                        }
-                      }}
-                    >
-                      <option value="">Selecciona al profesional</option>
-                      {profesionales
-                        .filter(p => !especialidadSeleccionada || p.nombre_especialidad === especialidadSeleccionada)
-                        .map(p => (
-                          <option key={p.profesional_id} value={p.profesional_id}>
-                            {p.nombre} {p.apellido}
-                          </option>
-                        ))}
-                    </FormSelect>
-                  </FormGroup>
-                  
-                  {profesionalSeleccionado && (
-                    <>
-                      <RecomendacionBox>
-                        <InfoIcon>ⓘ</InfoIcon>
-                        <div>
-                          <p style={{ fontWeight: 'bold', margin: '0 0 8px 0' }}>Recomendación para tu primera cita</p>
-                          <p style={{ margin: 0 }}>
-                            Si es tu primera consulta con este profesional, te sugerimos agendar también los servicios que se recomiendan, 
-                            así aseguramos que recibas una atención completa sin necesidad de nuevas citas.
-                          </p>
+                  <div className="frame-39">
+                    <div className="selecciona-el-tipo-de-atenci-n">
+                      Selecciona el tipo de atención
+                    </div>
+                    <div className="frame-7">
+                      <div className="choice-card">
+                        <div className="radio-field">
+                          <div className="checkbox-and-label">
+                            <RadioField
+                              label="Consulta médica"
+                              name="tipoAtencion"
+                              checked={modoSeleccion === 'consulta'}
+                              onChange={() => setEspecialidadSeleccionada('consulta')}
+                              customStyles={{
+                                radioStyles: 'radio',
+                                radioCheckedStyles: 'radio2',
+                                labelStyles: 'label'
+                              }}
+                            />
+                          </div>
                         </div>
-                      </RecomendacionBox>
+                      </div>
+                      <div className="choice-card">
+                        <div className="radio-field">
+                          <div className="checkbox-and-label">
+                            <RadioField
+                              label="Estudio"
+                              name="tipoAtencion"
+                              checked={modoSeleccion === 'estudio'}
+                              onChange={() => setEspecialidadSeleccionada('estudio')}
+                              customStyles={{
+                                radioStyles: 'radio3',
+                                labelStyles: 'label'
+                              }}
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
 
-                      <SectionTitle>Selecciona los servicios para tu cita</SectionTitle>
+                  <div className="frame-65">
+                    <div className="select-field">
+                      <FormLabel className="label2">Especialidad</FormLabel>
+                      <FormSelect
+                        className="select"
+                        value={especialidadSeleccionada}
+                        onChange={e => setEspecialidadSeleccionada(e.target.value)}
+                      >
+                        <option value="" className="value">Selecciona una opción</option>
+                        {[...new Set(profesionales.map(p => p.nombre_especialidad))]
+                          .filter(Boolean)
+                          .map((item, i) => (
+                            <option key={i} value={item}>{item}</option>
+                          ))}
+                      </FormSelect>
+                    </div>
+
+                    <div className="select-field">
+                      <FormLabel className="label2">Profesional</FormLabel>
+                      <FormSelect
+                        className="select"
+                        value={profesionalSeleccionado}
+                        onChange={e => {
+                          const id = e.target.value;
+                          setProfesionalSeleccionado(id);
+                          
+                          // Actualizar especialidad basado en el profesional seleccionado
+                          const profesional = profesionales.find(p => p.profesional_id === id);
+                          if (profesional?.nombre_especialidad) {
+                            setEspecialidadSeleccionada(profesional.nombre_especialidad);
+                          }
+                        }}
+                      >
+                        <option value="" className="value">Selecciona al profesional</option>
+                        {profesionales
+                          .filter(p => !especialidadSeleccionada || p.nombre_especialidad === especialidadSeleccionada)
+                          .map(p => (
+                            <option key={p.profesional_id} value={p.profesional_id}>
+                              {p.nombre} {p.apellido}
+                            </option>
+                          ))}
+                      </FormSelect>
+                    </div>
+                  </div>
+
+                  <div className="frame-38">
+                    <div className="title2">Selecciona el día de atención</div>
+                    <div className="frame-21">
+                      {profesionalSeleccionado && (
+                        <>
+                          <div className="frame-13">
+                            <CalendarioFechasDisponiblesDayPicker
+                              profesionalId={profesionalSeleccionado}
+                              fechaSeleccionada={fechaSeleccionada}
+                              setFechaSeleccionada={setFechaSeleccionada}
+                            />
+                          </div>
+                          
+                          <div className="card">
+                            <div className="frame-212">
+                              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="calendar">
+                                <rect width="18" height="18" x="3" y="4" rx="2" ry="2" />
+                                <line x1="16" x2="16" y1="2" y2="6" />
+                                <line x1="8" x2="8" y1="2" y2="6" />
+                                <line x1="3" x2="21" y1="10" y2="10" />
+                              </svg>
+                              <div className="div">{fechaSeleccionada ? fechaMostrada() : '--'}</div>
+                            </div>
+                            <div className="frame-22">
+                              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="clock">
+                                <circle cx="12" cy="12" r="10" />
+                                <polyline points="12 6 12 12 16 14" />
+                              </svg>
+                              <div className="div">{fechaSeleccionada ? horaMostrada() : '--'}</div>
+                            </div>
+                          </div>
+                        </>
+                      )}
+                      {!profesionalSeleccionado && (
+                        <div style={{ textAlign: 'center', padding: '32px', width: '100%' }}>
+                          <p>Por favor selecciona un profesional primero para ver las fechas disponibles.</p>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
+                  {profesionalSeleccionado && servicios && (
+                    <div className="frame-38">
                       <ServicesList>
                         {servicios
                           .filter(s => {
@@ -1122,46 +1562,16 @@ const AgendamientoEmpresaForm = () => {
                                   }
                                 }}
                               />
-                              <label htmlFor={`servicio-${s.id_servicio}`} style={{ cursor: 'pointer' }}>
+                              <label htmlFor={`servicio-${s.id_servicio}`}>
                                 {s.nombre_servicio} — USD {Number(s.price_usd).toFixed(2)}
                               </label>
                             </ServiceItem>
                           ))}
                       </ServicesList>
-
-                      <CalendarioSection>
-                        <SectionTitle>Selecciona el día de atención</SectionTitle>
-                        <CalendarioContainer>
-                          <CalendarioWrapper>
-                            <CalendarioFechasDisponiblesDayPicker
-                              profesionalId={profesionalSeleccionado}
-                              fechaSeleccionada={fechaSeleccionada}
-                              setFechaSeleccionada={setFechaSeleccionada}
-                            />
-                          </CalendarioWrapper>
-                          
-                          <FechaSeleccionadaInfo>
-                            <InfoItem>
-                              <span>📅</span>
-                              <p>{fechaSeleccionada ? fechaMostrada() : 'Selecciona una fecha'}</p>
-                            </InfoItem>
-                            <InfoItem>
-                              <span>🕒</span>
-                              <p>{fechaSeleccionada ? horaMostrada() : 'Hora no disponible'}</p>
-                            </InfoItem>
-                            {fechaSeleccionada && fechaSeleccionada.nro_consulta && (
-                              <InfoItem>
-                                <span>🔢</span>
-                                <p>Consulta #{fechaSeleccionada.nro_consulta}</p>
-                              </InfoItem>
-                            )}
-                          </FechaSeleccionadaInfo>
-                        </CalendarioContainer>
-                      </CalendarioSection>
-                    </>
+                    </div>
                   )}
 
-                  <ButtonContainer>
+                  <div className="button-group2">
                     <Button
                       variant="primary"
                       onClick={() => setStep(3)}
@@ -1172,18 +1582,24 @@ const AgendamientoEmpresaForm = () => {
                         serviciosSeleccionados.length === 0
                       }
                       style={{
-                        background: 'var(--var-sds-color-background-brand-default, #20377a)',
+                        background: !isLoading && fechaSeleccionada && profesionalSeleccionado && serviciosSeleccionados.length > 0
+                          ? 'var(--var-sds-color-background-brand-default, #20377a)'
+                          : 'var(--var-sds-color-background-disabled-default, #dadada)',
                         borderRadius: 'var(--var-sds-size-radius-200, 8px)',
                         borderStyle: 'solid',
-                        borderColor: 'var(--var-sds-color-border-brand-default, #20377a)',
+                        borderColor: !isLoading && fechaSeleccionada && profesionalSeleccionado && serviciosSeleccionados.length > 0
+                          ? 'var(--var-sds-color-border-brand-default, #20377a)'
+                          : 'var(--var-sds-color-border-disabled-default, #9d9d9d)',
                         borderWidth: '1px',
                         padding: 'var(--var-sds-size-space-300, 12px)',
-                        color: 'var(--var-sds-color-text-brand-on-brand, #f0f3ff)'
+                        color: !isLoading && fechaSeleccionada && profesionalSeleccionado && serviciosSeleccionados.length > 0
+                          ? 'var(--var-sds-color-text-brand-on-brand, #f0f3ff)'
+                          : 'var(--var-sds-color-text-disabled-on-disabled, #9d9d9d)'
                       }}
                     >
                       Continuar
                     </Button>
-                  </ButtonContainer>
+                  </div>
                 </>
               )}
             </FormSection>
