@@ -7,7 +7,7 @@ import Header from '../../../components/SiteFrame/Header';
 import Footer from '../../../components/SiteFrame/Footer';
 import Banner from '../../../components/Banner/Banner';
 import AgendamientoCheckbox from './AgendamientoCheckbox';
-import { BriefcaseIcon, UserIcon, CalendarIcon, ClockIcon } from '@heroicons/react/24/solid';
+import { BriefcaseIcon, UserIcon, CalendarIcon, ClockIcon, ClipboardIcon } from '@heroicons/react/24/solid';
 
 const AgendamientoPrivadoForm = () => {
   const [step, setStep] = useState(1);
@@ -585,7 +585,7 @@ const AgendamientoPrivadoForm = () => {
         {step === 3 && (
   <div className="Agendamiento-form-step3-confirmacion">
     <button onClick={() => setStep(2)} className="Agendamiento-volver-btn">
-      ← Volver al paso anterior
+      Volver al paso anterior
     </button>
 
     <h2 className="Agendamiento-form-title">Revisa y confirma tu solicitud</h2>
@@ -607,7 +607,7 @@ const AgendamientoPrivadoForm = () => {
     <UserIcon className="Agendamiento-icon" /> <strong>{profesionales.find(p => p.profesional_id === profesionalSeleccionado)?.nombre} {profesionales.find(p => p.profesional_id === profesionalSeleccionado)?.apellido}</strong>
   </p>
   <p className="Agendamiento-info-item">
-    <strong>Servicios:</strong> {serviciosSeleccionados.join(", ")}
+    <ClipboardIcon className="Agendamiento-icon" /> <strong>Servicios:</strong> {serviciosSeleccionados.join(", ")}
   </p>
   <p className="Agendamiento-info-item">
     <CalendarIcon className="Agendamiento-icon" /> <strong>{fechaMostrada()}</strong>
