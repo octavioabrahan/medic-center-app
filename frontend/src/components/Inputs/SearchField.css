@@ -3,20 +3,21 @@
   box-sizing: border-box;
 }
 .search {
-  background: var(--sds-color-background-default-default, #ffffff);
-  border-radius: var(--sds-radius-full, 9999px);
-  border-style: solid;
-  border-color: var(--sds-color-border-default-default, #d9d9d9);
-  border-width: 1px;
-  padding: var(--sds-space-300, 12px) var(--sds-space-400, 16px);
-  display: flex;
-  flex-direction: row;
-  gap: var(--sds-space-200, 8px);
-  align-items: center;
-  justify-content: flex-start;
-  min-width: 239px;
-  position: relative;
-  overflow: hidden;
+  background: var(--sds-color-background-default-default, #ffffff) !important;
+  border-radius: var(--sds-radius-full, 9999px) !important;
+  border-style: solid !important;
+  border-color: var(--sds-color-border-default-default, #d9d9d9) !important;
+  border-width: 1px !important;
+  padding: var(--sds-space-300, 12px) var(--sds-space-400, 16px) !important;
+  display: flex !important;
+  flex-direction: row !important;
+  gap: var(--sds-space-200, 8px) !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  min-width: 239px !important;
+  position: relative !important;
+  overflow: hidden !important;
+  box-sizing: border-box !important;
 }
 .search[style*="width: 100%"] {
   width: 100% !important;
@@ -32,21 +33,22 @@
   color: var(--sds-color-text-default-tertiary, #b3b3b3);
 }
 .search-value {
-  color: var(--sds-color-text-default-default, #1e1e1e);
-  text-align: left;
-  font-family: var(--sds-body-base-font-family, "Inter", sans-serif);
-  font-size: var(--sds-body-base-font-size, 16px);
-  line-height: var(--sds-body-base-line-height, 140%);
-  font-weight: var(--sds-body-base-font-weight, 400);
-  position: relative;
-  flex: 1;
-  padding: 0;
-  padding-right: 40px;
-  width: 100%;
-  background: transparent;
-  border: none;
-  outline: none;
-  text-overflow: ellipsis;
+  color: var(--sds-color-text-default-default, #1e1e1e) !important;
+  text-align: left !important;
+  font-family: var(--sds-body-base-font-family, "Inter", sans-serif) !important;
+  font-size: var(--sds-body-base-font-size, 16px) !important;
+  line-height: var(--sds-body-base-line-height, 140%) !important;
+  font-weight: var(--sds-body-base-font-weight, 400) !important;
+  position: relative !important;
+  flex: 1 !important;
+  padding: 0 !important;
+  padding-right: 40px !important;
+  width: 100% !important;
+  background: transparent !important;
+  border: none !important;
+  outline: none !important;
+  text-overflow: ellipsis !important;
+  height: auto !important; /* Override the fixed height */
 }
 .search-x-mark,
 .search-magnifying-glass {
