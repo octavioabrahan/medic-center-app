@@ -188,14 +188,14 @@ function App() {
           </Suspense>
         } />
         
-        <Route path="/agendamiento/empresa" element={
-          <Suspense fallback={<div>Cargando formulario de empresa...</div>}>
+        <Route path="/agendamiento/convenio" element={
+          <Suspense fallback={<div>Cargando formulario de convenio...</div>}>
             {React.createElement(require('./pages/public/Agendamiento/AgendamientoEmpresaForm.js').default)}
           </Suspense>
         } />
 
         <Route path="/agendamiento/privado" element={
-          <Suspense fallback={<div>Cargando formulario de empresa...</div>}>
+          <Suspense fallback={<div>Cargando formulario privado...</div>}>
             {React.createElement(require('./pages/public/Agendamiento/AgendamientoPrivadoForm.js').default)}
           </Suspense>
         } />

@@ -2,8 +2,13 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import CalendarioFechasDisponiblesDayPicker from '../../../components/CalendarioDayPicker/CalendarioFechasDisponiblesDayPicker';
 import './AgendamientoEmpresaForm.css';
+import './AgendamientoEmpresaCheckboxOverrides.css';
 import ArchivoAdjuntoForm from '../../../components/public/ArchivoAdjuntoForm';
-import logo from '../../../assets/logo.svg';
+import Header from '../../../components/SiteFrame/Header';
+import Footer from '../../../components/SiteFrame/Footer';
+import Banner from '../../../components/Banner/Banner';
+import AgendamientoEmpresaCheckbox from './AgendamientoEmpresaCheckbox';
+import { BriefcaseIcon, UserIcon, CalendarIcon, ClockIcon, ClipboardIcon } from '@heroicons/react/24/solid';
 
 const AgendamientoEmpresaForm = () => {
   const [step, setStep] = useState(1);
@@ -269,9 +274,7 @@ const getTipoAtencionId = (slug) => {
 
   return (
     <div className="form-wrapper">
-      <div className="form-header">
-        <img src={logo} alt="Logo Diagnocentro" className="form-logo" />
-      </div>
+      <Header />
       <div className="form-body">
       {step === 1 && (
   <form className="form-contenido" onSubmit={e => { e.preventDefault() 
@@ -296,10 +299,13 @@ const getTipoAtencionId = (slug) => {
       onChange={e => setDatosRepresentante({ ...datosRepresentante, cedula: e.target.value })}
     />
 
-    <label className="checkbox-linea">
-      <input type="checkbox" checked={sinCedula} onChange={handleCheckCedula} />
-      La persona que se atenderá no tiene cédula.
-    </label>
+    <div className="checkbox-linea">
+      <AgendamientoEmpresaCheckbox
+        checked={sinCedula}
+        onChange={() => handleCheckCedula()}
+        label="La persona que se atenderá no tiene cédula."
+      />
+    </div>
 
     {/* Sección de representante */}
     {sinCedula && (
@@ -496,15 +502,11 @@ const getTipoAtencionId = (slug) => {
         
         {profesionalSeleccionado && (
           <>
-            <div className="recomendacion-box">
-              <div className="recomendacion-icon">
-                <span className="info-icon">ⓘ</span>
-              </div>
-              <div className="recomendacion-text">
-                <p className="recomendacion-title">Recomendación para tu primera cita</p>
-                <p>Si es tu primera consulta con este profesional, te sugerimos agendar también los servicios que se recomiendan, así aseguramos que recibas una atención completa sin necesidad de nuevas citas.</p>
-              </div>
-            </div>
+            <Banner 
+              title="Recomendación para tu primera cita"
+              text="Si es tu primera cita con este profesional, te sugerimos agendar también los servicios que se recomiendan, así aseguramos que recibas una atención completa sin necesidad de nuevas citas."
+              variant="warning"
+            />
 
             <div className="servicios-section">
               <h3 className="servicios-title">Selecciona los servicios para tu cita</h3>
@@ -517,12 +519,11 @@ const getTipoAtencionId = (slug) => {
                   })
                   .map(s => (
                     <div key={s.id_servicio} className="servicio-checkbox-item">
-                      <input
-                        type="checkbox"
-                        id={`servicio-${s.id_servicio}`}
+                      <AgendamientoEmpresaCheckbox
+                        label={`${s.nombre_servicio} — USD ${Number(s.price_usd).toFixed(2)}`}
                         checked={serviciosSeleccionados.includes(s.nombre_servicio)}
-                        onChange={(e) => {
-                          if (e.target.checked) {
+                        onChange={(checked) => {
+                          if (checked) {
                             setServiciosSeleccionados([...serviciosSeleccionados, s.nombre_servicio]);
                           } else {
                             setServiciosSeleccionados(
@@ -531,9 +532,6 @@ const getTipoAtencionId = (slug) => {
                           }
                         }}
                       />
-                      <label htmlFor={`servicio-${s.id_servicio}`}>
-                        {s.nombre_servicio} — USD {Number(s.price_usd).toFixed(2)}
-                      </label>
                     </div>
                   ))}
               </div>
@@ -552,19 +550,13 @@ const getTipoAtencionId = (slug) => {
                 
                 <div className="fecha-seleccionada-info">
                   <div className="info-fecha">
-                    <span className="info-icon">📅</span>
+                    <CalendarIcon className="icon" />
                     <p>{fechaSeleccionada ? fechaMostrada() : 'Selecciona una fecha'}</p>
                   </div>
                   <div className="info-hora">
-                    <span className="info-icon">🕒</span>
+                    <ClockIcon className="icon" />
                     <p>{fechaSeleccionada ? horaMostrada() : 'Hora no disponible'}</p>
                   </div>
-                  {fechaSeleccionada && fechaSeleccionada.nro_consulta && (
-                    <div className="info-consulta">
-                      <span className="info-icon">🔢</span>
-                      <p>Consulta #{fechaSeleccionada.nro_consulta}</p>
-                    </div>
-                  )}
                 </div>
               </div>
             </div>
@@ -599,20 +591,30 @@ const getTipoAtencionId = (slug) => {
     <h2 className="form-title">Revisa y confirma tu solicitud</h2>
     <p className="form-subtitle">Antes de enviar tu solicitud, revisa que toda la información esté correcta. Si necesitas corregir algo, puedes volver al paso anterior.</p>
 
-    <div className="alerta-info">
-      <span>⚠️</span> Recuerda que el día de la consulta el paciente debe presentar su cédula de identidad vigente. Sin ella, no podrá ser atendido.
-    </div>
+    <Banner
+      title="Información importante"
+      text="Recuerda que el día de la cita el paciente debe presentar su cédula de identidad vigente. Sin ella, no podrá ser atendido."
+      variant="warning"
+    />
 
     <div className="bloque-info">
       <h3>Información de su cita</h3>
       <div className="tarjeta-info">
-            <p><strong>🩺 {especialidadSeleccionada}</strong></p>
-            <p><strong>👤 {profesionales.find(p => p.profesional_id === profesionalSeleccionado)?.nombre} {profesionales.find(p => p.profesional_id === profesionalSeleccionado)?.apellido}</strong></p>
-            <p><strong>🔬 Servicios:</strong> {serviciosSeleccionados.join(", ")}</p>
-            <p><strong>📅 {fechaMostrada()}</strong></p>
-            <p><strong>🕐 {horaMostrada()}</strong></p>
-            {fechaSeleccionada && fechaSeleccionada.nro_consulta && (
-            <p><strong>🔢 Consulta #{fechaSeleccionada.nro_consulta}</strong></p>)}
+            <p className="info-item">
+              <BriefcaseIcon className="icon" /> <strong>{especialidadSeleccionada}</strong>
+            </p>
+            <p className="info-item">
+              <UserIcon className="icon" /> <strong>{profesionales.find(p => p.profesional_id === profesionalSeleccionado)?.nombre} {profesionales.find(p => p.profesional_id === profesionalSeleccionado)?.apellido}</strong>
+            </p>
+            <p className="info-item">
+              <ClipboardIcon className="icon" /> <strong>Servicios:</strong> {serviciosSeleccionados.join(", ")}
+            </p>
+            <p className="info-item">
+              <CalendarIcon className="icon" /> <strong>{fechaMostrada()}</strong>
+            </p>
+            <p className="info-item">
+              <ClockIcon className="icon" /> <strong>{horaMostrada()}</strong>
+            </p>
             <p className="nota-horario">La atención será por orden de llegada según el horario del profesional.</p>
         </div>
         </div>
@@ -661,6 +663,7 @@ const getTipoAtencionId = (slug) => {
   </div>
 )}
       </div>
+      <Footer />
     </div>
   );
 };
