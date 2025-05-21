@@ -1,0 +1,75 @@
+/* Responsive styles for Cotizador */
+
+/* Default (desktop) styles */
+.cotizador-container-responsive {
+  display: flex;
+  flex-direction: row;
+}
+
+/* Mobile styles (max-width: 768px) */
+@media (max-width: 768px) {
+  .cotizador-container-responsive {
+    flex-direction: column;
+  }
+
+  /* Hide desktop elements */
+  .desktop-only {
+    display: none !important;
+  }
+
+  /* Show mobile elements */
+  .mobile-only {
+    display: block !important;
+  }
+
+  /* Main containers */
+  .cotizadorFrame4 {
+    padding: 0 !important;
+    height: auto !important;
+    gap: 8px !important;
+  }
+
+  .cotizadorHeroForm {
+    padding: 16px !important;
+    max-height: none !important;
+    min-height: auto !important;
+  }
+
+  .cotizadorHeroFormScroll {
+    max-height: none !important;
+  }
+
+  /* Text styles */
+  .cotizadorTitle {
+    font-size: 20px !important;
+    margin-bottom: 8px !important;
+  }
+
+  .cotizadorSubtitle {
+    font-size: 16px !important;
+    margin-bottom: 16px !important;
+  }
+
+  /* Form elements */
+  .cotizadorInputField {
+    width: 100% !important;
+  }
+
+  .cotizadorChoiceCard {
+    padding: 12px !important;
+    gap: 12px !important;
+  }
+
+  /* Button styles */
+  .button-primary {
+    width: 100% !important;
+    margin-top: 16px !important;
+  }
+}
+
+/* Tablet styles (min-width: 769px and max-width: 1024px) */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .cotizadorFrame4 {
+    padding: 0 40px !important;
+  }
+}

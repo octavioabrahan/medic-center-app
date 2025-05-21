@@ -1,0 +1,169 @@
+/* Mobile styles for Cotizador component */
+
+.mobile-cotizador-container {
+  padding: 16px;
+  width: 100%;
+}
+
+.mobile-cotizador-title {
+  color: #20377a;
+  text-align: center;
+  font-family: "Inter-SemiBold", sans-serif;
+  font-size: 20px;
+  line-height: 120%;
+  margin-bottom: 16px;
+}
+
+.mobile-cotizador-subtitle {
+  color: #1b2e68;
+  text-align: center;
+  font-family: "Inter-Regular", sans-serif;
+  font-size: 16px;
+  line-height: 120%;
+  margin-bottom: 24px;
+}
+
+.mobile-search-field {
+  margin-bottom: 16px;
+  width: 100%;
+}
+
+.mobile-search-field input {
+  width: 100%;
+  padding: 12px 16px;
+  border-radius: 8px;
+  border: 1px solid #d9d9d9;
+  font-size: 14px;
+}
+
+.mobile-exam-item {
+  background: #fff;
+  border-radius: 8px;
+  border: 1px solid #d9d9d9;
+  padding: 12px;
+  margin-bottom: 8px;
+  display: flex;
+  flex-direction: row;
+  gap: 12px;
+  align-items: flex-start;
+  width: 100%;
+}
+
+.mobile-exam-checkbox {
+  flex: 1;
+}
+
+.mobile-exam-name {
+  font-family: "Inter-Medium", sans-serif;
+  font-size: 14px;
+  color: #333;
+}
+
+.mobile-exam-indication {
+  font-family: "Inter-Regular", sans-serif;
+  font-size: 12px;
+  color: #666;
+}
+
+.mobile-selected-exams-summary {
+  margin-top: 24px;
+  margin-bottom: 16px;
+}
+
+.mobile-summary-title {
+  color: #20377a;
+  font-family: "Inter-SemiBold", sans-serif;
+  font-size: 16px;
+  margin-bottom: 8px;
+  text-align: center;
+}
+
+.mobile-selected-exam-item {
+  background: #fff;
+  border-radius: 8px;
+  border: 1px solid #d9d9d9;
+  padding: 12px;
+  margin-bottom: 8px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.mobile-selected-exam-name {
+  font-family: "Inter-Regular", sans-serif;
+  font-size: 14px;
+  color: #333;
+}
+
+.mobile-remove-exam-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #333;
+  padding: 4px;
+}
+
+.mobile-continue-btn {
+  background-color: #20377a;
+  color: white;
+  width: 100%;
+  border: none;
+  border-radius: 8px;
+  padding: 12px;
+  font-family: "Inter-Medium", sans-serif;
+  font-size: 16px;
+  cursor: pointer;
+  margin-top: 16px;
+  text-align: center;
+}
+
+/* Adjust margins for no-selection message */
+.mobile-no-selection {
+  text-align: center;
+  padding: 24px;
+  background-color: #f0f4ff;
+  border-radius: 8px;
+}
+
+.mobile-no-selection-text {
+  color: #20377a;
+  font-family: "Inter-Medium", sans-serif;
+  font-size: 16px;
+  margin-bottom: 12px;
+}
+
+.mobile-no-selection-hint {
+  color: #333;
+  font-family: "Inter-Regular", sans-serif;
+  font-size: 14px;
+}
+
+/* Form view specific styles */
+.mobile-back-button {
+  display: flex;
+  align-items: center;
+  font-family: "Inter-Medium", sans-serif;
+  font-size: 14px;
+  color: #20377a;
+  margin-bottom: 16px;
+  cursor: pointer;
+}
+
+.mobile-form-field {
+  width: 100%;
+  margin-bottom: 16px;
+}
+
+.mobile-form-checkbox {
+  margin-top: 8px;
+}
+
+.mobile-error {
+  color: #e53935;
+  font-family: "Inter-Regular", sans-serif;
+  font-size: 14px;
+  text-align: center;
+  margin-top: 16px;
+}

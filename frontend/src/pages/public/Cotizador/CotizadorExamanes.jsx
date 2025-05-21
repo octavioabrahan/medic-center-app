@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useMediaQuery } from 'react-responsive';
 import SiteFrame from '../../../components/SiteFrame/SiteFrame';
 import SearchField from '../../../components/Inputs/SearchField';
 import CheckboxField from '../../../components/Inputs/CheckboxField';
@@ -11,8 +12,13 @@ import styles from './CotizadorExamanes.module.css';
 import DatePickerField from '../../../components/Inputs/DatePickerField';
 import 'react-datepicker/dist/react-datepicker.css';
 import './CotizadorDatePicker.css';
+import './CotizadorResponsive.css';
+import './CotizadorExamanesMobile.css';
 
 export default function Cotizaciones() {
+  // Media query for responsive design
+  const isMobile = useMediaQuery({ query: '(max-width: 768px)' });
+  
   // --- STATE (match v1) ---
   const [examenes, setExamenes] = useState([]);
   const [tasaCambio, setTasaCambio] = useState(null);
@@ -215,6 +221,126 @@ export default function Cotizaciones() {
     setForm(prev => ({ ...prev, [field]: value }));
   };
 
+  // Render mobile or desktop version based on screen size
+  if (cotizacionEnviada) {
+    // This is our final return statement - shown when cotizacionEnviada is true
+    // ...existing code...
+  }
+  
+  // Mobile view
+  if (isMobile) {
+    return (
+      <SiteFrame>
+        <div className="mobile-cotizador-container">
+          <div className="mobile-cotizador-title">Cotiza tus exámenes de forma rápida</div>
+          <div className="mobile-cotizador-subtitle">
+            Selecciona los exámenes que necesitas. Cuando estés listo, presiona "Continuar" para completar tus datos y recibir el detalle de tu cotización.
+          </div>
+          
+          {/* Mobile search field */}
+          <div className="mobile-search-field">
+            <SearchField
+              value={busqueda}
+              onChange={setBusqueda}
+              onClear={() => setBusqueda('')}
+              placeholder="Buscar examen por nombre"
+              fillContainer
+              style={{ height: '44px', borderRadius: '8px', width: '100%' }}
+            />
+          </div>
+          
+          {/* Mobile exam list */}
+          <div>
+            {filteredExams.length === 0 ? (
+              <div className="mobile-exam-not-found">No se encontraron exámenes con ese nombre</div>
+            ) : (
+              filteredExams.map((exam) => (
+                <div key={exam.codigo} className="mobile-exam-item">
+                  <div className="mobile-exam-checkbox">
+                    <CheckboxField
+                      label={<div className="mobile-exam-name">{exam.nombre_examen}</div>}
+                      checked={seleccionados.some(e => e.codigo === exam.codigo)}
+                      onChange={() => handleSelect(exam)}
+                    />
+                    <div onClick={() => setModalInfo(exam)}>
+                      <span className="mobile-exam-indication">Indicación</span>
+                    </div>
+                  </div>
+                </div>
+              ))
+            )}
+          </div>
+          
+          {/* Mobile selected exams summary */}
+          <div className="mobile-selected-exams-summary">
+            <div className="mobile-summary-title">
+              {seleccionados.length === 0 
+                ? 'Aún no has seleccionado ningún examen' 
+                : 'Resumen de los exámenes a cotizar'}
+            </div>
+            
+            {seleccionados.length === 0 ? (
+              <div className="mobile-no-selection">
+                <div className="mobile-no-selection-text">Aún no has seleccionado ningún examen</div>
+                <div className="mobile-no-selection-hint">
+                  Busca en el listado o escribe el nombre del examen que necesitas para comenzar tu cotización.
+                </div>
+              </div>
+            ) : (
+              seleccionados.map(exam => (
+                <div key={exam.codigo} className="mobile-selected-exam-item">
+                  <div className="mobile-selected-exam-name">{exam.nombre_examen}</div>
+                  <button
+                    type="button"
+                    className="mobile-remove-exam-btn"
+                    aria-label="Eliminar examen"
+                    onClick={() => handleRemove(exam.codigo)}
+                  >
+                    <XMarkIcon width={20} height={20} />
+                  </button>
+                </div>
+              ))
+            )}
+          </div>
+          
+          {/* Mobile continue button */}
+          <button
+            className="mobile-continue-btn"
+            disabled={seleccionados.length === 0}
+            onClick={() => setModoFormulario(true)}
+          >
+            Continuar
+          </button>
+          
+          {error && <div className="mobile-error">{error}</div>}
+          
+          {/* Modal for exam indication */}
+          {modalInfo && (
+            <div className={styles.dialog} onClick={() => setModalInfo(null)}>
+              <div className={styles.dialogBody} onClick={e => e.stopPropagation()}>
+                <div className={styles.text}>
+                  <div className={styles.textHeading}>{modalInfo.nombre_examen}</div>
+                  <div className={styles.bodyText}>
+                    {(modalInfo.indicacion && modalInfo.indicacion.trim())
+                      ? modalInfo.indicacion
+                      : (modalInfo.informacion && modalInfo.informacion.trim()
+                          ? modalInfo.informacion
+                          : 'No hay información de indicación disponible.')}
+                  </div>
+                </div>
+                <div className={styles.buttonGroup}>
+                  <div className={styles.button} onClick={() => setModalInfo(null)}>
+                    Cerrar
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+      </SiteFrame>
+    );
+  }
+
   // --- STEP 1: Selección de exámenes ---
   if (cotizacionEnviada) {
     // Let the default Step 3 at the end handle this case
@@ -358,6 +484,122 @@ export default function Cotizaciones() {
 
   // --- STEP 2: Formulario de datos y resumen ---
   if (modoFormulario) {
+    if (isMobile) {
+      return (
+        <SiteFrame>
+          <div className="mobile-cotizador-container">
+            <div className="mobile-back-button" onClick={() => setModoFormulario(false)}>
+              <img src={ArrowLeft} alt="Volver" style={{ width: '20px', height: '20px', marginRight: '8px' }} />
+              <span>Volver al listado</span>
+            </div>
+            
+            <div className="mobile-cotizador-title">Para enviarte tu cotización, necesitamos algunos datos</div>
+            <div className="mobile-cotizador-subtitle">
+              Usaremos esta información para contactarte y enviarte el detalle de tu cotización.
+            </div>
+            
+            {/* Mobile form fields */}
+            <div style={{ marginTop: '24px' }}>
+              <div className="mobile-form-field" style={{ marginBottom: '16px' }}>
+                <InputField
+                  label="Nombre"
+                  value={form.nombre}
+                  placeholder="¿Cuál es tu nombre?"
+                  onChange={v => handleFormChange('nombre', v)}
+                  fillContainer
+                />
+              </div>
+              
+              <div className="mobile-form-field" style={{ marginBottom: '16px' }}>
+                <InputField
+                  label="Apellido"
+                  value={form.apellido}
+                  placeholder="¿Cuál es tu apellido?"
+                  onChange={v => handleFormChange('apellido', v)}
+                  fillContainer
+                />
+              </div>
+              
+              <div className="mobile-form-field" style={{ marginBottom: '16px' }}>
+                <InputField
+                  label="Cédula"
+                  value={form.cedula}
+                  placeholder="Tu número de cédula"
+                  onChange={v => handleFormChange('cedula', v)}
+                  fillContainer
+                />
+              </div>
+              
+              <div className="mobile-form-field" style={{ marginBottom: '16px' }}>
+                <InputField
+                  label="Teléfono"
+                  value={form.telefono}
+                  placeholder="Tu número de teléfono"
+                  onChange={v => handleFormChange('telefono', v)}
+                  fillContainer
+                />
+              </div>
+              
+              <div className="mobile-form-field" style={{ marginBottom: '16px' }}>
+                <DatePickerField
+                  label="Fecha de nacimiento"
+                  selected={form.fecha_nacimiento ? new Date(form.fecha_nacimiento) : null}
+                  onChange={date => handleFormChange('fecha_nacimiento', date)}
+                  dateFormat="dd/MM/yyyy"
+                  placeholderText="Selecciona tu fecha de nacimiento"
+                  showYearDropdown
+                  scrollableYearDropdown
+                  yearDropdownItemNumber={100}
+                  maxDate={new Date()}
+                  fillContainer
+                />
+              </div>
+              
+              <div className="mobile-form-field" style={{ marginBottom: '16px' }}>
+                <InputField
+                  label="Correo electrónico"
+                  value={form.email}
+                  placeholder="Tu correo electrónico"
+                  onChange={v => handleFormChange('email', v)}
+                  fillContainer
+                />
+              </div>
+              
+              <div className="mobile-form-checkbox" style={{ marginBottom: '24px' }}>
+                <CheckboxField
+                  label="Acepto recibir información por correo electrónico y/o teléfono."
+                  checked={acepta}
+                  onChange={() => setAcepta(!acepta)}
+                />
+              </div>
+            </div>
+            
+            {/* Mobile selected exams summary */}
+            <div className="mobile-selected-exams-summary">
+              <div className="mobile-summary-title">Exámenes seleccionados</div>
+              {seleccionados.map(exam => (
+                <div key={exam.codigo} className="mobile-selected-exam-item">
+                  <div className="mobile-selected-exam-name">{exam.nombre_examen}</div>
+                </div>
+              ))}
+            </div>
+            
+            {/* Mobile send button */}
+            <button
+              className="mobile-continue-btn"
+              disabled={!isFormValid() || cargando}
+              onClick={handleSubmit}
+            >
+              {cargando ? 'Enviando...' : 'Enviar cotización'}
+            </button>
+            
+            {error && <div className="mobile-error" style={{ color: 'red', marginTop: '16px' }}>{error}</div>}
+          </div>
+        </SiteFrame>
+      );
+    }
+    
+    // Desktop form view
     return (
       <SiteFrame>
         <div className={styles.cotizadorFrame4}>

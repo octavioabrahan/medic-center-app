@@ -60,11 +60,10 @@ function generarPDF(nombrePaciente, resumen) {
       
       // Información de la clínica
       doc.fontSize(9).fillColor(colors.lightText).text([
-        'Centro Médico Especializado',
-        'Dirección: Av. Principal #123, Ciudad',
-        'Teléfono: +58 123-456-7890',
-        'Email: contacto@centromedico.com',
-        'Web: www.centromedico.com'
+        'CALLE 30 ENTRE AV. 33 Y 34 LOCAL C.C. ORION N°. 01 Y 02 SECTOR',
+        'CENTRO ACARIGUA ESTADO PORTUGUESA',
+        'ZONA POSTAL. 3301',
+        '0255-9350349 / 0255-9350351 / 0255-9350347 / 0255-9883236',
       ].join('\n'), 400, 45, { align: 'right' });
 
       // Línea separadora
