@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { SiteFrame } from '../../../components/SiteFrame';
 import ArrowLeft from '../../../assets/ArrowLeft.svg';
+import RadioField from '../../../components/Inputs/RadioField';
 
 // Styled components based on the Figma design
 const HeroNewsletter = styled.div`
@@ -130,93 +131,27 @@ const ChoiceCard = styled.div`
   padding: var(--sds-size-space-300, 12px);
   display: flex;
   flex-direction: row;
-  gap: var(--sds-size-space-600, 24px);
-  align-items: center;
+  align-items: flex-start;
   justify-content: flex-start;
   align-self: stretch;
   flex: 1;
   position: relative;
   cursor: pointer;
-`;
-
-const RadioField = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  align-items: flex-start;
-  justify-content: flex-start;
-  flex: 1;
-  position: relative;
-`;
-
-const CheckboxAndLabel = styled.div`
-  display: flex;
-  flex-direction: row;
-  gap: var(--sds-size-space-300, 12px);
-  align-items: center;
-  justify-content: flex-start;
-  align-self: stretch;
-  position: relative;
-`;
-
-const RadioButton = styled.div`
-  background: ${props => props.selected ? 'var(--sds-color-background-brand-default)' : 'var(--sds-color-background-default-default, #ffffff)'};
-  border-radius: var(--sds-size-radius-full, 9999px);
-  border: 1px solid var(--sds-color-border-brand-tertiary, #20377a);
-  width: 16px;
-  height: 16px;
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  transition: background-color 0.2s, border-color 0.2s;
   
-  &::after {
-    content: '';
-    display: ${props => props.selected ? 'block' : 'none'};
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background: white;
+  /* Style the RadioField inside the ChoiceCard */
+  & .radio-field {
+    width: 100%;
+  }
+  
+  &:hover {
+    background: ${props => props.selected ? 
+      'var(--sds-color-background-brand-tertiary)' : 
+      'var(--sds-color-background-default-default-hover, #f5f5f5)'};
   }
 `;
 
-const Label = styled.div`
-  color: var(--sds-color-text-default-default, #1e1e1e);
-  text-align: left;
-  font-family: var(--body-strong-font-family, "Inter-SemiBold", sans-serif);
-  font-size: var(--body-strong-font-size, 16px);
-  line-height: var(--body-strong-line-height, 140%);
-  font-weight: var(--body-strong-font-weight, 600);
-  position: relative;
-  flex: 1;
-`;
-
-const DescriptionRow = styled.div`
-  display: flex;
-  flex-direction: row;
-  gap: var(--sds-size-space-300, 12px);
-  align-items: flex-start;
-  justify-content: flex-start;
-  align-self: stretch;
-  position: relative;
-`;
-
-const Space = styled.div`
-  width: 16px;
-  height: 16px;
-  position: relative;
-`;
-
-const Description = styled.div`
-  color: var(--sds-color-text-default-secondary, #757575);
-  text-align: left;
-  font-family: var(--body-base-font-family, "Inter-Regular", sans-serif);
-  font-size: var(--body-base-font-size, 16px);
-  line-height: var(--body-base-line-height, 140%);
-  font-weight: var(--body-base-font-weight, 400);
-  position: relative;
-  flex: 1;
-`;
+/* No longer needed - using RadioField component */
 
 const ButtonGroup2 = styled.div`
   display: flex;
@@ -292,38 +227,26 @@ const AgendamientoIndex = () => {
             selected={seleccion === 'privado'}
             onClick={() => setSeleccion('privado')}
           >
-            <RadioField>
-              <CheckboxAndLabel>
-                <RadioButton selected={seleccion === 'privado'} />
-                <Label>Atención particular</Label>
-              </CheckboxAndLabel>
-              <DescriptionRow>
-                <Space />
-                <Description>
-                  La persona pagará la consulta directamente, con o sin seguro
-                  médico.
-                </Description>
-              </DescriptionRow>
-            </RadioField>
+            <RadioField
+              label="Atención particular"
+              description="La persona pagará la consulta directamente, con o sin seguro médico."
+              checked={seleccion === 'privado'}
+              name="tipo-atencion"
+              onChange={() => setSeleccion('privado')}
+            />
           </ChoiceCard>
           
           <ChoiceCard
             selected={seleccion === 'convenio'}
             onClick={() => setSeleccion('convenio')}
           >
-            <RadioField>
-              <CheckboxAndLabel>
-                <RadioButton selected={seleccion === 'convenio'} />
-                <Label>Atención por convenio</Label>
-              </CheckboxAndLabel>
-              <DescriptionRow>
-                <Space />
-                <Description>
-                  La persona trabaja en una empresa o institución que tiene convenio
-                  con el centro médico.
-                </Description>
-              </DescriptionRow>
-            </RadioField>
+            <RadioField
+              label="Atención por convenio"
+              description="La persona trabaja en una empresa o institución que tiene convenio con el centro médico."
+              checked={seleccion === 'convenio'}
+              name="tipo-atencion"
+              onChange={() => setSeleccion('convenio')}
+            />
           </ChoiceCard>
         </Frame7>
         
