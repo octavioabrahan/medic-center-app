@@ -244,8 +244,7 @@ form label,
 }
 
 .Agendamiento-info-fecha,
-.Agendamiento-info-hora,
-.Agendamiento-info-consulta {
+.Agendamiento-info-hora {
   display: flex;
   align-items: center;
   gap: 8px;

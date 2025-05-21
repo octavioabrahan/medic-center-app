@@ -499,7 +499,7 @@ const AgendamientoPrivadoForm = () => {
           <>
             <Banner 
               title="Recomendación para tu primera cita"
-              text="Si es tu primera consulta con este profesional, te sugerimos agendar también los servicios que se recomiendan, así aseguramos que recibas una atención completa sin necesidad de nuevas citas."
+              text="Si es tu primera cita con este profesional, te sugerimos agendar también los servicios que se recomiendan, así aseguramos que recibas una atención completa sin necesidad de nuevas citas."
               variant="warning"
             />
 
@@ -552,11 +552,6 @@ const AgendamientoPrivadoForm = () => {
                     <ClockIcon className="Agendamiento-icon" />
                     <p>{fechaSeleccionada ? horaMostrada() : 'Hora no disponible'}</p>
                   </div>
-                  {fechaSeleccionada && fechaSeleccionada.nro_consulta && (
-                    <div className="Agendamiento-info-consulta">
-                      <p>Consulta #{fechaSeleccionada.nro_consulta}</p>
-                    </div>
-                  )}
                 </div>
               </div>
             </div>
@@ -593,7 +588,7 @@ const AgendamientoPrivadoForm = () => {
 
     <Banner
       title="Información importante"
-      text="Recuerda que el día de la consulta el paciente debe presentar su cédula de identidad vigente. Sin ella, no podrá ser atendido."
+      text="Recuerda que el día de la cita el paciente debe presentar su cédula de identidad vigente. Sin ella, no podrá ser atendido."
       variant="warning"
     />
 
@@ -615,8 +610,6 @@ const AgendamientoPrivadoForm = () => {
   <p className="Agendamiento-info-item">
     <ClockIcon className="Agendamiento-icon" /> <strong>{horaMostrada()}</strong>
   </p>
-  {fechaSeleccionada && fechaSeleccionada.nro_consulta && (
-  <p className="Agendamiento-info-item"><strong>Consulta #{fechaSeleccionada.nro_consulta}</strong></p>)}
   <p className="Agendamiento-nota-horario">La atención será por orden de llegada según el horario del profesional.</p>
 </div>
     </div>
