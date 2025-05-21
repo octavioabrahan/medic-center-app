@@ -1,0 +1,62 @@
+/* Specific fixes for 1366x768 resolution */
+@media screen and (width: 1366px) and (height: 768px), 
+       screen and (max-width: 1366px) and (max-height: 768px) {
+  .cotizadorFrame4 {
+    padding: 0px 10px !important;
+    height: auto !important;
+    min-height: 700px !important;
+  }
+  
+  .cotizadorHeroForm {
+    padding: 16px 12px !important;
+    max-height: 700px !important;
+    min-height: 0 !important;
+  }
+  
+  .cotizadorHeroForm2 {
+    width: 250px !important;
+    padding: 70px 16px 24px !important;
+  }
+  
+  .cotizadorLabel2, .cotizadorSubtitle2 {
+    font-size: 13px !important;
+  }
+  
+  .cotizadorTitle {
+    font-size: 16px !important;
+    margin-bottom: 8px !important;
+  }
+
+  .cotizadorSubtitle {
+    font-size: 14px !important;
+    line-height: 120% !important;
+  }
+
+  .cotizadorHeroForm2 .cotizadorTitle {
+    font-size: 14px !important;
+  }
+  
+  .cotizadorDescription {
+    font-size: 11px !important;
+  }
+  
+  .cotizadorChoiceCard {
+    padding: 8px !important;
+    gap: 8px !important;
+  }
+
+  .cotizadorButtonRightContainer button {
+    padding: 6px 12px !important;
+    height: 36px !important;
+    font-size: 14px !important;
+  }
+
+  /* Center the blue section content better */
+  .cotizadorFrame3 {
+    align-items: center !important;
+  }
+  
+  .cotizadorSubtitle2 {
+    text-align: center !important;
+  }
+}

@@ -1,0 +1,68 @@
+/* Cross-browser fixes and optimizations for Cotizador de Exámenes */
+
+/* Fix for Safari's flexbox implementation */
+@supports (-webkit-overflow-scrolling: touch) {
+  .cotizadorFrame4 {
+    min-height: calc(100vh - 80px) !important; /* Account for header */
+  }
+  
+  /* Fix Safari flex gap issues */
+  .cotizadorHeroForm, .cotizadorHeroForm2 {
+    row-gap: 16px !important; 
+  }
+  
+  /* iPhone-specific fixes */
+  @media screen and (max-width: 428px) {
+    .cotizadorHeroForm, .cotizadorHeroForm2 {
+      padding-left: 12px !important;
+      padding-right: 12px !important;
+    }
+  }
+}
+
+/* Fix for Firefox scrolling containers */
+@-moz-document url-prefix() {
+  .cotizadorFrame1, .cotizadorFrame3 {
+    scrollbar-width: thin;
+    scrollbar-color: #d9d9d9 transparent;
+  }
+}
+
+/* Handle edge case of very tall mobile screens */
+@media screen and (max-width: 768px) and (min-height: 800px) {
+  .cotizadorFrame1 {
+    max-height: 400px !important;
+  }
+  
+  .cotizadorFrame3 {
+    max-height: 350px !important;
+  }
+}
+
+/* Fix for extra small screens */
+@media screen and (max-width: 360px) {
+  .cotizadorTitle {
+    font-size: 18px !important;
+    padding: 0 !important;
+  }
+  
+  .cotizadorSubtitle {
+    font-size: 14px !important;
+  }
+  
+  .cotizadorHeroForm, .cotizadorHeroForm2 {
+    padding: 16px 12px !important;
+  }
+}
+
+/* Add box-sizing to all elements for consistent rendering */
+.cotizadorFrame4 * {
+  box-sizing: border-box;
+}
+
+/* Fix for high-density displays */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  .cotizadorChoiceCard {
+    border-width: 0.5px !important;
+  }
+}

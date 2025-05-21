@@ -14,6 +14,10 @@ import './CotizadorDatePicker.css';
 import './CotizadorExamanesMobile.css';
 import './CotizadorResponsive.css'; // Import the new mobile responsive styles
 import './CotizadorForcedLayout.css'; // Import additional layout overrides
+import './CotizadorLaptopFix.css'; // Import specific fixes for 1366x768 resolution
+import './CotizadorTabletFix.css'; // Import specific fixes for tablet devices
+import './CotizadorCrossBrowserFix.css'; // Import cross-browser compatibility fixes
+import './CotizadorConfirmationFix.css'; // Import fixes for confirmation screen
 
 export default function Cotizaciones() {
   // --- STATE (match v1) ---
