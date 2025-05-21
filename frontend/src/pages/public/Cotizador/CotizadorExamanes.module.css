@@ -8,17 +8,6 @@
   height: 768px;
   position: relative;
 }
-
-/* Mobile responsive styles */
-@media (max-width: 768px) {
-  .cotizadorFrame4 {
-    padding: 0px 16px;
-    flex-direction: column;
-    height: auto;
-    display: flex;
-    flex-wrap: wrap;
-  }
-}
 .cotizadorHeroForm {
   padding: var(--sds-size-space-800, 32px) 24px var(--sds-size-space-800, 32px) 24px;
   display: flex;
@@ -33,18 +22,6 @@
   max-height: 735px;
   min-height: 735px;
 }
-
-/* Mobile responsive styles */
-@media (max-width: 768px) {
-  .cotizadorHeroForm {
-    max-height: none;
-    min-height: auto;
-    order: 1; /* Make this appear first in the column layout */
-    padding-bottom: 16px;
-    flex: 0 0 auto;
-    width: 100%;
-  }
-}
 .cotizadorHeroFormScroll {
   overflow-y: auto;
   max-height: 540px;
@@ -52,13 +29,6 @@
   display: flex;
   flex-direction: column;
   gap: var(--sds-size-space-600, 24px);
-}
-
-/* Mobile responsive styles */
-@media (max-width: 768px) {
-  .cotizadorHeroFormScroll {
-    max-height: 400px;
-  }
 }
 .cotizadorTitle {
   color: var(--sds-color-text-brand-default, #20377a);
@@ -106,14 +76,6 @@
   overflow-y: auto; /* Enable vertical scroll */
   max-height: 400px; /* Adjust as needed for design */
 }
-
-/* Mobile responsive styles */
-@media (max-width: 768px) {
-  .cotizadorFrame1 {
-    max-height: 300px;
-    width: 100%;
-  }
-}
 .cotizadorChoiceCard {
   background: var(--sds-color-background-default-default, #fff);
   border-radius: var(--sds-size-radius-200, 8px);
@@ -127,19 +89,6 @@
   min-width: 240px;
   position: relative;
 }
-
-/* Mobile responsive styles */
-@media (max-width: 768px) {
-  .cotizadorChoiceCard {
-    width: 100%;
-    min-width: 0;
-    max-width: 100%;
-  }
-  
-  .cotizadorHeroForm2 .cotizadorChoiceCard {
-    width: 100%;
-  }
-}
 .cotizadorCheckboxField {
   display: flex;
   flex-direction: column;
@@ -148,23 +97,6 @@
   position: relative;
   min-width: 0;
 }
-
-.cotizadorCheckboxField2 {
-  display: flex;
-  flex-direction: column;
-  gap: 0px;
-  align-items: flex-start;
-  justify-content: flex-start;
-  flex: 1;
-  position: relative;
-}
-
-@media (max-width: 768px) {
-  .cotizadorCheckboxField2 {
-    width: 100%;
-  }
-}
-
 .cotizadorCheckboxFieldContainer {
   width: 100%;
   display: flex;
@@ -231,27 +163,6 @@
   width: 306px;
   position: relative;
 }
-
-/* Mobile responsive styles */
-@media (max-width: 768px) {
-  .cotizadorHeroForm2 {
-    width: 100%;
-    padding: 32px 24px;
-    order: 2; /* Make this appear second in the column layout */
-    margin-bottom: 16px;
-    align-items: center; /* Center items horizontally */
-  }
-  
-  .cotizadorHeroForm2 .cotizadorTitle {
-    text-align: center;
-    width: 100%;
-  }
-  
-  .cotizadorHeroForm2 .cotizadorFrame3 {
-    width: 100%;
-    align-items: center;
-  }
-}
 .cotizadorSubtitle2 {
   color: var(--sds-color-text-brand-on-brand-tertiary, #20377a);
   font-family: var(--body-base-font-family, "Inter-Regular", sans-serif);
@@ -270,25 +181,6 @@
   flex-shrink: 0;
   width: 470px;
   position: relative;
-}
-
-/* Mobile responsive styles */
-@media (max-width: 768px) {
-  .cotizadorButtonGroup {
-    width: 100%;
-    flex-direction: column;
-    gap: 16px;
-  }
-  
-  .cotizadorButtonGroup button {
-    width: 100%;
-  }
-  
-  /* Make all buttons in the cotizador have a good size on mobile */
-  button {
-    height: 48px; /* Slightly taller for better touch targets */
-    font-size: 16px; /* Ensure text is readable */
-  }
 }
 .cotizadorArrowLeft {
   flex-shrink: 0;
@@ -355,17 +247,14 @@
   flex-shrink: 0;
   position: relative;
 }
-
-/* Mobile responsive styles */
-@media (max-width: 768px) {
-  .cotizadorFrame3 {
-    width: 100%;
-    align-items: center;
-  }
-  
-  .cotizadorFrame3 > div {
-    width: 100%;
-  }
+.cotizadorCheckboxField2 {
+  display: flex;
+  flex-direction: column;
+  gap: 0px;
+  align-items: flex-start;
+  justify-content: flex-start;
+  flex: 1;
+  position: relative;
 }
 .cotizadorCheckboxAndLabel {
   display: flex;
@@ -468,15 +357,6 @@
   position: relative;
   box-shadow: var(--drop-shadow-400-box-shadow, 0px 4px 4px -4px rgba(12, 12, 13, 0.05), 0px 16px 32px -4px rgba(12, 12, 13, 0.1));
 }
-
-/* Mobile responsive styles */
-@media (max-width: 768px) {
-  .dialogBody {
-    max-width: calc(100% - 32px);
-    padding: 24px 16px;
-    margin: 0 16px;
-  }
-}
 .text {
   display: flex;
   flex-direction: column;
@@ -574,22 +454,6 @@
   margin-top: 16px;
   align-items: flex-end;
 }
-
-/* Mobile responsive styles */
-@media (max-width: 768px) {
-  .cotizadorButtonRightContainer {
-    order: 3; /* Make the button appear after both sections */
-    margin-top: 24px;
-    margin-bottom: 24px;
-    justify-content: center; /* Center the button on mobile */
-    flex: 0 0 100%;
-    width: 100%;
-  }
-  
-  .cotizadorButtonRightContainer button {
-    width: 80%; /* Make button stand out with a decent width */
-  }
-}
 .cotizadorButtonRow {
   display: flex;
   flex-direction: row;
@@ -597,18 +461,6 @@
   justify-content: space-between;
   width: 100%;
   margin-top: 24px;
-}
-
-/* Mobile responsive styles */
-@media (max-width: 768px) {
-  .cotizadorButtonRow {
-    flex-direction: column;
-    gap: 16px;
-  }
-  
-  .cotizadorButtonRow > div {
-    width: 100%;
-  }
 }
 .cotizadorButtonGroupTop {
   display: flex;
