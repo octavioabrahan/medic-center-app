@@ -59,6 +59,8 @@
   align-items: flex-start;
   align-self: stretch;
   position: relative;
+  width: 100%;
+}
 }
 .cotizadorFrame1 {
   display: flex;

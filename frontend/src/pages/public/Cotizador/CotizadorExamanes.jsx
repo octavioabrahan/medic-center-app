@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import SiteFrame from '../../../components/SiteFrame/SiteFrame';
+import SearchField from '../../../components/Inputs/SearchField';
 import CheckboxField from '../../../components/Inputs/CheckboxField';
 import InputField from '../../../components/Inputs/InputField';
 import { Button } from '../../../components/Button/Button';
@@ -7,7 +8,6 @@ import ArrowLeft from '../../../assets/ArrowLeft.svg';
 import { XMarkIcon } from '@heroicons/react/24/outline';
 import styles from './CotizadorExamanes.module.css';
 import DatePickerField from '../../../components/Inputs/DatePickerField';
-import SimpleSearch from './SimpleSearch'; // Import our completely new search component
 
 export default function Cotizaciones() {
   // --- STATE (match v1) ---
@@ -227,11 +227,19 @@ export default function Cotizaciones() {
             <div className={styles.cotizadorSubtitle}>
               Selecciona los exámenes que necesitas. Cuando estés listo, presiona “Continuar” para completar tus datos y recibir el detalle de tu cotización.
             </div>
-            <div className={styles.cotizadorInputField}>
-              <SimpleSearch
+            <div className={styles.cotizadorInputField} style={{ width: '100%' }}>
+              <SearchField
                 value={busqueda}
                 onChange={setBusqueda}
+                onClear={() => setBusqueda('')}
                 placeholder="Buscar examen por nombre"
+                fillContainer
+                style={{ 
+                  height: '44px', 
+                  borderRadius: '8px', 
+                  width: '100%',
+                  boxSizing: 'border-box'
+                }}
               />
             </div>
             <div className={styles.cotizadorFrame1}>
