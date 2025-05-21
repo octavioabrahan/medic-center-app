@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import CalendarioFechasDisponiblesDayPicker from '../../../components/CalendarioDayPicker/CalendarioFechasDisponiblesDayPicker';
 import './AgendamientoPrivadoForm.css';
+import logo from '../../../assets/logo.svg';
 
 const AgendamientoPrivadoForm = () => {
   const [step, setStep] = useState(1);
