@@ -17,6 +17,7 @@
     min-height: auto;
     width: 100vw;
     gap: 0;
+    align-items: stretch;
   }
 }
 .cotizadorHeroForm {
@@ -42,6 +43,7 @@
     overflow-y: visible;
     width: 100vw;
     box-sizing: border-box;
+    align-items: center;
   }
 }
 .cotizadorHeroFormScroll {
@@ -223,6 +225,8 @@
     padding: var(--sds-size-space-800, 32px) 8px;
     align-items: center;
     box-sizing: border-box;
+    margin: 0 auto 16px auto;
+    align-items: center;
   }
 }
 .cotizadorSubtitle2 {
@@ -278,7 +282,7 @@
   font-family: var(--body-base-font-family, "Inter-Regular", sans-serif);
   font-size: var(--body-base-font-size, 16px);
   line-height: var (--body-base-line-height, 140%);
-  font-weight: var(--body-base-font-weight, 400);
+  font-weight: var (--body-base-font-weight, 400);
   position: relative;
   flex: 1;
   white-space: normal;
@@ -308,7 +312,7 @@
   font-family: var(--single-line-body-base-font-family, "Inter-Regular", sans-serif);
   font-size: var (--single-line-body-base-font-size, 16px);
   line-height: var (--single-line-body-base-line-height, 100%);
-  font-weight: var(--single-line-body-base-font-weight, 400);
+  font-weight: var (--single-line-body-base-font-weight, 400);
   position: relative;
 }
 .cotizadorFrame3 {
@@ -458,7 +462,7 @@
   font-family: var(--body-base-font-family, "Inter-Regular", sans-serif);
   font-size: var (--body-base-font-size, 16px);
   line-height: var (--body-base-line-height, 140%);
-  font-weight: var(--body-base-font-weight, 400);
+  font-weight: var (--body-base-font-weight, 400);
   position: relative;
   align-self: stretch;
 }
@@ -528,6 +532,21 @@
   margin-top: 16px;
   align-items: flex-end;
 }
+
+@media (max-width: 768px) {
+  .cotizadorButtonRightContainer {
+    width: 100vw;
+    justify-content: center;
+    margin: 16px 0 0 0;
+    position: static;
+  }
+  
+  .cotizadorButtonRightContainer button {
+    width: 90vw;
+    max-width: 400px;
+    margin: 0 auto;
+  }
+}
 .cotizadorButtonRow {
   display: flex;
   flex-direction: row;
@@ -535,6 +554,21 @@
   justify-content: space-between;
   width: 100%;
   margin-top: 24px;
+}
+
+@media (max-width: 768px) {
+  .cotizadorButtonRow {
+    width: 100vw;
+    justify-content: center;
+    margin: 16px 0 0 0;
+    position: static;
+  }
+  
+  .cotizadorButtonRow button {
+    width: 90vw;
+    max-width: 400px;
+    margin: 0 auto;
+  }
 }
 .cotizadorButtonGroupTop {
   display: flex;
