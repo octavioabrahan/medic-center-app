@@ -187,7 +187,7 @@
 .cotizadorPrice {
   color: var(--sds-color-text-default-default, #1e1e1e);
   font-family: var(--body-base-font-family, "Inter-Regular", sans-serif);
-  font-size: var(--body-base-font-size, 16px);
+  font-size: var (--body-base-font-size, 16px);
   line-height: var (--body-base-line-height, 140%);
   font-weight: var (--body-base-font-weight, 400);
 }
@@ -229,12 +229,25 @@
     align-items: center;
   }
 }
+
+@media (max-width: 768px) {
+  .cotizadorHeroForm2 {
+    margin: 16px auto 0 auto;
+    align-items: center;
+    display: flex;
+    justify-content: center;
+    width: 95vw;
+    max-width: 500px;
+    min-width: 0;
+    box-sizing: border-box;
+  }
+}
 .cotizadorSubtitle2 {
   color: var(--sds-color-text-brand-on-brand-tertiary, #20377a);
   font-family: var(--body-base-font-family, "Inter-Regular", sans-serif);
   font-size: var(--body-base-font-size, 16px);
   line-height: var (--body-base-line-height, 140%);
-  font-weight: var(--body-base-font-weight, 400);
+  font-weight: var (--body-base-font-weight, 400);
   align-self: stretch;
   display: flex;
   align-items: center;
