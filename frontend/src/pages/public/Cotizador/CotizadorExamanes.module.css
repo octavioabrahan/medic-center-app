@@ -8,6 +8,17 @@
   height: 768px;
   position: relative;
 }
+
+@media (max-width: 768px) {
+  .cotizadorFrame4 {
+    padding: 0;
+    flex-direction: column;
+    height: auto;
+    min-height: auto;
+    width: 100vw;
+    gap: 0;
+  }
+}
 .cotizadorHeroForm {
   padding: var(--sds-size-space-800, 32px) 24px var(--sds-size-space-800, 32px) 24px;
   display: flex;
@@ -21,6 +32,17 @@
   overflow-y: auto;
   max-height: 735px;
   min-height: 735px;
+}
+
+@media (max-width: 768px) {
+  .cotizadorHeroForm {
+    padding: var(--sds-size-space-600, 24px) 8px;
+    max-height: none;
+    min-height: auto;
+    overflow-y: visible;
+    width: 100vw;
+    box-sizing: border-box;
+  }
 }
 .cotizadorHeroFormScroll {
   overflow-y: auto;
@@ -40,6 +62,13 @@
   font-weight: var(--heading-font-weight, 600);
   align-self: stretch;
 }
+
+@media (max-width: 768px) {
+  .cotizadorTitle {
+    font-size: 20px;
+    padding: 0 8px;
+  }
+}
 .cotizadorSubtitle {
   color: var(--sds-color-text-brand-secondary, #1b2e68);
   text-align: center;
@@ -52,6 +81,13 @@
   align-items: center;
   justify-content: center;
 }
+
+@media (max-width: 768px) {
+  .cotizadorSubtitle {
+    font-size: 16px;
+    padding: 0 8px;
+  }
+}
 .cotizadorInputField {
   display: flex;
   flex-direction: column;
@@ -60,6 +96,15 @@
   align-self: stretch;
   position: relative;
   width: 100%;
+}
+
+@media (max-width: 768px) {
+  .cotizadorInputField input,
+  .cotizadorInputField select,
+  .cotizadorInputField textarea {
+    width: 100%;
+    box-sizing: border-box;
+  }
 }
 .cotizadorInputField label {
   margin-bottom: 2px;
@@ -104,6 +149,12 @@
   align-items: center;
   margin-bottom: 0.5rem;
   max-width: 100%;
+}
+
+@media (max-width: 768px) {
+  .cotizadorCheckboxFieldContainer {
+    flex-wrap: wrap;
+  }
 }
 .cotizadorDescriptionRow {
   display: flex;
@@ -163,6 +214,17 @@
   width: 306px;
   position: relative;
 }
+
+@media (max-width: 768px) {
+  .cotizadorHeroForm2 {
+    width: 100vw;
+    min-width: 0;
+    max-width: 100vw;
+    padding: var(--sds-size-space-800, 32px) 8px;
+    align-items: center;
+    box-sizing: border-box;
+  }
+}
 .cotizadorSubtitle2 {
   color: var(--sds-color-text-brand-on-brand-tertiary, #20377a);
   font-family: var(--body-base-font-family, "Inter-Regular", sans-serif);
@@ -181,6 +243,18 @@
   flex-shrink: 0;
   width: 470px;
   position: relative;
+}
+
+@media (max-width: 768px) {
+  .cotizadorButtonGroup {
+    width: 100%;
+    flex-direction: column;
+    gap: var(--sds-size-space-300, 12px);
+  }
+  
+  .cotizadorButtonGroup > button {
+    width: 100% !important;
+  }
 }
 .cotizadorArrowLeft {
   flex-shrink: 0;
