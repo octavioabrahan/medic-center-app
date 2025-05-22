@@ -56,7 +56,9 @@ const CancelarDiasExcepciones = ({ isOpen, onClose, onSuccess }) => {
   useEffect(() => {
     const fetchProfesionales = async () => {
       try {
+        console.log('Cargando profesionales...');
         const response = await axios.get('/api/profesionales');
+        console.log('Profesionales recibidos:', response.data);
         const profesionales = response.data.map(p => ({
           value: p.profesional_id.toString(),
           label: `${p.nombre} ${p.apellido}`
@@ -69,29 +71,24 @@ const CancelarDiasExcepciones = ({ isOpen, onClose, onSuccess }) => {
     };
 
     if (isOpen) {
-      fetchProfesionales();
-      
-      // Establecer mes y año actual como valores predeterminados
-      const hoy = new Date();
-      setMes((hoy.getMonth() + 1).toString());
-      setAnio(hoy.getFullYear().toString());
-      
-      // Resetear estados
+      // Resetear estados primero
       setProfesional('');
       setDiaSeleccionado(null);
       setMotivo('');
       setDiasDisponibles([]);
       setError(null);
+      setDiasDelMes([]);
+      
+      // Luego inicializar con valores predeterminados
+      const hoy = new Date();
+      setMes((hoy.getMonth() + 1).toString());
+      setAnio(hoy.getFullYear().toString());
+      
+      // Finalmente cargar datos
+      fetchProfesionales();
     }
   }, [isOpen]);
 
-  // Generar calendario cuando cambia mes o año
-  useEffect(() => {
-    if (mes && anio) {
-      generarCalendario(parseInt(mes), parseInt(anio));
-    }
-  }, [mes, anio]);
-  
   // Cargar días disponibles cuando cambia el profesional, mes o año
   useEffect(() => {
     if (profesional && mes && anio) {
@@ -100,6 +97,13 @@ const CancelarDiasExcepciones = ({ isOpen, onClose, onSuccess }) => {
       setDiasDisponibles([]);
     }
   }, [profesional, mes, anio]);
+  
+  // Generar calendario cuando cambia mes, año o diasDisponibles
+  useEffect(() => {
+    if (mes && anio) {
+      generarCalendario(parseInt(mes), parseInt(anio));
+    }
+  }, [mes, anio, diasDisponibles]);
 
   // Validar el formulario
   useEffect(() => {
@@ -115,8 +119,8 @@ const CancelarDiasExcepciones = ({ isOpen, onClose, onSuccess }) => {
     try {
       // Obtener horarios regulares y excepciones ya existentes para este profesional
       const [horariosResp, excepcionesResp] = await Promise.all([
-        axios.get(`/api/horarios?profesional_id=${profesional}`),
-        axios.get(`/api/excepciones?profesional_id=${profesional}`)
+        axios.get(`/api/horarios/profesional/${profesional}`),
+        axios.get(`/api/excepciones/profesional/${profesional}`)
       ]);
       
       const horarios = horariosResp.data || [];
@@ -131,11 +135,38 @@ const CancelarDiasExcepciones = ({ isOpen, onClose, onSuccess }) => {
       
       // Mapeamos los días de la semana que el profesional atiende según su horario regular
       horarios.forEach(horario => {
-        if (horario.dia_semana && Array.isArray(horario.dia_semana)) {
-          horario.dia_semana.forEach(dia => diasAtencion.add(dia));
-        } else if (horario.dia_semana !== undefined) {
-          // Para compatibilidad con registros antiguos (valores únicos)
-          diasAtencion.add(horario.dia_semana);
+        console.log('Procesando horario:', horario);
+        
+        // Si dia_semana es un string JSON, parsearlo
+        if (typeof horario.dia_semana === 'string' && horario.dia_semana.startsWith('[')) {
+          try {
+            const diasArray = JSON.parse(horario.dia_semana);
+            diasArray.forEach(dia => {
+              // Asegurarse de que es un número
+              const diaNumerado = parseInt(dia, 10);
+              if (!isNaN(diaNumerado)) {
+                diasAtencion.add(diaNumerado);
+              }
+            });
+          } catch (error) {
+            console.error('Error al parsear dia_semana como JSON:', error);
+          }
+        }
+        // Si dia_semana es un array
+        else if (horario.dia_semana && Array.isArray(horario.dia_semana)) {
+          horario.dia_semana.forEach(dia => {
+            const diaNumerado = parseInt(dia, 10);
+            if (!isNaN(diaNumerado)) {
+              diasAtencion.add(diaNumerado);
+            }
+          });
+        } 
+        // Si dia_semana es un número o string numérico
+        else if (horario.dia_semana !== undefined) {
+          const diaNumerado = parseInt(horario.dia_semana, 10);
+          if (!isNaN(diaNumerado)) {
+            diasAtencion.add(diaNumerado);
+          }
         }
       });
       
@@ -157,6 +188,10 @@ const CancelarDiasExcepciones = ({ isOpen, onClose, onSuccess }) => {
         }
       });
       
+      // Debug: log horarios y dias de atención
+      console.log('Horarios del profesional:', horarios);
+      console.log('Días de atención:', [...diasAtencion]);
+      
       // Obtener todos los días del mes que caen en días de atención
       const diasDisponiblesArr = [];
       const primerDia = new Date(anioNum, mesNum - 1, 1);
@@ -174,6 +209,7 @@ const CancelarDiasExcepciones = ({ isOpen, onClose, onSuccess }) => {
         }
       }
       
+      console.log('Días disponibles para cancelar:', diasDisponiblesArr);
       setDiasDisponibles(diasDisponiblesArr);
     } catch (err) {
       console.error("Error al cargar días disponibles:", err);
@@ -196,10 +232,11 @@ const CancelarDiasExcepciones = ({ isOpen, onClose, onSuccess }) => {
       const totalDiasMesAnterior = ultimoDiaMesAnterior.getDate();
       
       for (let i = totalDiasMesAnterior - primerDiaSemana + 2; i <= totalDiasMesAnterior; i++) {
+        const fecha = new Date(anio, mes - 2, i);
         diasMesAnterior.push({
           dia: i,
           esMesActual: false,
-          fecha: new Date(anio, mes - 2, i),
+          fecha: fecha,
           cancelable: false
         });
       }
@@ -208,13 +245,15 @@ const CancelarDiasExcepciones = ({ isOpen, onClose, onSuccess }) => {
     // Días del mes actual
     const diasMesActual = Array.from({ length: diasTotales }, (_, i) => {
       const fecha = new Date(anio, mes - 1, i + 1);
+      
+      // Formato ISO YYYY-MM-DD para comparar con diasDisponibles
       const fechaStr = fecha.toISOString().split('T')[0];
       
       return {
         dia: i + 1,
         esMesActual: true,
         fecha: fecha,
-        cancelable: profesional ? diasDisponibles.includes(fechaStr) : false
+        cancelable: diasDisponibles.includes(fechaStr)
       };
     });
     
@@ -270,6 +309,13 @@ const CancelarDiasExcepciones = ({ isOpen, onClose, onSuccess }) => {
     
     return fecha.toISOString().split('T')[0];
   };
+  
+  // Función para depuración
+  useEffect(() => {
+    if (diasDisponibles.length > 0) {
+      console.log('Días disponibles actualizados:', diasDisponibles);
+    }
+  }, [diasDisponibles]);
 
   // Confirmar la cancelación del día
   const handleConfirmar = async () => {
