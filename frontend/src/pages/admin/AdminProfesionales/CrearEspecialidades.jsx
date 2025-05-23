@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Modal from '../../../components/Modal/Modal';
 import Button from '../../../components/Button/Button';
 import InputField from '../../../components/Inputs/InputField';
-import { PlusIcon, TrashIcon } from '@heroicons/react/20/solid';
+import { PlusIcon, TrashIcon, PencilSquareIcon } from '@heroicons/react/20/solid';
 import api from '../../../api'; // Importar api en lugar de axios
 import './CrearEspecialidades.css';
 
@@ -316,7 +316,7 @@ const CrearEspecialidades = ({ isOpen, onClose, onSpecialtyCreated }) => {
                 <div className="especialidades-input-container">
                   {editandoId === especialidad.especialidad_id ? (
                     // Modo edición
-                    <div className="especialidades-edicion">
+                    <div className="especialidades-edicion fullwidth">
                       <InputField
                         value={valorEditando}
                         onChange={(value) => setValorEditando(value)}
@@ -339,20 +339,34 @@ const CrearEspecialidades = ({ isOpen, onClose, onSpecialtyCreated }) => {
                     </div>
                   ) : (
                     // Modo visualización
-                    <div 
-                      className="especialidades-input"
-                      onDoubleClick={() => handleDoubleClick(especialidad)}
-                      title="Doble clic para editar"
-                    >
-                      <div className="especialidades-value">{especialidad.nombre}</div>
-                      <button
-                        className="especialidades-delete-btn"
-                        onClick={() => eliminarEspecialidad(especialidad.especialidad_id, especialidad.nombre)}
-                        title="Eliminar especialidad"
-                        disabled={loading}
+                    <div className="especialidades-input-con-botones">
+                      <div 
+                        className="especialidades-input fullwidth"
+                        onDoubleClick={() => handleDoubleClick(especialidad)}
+                        title="Doble clic para editar"
                       >
-                        <TrashIcon className="especialidades-trash-icon" />
-                      </button>
+                        <div className="especialidades-value">{especialidad.nombre}</div>
+                        <div className="especialidades-botones-accion">
+                          <Button
+                            variant="icon"
+                            size="small"
+                            onClick={() => iniciarEdicion(especialidad)}
+                            title="Editar especialidad"
+                            disabled={loading}
+                          >
+                            <PencilSquareIcon className="w-4 h-4" />
+                          </Button>
+                          <Button
+                            variant="icon"
+                            size="small"
+                            onClick={() => eliminarEspecialidad(especialidad.especialidad_id, especialidad.nombre)}
+                            title="Eliminar especialidad"
+                            disabled={loading}
+                          >
+                            <TrashIcon className="w-4 h-4" />
+                          </Button>
+                        </div>
+                      </div>
                     </div>
                   )}
                 </div>

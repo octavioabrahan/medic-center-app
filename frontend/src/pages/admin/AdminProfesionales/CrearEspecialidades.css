@@ -162,57 +162,95 @@
   color: var(--var-sds-color-text-danger-default, #d83933);
 }
 
-/* Estilos para edición inline y botones de acción */
-.especialidades-item-contenido {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
+/* Contenedor principal del input con botones */
+.especialidades-input-con-botones {
   width: 100%;
-  gap: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
 }
 
-.especialidades-acciones {
+/* Input que ocupa todo el ancho */
+.especialidades-input.fullwidth {
+  width: 100%;
   display: flex;
   align-items: center;
-  gap: 8px;
-  margin-left: auto;
+  justify-content: space-between;
+  padding: 12px 16px;
+  background-color: var(--sds-color-background-default-default, #ffffff);
+  border: 1px solid var(--sds-color-border-default-default, #d1d5db);
+  border-radius: var(--sds-radius-md, 6px);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.especialidades-input.fullwidth:hover {
+  border-color: var(--sds-color-border-neutral-hover, #9ca3af);
+  background-color: var(--sds-color-background-neutral-secondary, #f9fafb);
+}
+
+/* Contenedor de los botones de acción */
+.especialidades-botones-accion {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-left: 8px;
   flex-shrink: 0;
 }
 
-.especialidades-boton-editar,
-.especialidades-boton-eliminar {
-  background: transparent;
-  border: none;
-  padding: 4px;
-  border-radius: 4px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: background-color 0.2s ease;
-}
-
-.especialidades-boton-editar:hover {
-  background-color: var(--var-sds-color-background-neutral-secondary, #f5f5f5);
-}
-
-.especialidades-boton-eliminar:hover {
-  background-color: var(--var-sds-color-background-danger-secondary, #fef2f2);
-}
-
-.especialidades-boton-eliminar:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-.especialidades-trash-icon {
+/* Estilos para los iconos en los botones */
+.especialidades-botones-accion .w-4 {
   width: 16px;
   height: 16px;
-  color: var(--var-sds-color-icon-danger-default, #dc2626);
+}
+
+.especialidades-botones-accion .h-4 {
+  width: 16px;
+  height: 16px;
+}
+
+/* Personalización para los botones icon dentro de especialidades */
+.especialidades-botones-accion .btn--icon {
+  width: 28px;
+  height: 28px;
+  padding: 4px;
+  border-radius: var(--sds-radius-sm, 4px);
+}
+
+.especialidades-botones-accion .btn--icon.btn--subtle {
+  background-color: transparent;
+  border-color: transparent;
+}
+
+.especialidades-botones-accion .btn--icon.btn--subtle:hover {
+  background-color: var(--sds-color-background-neutral-secondary, #f5f5f5);
+  border-color: var(--sds-color-border-neutral-secondary, #d1d5db);
+}
+
+/* Color específico para el botón de eliminar */
+.especialidades-botones-accion .btn--icon:last-child .w-4,
+.especialidades-botones-accion .btn--icon:last-child .h-4 {
+  color: var(--sds-color-text-danger-default, #dc2626);
+}
+
+.especialidades-botones-accion .btn--icon:last-child:hover {
+  background-color: var(--sds-color-background-danger-secondary, #fef2f2);
+}
+
+/* Color para el botón de editar */
+.especialidades-botones-accion .btn--icon:first-child .w-4,
+.especialidades-botones-accion .btn--icon:first-child .h-4 {
+  color: var(--sds-color-text-neutral-default, #6b7280);
 }
 
 /* Estilos para el modo de edición */
+.especialidades-edicion.fullwidth {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
 .especialidades-edicion-contenedor {
   display: flex;
   align-items: center;
@@ -226,8 +264,9 @@
 
 .especialidades-edicion-botones {
   display: flex;
-  gap: 4px;
-  flex-shrink: 0;
+  gap: 8px;
+  margin-top: 8px;
+  justify-content: flex-end;
 }
 
 .especialidades-boton-guardar,
@@ -289,5 +328,10 @@
 .especialidades-input,
 .especialidades-boton-editar,
 .especialidades-boton-eliminar {
+  transition: all 0.2s ease-in-out;
+}
+
+.especialidades-input.fullwidth,
+.especialidades-botones-accion .btn--icon {
   transition: all 0.2s ease-in-out;
 }
