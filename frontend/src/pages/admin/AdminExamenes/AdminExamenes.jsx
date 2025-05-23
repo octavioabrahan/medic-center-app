@@ -276,12 +276,25 @@ const AdminExamenes = () => {
         'X-Usuario': localStorage.getItem('username') || 'admin'
       };
       
-      await axios.put(`${API_URL}/${formData.codigo}`, formData, { headers });
+      // Convertir el precio a número para asegurar formato correcto
+      const dataToSend = {
+        ...formData,
+        preciousd: parseFloat(formData.preciousd)
+      };
+      
+      // Cambiar a PATCH para actualización parcial
+      await axios.patch(`${API_URL}/${formData.codigo}`, dataToSend, { headers });
+      
+      // Mostrar mensaje de éxito temporal
+      setError(null);
       await cargarExamenes(); // Refresh data
       setShowEditModal(false);
+      
+      // Notificar éxito
+      alert("Examen actualizado correctamente");
     } catch (err) {
       console.error('Error:', err);
-      setError("Error al actualizar el examen");
+      setError("Error al actualizar el examen: " + (err.response?.data?.error || err.message));
     }
   };
 
@@ -293,8 +306,8 @@ const AdminExamenes = () => {
         'X-Usuario': localStorage.getItem('username') || 'admin'
       };
       
-      await axios.put(`${API_URL}/${examen.codigo}`, {
-        ...examen,
+      // Usar PATCH para actualización parcial solo del estado is_active
+      await axios.patch(`${API_URL}/${examen.codigo}`, {
         is_active: newStatus
       }, { headers });
       
@@ -444,11 +457,20 @@ const AdminExamenes = () => {
                             >
                               <ArrowPathRoundedSquareIcon width={20} height={20} />
                             </button>
+                            <button
+                              className={`${styles.iconButton} ${styles.iconButtonArchive}`}
+                              title="Archivar"
+                              onClick={() => toggleActivo(examen)}
+                            >
+                              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M20.54 5.23L19.15 3.55C18.88 3.21 18.47 3 18 3H6C5.53 3 5.12 3.21 4.84 3.55L3.46 5.23C3.17 5.57 3 6.02 3 6.5V19C3 20.1 3.9 21 5 21H19C20.1 21 21 20.1 21 19V6.5C21 6.02 20.83 5.57 20.54 5.23ZM12 17.5L6.5 12H10V10H14V12H17.5L12 17.5ZM5.12 5L5.93 4H17.93L18.87 5H5.12Z" fill="currentColor"/>
+                              </svg>
+                            </button>
                           </>
                         ) : (
                           <>
                             <button
-                              className={styles.iconButton}
+                              className={`${styles.iconButton} ${styles.iconButtonRestore}`}
                               title="Activar"
                               onClick={() => toggleActivo(examen)}
                             >

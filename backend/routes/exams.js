@@ -14,8 +14,11 @@ router.get('/:codigo', examenController.obtenerPorCodigo);
 // Crear un nuevo examen
 router.post('/', examenController.crear);
 
-// Actualizar un examen
+// Actualizar un examen (PUT para reemplazar completamente)
 router.put('/:codigo', examenController.actualizar);
+
+// Actualizar parcialmente un examen (PATCH para actualización parcial)
+router.patch('/:codigo', examenController.actualizarParcial);
 
 // Eliminar un examen
 router.delete('/:codigo', examenController.eliminar);
