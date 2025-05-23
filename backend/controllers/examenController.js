@@ -40,7 +40,7 @@ const obtenerPorCodigo = async (req, res) => {
  */
 const crear = async (req, res) => {
   const { codigo, nombre_examen, preciousd, tiempo_entrega, informacion, tipo } = req.body;
-  const usuario = req.headers['x-usuario'] || 'sistema'; // Obtener usuario del header o usar 'sistema' por defecto
+  const usuario = 'admin'; // Siempre usar 'admin' como usuario
   const is_active = req.body.is_active !== undefined ? req.body.is_active : true; // Por defecto los exámenes están activos
   
   if (!codigo || !nombre_examen || !preciousd) {
@@ -84,7 +84,7 @@ const crear = async (req, res) => {
 const actualizar = async (req, res) => {
   const { codigo } = req.params;
   const { nombre_examen, preciousd, tiempo_entrega, informacion, tipo, is_active } = req.body;
-  const usuario = req.headers['x-usuario'] || 'sistema'; // Obtener usuario del header o usar 'sistema' por defecto
+  const usuario = 'admin'; // Siempre usar 'admin' como usuario
   
   if (!nombre_examen || !preciousd) {
     return res.status(400).json({ error: 'Nombre y precio son obligatorios' });
@@ -139,7 +139,7 @@ const actualizar = async (req, res) => {
  */
 const eliminar = async (req, res) => {
   const { codigo } = req.params;
-  const usuario = req.headers['x-usuario'] || 'sistema'; // Obtener usuario del header o usar 'sistema' por defecto
+  const usuario = 'admin'; // Siempre usar 'admin' como usuario
   
   const client = await pool.connect();
   

@@ -251,13 +251,8 @@ const AdminExamenes = () => {
         setError("El código ya existe. Por favor use otro código.");
         return;
       }
-
-      // Add user header for audit
-      const headers = {
-        'x-usuario': localStorage.getItem('username') || 'admin'
-      };
       
-      const response = await axios.post(API_URL, formData, { headers });
+      const response = await axios.post(API_URL, formData);
       await cargarExamenes(); // Refresh data
       setShowAddModal(false);
       setError(null); // Clear any previous error
@@ -270,13 +265,8 @@ const AdminExamenes = () => {
   // Update an existing exam
   const handleUpdateExamen = async (e) => {
     if (e) e.preventDefault();
-    try {
-      // Add user header for audit
-      const headers = {
-        'x-usuario': localStorage.getItem('username') || 'admin'
-      };
-      
-      await axios.put(`${API_URL}/${formData.codigo}`, formData, { headers });
+    try {      
+      await axios.put(`${API_URL}/${formData.codigo}`, formData);
       await cargarExamenes(); // Refresh data
       setShowEditModal(false);
     } catch (err) {
@@ -289,14 +279,11 @@ const AdminExamenes = () => {
   const toggleActivo = async (examen) => {
     try {
       const newStatus = !examen.is_active;
-      const headers = {
-        'x-usuario': localStorage.getItem('username') || 'admin'
-      };
       
       await axios.put(`${API_URL}/${examen.codigo}`, {
         ...examen,
         is_active: newStatus
-      }, { headers });
+      });
       
       await cargarExamenes(); // Refresh data
       
