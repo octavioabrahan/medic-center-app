@@ -163,23 +163,6 @@
   background-color: var(--sds-color-background-brand-tertiary);
 }
 
-.iconButtonArchive {
-  color: var(--sds-color-text-neutral-default);
-}
-
-.iconButtonArchive:hover {
-  background-color: var(--sds-color-background-neutral-tertiary);
-  color: var(--sds-color-text-danger-default);
-}
-
-.iconButtonRestore {
-  color: var(--sds-color-text-success-default);
-}
-
-.iconButtonRestore:hover {
-  background-color: var(--sds-color-background-success-tertiary);
-}
-
 /* Form styles */
 .adminExamenesForm {
   display: flex;

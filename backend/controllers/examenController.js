@@ -208,90 +208,11 @@ const obtenerHistorial = async (req, res) => {
   }
 };
 
-/**
- * Actualiza parcialmente un examen (PATCH)
- */
-const actualizarParcial = async (req, res) => {
-  const { codigo } = req.params;
-  const usuario = req.headers['x-usuario'] || 'sistema'; // Obtener usuario del header o usar 'sistema' por defecto
-  
-  if (Object.keys(req.body).length === 0) {
-    return res.status(400).json({ error: 'No se proporcionaron datos para actualizar' });
-  }
-  
-  const client = await pool.connect();
-  
-  try {
-    await client.query('BEGIN');
-    
-    // Obtener el estado actual del examen
-    const currentExamResult = await client.query('SELECT * FROM examenes WHERE codigo = $1', [codigo]);
-    
-    if (currentExamResult.rows.length === 0) {
-      await client.query('ROLLBACK');
-      return res.status(404).json({ error: 'Examen no encontrado' });
-    }
-    
-    const currentExam = currentExamResult.rows[0];
-    const isActiveAnterior = currentExam.is_active;
-    
-    // Construir la consulta dinámica para actualizar solo los campos proporcionados
-    let queryText = 'UPDATE examenes SET';
-    const queryParams = [];
-    const setParts = [];
-    let paramIndex = 1;
-    
-    // Iterar sobre cada propiedad en req.body
-    for (const [key, value] of Object.entries(req.body)) {
-      // Solo actualizar campos permitidos
-      if (['nombre_examen', 'preciousd', 'tiempo_entrega', 'informacion', 'tipo', 'is_active'].includes(key)) {
-        setParts.push(`${key} = $${paramIndex}`);
-        queryParams.push(value);
-        paramIndex++;
-      }
-    }
-    
-    // Si no hay campos para actualizar, salir
-    if (setParts.length === 0) {
-      await client.query('ROLLBACK');
-      return res.status(400).json({ error: 'No se proporcionaron campos válidos para actualizar' });
-    }
-    
-    // Completar la consulta
-    queryText += ` ${setParts.join(', ')} WHERE codigo = $${paramIndex} RETURNING *`;
-    queryParams.push(codigo);
-    
-    // Ejecutar la actualización
-    const result = await client.query(queryText, queryParams);
-    
-    // Si se cambió el estado de is_active, registrarlo en el historial
-    if ('is_active' in req.body && isActiveAnterior !== req.body.is_active) {
-      await client.query(
-        'INSERT INTO examen_historial (codigo_examen, is_active_anterior, is_active_nuevo, cambiado_por) VALUES ($1, $2, $3, $4)',
-        [codigo, isActiveAnterior, req.body.is_active, usuario]
-      );
-    }
-    
-    await client.query('COMMIT');
-    
-    logGeneral(`✅ Examen actualizado parcialmente: ${currentExam.nombre_examen} (${codigo}) por ${usuario}`);
-    res.json(result.rows[0]);
-  } catch (err) {
-    await client.query('ROLLBACK');
-    console.error('Error al actualizar parcialmente examen:', err);
-    logGeneral(`❌ Error al actualizar parcialmente examen: ${err.message}`);
-    res.status(500).json({ error: 'Error al actualizar parcialmente examen' });
-  } finally {
-    client.release();
-  }
-};
-
 module.exports = {
   obtenerTodos,
   obtenerPorCodigo,
   crear,
   actualizar,
   eliminar,
-  obtenerHistorial,
-  actualizarParcial
+  obtenerHistorial
 };
