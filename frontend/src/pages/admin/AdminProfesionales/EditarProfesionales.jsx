@@ -70,7 +70,8 @@ const EditarProfesionales = ({
       console.log('Todos los servicios:', serviciosResponse.data);
       console.log('Relaciones:', relacionesResponse.data);
       
-      const todosServicios = serviciosResponse.data || [];
+      // Filtrar solo los servicios activos (no archivados)
+      const todosServicios = (serviciosResponse.data || []).filter(servicio => servicio.is_active === true);
       
       // La respuesta del backend es { categorias: [...ids], servicios: [...ids] }
       // Extraer los IDs de servicios directamente de la respuesta
