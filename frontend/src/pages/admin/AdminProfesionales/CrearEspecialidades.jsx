@@ -27,6 +27,7 @@ const CrearEspecialidades = ({ isOpen, onClose, onSpecialtyCreated }) => {
   const [editandoId, setEditandoId] = useState(null);
   const [valorEditando, setValorEditando] = useState('');
   const [errorEdicion, setErrorEdicion] = useState('');
+  const [especialidadesEnUso, setEspecialidadesEnUso] = useState(new Set());
 
   // Máximo número de nuevas especialidades permitidas
   const MAX_NUEVAS_ESPECIALIDADES = 3;
@@ -49,12 +50,39 @@ const CrearEspecialidades = ({ isOpen, onClose, onSpecialtyCreated }) => {
     try {
       const response = await api.get('/especialidades');
       setEspecialidades(response.data);
+      
+      // Cargar también información de profesionales para verificar especialidades en uso
+      await verificarEspecialidadesEnUso(response.data);
+      
       setError(null);
     } catch (err) {
       console.error("Error al cargar especialidades:", err);
       setError("No se pudieron cargar las especialidades. Intente nuevamente.");
     } finally {
       setLoading(false);
+    }
+  };
+
+  // Función para verificar qué especialidades están siendo utilizadas por profesionales
+  const verificarEspecialidadesEnUso = async (especialidadesList) => {
+    try {
+      const profesionalesResponse = await api.get('/profesionales');
+      const profesionales = profesionalesResponse.data;
+      
+      const especialidadesUsadas = new Set();
+      
+      // Iterar sobre los profesionales para ver qué especialidades están asignadas
+      profesionales.forEach(profesional => {
+        if (profesional.especialidad_id) {
+          especialidadesUsadas.add(profesional.especialidad_id);
+        }
+      });
+      
+      setEspecialidadesEnUso(especialidadesUsadas);
+    } catch (err) {
+      console.error("Error al verificar especialidades en uso:", err);
+      // Si no se pueden cargar los profesionales, asumimos que todas pueden eliminarse
+      setEspecialidadesEnUso(new Set());
     }
   };
 
@@ -157,11 +185,15 @@ const CrearEspecialidades = ({ isOpen, onClose, onSpecialtyCreated }) => {
       });
 
       // Actualizar la lista local
-      setEspecialidades(prev => prev.map(esp => 
+      const nuevasEspecialidades = especialidades.map(esp => 
         esp.especialidad_id === editandoId 
           ? { ...esp, nombre: valorEditando.trim() }
           : esp
-      ));
+      );
+      setEspecialidades(nuevasEspecialidades);
+
+      // Actualizar información de especialidades en uso
+      await verificarEspecialidadesEnUso(nuevasEspecialidades);
 
       // Cancelar edición
       cancelarEdicion();
@@ -187,7 +219,12 @@ const CrearEspecialidades = ({ isOpen, onClose, onSpecialtyCreated }) => {
       await api.delete(`/especialidades/${especialidadId}`);
 
       // Actualizar la lista local
-      setEspecialidades(prev => prev.filter(esp => esp.especialidad_id !== especialidadId));
+      const nuevasEspecialidades = especialidades.filter(esp => esp.especialidad_id !== especialidadId);
+      setEspecialidades(nuevasEspecialidades);
+      
+      // Actualizar información de especialidades en uso
+      await verificarEspecialidadesEnUso(nuevasEspecialidades);
+      
       setError(null);
       
       // Si se está editando esta especialidad, cancelar la edición
@@ -360,8 +397,8 @@ const CrearEspecialidades = ({ isOpen, onClose, onSpecialtyCreated }) => {
                             variant="subtle"
                             size="small"
                             onClick={() => eliminarEspecialidad(especialidad.especialidad_id, especialidad.nombre)}
-                            title="Eliminar especialidad"
-                            disabled={loading}
+                            title={especialidadesEnUso.has(especialidad.especialidad_id) ? "Asignada a profesionales" : "Eliminar especialidad"}
+                            disabled={loading || especialidadesEnUso.has(especialidad.especialidad_id)}
                           >
                             <TrashIcon className="w-4 h-4" />
                           </Button>

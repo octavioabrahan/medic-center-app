@@ -208,6 +208,17 @@
   height: 16px;
 }
 
+/* Estilos específicos para botones deshabilitados */
+.especialidades-botones-accion .btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.especialidades-botones-accion .btn:disabled .w-4,
+.especialidades-botones-accion .btn:disabled .h-4 {
+  color: var(--sds-color-text-disabled-default, #a0a0a0);
+}
+
 /* Personalización para los botones icon dentro de especialidades */
 .especialidades-botones-accion .btn--icon {
   width: 28px;
