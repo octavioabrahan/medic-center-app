@@ -57,7 +57,7 @@ const ArchivoAdjunto = require('./models/archivoAdjunto');
 const corsOptions = {
   origin: true, //process.env.CORS_ORIGIN || 'http://localhost:3000',
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'x-usuario'], // <-- Agregado 'x-usuario'
   credentials: true,
   maxAge: 600 // Cache preflight por 10 minutos (600 segundos)
 };
