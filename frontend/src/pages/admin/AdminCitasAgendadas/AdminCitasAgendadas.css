@@ -566,10 +566,11 @@
   color: #007bff !important;
   display: flex !important;
   align-items: center !important;
-  gap: 8px !important;
+  gap: 6px !important;
   transition: color 0.2s ease !important;
   text-decoration: none !important;
   font-weight: 500 !important;
+  font-size: 14px !important;
 }
 
 .documento-enlace:hover {
@@ -579,4 +580,8 @@
 
 .documento-enlace svg {
   flex-shrink: 0 !important;
+}
+
+.documento-enlaces-container {
+  margin-top: 8px !important;
 }

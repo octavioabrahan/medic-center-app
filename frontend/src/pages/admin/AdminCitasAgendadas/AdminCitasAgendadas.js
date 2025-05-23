@@ -36,7 +36,6 @@ const AdminCitasAgendadas = () => {
   // Estados para modales
   const [currentAgendamiento, setCurrentAgendamiento] = useState(null);
   const [showDetailModal, setShowDetailModal] = useState(false);
-  const [archivoAdjunto, setArchivoAdjunto] = useState(null);
   
   // Estados para el selector de fechas
   const [showDatePicker, setShowDatePicker] = useState(false);
@@ -275,30 +274,6 @@ const AdminCitasAgendadas = () => {
     }
   };
 
-  // Obtener información del archivo adjunto
-  const obtenerArchivoAdjunto = async (archivoAdjuntoId) => {
-    if (!archivoAdjuntoId) {
-      setArchivoAdjunto(null);
-      return;
-    }
-    
-    try {
-      const response = await axios.get(`/api/archivos/${archivoAdjuntoId}`);
-      setArchivoAdjunto(response.data);
-    } catch (err) {
-      console.error('Error al obtener archivo adjunto:', err);
-      setArchivoAdjunto(null);
-    }
-  };
-
-  // Abrir/descargar archivo adjunto
-  const abrirArchivoAdjunto = () => {
-    if (archivoAdjunto) {
-      const url = `/api/archivos/${archivoAdjunto.id}`;
-      window.open(url, '_blank');
-    }
-  };
-
   // Formatear fecha para mostrar en la tabla
   const formatearFecha = (fechaStr) => {
     const fecha = new Date(fechaStr);
@@ -321,13 +296,6 @@ const AdminCitasAgendadas = () => {
   const mostrarDetalles = (agendamiento) => {
     setCurrentAgendamiento(agendamiento);
     setShowDetailModal(true);
-    
-    // Obtener archivo adjunto si existe
-    if (agendamiento.archivo_adjunto_id) {
-      obtenerArchivoAdjunto(agendamiento.archivo_adjunto_id);
-    } else {
-      setArchivoAdjunto(null);
-    }
   };
   
   return (
@@ -584,12 +552,46 @@ const AdminCitasAgendadas = () => {
                     </div>
                     
                     {/* Documento del convenio empresarial */}
-                    {currentAgendamiento.id_empresa && archivoAdjunto && (
+                    {currentAgendamiento.id_empresa && currentAgendamiento.archivo_adjunto_id && (
                       <div className="frame-81">
                         <div className="correo-electr-nico">Documento del convenio</div>
-                        <div className="documento-enlace" onClick={abrirArchivoAdjunto} style={{ cursor: 'pointer', color: '#007bff', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                          <DocumentIcon width={16} height={16} />
-                          <span>[Ver documento]</span>
+                        <div className="documento-enlaces-container">
+                          <div style={{ marginTop: '8px' }}>
+                            <a 
+                              href={`${process.env.REACT_APP_API_URL || ''}/api/archivos/${currentAgendamiento.archivo_adjunto_id}`}
+                              target="_blank" 
+                              rel="noopener noreferrer"
+                              className="documento-enlace"
+                              style={{ 
+                                color: '#007bff', 
+                                textDecoration: 'none',
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '6px',
+                                marginBottom: '8px',
+                                fontSize: '14px'
+                              }}
+                            >
+                              <DocumentIcon width={16} height={16} />
+                              <span>Ver documento</span>
+                            </a>
+                            <a 
+                              href={`${process.env.REACT_APP_API_URL || ''}/api/archivos/${currentAgendamiento.archivo_adjunto_id}?download=true`}
+                              download
+                              className="documento-enlace"
+                              style={{ 
+                                color: '#007bff', 
+                                textDecoration: 'none',
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '6px',
+                                fontSize: '14px'
+                              }}
+                            >
+                              <DocumentIcon width={16} height={16} />
+                              <span>Descargar documento</span>
+                            </a>
+                          </div>
                         </div>
                       </div>
                     )}
