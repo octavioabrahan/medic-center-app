@@ -254,7 +254,7 @@ const AdminExamenes = () => {
 
       // Add user header for audit
       const headers = {
-        'X-Usuario': localStorage.getItem('username') || 'admin'
+        'x-usuario': localStorage.getItem('username') || 'admin'
       };
       
       const response = await axios.post(API_URL, formData, { headers });
@@ -273,7 +273,7 @@ const AdminExamenes = () => {
     try {
       // Add user header for audit
       const headers = {
-        'X-Usuario': localStorage.getItem('username') || 'admin'
+        'x-usuario': localStorage.getItem('username') || 'admin'
       };
       
       await axios.put(`${API_URL}/${formData.codigo}`, formData, { headers });
@@ -290,7 +290,7 @@ const AdminExamenes = () => {
     try {
       const newStatus = !examen.is_active;
       const headers = {
-        'X-Usuario': localStorage.getItem('username') || 'admin'
+        'x-usuario': localStorage.getItem('username') || 'admin'
       };
       
       await axios.put(`${API_URL}/${examen.codigo}`, {
