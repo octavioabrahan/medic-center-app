@@ -620,6 +620,7 @@
   max-height: 300px;
   overflow-y: auto;
   margin-top: 12px;
+  width: 100%;
 }
 
 .historialTable {
