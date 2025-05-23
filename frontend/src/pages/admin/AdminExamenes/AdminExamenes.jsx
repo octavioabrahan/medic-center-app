@@ -69,8 +69,6 @@ const AdminExamenes = () => {
     try {
       const res = await axios.get(API_URL);
       setExamenes(res.data);
-      
-      // Se elimina la llamada a fetchLastChangeDates para simplificar y quitar auditoría
       setError(null);
     } catch (err) {
       console.error("Error al cargar exámenes:", err);
