@@ -6,6 +6,7 @@ import TagToggleGroup from '../../../components/Tag/TagToggleGroup';
 import TagToggle from '../../../components/Tag/TagToggle';
 import Table from '../../../components/Tables/Table';
 import Tag from '../../../components/Tag/Tag';
+import Button from '../../../components/Button/Button';
 import styles from './AdminCotizaciones.module.css';
 import { PencilSquareIcon } from '@heroicons/react/20/solid';
 import axios from 'axios';
@@ -110,6 +111,7 @@ const AdminCotizaciones = () => {
               estado === 'pendiente' ? 'warning' : 
               estado === 'confirmado' ? 'brand' : 
               estado === 'completado' ? 'positive' : 
+              estado === 'cancelado' ? 'danger' :
               'neutral'
             }
             variant="secondary"
@@ -119,16 +121,17 @@ const AdminCotizaciones = () => {
         
         // Crear acción con botón de editar
         const accion = (
-          <button 
-            className={styles.checkButton} 
+          <Button 
+            variant="icon" 
+            size="small"
             title="Procesar cotización"
             onClick={(e) => {
               e.stopPropagation(); // Evitar que el evento se propague
               handleProcessCotizacion(cot);
             }}
           >
-            <PencilSquareIcon className={styles.checkIcon} width={20} height={20} />
-          </button>
+            <PencilSquareIcon width={20} height={20} />
+          </Button>
         );
         
         return {
