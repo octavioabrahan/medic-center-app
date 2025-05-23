@@ -7,7 +7,6 @@ import TagToggleGroup from '../../../components/Tag/TagToggleGroup';
 import TagToggle from '../../../components/Tag/TagToggle';
 import Table from '../../../components/Tables/Table';
 import Tag from '../../../components/Tag/Tag';
-import { PencilSquareIcon } from '@heroicons/react/20/solid';
 import AgregarEmpresaConvenio from './AgregarEmpresaConvenio';
 import EditarEmpresaConvenio from './EditarEmpresaConvenio';
 import styles from './AdminConvenios.module.css';
@@ -186,16 +185,9 @@ const AdminConvenios = () => {
                   <Tag text="Archivado" scheme="neutral" variant="secondary" closeable={false} />
                 ),
                 acciones: e.is_active ? (
-                  <button 
-                    className="btn btn--icon btn--subtle btn--medium"
-                    title="Editar empresa"
-                    onClick={() => { 
-                      setCurrentEmpresa(e); 
-                      setShowEditarEmpresaModal(true); 
-                    }}
-                  >
-                    <PencilSquareIcon width={20} height={20} className="btn__icon" />
-                  </button>
+                  <Button size="small" variant="subtle" onClick={() => { setCurrentEmpresa(e); setShowEditarEmpresaModal(true); }}>
+                    Editar
+                  </Button>
                 ) : (
                   <Button size="small" variant="primary" onClick={() => handleActivateEmpresa(e.id_empresa)}>
                     Activar

@@ -359,20 +359,18 @@ const AdminHorarios = () => {
                         return (
                           <div className="admin-horarios__actions">
                             <button 
-                              className="btn btn--icon btn--subtle btn--medium" 
+                              className="admin-horarios__action-btn edit" 
                               onClick={() => handleEditHorario(row.horario)}
                               aria-label="Editar horario"
-                              title="Editar horario"
                             >
-                              <PencilIcon width={20} height={20} className="btn__icon" />
+                              <PencilIcon width={16} height={16} />
                             </button>
                             <button 
-                              className="btn btn--icon btn--subtle btn--medium" 
+                              className="admin-horarios__action-btn delete" 
                               onClick={() => handleDeleteHorario(row.horario.horario_id)}
                               aria-label="Eliminar horario"
-                              title="Eliminar horario"
                             >
-                              <TrashIcon width={20} height={20} className="btn__icon" />
+                              <TrashIcon width={16} height={16} />
                             </button>
                           </div>
                         );
