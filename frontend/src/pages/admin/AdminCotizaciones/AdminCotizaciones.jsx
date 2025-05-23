@@ -121,18 +121,16 @@ const AdminCotizaciones = () => {
         
         // Crear acción con botón de editar
         const accion = (
-          <Button 
-            variant="subtle" 
-            size="small"
-            className="btn--icon"
+          <button 
+            className="btn btn--icon btn--subtle btn--medium"
             title="Procesar cotización"
             onClick={(e) => {
               e.stopPropagation(); // Evitar que el evento se propague
               handleProcessCotizacion(cot);
             }}
           >
-            <PencilSquareIcon width={20} height={20} />
-          </Button>
+            <PencilSquareIcon width={20} height={20} className="btn__icon" />
+          </button>
         );
         
         return {
