@@ -524,9 +524,8 @@ const AdminCitasAgendadas = () => {
           {/* Modal para detalles */}
           {showDetailModal && currentAgendamiento && (
             <div className="admin-citas-agendadas__modal-overlay modal-appointment-detail">
-              <div className="admin-citas-agendadas__modal-content">
-                <div className="modal-body">
-                  <div className="text">
+              <div className="modal-body">
+                <div className="text">
                   <div className="detalle-de-la-cita">Detalle de la cita</div>
                   
                   {/* Información del paciente */}
@@ -679,9 +678,6 @@ const AdminCitasAgendadas = () => {
                       </div>
                     )}
                   </div>
-                </div>
-                
-                {/* Cerrar div text */}
                 </div>
                 
                 {/* Botón de cerrar */}
