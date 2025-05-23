@@ -180,10 +180,10 @@ const archivar = async (req, res) => {
       });
     }
     
-    // Explícitamente preservar el campo tipo para evitar conversiones no deseadas
+    // Usar una consulta simple que solo modifique is_active, sin tocar otros campos
     const result = await pool.query(
-      'UPDATE examenes SET is_active = false, tipo = $2 WHERE codigo = $1 RETURNING *',
-      [codigo, examenActual.tipo]
+      'UPDATE examenes SET is_active = false WHERE codigo = $1 RETURNING *',
+      [codigo]
     );
     
     if (result.rows.length === 0) {
@@ -195,9 +195,18 @@ const archivar = async (req, res) => {
       codigo: result.rows[0].codigo,
       is_active_anterior: examenActual.is_active,
       is_active_nuevo: result.rows[0].is_active,
-      tipo_anterior: examenActual.tipo === null ? "NULL" : (examenActual.tipo === "" ? "CADENA_VACIA" : examenActual.tipo),
-      tipo_nuevo: result.rows[0].tipo === null ? "NULL" : (result.rows[0].tipo === "" ? "CADENA_VACIA" : result.rows[0].tipo)
+      tipo: result.rows[0].tipo // Solo verificar el tipo final
     });
+    
+    // Verificar que is_active realmente cambió en la base de datos
+    const verificacion = await pool.query(
+      'SELECT is_active FROM examenes WHERE codigo = $1',
+      [codigo]
+    );
+    
+    if (verificacion.rows.length > 0) {
+      console.log(`[ExamenController] Verificación post-archivado: is_active = ${verificacion.rows[0].is_active}`);
+    }
     
     res.json({
       ...result.rows[0],
@@ -260,10 +269,10 @@ const desarchivar = async (req, res) => {
       });
     }
     
-    // Explícitamente preservar el campo tipo para evitar conversiones no deseadas
+    // Usar una consulta simple que solo modifique is_active, sin tocar otros campos
     const result = await pool.query(
-      'UPDATE examenes SET is_active = true, tipo = $2 WHERE codigo = $1 RETURNING *',
-      [codigo, examenActual.tipo]
+      'UPDATE examenes SET is_active = true WHERE codigo = $1 RETURNING *',
+      [codigo]
     );
     
     if (result.rows.length === 0) {
@@ -275,9 +284,18 @@ const desarchivar = async (req, res) => {
       codigo: result.rows[0].codigo,
       is_active_anterior: examenActual.is_active,
       is_active_nuevo: result.rows[0].is_active,
-      tipo_anterior: examenActual.tipo === null ? "NULL" : (examenActual.tipo === "" ? "CADENA_VACIA" : examenActual.tipo),
-      tipo_nuevo: result.rows[0].tipo === null ? "NULL" : (result.rows[0].tipo === "" ? "CADENA_VACIA" : result.rows[0].tipo)
+      tipo: result.rows[0].tipo // Solo verificar el tipo final
     });
+    
+    // Verificar que is_active realmente cambió en la base de datos
+    const verificacion = await pool.query(
+      'SELECT is_active FROM examenes WHERE codigo = $1',
+      [codigo]
+    );
+    
+    if (verificacion.rows.length > 0) {
+      console.log(`[ExamenController] Verificación post-desarchivado: is_active = ${verificacion.rows[0].is_active}`);
+    }
     
     res.json({
       ...result.rows[0],

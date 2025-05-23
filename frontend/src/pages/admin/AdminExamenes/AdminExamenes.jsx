@@ -83,7 +83,10 @@ const AdminExamenes = () => {
     setLoading(true);
     console.log(`[AdminExamenes] Cargando exámenes desde: ${API_URL}`);
     try {
-      const res = await axios.get(API_URL);
+      // Forzar skip de cache agregando timestamp como query param
+      const timestamp = new Date().getTime();
+      const res = await axios.get(`${API_URL}?_=${timestamp}`);
+      
       console.log(`[AdminExamenes] Exámenes cargados: ${res.data.length}`);
       
       // Verificar si hay algún examen con estado inconsistente
@@ -91,6 +94,14 @@ const AdminExamenes = () => {
       if (examenesSospechosos.length > 0) {
         console.warn(`[AdminExamenes] Se encontraron ${examenesSospechosos.length} exámenes con estado inconsistente:`, 
           examenesSospechosos.map(e => ({ codigo: e.codigo, nombre: e.nombre_examen, is_active: e.is_active }))
+        );
+      }
+      
+      // Verificar valores del campo "tipo"
+      const tiposInusuales = res.data.filter(e => e.tipo === "");
+      if (tiposInusuales.length > 0) {
+        console.warn(`[AdminExamenes] Se encontraron ${tiposInusuales.length} exámenes con tipo = "" (cadena vacía):`, 
+          tiposInusuales.map(e => ({ codigo: e.codigo, nombre: e.nombre_examen, tipo: JSON.stringify(e.tipo) }))
         );
       }
       
@@ -273,7 +284,21 @@ const AdminExamenes = () => {
         console.warn(`[AdminExamenes] Posible inconsistencia: El estado devuelto (${response.data?.is_active}) no coincide con lo esperado (${!examen.is_active})`);
       }
       
-      await cargarExamenes(); // Refresh data
+      // Aplicar el cambio localmente para actualización inmediata de la UI
+      setExamenes(prevExamenes => prevExamenes.map(e => {
+        if (e.codigo === examen.codigo) {
+          return {
+            ...e,
+            is_active: !examen.is_active
+          };
+        }
+        return e;
+      }));
+      
+      // Luego cargar todos los datos frescos del servidor
+      setTimeout(() => {
+        cargarExamenes(); // Refresh data con un pequeño delay
+      }, 200);
       
       if (showEditModal) {
         setShowEditModal(false);
