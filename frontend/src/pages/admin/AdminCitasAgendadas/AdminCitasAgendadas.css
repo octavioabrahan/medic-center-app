@@ -559,3 +559,24 @@
   cursor: pointer !important;
   color: var(--sds-color-icon-brand-default) !important;
 }
+
+/* Estilos para el enlace del documento del convenio */
+.documento-enlace {
+  cursor: pointer !important;
+  color: #007bff !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  transition: color 0.2s ease !important;
+  text-decoration: none !important;
+  font-weight: 500 !important;
+}
+
+.documento-enlace:hover {
+  color: #0056b3 !important;
+  text-decoration: underline !important;
+}
+
+.documento-enlace svg {
+  flex-shrink: 0 !important;
+}

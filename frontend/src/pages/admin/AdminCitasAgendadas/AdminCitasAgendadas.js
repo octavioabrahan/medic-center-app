@@ -7,7 +7,7 @@ import Calendar from '../../../components/common/Calendar';
 import Table from '../../../components/Tables/Table';
 import Tag from '../../../components/Tag/Tag';
 import Button from '../../../components/Button/Button';
-import { CheckIcon, XMarkIcon } from '@heroicons/react/24/outline';
+import { CheckIcon, XMarkIcon, DocumentIcon } from '@heroicons/react/24/outline';
 import { useLocation } from 'react-router-dom';
 import axios from 'axios';
 import { format } from 'date-fns';
@@ -36,6 +36,7 @@ const AdminCitasAgendadas = () => {
   // Estados para modales
   const [currentAgendamiento, setCurrentAgendamiento] = useState(null);
   const [showDetailModal, setShowDetailModal] = useState(false);
+  const [archivoAdjunto, setArchivoAdjunto] = useState(null);
   
   // Estados para el selector de fechas
   const [showDatePicker, setShowDatePicker] = useState(false);
@@ -274,6 +275,30 @@ const AdminCitasAgendadas = () => {
     }
   };
 
+  // Obtener información del archivo adjunto
+  const obtenerArchivoAdjunto = async (archivoAdjuntoId) => {
+    if (!archivoAdjuntoId) {
+      setArchivoAdjunto(null);
+      return;
+    }
+    
+    try {
+      const response = await axios.get(`/api/archivos/${archivoAdjuntoId}`);
+      setArchivoAdjunto(response.data);
+    } catch (err) {
+      console.error('Error al obtener archivo adjunto:', err);
+      setArchivoAdjunto(null);
+    }
+  };
+
+  // Abrir/descargar archivo adjunto
+  const abrirArchivoAdjunto = () => {
+    if (archivoAdjunto) {
+      const url = `/api/archivos/${archivoAdjunto.id}`;
+      window.open(url, '_blank');
+    }
+  };
+
   // Formatear fecha para mostrar en la tabla
   const formatearFecha = (fechaStr) => {
     const fecha = new Date(fechaStr);
@@ -296,6 +321,13 @@ const AdminCitasAgendadas = () => {
   const mostrarDetalles = (agendamiento) => {
     setCurrentAgendamiento(agendamiento);
     setShowDetailModal(true);
+    
+    // Obtener archivo adjunto si existe
+    if (agendamiento.archivo_adjunto_id) {
+      obtenerArchivoAdjunto(agendamiento.archivo_adjunto_id);
+    } else {
+      setArchivoAdjunto(null);
+    }
   };
   
   return (
@@ -550,6 +582,18 @@ const AdminCitasAgendadas = () => {
                       <div className="correo-electr-nico">Correo electrónico</div>
                       <div className="no-aplica">{currentAgendamiento.paciente_email || 'No aplica'}</div>
                     </div>
+                    
+                    {/* Documento del convenio empresarial */}
+                    {currentAgendamiento.id_empresa && archivoAdjunto && (
+                      <div className="frame-81">
+                        <div className="correo-electr-nico">Documento del convenio</div>
+                        <div className="documento-enlace" onClick={abrirArchivoAdjunto} style={{ cursor: 'pointer', color: '#007bff', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                          <DocumentIcon width={16} height={16} />
+                          <span>[Ver documento]</span>
+                        </div>
+                      </div>
+                    )}
+                    
                     {currentAgendamiento.fecha_nacimiento && (
                       <div className="frame-80">
                         <div className="fecha-de-nacimiento">Fecha de nacimiento</div>
