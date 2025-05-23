@@ -42,6 +42,9 @@ const AdminExamenes = () => {
   const [isFormValid, setIsFormValid] = useState(false);
   const [codigoExists, setCodigoExists] = useState(false);
 
+  // Estado para prevenir clicks múltiples en el mismo examen
+  const [processingExams, setProcessingExams] = useState(new Set());
+
   // Form data state
   const [formData, setFormData] = useState({
     codigo: "",
@@ -272,11 +275,20 @@ const AdminExamenes = () => {
 
   // Toggle active status
   const toggleActivo = async (examen) => {
-    console.log(`[AdminExamenes] Intentando ${!examen.is_active ? 'activar' : 'archivar'} examen:`, {
+    // Prevenir múltiples clicks rápidos en el mismo examen
+    if (loading || processingExams.has(examen.codigo)) {
+      console.log(`[AdminExamenes] Operación en curso para examen ${examen.codigo}, ignorando click`);
+      return false;
+    }
+
+    // Verificar que el examen tenga el estado esperado antes de proceder
+    const estadoActual = examen.is_active;
+    console.log(`[AdminExamenes] Intentando ${!estadoActual ? 'activar' : 'archivar'} examen:`, {
       codigo: examen.codigo,
       nombre: examen.nombre_examen,
-      estado_actual: examen.is_active ? 'activo' : 'archivado',
-      tipo: examen.tipo
+      estado_actual: estadoActual ? 'activo' : 'archivado',
+      tipo: examen.tipo,
+      timestamp: new Date().toISOString()
     });
     
     try {
@@ -286,37 +298,42 @@ const AdminExamenes = () => {
         return false;
       }
       
+      // Marcar este examen como en procesamiento
+      setProcessingExams(prev => new Set([...prev, examen.codigo]));
+      setLoading(true);
+      
       // Usar endpoint específico de archivar/desarchivar en lugar de actualización general
-      const endpoint = !examen.is_active 
+      const endpoint = !estadoActual 
         ? `${API_ENDPOINT}/${examen.codigo}/desarchivar` 
         : `${API_ENDPOINT}/${examen.codigo}/archivar`;
       
       console.log(`[AdminExamenes] Llamando a endpoint: ${endpoint}`);
       
-      // Usar api.put en lugar de axios.put - ESTE ES EL CAMBIO CRÍTICO
+      // Hacer solo la llamada al servidor, sin modificaciones locales
       const response = await api.put(endpoint);
       console.log(`[AdminExamenes] Respuesta del servidor:`, response.data);
       
-      if (response.data && (response.data.is_active === !examen.is_active)) {
-        console.log(`[AdminExamenes] Estado cambiado correctamente a: ${response.data.is_active ? 'activo' : 'archivado'}`);
-      } else {
-        console.warn(`[AdminExamenes] Posible inconsistencia: El estado devuelto (${response.data?.is_active}) no coincide con lo esperado (${!examen.is_active})`);
+      // Verificar que la respuesta sea válida
+      if (!response.data || typeof response.data.is_active !== 'boolean') {
+        console.error(`[AdminExamenes] Respuesta inválida del servidor:`, response.data);
+        setError("Respuesta inválida del servidor");
+        return false;
       }
       
-      // Aplicar el cambio localmente para actualización inmediata de la UI
-      setExamenes(prevExamenes => prevExamenes.map(e => {
-        if (e.codigo === examen.codigo) {
-          return {
-            ...e,
-            is_active: !examen.is_active
-          };
+      const expectedState = !estadoActual;
+      if (response.data.is_active === expectedState) {
+        console.log(`[AdminExamenes] Estado cambiado correctamente a: ${response.data.is_active ? 'activo' : 'archivado'}`);
+      } else {
+        console.warn(`[AdminExamenes] Inconsistencia: Estado esperado (${expectedState}) vs Estado recibido (${response.data.is_active})`);
+        
+        // Si el examen ya estaba en el estado objetivo, no es un error
+        if (response.data.mensaje && response.data.mensaje.includes('ya estaba')) {
+          console.log(`[AdminExamenes] El examen ya estaba en el estado correcto: ${response.data.mensaje}`);
         }
-        return e;
-      }));
+      }
       
-      // Luego recargar todos los datos frescos del servidor
-      const freshDataResponse = await api.get(API_ENDPOINT);
-      setExamenes(freshDataResponse.data);
+      // Recargar SOLO los datos del servidor, sin modificaciones locales previas
+      await cargarExamenes();
       
       if (showEditModal) {
         setShowEditModal(false);
@@ -328,10 +345,19 @@ const AdminExamenes = () => {
       console.error('[AdminExamenes] Detalles del error:', {
         mensaje: err.message,
         respuesta: err.response?.data,
-        codigo_estado: err.response?.status
+        codigo_estado: err.response?.status,
+        timestamp: new Date().toISOString()
       });
-      setError(`Error al ${!examen.is_active ? 'activar' : 'archivar'} el examen. Detalles: ${err.message}`);
+      setError(`Error al ${!estadoActual ? 'activar' : 'archivar'} el examen. Detalles: ${err.message}`);
       return false;
+    } finally {
+      // Remover el examen del conjunto de procesamiento
+      setProcessingExams(prev => {
+        const newSet = new Set(prev);
+        newSet.delete(examen.codigo);
+        return newSet;
+      });
+      setLoading(false);
     }
   };
 
@@ -403,6 +429,11 @@ const AdminExamenes = () => {
             </div>
           ) : (
             <div className={styles.adminExamenesTableContainer}>
+              {loading && (
+                <div className={styles.adminExamenesLoadingOverlay}>
+                  <div className={styles.adminExamenesLoadingText}>Actualizando...</div>
+                </div>
+              )}
               <Table
                 headers={[
                   'Código',
@@ -452,6 +483,8 @@ const AdminExamenes = () => {
                   if (column === 'acciones') {
                     const isActive = row.estado;
                     const examen = row.examen_completo;
+                    const isProcessing = processingExams.has(examen.codigo);
+                    
                     return (
                       <div className={styles.adminExamenesActions}>
                         {isActive ? (
@@ -460,6 +493,7 @@ const AdminExamenes = () => {
                               className={styles.iconButton}
                               title="Editar"
                               onClick={() => handleEditExamen(examen)}
+                              disabled={loading || isProcessing}
                             >
                               <PencilSquareIcon width={20} height={20} />
                             </button>
@@ -470,8 +504,13 @@ const AdminExamenes = () => {
                               className={styles.iconButton}
                               title="Activar"
                               onClick={() => toggleActivo(examen)}
+                              disabled={loading || isProcessing}
                             >
-                              <ArrowPathIcon width={20} height={20} />
+                              {isProcessing ? (
+                                <div className={styles.loadingSpinner}></div>
+                              ) : (
+                                <ArrowPathIcon width={20} height={20} />
+                              )}
                             </button>
                           </>
                         )}
@@ -645,6 +684,7 @@ const AdminExamenes = () => {
                 size="medium"
                 onClick={() => toggleActivo(currentExamen)}
                 className={styles.archivarButton}
+                disabled={loading || (currentExamen && processingExams.has(currentExamen.codigo))}
               >
                 <span className={styles.archiveIconWrapper}>
                   <svg width="16" height="17" viewBox="0 0 16 17" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -652,7 +692,9 @@ const AdminExamenes = () => {
                     <path fillRule="evenodd" clipRule="evenodd" d="M1.5998 6.4999H14.3998L13.7506 12.6674C13.6649 13.4817 12.9782 14.0999 12.1594 14.0999H3.84022C3.02141 14.0999 2.33473 13.4817 2.24901 12.6674L1.5998 6.4999ZM5.5998 9.2999C5.5998 8.85807 5.95798 8.4999 6.3998 8.4999H9.5998C10.0416 8.4999 10.3998 8.85807 10.3998 9.2999C10.3998 9.74173 10.0416 10.0999 9.5998 10.0999H6.3998C5.95798 10.0999 5.5998 9.74173 5.5998 9.2999Z" fill="#900B09"/>
                   </svg>
                 </span>
-                <span className={styles.archivarButtonText}>Archivar</span>
+                <span className={styles.archivarButtonText}>
+                  {(loading || (currentExamen && processingExams.has(currentExamen.codigo))) ? "Procesando..." : "Archivar"}
+                </span>
               </Button>
               
               <div className={styles.frame77}>

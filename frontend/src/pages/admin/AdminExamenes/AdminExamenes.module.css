@@ -114,6 +114,27 @@
   width: 100%;
   height: 100%;
   overflow: auto;
+  position: relative;
+}
+
+.adminExamenesLoadingOverlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(255, 255, 255, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+}
+
+.adminExamenesLoadingText {
+  color: var(--sds-color-text-brand-default);
+  font-size: 16px;
+  font-family: 'Inter', sans-serif;
+  font-weight: 500;
 }
 
 /* Add more space for the name column */
@@ -157,10 +178,16 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  transition: background-color 0.2s ease, opacity 0.2s ease;
 }
 
-.iconButton:hover {
+.iconButton:hover:not(:disabled) {
   background-color: var(--sds-color-background-brand-tertiary);
+}
+
+.iconButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 /* Form styles */
@@ -249,10 +276,16 @@
   background: transparent;
   border: none;
   color: var(--sds-color-text-danger-default, #900B09);
+  transition: background-color 0.2s ease, opacity 0.2s ease;
 }
 
-.archivarButton:hover {
+.archivarButton:hover:not(:disabled) {
   background: rgba(144, 11, 9, 0.08);
+}
+
+.archivarButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 .archiveIconWrapper {
