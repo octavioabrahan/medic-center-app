@@ -128,11 +128,12 @@
   display: flex;
   flex-direction: column;
   gap: 24px;
-  align-items: flex-end;
+  align-items: flex-start; /* Cambiado de flex-end a flex-start para mejor alineación */
   justify-content: flex-start;
   flex: 1;
   min-width: 300px;
-  overflow: hidden;
+  overflow-y: auto;
+  overflow-x: hidden;
   max-height: 600px;
 }
 
@@ -256,7 +257,9 @@
   align-items: flex-start;
   justify-content: flex-start;
   align-self: stretch;
-  overflow: hidden;
+  overflow-x: hidden;
+  overflow-y: auto;
+  max-height: 300px;
 }
 
 .col {
@@ -275,7 +278,8 @@
   gap: 0px;
   align-items: flex-start;
   justify-content: flex-start;
-  width: 314px;
+  align-self: stretch;
+  flex: 3;
 }
 
 .col3 {
@@ -284,6 +288,8 @@
   gap: 0px;
   align-items: flex-start;
   justify-content: flex-start;
+  align-self: stretch;
+  flex: 1;
 }
 
 .headerCell {
@@ -296,6 +302,10 @@
   align-items: flex-start;
   justify-content: center;
   align-self: stretch;
+  width: 100%;
+  position: sticky;
+  top: 0;
+  z-index: 1;
 }
 
 .text {
@@ -303,7 +313,8 @@
   flex-direction: row;
   gap: 0px;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
+  width: 100%;
 }
 
 .text2 {
@@ -312,6 +323,7 @@
   font-size: 14px;
   line-height: 140%;
   font-weight: 600;
+  width: 100%;
 }
 
 .cell {
@@ -337,7 +349,8 @@
   align-items: flex-start;
   justify-content: center;
   align-self: stretch;
-  height: 58px;
+  min-height: 42px;
+  width: 100%;
 }
 
 .text3 {
@@ -346,6 +359,9 @@
   font-size: 16px;
   line-height: 140%;
   font-weight: 400;
+  width: 100%;
+  white-space: normal;
+  overflow-wrap: break-word;
 }
 
 .text4 {
@@ -355,6 +371,7 @@
   align-items: center;
   justify-content: flex-start;
   align-self: stretch;
+  width: 100%;
 }
 
 .infoDelCotizante {

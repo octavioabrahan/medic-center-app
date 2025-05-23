@@ -112,12 +112,6 @@ const SeguimientoCotizaciones = ({ cotizacion, onClose }) => {
 
   // Manejar guardar nuevo seguimiento
   const handleSaveFollowUp = async () => {
-    if (!comentarios || !proximaAccion) {
-      // Validación básica
-      setError('Por favor, completa todos los campos obligatorios.');
-      return;
-    }
-
     setLoading(true);
     setError(null);
     
@@ -286,14 +280,14 @@ const SeguimientoCotizaciones = ({ cotizacion, onClose }) => {
                   </div>
                   {Array.isArray(cotizacion.examenes) && cotizacion.examenes.length > 0 ? (
                     cotizacion.examenes.map((exam, index) => (
-                      <div key={`nombre-${index}`} className={styles.cell2}>
+                      <div key={`nombre-${index}`} className={styles.cell}>
                         <div className={styles.text}>
                           <div className={styles.text3}>{exam.nombre_examen || '-'}</div>
                         </div>
                       </div>
                     ))
                   ) : (
-                    <div className={styles.cell2}>
+                    <div className={styles.cell}>
                       <div className={styles.text}>
                         <div className={styles.text3}>Sin datos</div>
                       </div>
@@ -308,14 +302,14 @@ const SeguimientoCotizaciones = ({ cotizacion, onClose }) => {
                   </div>
                   {Array.isArray(cotizacion.examenes) && cotizacion.examenes.length > 0 ? (
                     cotizacion.examenes.map((exam, index) => (
-                      <div key={`precio-${index}`} className={styles.cell2}>
+                      <div key={`precio-${index}`} className={styles.cell}>
                         <div className={styles.text4}>
                           <div className={styles.text3}>$ {formatNumber(exam.precio_unitario || 0)}</div>
                         </div>
                       </div>
                     ))
                   ) : (
-                    <div className={styles.cell2}>
+                    <div className={styles.cell}>
                       <div className={styles.text4}>
                         <div className={styles.text3}>$ 0.00</div>
                       </div>
@@ -418,7 +412,6 @@ const SeguimientoCotizaciones = ({ cotizacion, onClose }) => {
                   variant="neutral"
                   size="medium"
                   onClick={handleSaveFollowUp}
-                  disabled={!comentarios || !proximaAccion || loading}
                 >
                   {loading ? 'Guardando...' : 'Guardar'}
                 </Button>
