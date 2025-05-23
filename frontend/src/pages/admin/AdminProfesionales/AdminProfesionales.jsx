@@ -191,7 +191,7 @@ const AdminProfesionales = () => {
           </div>
           <div className="admin-profesionales__button-group">
             <Button variant="neutral" onClick={() => setShowAddEspecialidadModal(true)}>
-              Crear especialidad
+              Especialidades
             </Button>
             <Button
               variant="primary"
