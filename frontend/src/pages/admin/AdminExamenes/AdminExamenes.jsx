@@ -80,25 +80,8 @@ const AdminExamenes = () => {
     }
   };
 
-  // Fetch the last change date for each exam - simplificada sin historial
-  const fetchLastChangeDates = async (codigos) => {
-    // Simplificada para eliminar auditorías, dejando solo la estructura necesaria
-    setLastChangeDate({});
-  };
-
-  // Fetch history for a specific exam - simplificada
-  const fetchExamenHistorial = async (codigo) => {
-    setLoadingHistorial(true);
-    try {
-      // Simplificado para eliminar auditorías
-      setHistorialExamen([]);
-    } catch (err) {
-      console.error('Error al obtener historial:', err);
-      setHistorialExamen([]);
-    } finally {
-      setLoadingHistorial(false);
-    }
-  };
+  // Se eliminan las funciones de fetchLastChangeDates y fetchExamenHistorial
+  // ya que no son necesarias en la versión simplificada
 
   // Apply filters to the exam list
   const applyFilters = () => {
