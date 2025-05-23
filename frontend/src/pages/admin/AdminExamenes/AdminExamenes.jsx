@@ -3,8 +3,6 @@ import AdminLayout from '../../../components/AdminDashboard/AdminLayout';
 import Button from '../../../components/Button/Button';
 import SearchField from '../../../components/Inputs/SearchField';
 import CheckboxField from '../../../components/Inputs/CheckboxField';
-import TagToggleGroup from '../../../components/Tag/TagToggleGroup';
-import TagToggle from '../../../components/Tag/TagToggle';
 import Table from '../../../components/Tables/Table';
 import Tag from '../../../components/Tag/Tag';
 import Modal from '../../../components/Modal/Modal';
@@ -27,7 +25,6 @@ const AdminExamenes = () => {
   const [filteredExamenes, setFilteredExamenes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [lastChangeDate, setLastChangeDate] = useState({});
   
   // State for filters and sorting
   const [searchTerm, setSearchTerm] = useState('');
@@ -37,10 +34,7 @@ const AdminExamenes = () => {
   // State for modals
   const [showAddModal, setShowAddModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
-  const [showHistorialModal, setShowHistorialModal] = useState(false);
   const [currentExamen, setCurrentExamen] = useState(null);
-  const [historialExamen, setHistorialExamen] = useState([]);
-  const [loadingHistorial, setLoadingHistorial] = useState(false);
   
   // Form validation state
   const [isFormValid, setIsFormValid] = useState(false);
@@ -60,7 +54,7 @@ const AdminExamenes = () => {
   // Load exams on component mount
   useEffect(() => {
     cargarExamenes();
-  }, []);
+  }, [showArchived]);
 
   // Apply filters when data or filter settings change
   useEffect(() => {
@@ -73,53 +67,12 @@ const AdminExamenes = () => {
     try {
       const res = await axios.get(API_URL);
       setExamenes(res.data);
-      
-      // Get last change date for each exam
-      const examenesIds = res.data.map(examen => examen.codigo);
-      await fetchLastChangeDates(examenesIds);
-      
       setError(null);
     } catch (err) {
       console.error("Error al cargar exámenes:", err);
       setError('No se pudieron cargar los exámenes y servicios.');
     } finally {
       setLoading(false);
-    }
-  };
-
-  // Fetch the last change date for each exam
-  const fetchLastChangeDates = async (codigos) => {
-    try {
-      const changeDates = {};
-      
-      for (const codigo of codigos) {
-        try {
-          const response = await axios.get(`${API_URL}/${codigo}/historial`);
-          if (response.data && response.data.length > 0) {
-            changeDates[codigo] = response.data[0].fecha_cambio;
-          }
-        } catch (err) {
-          console.error(`Error al obtener historial para examen ${codigo}:`, err);
-        }
-      }
-      
-      setLastChangeDate(changeDates);
-    } catch (err) {
-      console.error('Error al obtener fechas de modificación:', err);
-    }
-  };
-
-  // Fetch history for a specific exam
-  const fetchExamenHistorial = async (codigo) => {
-    setLoadingHistorial(true);
-    try {
-      const response = await axios.get(`${API_URL}/${codigo}/historial`);
-      setHistorialExamen(response.data);
-    } catch (err) {
-      console.error('Error al obtener historial:', err);
-      setHistorialExamen([]);
-    } finally {
-      setLoadingHistorial(false);
     }
   };
 
@@ -234,13 +187,6 @@ const AdminExamenes = () => {
     setShowEditModal(true);
   };
 
-  // Open modal to view exam history
-  const handleViewHistorial = (examen) => {
-    setCurrentExamen(examen);
-    fetchExamenHistorial(examen.codigo);
-    setShowHistorialModal(true);
-  };
-
   // Save a new exam
   const handleAddExamen = async (e) => {
     if (e) e.preventDefault();
@@ -275,205 +221,218 @@ const AdminExamenes = () => {
     }
   };
 
-  // Toggle active status
-  const toggleActivo = async (examen) => {
+  // Cambiar estado activo/inactivo del examen
+  const cambiarEstadoExamen = async (codigo, activo) => {
     try {
-      // Usar endpoint específico de archivar/desarchivar en lugar de actualización general
-      const endpoint = !examen.is_active 
-        ? `${API_URL}/${examen.codigo}/desarchivar` 
-        : `${API_URL}/${examen.codigo}/archivar`;
+      if (!codigo) {
+        console.error("Error: Código de examen no definido");
+        setError("Error: Código de examen no definido");
+        return false;
+      }
+      
+      console.log(`Cambiando estado del examen ID: ${codigo} a ${activo ? 'activo' : 'inactivo'}`);
+      
+      // Use the endpoint format like servicios
+      const endpoint = activo ? 
+        `${API_URL}/${codigo}/desarchivar` : 
+        `${API_URL}/${codigo}/archivar`;
       
       await axios.put(endpoint);
       
-      await cargarExamenes(); // Refresh data
+      // Update the list after change
+      await cargarExamenes();
       
-      if (showEditModal) {
+      setError(null);
+      setCurrentExamen(null);
+      return true;
+    } catch (err) {
+      console.error("Error al cambiar estado del examen:", err);
+      setError(`Error al cambiar el estado del examen: ${err.response?.data?.error || err.message}`);
+      return false;
+    }
+  };
+
+  // Confirmar archivar examen
+  const confirmarArchivarExamen = async (examen) => {
+    try {
+      if (!examen) {
+        console.error('Error: Examen no definido');
+        setError('Error: Examen no definido');
+        return false;
+      }
+      
+      console.log('AdminExamenes -> confirmarArchivarExamen -> examen recibido:', examen);
+      
+      // Asegurar que tenemos un código válido
+      const codigo = examen?.codigo;
+      
+      if (!codigo) {
+        console.error('Error: No se puede archivar, código de examen no válido', examen);
+        setError('Error: Código de examen no válido');
+        return false;
+      }
+      
+      console.log(`Intentando archivar examen con código: ${codigo}`);
+      const result = await cambiarEstadoExamen(codigo, false);
+      console.log('Resultado de cambiarEstadoExamen:', result);
+      
+      if (result) {
+        // Solo cerrar el modal si la operación fue exitosa
         setShowEditModal(false);
+        return true;
+      } else {
+        return false;
       }
     } catch (err) {
-      console.error('Error:', err);
-      setError(`Error al ${!examen.is_active ? 'activar' : 'desactivar'} el examen`);
+      console.error('Error al archivar examen:', err);
+      setError('Error al archivar el examen: ' + (err.message || err));
+      return false;
     }
   };
 
   return (
     <AdminLayout activePage="/admin/examenes">
       <div className={styles.adminExamenesContent}>
-        {/* Page header with title and add button */}
-        <div className={styles.adminExamenesPageHeader}>
-          <div className={styles.adminExamenesMenuHeader}>
-            <div className={styles.adminExamenesTitle}>Exámenes y servicios</div>
+        {/* Header */}
+        <div className={styles.adminExamenesHeader}>
+          <div className={styles.adminExamenesTitle}>
+            <h2>Exámenes y Servicios</h2>
           </div>
-          <Button variant="primary" onClick={handleAgregarClick}>
-            <CustomPlusIcon />
-            <span>Agregar</span>
-          </Button>
+          <div className={styles.adminExamenesActions}>
+            <Button variant="primary" onClick={handleAgregarClick}>
+              <CustomPlusIcon />
+              <span>Agregar</span>
+            </Button>
+          </div>
         </div>
         
-        {/* Filter bar with search, checkbox, and sorting options */}
-        <div className={styles.adminExamenesFilterBar}>
-          <div className={styles.adminExamenesSearchFilter}>
+        {/* Filters */}
+        <div className={styles.adminExamenesFilters}>
+          <div className={styles.adminExamenesSearchBar}>
             <SearchField
               value={searchTerm}
               onChange={setSearchTerm}
               onClear={() => setSearchTerm('')}
-              placeholder="Buscar por nombre"
-              className={styles.adminExamenesSearchField}
+              placeholder="Buscar por nombre o código"
             />
           </div>
-          <div className={styles.adminExamenesFilterControls}>
-            <div className={styles.adminExamenesCheckboxField}>
-              <CheckboxField
-                label="Mostrar archivados"
-                checked={showArchived}
-                onChange={setShowArchived}
-              />
+          
+          <div className={styles.adminExamenesFilterOptions}>
+            <CheckboxField
+              label="Mostrar archivados"
+              checked={showArchived}
+              onChange={setShowArchived}
+            />
+            
+            <div className={styles.adminExamenesSortToggle}>
+              <div 
+                className={`${styles.adminExamenesToggleOption} ${sortAZ ? styles.active : ''}`} 
+                onClick={() => setSortAZ(true)}
+              >
+                A → Z
+              </div>
+              <div 
+                className={`${styles.adminExamenesToggleOption} ${!sortAZ ? styles.active : ''}`} 
+                onClick={() => setSortAZ(false)}
+              >
+                Z → A
+              </div>
             </div>
-            <TagToggleGroup className={styles.adminExamenesTagToggleGroup}>
-              <TagToggle
-                label="A → Z"
-                active={sortAZ}
-                onChange={() => setSortAZ(true)}
-                icon={sortAZ ? "check" : null}
-                scheme="brand"
-              />
-              <TagToggle
-                label="Z → A"
-                active={!sortAZ}
-                onChange={() => setSortAZ(false)}
-                scheme="brand"
-              />
-            </TagToggleGroup>
           </div>
         </div>
         
-        {/* Main content area - empty state or list of exams */}
-        <div className={styles.adminExamenesBody}>
-          {loading ? (
-            <div className={styles.adminExamenesEmptyState}>
-              <div className={styles.adminExamenesEmptyStateTitleStrong}>Cargando exámenes y servicios...</div>
-            </div>
-          ) : error ? (
-            <div className={styles.adminExamenesEmptyState}>
-              <div className={styles.adminExamenesEmptyStateTitleStrong}>{error}</div>
-            </div>
-          ) : filteredExamenes.length === 0 ? (
-            <div className={styles.adminExamenesEmptyState}>
-              <div className={styles.adminExamenesEmptyStateTitleStrong}>Aún no has agregado exámenes y/o servicios</div>
-              <div className={styles.adminExamenesEmptyStateSubtitle}>Los items que agregues se mostrarán en el cotizador.</div>
-            </div>
-          ) : (
-            <div className={styles.adminExamenesTableContainer}>
-              <Table
-                headers={[
-                  'Código',
-                  'Nombre',
-                  'Precio (USD)',
-                  'Estado',
-                  'Acciones'
-                ]}
-                data={filteredExamenes.map(examen => ({
-                  codigo: examen.codigo || '',
-                  nombre: examen.nombre_examen || '',
-                  precioUSD: examen.preciousd || 0,
-                  estado: examen.is_active,
-                  acciones: examen.codigo,
-                  examen_completo: examen // Para acceder al objeto completo
-                }))}
-                columns={['codigo', 'nombre', 'precioUSD', 'estado', 'acciones']}
-                renderCustomCell={(row, column) => {
-                  if (column === 'estado') {
-                    const isActive = row.estado;
-                    let scheme = isActive ? 'positive' : 'neutral';
-                    let variant = 'secondary';
-                    let text = isActive ? 'Activo' : 'Archivado';
-                    
-                    return (
-                      <div className={styles.adminExamenesStatus}>
-                        <Tag 
-                          text={text}
-                          scheme={scheme}
-                          variant={variant}
-                          closeable={false}
-                        />
-                      </div>
-                    );
-                  }
+        {/* Content */}
+        {loading ? (
+          <div className={styles.adminExamenesLoading}>Cargando exámenes...</div>
+        ) : error ? (
+          <div className={styles.adminExamenesError}>
+            <p>{error}</p>
+            <Button variant="neutral" onClick={() => setError(null)}>Cerrar</Button>
+          </div>
+        ) : filteredExamenes.length === 0 ? (
+          <div className={styles.adminExamenesEmpty}>
+            <p>No se encontraron exámenes{!showArchived ? " activos" : ""}.</p>
+          </div>
+        ) : (
+          <div className={styles.adminExamenesTable}>
+            <Table
+              headers={['Código', 'Nombre', 'Precio (USD)', 'Tiempo entrega', 'Estado', 'Acciones']}
+              data={filteredExamenes.map(examen => ({
+                codigo: examen.codigo || 'N/A',
+                nombre: examen.nombre_examen || 'N/A',
+                precio: examen.preciousd || 0,
+                tiempoEntrega: examen.tiempo_entrega || 'N/A',
+                estado: examen.is_active !== undefined ? examen.is_active : true,
+                acciones: examen,
+              }))}
+              columns={['codigo', 'nombre', 'precio', 'tiempoEntrega', 'estado', 'acciones']}
+              renderCustomCell={(row, column) => {
+                if (column === 'estado') {
+                  const isActive = row.estado;
+                  let scheme = isActive ? 'positive' : 'neutral';
+                  let text = isActive ? 'Activo' : 'Archivado';
                   
-                  if (column === 'precioUSD') {
-                    return (
-                      <div className={styles.adminExamenesPrecio}>
-                        ${parseFloat(row.precioUSD).toFixed(2)}
-                      </div>
-                    );
-                  }
+                  return (
+                    <div className={styles.tagContainer}>
+                      <Tag 
+                        text={text}
+                        scheme={scheme}
+                        variant="secondary"
+                        closeable={false}
+                      />
+                    </div>
+                  );
+                }
+                
+                if (column === 'precio') {
+                  return (
+                    <div className={styles.precio}>
+                      ${parseFloat(row.precio).toFixed(2)}
+                    </div>
+                  );
+                }
+                
+                if (column === 'acciones') {
+                  const isActive = row.estado;
+                  const examen = row.acciones;
                   
-                  /* Removed precioBs and tipo columns */
-                  
-                  if (column === 'acciones') {
-                    const isActive = row.estado;
-                    const examen = row.examen_completo;
-                    return (
-                      <div className={styles.adminExamenesActions}>
-                        {isActive ? (
-                          <>
-                            <button
-                              className={styles.iconButton}
-                              title="Editar"
-                              onClick={() => handleEditExamen(examen)}
-                            >
-                              <PencilSquareIcon width={20} height={20} />
-                            </button>
-                            <button
-                              className={styles.iconButton}
-                              title="Historial"
-                              onClick={() => handleViewHistorial(examen)}
-                            >
-                              <ArrowPathRoundedSquareIcon width={20} height={20} />
-                            </button>
-                          </>
-                        ) : (
-                          <>
-                            <button
-                              className={styles.iconButton}
-                              title="Activar"
-                              onClick={() => toggleActivo(examen)}
-                            >
-                              <ArrowPathIcon width={20} height={20} />
-                            </button>
-                            <button
-                              className={styles.iconButton}
-                              title="Historial"
-                              onClick={() => handleViewHistorial(examen)}
-                            >
-                              <ArrowPathRoundedSquareIcon width={20} height={20} />
-                            </button>
-                          </>
-                        )}
-                      </div>
-                    );
-                  }
-                  
-                  return null;
-                }}
-              />
-            </div>
-          )}
-        </div>
+                  return (
+                    <div className={styles.accionesContainer}>
+                      {isActive ? (
+                        <button
+                          className={styles.actionButton}
+                          onClick={() => handleEditExamen(examen)}
+                          aria-label="Editar examen"
+                        >
+                          <PencilSquareIcon width={16} height={16} />
+                        </button>
+                      ) : (
+                        <button
+                          className={styles.actionButton}
+                          onClick={() => cambiarEstadoExamen(examen.codigo, true)}
+                          aria-label="Activar examen"
+                        >
+                          <ArrowPathIcon width={16} height={16} />
+                        </button>
+                      )}
+                    </div>
+                  );
+                }
+                return null;
+              }}
+            />
+          </div>
+        )}
       </div>
-
+      
       {/* Add Exam Modal */}
       <Modal
         isOpen={showAddModal}
-        onClose={() => {
-          setShowAddModal(false);
-          setError(null);
-        }}
-        heading="Agrega un nuevo item para cotizar"
+        onClose={() => setShowAddModal(false)}
+        heading="Agregar Examen"
         size="medium"
       >
         <form onSubmit={handleAddExamen} className={styles.adminExamenesForm}>
-          {error && <div className={styles.adminExamenesError}>{error}</div>}
           <div className={styles.adminExamenesFormGroup}>
             <label>Código</label>
             <input 
@@ -482,11 +441,8 @@ const AdminExamenes = () => {
               value={formData.codigo} 
               onChange={handleFormChange} 
               required 
-              className={`${styles.adminExamenesInput} ${codigoExists ? styles.inputError : ''}`}
+              className={styles.adminExamenesInput}
             />
-            {codigoExists && formData.codigo && (
-              <div className={styles.fieldError}>El código ya está en uso</div>
-            )}
           </div>
           <div className={styles.adminExamenesFormGroup}>
             <label>Nombre</label>
@@ -618,7 +574,7 @@ const AdminExamenes = () => {
               <Button
                 variant="subtle"
                 size="medium"
-                onClick={() => toggleActivo(currentExamen)}
+                onClick={() => confirmarArchivarExamen(currentExamen)}
                 className={styles.archivarButton}
               >
                 <span className={styles.archiveIconWrapper}>
@@ -640,69 +596,6 @@ const AdminExamenes = () => {
               </div>
             </div>
           </form>
-        )}
-      </Modal>
-
-      {/* View History Modal */}
-      <Modal
-        isOpen={showHistorialModal}
-        onClose={() => setShowHistorialModal(false)}
-        heading="Historial de Cambios"
-        size="large"
-      >
-        {currentExamen && (
-          <div className={styles.adminExamenesHistorialContent}>
-            <div className={styles.adminExamenesExamenInfo}>
-              <p><strong>Código:</strong> {currentExamen.codigo}</p>
-              <p><strong>Nombre:</strong> {currentExamen.nombre_examen}</p>
-            </div>
-
-            {loadingHistorial ? (
-              <div className={styles.adminExamenesLoading}>Cargando historial...</div>
-            ) : !historialExamen || historialExamen.length === 0 ? (
-              <p className={styles.adminExamenesNoResults}>No hay registros de cambios previos</p>
-            ) : (
-              <div className={styles.adminExamenesHistorialTable}>
-                <Table
-                  headers={['Fecha', 'Usuario', 'Precio USD', 'Estado', 'Detalles']}
-                  data={historialExamen.map((item, index) => ({
-                    fecha: formatDate(item.fecha_cambio),
-                    usuario: item.usuario || 'Sistema',
-                    precio: parseFloat(item.preciousd).toFixed(2),
-                    estado: item.is_active,
-                    detalles: item.descripcion_cambio || 'Actualización general'
-                  }))}
-                  columns={['fecha', 'usuario', 'precio', 'estado', 'detalles']}
-                  renderCustomCell={(row, column) => {
-                    if (column === 'precio') {
-                      return `$${row.precio}`;
-                    }
-                    if (column === 'estado') {
-                      const isActive = row.estado;
-                      let scheme = isActive ? 'positive' : 'neutral';
-                      let text = isActive ? 'Activo' : 'Inactivo';
-                      
-                      return (
-                        <Tag 
-                          text={text}
-                          scheme={scheme}
-                          variant="secondary"
-                          closeable={false}
-                        />
-                      );
-                    }
-                    return null;
-                  }}
-                />
-              </div>
-            )}
-            
-            <div className={styles.adminExamenesModalFooter}>
-              <Button variant="neutral" onClick={() => setShowHistorialModal(false)}>
-                Cerrar
-              </Button>
-            </div>
-          </div>
         )}
       </Modal>
     </AdminLayout>
