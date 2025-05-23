@@ -17,6 +17,12 @@ router.post('/', examenController.crear);
 // Actualizar un examen
 router.put('/:codigo', examenController.actualizar);
 
+// Archivar un examen (nuevo endpoint específico)
+router.put('/:codigo/archivar', examenController.archivar);
+
+// Desarchivar un examen (nuevo endpoint específico)
+router.put('/:codigo/desarchivar', examenController.desarchivar);
+
 // Eliminar un examen
 router.delete('/:codigo', examenController.eliminar);
 

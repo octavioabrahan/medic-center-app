@@ -278,12 +278,12 @@ const AdminExamenes = () => {
   // Toggle active status
   const toggleActivo = async (examen) => {
     try {
-      const newStatus = !examen.is_active;
+      // Usar endpoint específico de archivar/desarchivar en lugar de actualización general
+      const endpoint = !examen.is_active 
+        ? `${API_URL}/${examen.codigo}/desarchivar` 
+        : `${API_URL}/${examen.codigo}/archivar`;
       
-      await axios.put(`${API_URL}/${examen.codigo}`, {
-        ...examen,
-        is_active: newStatus
-      });
+      await axios.put(endpoint);
       
       await cargarExamenes(); // Refresh data
       

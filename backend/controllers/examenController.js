@@ -208,11 +208,121 @@ const obtenerHistorial = async (req, res) => {
   }
 };
 
+/**
+ * Archivo un examen (cambia su estado a inactivo)
+ */
+const archivar = async (req, res) => {
+  const { codigo } = req.params;
+  const usuario = 'admin'; // Usuario fijo como solicita el cliente
+  
+  const client = await pool.connect();
+  
+  try {
+    await client.query('BEGIN');
+    
+    // Obtener información del examen antes de archivar
+    const examenResult = await client.query('SELECT * FROM examenes WHERE codigo = $1', [codigo]);
+    
+    if (examenResult.rows.length === 0) {
+      await client.query('ROLLBACK');
+      return res.status(404).json({ error: 'Examen no encontrado' });
+    }
+    
+    const examen = examenResult.rows[0];
+    
+    // Si ya está archivado (inactivo), no hacer nada y devolver éxito
+    if (!examen.is_active) {
+      await client.query('ROLLBACK');
+      return res.json({ message: 'El examen ya estaba archivado', examen });
+    }
+    
+    // Actualizar el examen a inactivo
+    const result = await client.query(
+      'UPDATE examenes SET is_active = false WHERE codigo = $1 RETURNING *',
+      [codigo]
+    );
+    
+    // Registrar en el historial
+    await client.query(
+      'INSERT INTO examen_historial (codigo_examen, is_active_anterior, is_active_nuevo, cambiado_por) VALUES ($1, $2, $3, $4)',
+      [codigo, true, false, usuario]
+    );
+    
+    await client.query('COMMIT');
+    
+    logGeneral(`✅ Examen archivado: ${examen.nombre_examen} (${codigo}) por ${usuario}`);
+    res.json({ message: 'Examen archivado correctamente', examen: result.rows[0] });
+  } catch (err) {
+    await client.query('ROLLBACK');
+    console.error('Error al archivar examen:', err);
+    logGeneral(`❌ Error al archivar examen: ${err.message}`);
+    res.status(500).json({ error: 'Error al archivar examen' });
+  } finally {
+    client.release();
+  }
+};
+
+/**
+ * Desarchivar un examen (cambia su estado a activo)
+ */
+const desarchivar = async (req, res) => {
+  const { codigo } = req.params;
+  const usuario = 'admin'; // Usuario fijo como solicita el cliente
+  
+  const client = await pool.connect();
+  
+  try {
+    await client.query('BEGIN');
+    
+    // Obtener información del examen antes de desarchivar
+    const examenResult = await client.query('SELECT * FROM examenes WHERE codigo = $1', [codigo]);
+    
+    if (examenResult.rows.length === 0) {
+      await client.query('ROLLBACK');
+      return res.status(404).json({ error: 'Examen no encontrado' });
+    }
+    
+    const examen = examenResult.rows[0];
+    
+    // Si ya está activo, no hacer nada y devolver éxito
+    if (examen.is_active) {
+      await client.query('ROLLBACK');
+      return res.json({ message: 'El examen ya estaba activo', examen });
+    }
+    
+    // Actualizar el examen a activo
+    const result = await client.query(
+      'UPDATE examenes SET is_active = true WHERE codigo = $1 RETURNING *',
+      [codigo]
+    );
+    
+    // Registrar en el historial
+    await client.query(
+      'INSERT INTO examen_historial (codigo_examen, is_active_anterior, is_active_nuevo, cambiado_por) VALUES ($1, $2, $3, $4)',
+      [codigo, false, true, usuario]
+    );
+    
+    await client.query('COMMIT');
+    
+    logGeneral(`✅ Examen desarchivado: ${examen.nombre_examen} (${codigo}) por ${usuario}`);
+    res.json({ message: 'Examen desarchivado correctamente', examen: result.rows[0] });
+  } catch (err) {
+    await client.query('ROLLBACK');
+    console.error('Error al desarchivar examen:', err);
+    logGeneral(`❌ Error al desarchivar examen: ${err.message}`);
+    res.status(500).json({ error: 'Error al desarchivar examen' });
+  } finally {
+    client.release();
+  }
+};
+
 module.exports = {
   obtenerTodos,
   obtenerPorCodigo,
   crear,
   actualizar,
   eliminar,
-  obtenerHistorial
+  obtenerHistorial,
+  archivar,
+  desarchivar
 };
