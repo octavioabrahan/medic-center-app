@@ -3,12 +3,14 @@ import AdminLayout from '../../../components/AdminDashboard/AdminLayout';
 import Button from '../../../components/Button/Button';
 import SearchField from '../../../components/Inputs/SearchField';
 import CheckboxField from '../../../components/Inputs/CheckboxField';
+import TagToggleGroup from '../../../components/Tag/TagToggleGroup';
+import TagToggle from '../../../components/Tag/TagToggle';
 import Table from '../../../components/Tables/Table';
 import Tag from '../../../components/Tag/Tag';
 import Modal from '../../../components/Modal/Modal';
 import styles from './AdminExamenes.module.css';
 import axios from 'axios';
-import { PencilSquareIcon, ArrowPathRoundedSquareIcon, ArrowPathIcon } from '@heroicons/react/20/solid';
+import { PencilSquareIcon, ArrowPathIcon } from '@heroicons/react/20/solid';
 
 // Custom Plus icon for the Add button
 const CustomPlusIcon = () => (
@@ -54,7 +56,7 @@ const AdminExamenes = () => {
   // Load exams on component mount
   useEffect(() => {
     cargarExamenes();
-  }, [showArchived]);
+  }, []);
 
   // Apply filters when data or filter settings change
   useEffect(() => {
@@ -67,12 +69,34 @@ const AdminExamenes = () => {
     try {
       const res = await axios.get(API_URL);
       setExamenes(res.data);
+      
+      // Se elimina la llamada a fetchLastChangeDates para simplificar y quitar auditoría
       setError(null);
     } catch (err) {
       console.error("Error al cargar exámenes:", err);
       setError('No se pudieron cargar los exámenes y servicios.');
     } finally {
       setLoading(false);
+    }
+  };
+
+  // Fetch the last change date for each exam - simplificada sin historial
+  const fetchLastChangeDates = async (codigos) => {
+    // Simplificada para eliminar auditorías, dejando solo la estructura necesaria
+    setLastChangeDate({});
+  };
+
+  // Fetch history for a specific exam - simplificada
+  const fetchExamenHistorial = async (codigo) => {
+    setLoadingHistorial(true);
+    try {
+      // Simplificado para eliminar auditorías
+      setHistorialExamen([]);
+    } catch (err) {
+      console.error('Error al obtener historial:', err);
+      setHistorialExamen([]);
+    } finally {
+      setLoadingHistorial(false);
     }
   };
 
@@ -104,17 +128,7 @@ const AdminExamenes = () => {
   };
 
   // Format date
-  const formatDate = (dateString) => {
-    if (!dateString) return 'N/A';
-    try {
-      const date = new Date(dateString);
-      if (isNaN(date.getTime())) return 'Fecha inválida';
-      return date.toLocaleDateString() + ' ' + date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-    } catch (error) {
-      console.error("Error al formatear fecha:", error);
-      return 'Error de formato';
-    }
-  };
+  // Se elimina la función formatDate ya que no se usará con el historial
 
   // Handle form input changes
   const handleFormChange = (e) => {
@@ -221,218 +235,190 @@ const AdminExamenes = () => {
     }
   };
 
-  // Cambiar estado activo/inactivo del examen
-  const cambiarEstadoExamen = async (codigo, activo) => {
+  // Toggle active status
+  const toggleActivo = async (examen) => {
     try {
-      if (!codigo) {
-        console.error("Error: Código de examen no definido");
-        setError("Error: Código de examen no definido");
-        return false;
-      }
-      
-      console.log(`Cambiando estado del examen ID: ${codigo} a ${activo ? 'activo' : 'inactivo'}`);
-      
-      // Use the endpoint format like servicios
-      const endpoint = activo ? 
-        `${API_URL}/${codigo}/desarchivar` : 
-        `${API_URL}/${codigo}/archivar`;
+      // Usar endpoint específico de archivar/desarchivar en lugar de actualización general
+      const endpoint = !examen.is_active 
+        ? `${API_URL}/${examen.codigo}/desarchivar` 
+        : `${API_URL}/${examen.codigo}/archivar`;
       
       await axios.put(endpoint);
+      await cargarExamenes(); // Refresh data
       
-      // Update the list after change
-      await cargarExamenes();
-      
-      setError(null);
-      setCurrentExamen(null);
-      return true;
-    } catch (err) {
-      console.error("Error al cambiar estado del examen:", err);
-      setError(`Error al cambiar el estado del examen: ${err.response?.data?.error || err.message}`);
-      return false;
-    }
-  };
-
-  // Confirmar archivar examen
-  const confirmarArchivarExamen = async (examen) => {
-    try {
-      if (!examen) {
-        console.error('Error: Examen no definido');
-        setError('Error: Examen no definido');
-        return false;
-      }
-      
-      console.log('AdminExamenes -> confirmarArchivarExamen -> examen recibido:', examen);
-      
-      // Asegurar que tenemos un código válido
-      const codigo = examen?.codigo;
-      
-      if (!codigo) {
-        console.error('Error: No se puede archivar, código de examen no válido', examen);
-        setError('Error: Código de examen no válido');
-        return false;
-      }
-      
-      console.log(`Intentando archivar examen con código: ${codigo}`);
-      const result = await cambiarEstadoExamen(codigo, false);
-      console.log('Resultado de cambiarEstadoExamen:', result);
-      
-      if (result) {
-        // Solo cerrar el modal si la operación fue exitosa
+      if (showEditModal) {
         setShowEditModal(false);
-        return true;
-      } else {
-        return false;
       }
     } catch (err) {
-      console.error('Error al archivar examen:', err);
-      setError('Error al archivar el examen: ' + (err.message || err));
-      return false;
+      console.error('Error:', err);
+      setError(`Error al ${!examen.is_active ? 'activar' : 'desactivar'} el examen`);
     }
   };
 
   return (
     <AdminLayout activePage="/admin/examenes">
       <div className={styles.adminExamenesContent}>
-        {/* Header */}
-        <div className={styles.adminExamenesHeader}>
-          <div className={styles.adminExamenesTitle}>
-            <h2>Exámenes y Servicios</h2>
+        {/* Page header with title and add button */}
+        <div className={styles.adminExamenesPageHeader}>
+          <div className={styles.adminExamenesMenuHeader}>
+            <div className={styles.adminExamenesTitle}>Exámenes y servicios</div>
           </div>
-          <div className={styles.adminExamenesActions}>
-            <Button variant="primary" onClick={handleAgregarClick}>
-              <CustomPlusIcon />
-              <span>Agregar</span>
-            </Button>
-          </div>
+          <Button variant="primary" onClick={handleAgregarClick}>
+            <CustomPlusIcon />
+            <span>Agregar</span>
+          </Button>
         </div>
         
-        {/* Filters */}
-        <div className={styles.adminExamenesFilters}>
-          <div className={styles.adminExamenesSearchBar}>
+        {/* Filter bar with search, checkbox, and sorting options */}
+        <div className={styles.adminExamenesFilterBar}>
+          <div className={styles.adminExamenesSearchFilter}>
             <SearchField
               value={searchTerm}
               onChange={setSearchTerm}
               onClear={() => setSearchTerm('')}
-              placeholder="Buscar por nombre o código"
+              placeholder="Buscar por nombre"
+              className={styles.adminExamenesSearchField}
             />
           </div>
-          
-          <div className={styles.adminExamenesFilterOptions}>
-            <CheckboxField
-              label="Mostrar archivados"
-              checked={showArchived}
-              onChange={setShowArchived}
-            />
-            
-            <div className={styles.adminExamenesSortToggle}>
-              <div 
-                className={`${styles.adminExamenesToggleOption} ${sortAZ ? styles.active : ''}`} 
-                onClick={() => setSortAZ(true)}
-              >
-                A → Z
-              </div>
-              <div 
-                className={`${styles.adminExamenesToggleOption} ${!sortAZ ? styles.active : ''}`} 
-                onClick={() => setSortAZ(false)}
-              >
-                Z → A
-              </div>
+          <div className={styles.adminExamenesFilterControls}>
+            <div className={styles.adminExamenesCheckboxField}>
+              <CheckboxField
+                label="Mostrar archivados"
+                checked={showArchived}
+                onChange={setShowArchived}
+              />
             </div>
+            <TagToggleGroup className={styles.adminExamenesTagToggleGroup}>
+              <TagToggle
+                label="A → Z"
+                active={sortAZ}
+                onChange={() => setSortAZ(true)}
+                icon={sortAZ ? "check" : null}
+                scheme="brand"
+              />
+              <TagToggle
+                label="Z → A"
+                active={!sortAZ}
+                onChange={() => setSortAZ(false)}
+                scheme="brand"
+              />
+            </TagToggleGroup>
           </div>
         </div>
         
-        {/* Content */}
-        {loading ? (
-          <div className={styles.adminExamenesLoading}>Cargando exámenes...</div>
-        ) : error ? (
-          <div className={styles.adminExamenesError}>
-            <p>{error}</p>
-            <Button variant="neutral" onClick={() => setError(null)}>Cerrar</Button>
-          </div>
-        ) : filteredExamenes.length === 0 ? (
-          <div className={styles.adminExamenesEmpty}>
-            <p>No se encontraron exámenes{!showArchived ? " activos" : ""}.</p>
-          </div>
-        ) : (
-          <div className={styles.adminExamenesTable}>
-            <Table
-              headers={['Código', 'Nombre', 'Precio (USD)', 'Tiempo entrega', 'Estado', 'Acciones']}
-              data={filteredExamenes.map(examen => ({
-                codigo: examen.codigo || 'N/A',
-                nombre: examen.nombre_examen || 'N/A',
-                precio: examen.preciousd || 0,
-                tiempoEntrega: examen.tiempo_entrega || 'N/A',
-                estado: examen.is_active !== undefined ? examen.is_active : true,
-                acciones: examen,
-              }))}
-              columns={['codigo', 'nombre', 'precio', 'tiempoEntrega', 'estado', 'acciones']}
-              renderCustomCell={(row, column) => {
-                if (column === 'estado') {
-                  const isActive = row.estado;
-                  let scheme = isActive ? 'positive' : 'neutral';
-                  let text = isActive ? 'Activo' : 'Archivado';
+        {/* Main content area - empty state or list of exams */}
+        <div className={styles.adminExamenesBody}>
+          {loading ? (
+            <div className={styles.adminExamenesEmptyState}>
+              <div className={styles.adminExamenesEmptyStateTitleStrong}>Cargando exámenes y servicios...</div>
+            </div>
+          ) : error ? (
+            <div className={styles.adminExamenesEmptyState}>
+              <div className={styles.adminExamenesEmptyStateTitleStrong}>{error}</div>
+            </div>
+          ) : filteredExamenes.length === 0 ? (
+            <div className={styles.adminExamenesEmptyState}>
+              <div className={styles.adminExamenesEmptyStateTitleStrong}>Aún no has agregado exámenes y/o servicios</div>
+              <div className={styles.adminExamenesEmptyStateSubtitle}>Los items que agregues se mostrarán en el cotizador.</div>
+            </div>
+          ) : (
+            <div className={styles.adminExamenesTableContainer}>
+              <Table
+                headers={[
+                  'Código',
+                  'Nombre',
+                  'Precio (USD)',
+                  'Estado',
+                  'Acciones'
+                ]}
+                data={filteredExamenes.map(examen => ({
+                  codigo: examen.codigo || '',
+                  nombre: examen.nombre_examen || '',
+                  precioUSD: examen.preciousd || 0,
+                  estado: examen.is_active,
+                  acciones: examen.codigo,
+                  examen_completo: examen // Para acceder al objeto completo
+                }))}
+                columns={['codigo', 'nombre', 'precioUSD', 'estado', 'acciones']}
+                renderCustomCell={(row, column) => {
+                  if (column === 'estado') {
+                    const isActive = row.estado;
+                    let scheme = isActive ? 'positive' : 'neutral';
+                    let variant = 'secondary';
+                    let text = isActive ? 'Activo' : 'Archivado';
+                    
+                    return (
+                      <div className={styles.adminExamenesStatus}>
+                        <Tag 
+                          text={text}
+                          scheme={scheme}
+                          variant={variant}
+                          closeable={false}
+                        />
+                      </div>
+                    );
+                  }
                   
-                  return (
-                    <div className={styles.tagContainer}>
-                      <Tag 
-                        text={text}
-                        scheme={scheme}
-                        variant="secondary"
-                        closeable={false}
-                      />
-                    </div>
-                  );
-                }
-                
-                if (column === 'precio') {
-                  return (
-                    <div className={styles.precio}>
-                      ${parseFloat(row.precio).toFixed(2)}
-                    </div>
-                  );
-                }
-                
-                if (column === 'acciones') {
-                  const isActive = row.estado;
-                  const examen = row.acciones;
+                  if (column === 'precioUSD') {
+                    return (
+                      <div className={styles.adminExamenesPrecio}>
+                        ${parseFloat(row.precioUSD).toFixed(2)}
+                      </div>
+                    );
+                  }
                   
-                  return (
-                    <div className={styles.accionesContainer}>
-                      {isActive ? (
-                        <button
-                          className={styles.actionButton}
-                          onClick={() => handleEditExamen(examen)}
-                          aria-label="Editar examen"
-                        >
-                          <PencilSquareIcon width={16} height={16} />
-                        </button>
-                      ) : (
-                        <button
-                          className={styles.actionButton}
-                          onClick={() => cambiarEstadoExamen(examen.codigo, true)}
-                          aria-label="Activar examen"
-                        >
-                          <ArrowPathIcon width={16} height={16} />
-                        </button>
-                      )}
-                    </div>
-                  );
-                }
-                return null;
-              }}
-            />
-          </div>
-        )}
+                  /* Removed precioBs and tipo columns */
+                  
+                  if (column === 'acciones') {
+                    const isActive = row.estado;
+                    const examen = row.examen_completo;
+                    return (
+                      <div className={styles.adminExamenesActions}>
+                        {isActive ? (
+                          <>
+                            <button
+                              className={styles.iconButton}
+                              title="Editar"
+                              onClick={() => handleEditExamen(examen)}
+                            >
+                              <PencilSquareIcon width={20} height={20} />
+                            </button>
+                          </>
+                        ) : (
+                          <>
+                            <button
+                              className={styles.iconButton}
+                              title="Activar"
+                              onClick={() => toggleActivo(examen)}
+                            >
+                              <ArrowPathIcon width={20} height={20} />
+                            </button>
+                          </>
+                        )}
+                      </div>
+                    );
+                  }
+                  
+                  return null;
+                }}
+              />
+            </div>
+          )}
+        </div>
       </div>
-      
+
       {/* Add Exam Modal */}
       <Modal
         isOpen={showAddModal}
-        onClose={() => setShowAddModal(false)}
-        heading="Agregar Examen"
+        onClose={() => {
+          setShowAddModal(false);
+          setError(null);
+        }}
+        heading="Agrega un nuevo item para cotizar"
         size="medium"
       >
         <form onSubmit={handleAddExamen} className={styles.adminExamenesForm}>
+          {error && <div className={styles.adminExamenesError}>{error}</div>}
           <div className={styles.adminExamenesFormGroup}>
             <label>Código</label>
             <input 
@@ -441,8 +427,11 @@ const AdminExamenes = () => {
               value={formData.codigo} 
               onChange={handleFormChange} 
               required 
-              className={styles.adminExamenesInput}
+              className={`${styles.adminExamenesInput} ${codigoExists ? styles.inputError : ''}`}
             />
+            {codigoExists && formData.codigo && (
+              <div className={styles.fieldError}>El código ya está en uso</div>
+            )}
           </div>
           <div className={styles.adminExamenesFormGroup}>
             <label>Nombre</label>
@@ -574,7 +563,7 @@ const AdminExamenes = () => {
               <Button
                 variant="subtle"
                 size="medium"
-                onClick={() => confirmarArchivarExamen(currentExamen)}
+                onClick={() => toggleActivo(currentExamen)}
                 className={styles.archivarButton}
               >
                 <span className={styles.archiveIconWrapper}>
@@ -598,6 +587,8 @@ const AdminExamenes = () => {
           </form>
         )}
       </Modal>
+
+      {/* Eliminado el modal de historial para simplificar */}
     </AdminLayout>
   );
 };
