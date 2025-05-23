@@ -348,7 +348,7 @@ const CrearEspecialidades = ({ isOpen, onClose, onSpecialtyCreated }) => {
                         <div className="especialidades-value">{especialidad.nombre}</div>
                         <div className="especialidades-botones-accion">
                           <Button
-                            variant="icon"
+                            variant="subtle"
                             size="small"
                             onClick={() => iniciarEdicion(especialidad)}
                             title="Editar especialidad"
@@ -357,7 +357,7 @@ const CrearEspecialidades = ({ isOpen, onClose, onSpecialtyCreated }) => {
                             <PencilSquareIcon className="w-4 h-4" />
                           </Button>
                           <Button
-                            variant="icon"
+                            variant="subtle"
                             size="small"
                             onClick={() => eliminarEspecialidad(especialidad.especialidad_id, especialidad.nombre)}
                             title="Eliminar especialidad"
