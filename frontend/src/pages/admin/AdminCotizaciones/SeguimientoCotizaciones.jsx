@@ -250,72 +250,104 @@ const SeguimientoCotizaciones = ({ cotizacion, onClose }) => {
               
               {/* Tabla de servicios/productos */}
               <div className={styles.contentTable}>
-                <div className={styles.col}>
-                  <div className={styles.headerCell}>
-                    <div className={styles.text}>
-                      <div className={styles.text2}>Código</div>
-                    </div>
-                  </div>
-                  {Array.isArray(cotizacion.examenes) && cotizacion.examenes.length > 0 ? (
-                    cotizacion.examenes.map((exam, index) => (
-                      <div key={`codigo-${index}`} className={styles.cell}>
-                        <div className={styles.text}>
-                          <div className={styles.text3}>{exam.examen_codigo || '-'}</div>
-                        </div>
-                      </div>
-                    ))
-                  ) : (
-                    <div className={styles.cell}>
-                      <div className={styles.text}>
-                        <div className={styles.text3}>No hay exámenes</div>
-                      </div>
-                    </div>
-                  )}
-                </div>
-                <div className={styles.col2}>
-                  <div className={styles.headerCell}>
-                    <div className={styles.text}>
-                      <div className={styles.text2}>Nombre</div>
-                    </div>
-                  </div>
-                  {Array.isArray(cotizacion.examenes) && cotizacion.examenes.length > 0 ? (
-                    cotizacion.examenes.map((exam, index) => (
-                      <div key={`nombre-${index}`} className={styles.cell}>
-                        <div className={styles.text}>
-                          <div className={styles.text3}>{exam.nombre_examen || '-'}</div>
-                        </div>
-                      </div>
-                    ))
-                  ) : (
-                    <div className={styles.cell}>
-                      <div className={styles.text}>
-                        <div className={styles.text3}>Sin datos</div>
-                      </div>
-                    </div>
-                  )}
-                </div>
-                <div className={styles.col3}>
-                  <div className={styles.headerCell}>
-                    <div className={styles.text}>
-                      <div className={styles.text2}>Precio USD</div>
-                    </div>
-                  </div>
-                  {Array.isArray(cotizacion.examenes) && cotizacion.examenes.length > 0 ? (
-                    cotizacion.examenes.map((exam, index) => (
-                      <div key={`precio-${index}`} className={styles.cell}>
-                        <div className={styles.text4}>
-                          <div className={styles.text3}>$ {formatNumber(exam.precio_unitario || 0)}</div>
-                        </div>
-                      </div>
-                    ))
-                  ) : (
-                    <div className={styles.cell}>
-                      <div className={styles.text4}>
-                        <div className={styles.text3}>$ 0.00</div>
-                      </div>
-                    </div>
-                  )}
-                </div>
+                <table style={{ width: '100%', borderCollapse: 'collapse', tableLayout: 'fixed' }}>
+                  <colgroup>
+                    <col style={{ width: '20%' }} />
+                    <col style={{ width: '60%' }} />
+                    <col style={{ width: '20%' }} />
+                  </colgroup>
+                  <thead>
+                    <tr>
+                      <th style={{ 
+                        background: '#faf8ff', 
+                        borderBottom: '1px solid #d9d9d9',
+                        padding: '8px 12px',
+                        textAlign: 'left',
+                        position: 'sticky',
+                        top: 0,
+                        zIndex: 1
+                      }}>
+                        Código
+                      </th>
+                      <th style={{ 
+                        background: '#faf8ff', 
+                        borderBottom: '1px solid #d9d9d9',
+                        padding: '8px 12px',
+                        textAlign: 'left',
+                        position: 'sticky',
+                        top: 0,
+                        zIndex: 1
+                      }}>
+                        Nombre
+                      </th>
+                      <th style={{ 
+                        background: '#faf8ff', 
+                        borderBottom: '1px solid #d9d9d9',
+                        padding: '8px 12px',
+                        textAlign: 'left',
+                        position: 'sticky',
+                        top: 0,
+                        zIndex: 1
+                      }}>
+                        Precio USD
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {Array.isArray(cotizacion.examenes) && cotizacion.examenes.length > 0 ? (
+                      cotizacion.examenes.map((exam, index) => (
+                        <tr key={`examen-${index}`}>
+                          <td style={{ 
+                            padding: '8px 12px',
+                            borderBottom: '1px solid #d9d9d9',
+                            backgroundColor: '#ffffff'
+                          }}>
+                            {exam.examen_codigo || '-'}
+                          </td>
+                          <td style={{ 
+                            padding: '8px 12px',
+                            borderBottom: '1px solid #d9d9d9',
+                            backgroundColor: '#ffffff'
+                          }}>
+                            {exam.nombre_examen || '-'}
+                          </td>
+                          <td style={{ 
+                            padding: '8px 12px',
+                            borderBottom: '1px solid #d9d9d9',
+                            backgroundColor: '#ffffff',
+                            textAlign: 'left'
+                          }}>
+                            $ {formatNumber(exam.precio_unitario || 0)}
+                          </td>
+                        </tr>
+                      ))
+                    ) : (
+                      <tr>
+                        <td style={{ 
+                          padding: '8px 12px',
+                          borderBottom: '1px solid #d9d9d9',
+                          backgroundColor: '#ffffff'
+                        }}>
+                          -
+                        </td>
+                        <td style={{ 
+                          padding: '8px 12px',
+                          borderBottom: '1px solid #d9d9d9',
+                          backgroundColor: '#ffffff'
+                        }}>
+                          No hay exámenes
+                        </td>
+                        <td style={{ 
+                          padding: '8px 12px',
+                          borderBottom: '1px solid #d9d9d9',
+                          backgroundColor: '#ffffff'
+                        }}>
+                          $ 0.00
+                        </td>
+                      </tr>
+                    )}
+                  </tbody>
+                </table>
               </div>
             </div>
             

@@ -251,128 +251,15 @@
 .contentTable {
   border-radius: 8px;
   border: 1px solid #d9d9d9;
-  display: flex;
-  flex-direction: row;
-  gap: 0px;
-  align-items: flex-start;
-  justify-content: flex-start;
   align-self: stretch;
   overflow-x: hidden;
   overflow-y: auto;
   max-height: 300px;
-}
-
-.col {
-  display: flex;
-  flex-direction: column;
-  gap: 0px;
-  align-items: flex-start;
-  justify-content: flex-start;
-  align-self: stretch;
-  flex: 1;
-}
-
-.col2 {
-  display: flex;
-  flex-direction: column;
-  gap: 0px;
-  align-items: flex-start;
-  justify-content: flex-start;
-  align-self: stretch;
-  flex: 3;
-}
-
-.col3 {
-  display: flex;
-  flex-direction: column;
-  gap: 0px;
-  align-items: flex-start;
-  justify-content: flex-start;
-  align-self: stretch;
-  flex: 1;
-}
-
-.headerCell {
-  background: #faf8ff;
-  border-bottom: 1px solid #d9d9d9;
-  padding: 8px 12px;
-  display: flex;
-  flex-direction: column;
-  gap: 0px;
-  align-items: flex-start;
-  justify-content: center;
-  align-self: stretch;
   width: 100%;
-  position: sticky;
-  top: 0;
-  z-index: 1;
+  box-sizing: border-box;
 }
 
-.text {
-  display: flex;
-  flex-direction: row;
-  gap: 0px;
-  align-items: center;
-  justify-content: flex-start;
-  width: 100%;
-}
-
-.text2 {
-  color: #1e1e1e;
-  font-family: "Inter-SemiBold", sans-serif;
-  font-size: 14px;
-  line-height: 140%;
-  font-weight: 600;
-  width: 100%;
-}
-
-.cell {
-  background: #ffffff;
-  border-bottom: 1px solid #d9d9d9;
-  padding: 8px 12px;
-  display: flex;
-  flex-direction: column;
-  gap: 0px;
-  align-items: flex-start;
-  justify-content: center;
-  align-self: stretch;
-  flex: 1;
-}
-
-.cell2 {
-  background: #ffffff;
-  border-bottom: 1px solid #d9d9d9;
-  padding: 8px 12px;
-  display: flex;
-  flex-direction: column;
-  gap: 0px;
-  align-items: flex-start;
-  justify-content: center;
-  align-self: stretch;
-  min-height: 42px;
-  width: 100%;
-}
-
-.text3 {
-  color: #1e1e1e;
-  font-family: "Inter-Regular", sans-serif;
-  font-size: 16px;
-  line-height: 140%;
-  font-weight: 400;
-  width: 100%;
-  white-space: normal;
-  overflow-wrap: break-word;
-}
-
-.text4 {
-  display: flex;
-  flex-direction: row;
-  gap: 0px;
-  align-items: center;
-  justify-content: flex-start;
-  align-self: stretch;
-  width: 100%;
-}
+/* Las definiciones de clases para la tabla ahora se manejan con estilos en línea */
 
 .infoDelCotizante {
   display: flex;
