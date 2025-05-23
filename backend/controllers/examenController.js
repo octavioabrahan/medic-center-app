@@ -180,9 +180,10 @@ const archivar = async (req, res) => {
       });
     }
     
+    // Explícitamente preservar el campo tipo para evitar conversiones no deseadas
     const result = await pool.query(
-      'UPDATE examenes SET is_active = false WHERE codigo = $1 RETURNING *',
-      [codigo]
+      'UPDATE examenes SET is_active = false, tipo = $2 WHERE codigo = $1 RETURNING *',
+      [codigo, examenActual.tipo]
     );
     
     if (result.rows.length === 0) {
@@ -193,7 +194,9 @@ const archivar = async (req, res) => {
     console.log(`[ExamenController] Examen archivado correctamente:`, {
       codigo: result.rows[0].codigo,
       is_active_anterior: examenActual.is_active,
-      is_active_nuevo: result.rows[0].is_active
+      is_active_nuevo: result.rows[0].is_active,
+      tipo_anterior: examenActual.tipo === null ? "NULL" : (examenActual.tipo === "" ? "CADENA_VACIA" : examenActual.tipo),
+      tipo_nuevo: result.rows[0].tipo === null ? "NULL" : (result.rows[0].tipo === "" ? "CADENA_VACIA" : result.rows[0].tipo)
     });
     
     res.json({
@@ -257,9 +260,10 @@ const desarchivar = async (req, res) => {
       });
     }
     
+    // Explícitamente preservar el campo tipo para evitar conversiones no deseadas
     const result = await pool.query(
-      'UPDATE examenes SET is_active = true WHERE codigo = $1 RETURNING *',
-      [codigo]
+      'UPDATE examenes SET is_active = true, tipo = $2 WHERE codigo = $1 RETURNING *',
+      [codigo, examenActual.tipo]
     );
     
     if (result.rows.length === 0) {
@@ -270,7 +274,9 @@ const desarchivar = async (req, res) => {
     console.log(`[ExamenController] Examen desarchivado correctamente:`, {
       codigo: result.rows[0].codigo,
       is_active_anterior: examenActual.is_active,
-      is_active_nuevo: result.rows[0].is_active
+      is_active_nuevo: result.rows[0].is_active,
+      tipo_anterior: examenActual.tipo === null ? "NULL" : (examenActual.tipo === "" ? "CADENA_VACIA" : examenActual.tipo),
+      tipo_nuevo: result.rows[0].tipo === null ? "NULL" : (result.rows[0].tipo === "" ? "CADENA_VACIA" : result.rows[0].tipo)
     });
     
     res.json({
