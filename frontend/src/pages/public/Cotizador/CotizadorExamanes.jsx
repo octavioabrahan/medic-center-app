@@ -216,12 +216,7 @@ export default function Cotizaciones() {
   };
 
   // --- STEP 1: Selección de exámenes ---
-  if (cotizacionEnviada) {
-    // Let the default Step 3 at the end handle this case
-    // The flow will now reach Step 3 when cotizacionEnviada is true
-  }
-
-  if (!modoFormulario) {
+  if (!modoFormulario && !cotizacionEnviada) {
     return (
       <SiteFrame>
         <div className={styles.cotizadorFrame4}>
@@ -357,7 +352,7 @@ export default function Cotizaciones() {
   }
 
   // --- STEP 2: Formulario de datos y resumen ---
-  if (modoFormulario) {
+  if (modoFormulario && !cotizacionEnviada) {
     return (
       <SiteFrame>
         <div className={styles.cotizadorFrame4}>
