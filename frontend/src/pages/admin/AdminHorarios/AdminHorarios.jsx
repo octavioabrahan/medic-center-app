@@ -359,18 +359,20 @@ const AdminHorarios = () => {
                         return (
                           <div className="admin-horarios__actions">
                             <button 
-                              className="admin-horarios__action-btn edit" 
+                              className="btn btn--icon btn--subtle btn--medium" 
                               onClick={() => handleEditHorario(row.horario)}
                               aria-label="Editar horario"
+                              title="Editar horario"
                             >
-                              <PencilIcon width={16} height={16} />
+                              <PencilIcon width={20} height={20} className="btn__icon" />
                             </button>
                             <button 
-                              className="admin-horarios__action-btn delete" 
+                              className="btn btn--icon btn--subtle btn--medium" 
                               onClick={() => handleDeleteHorario(row.horario.horario_id)}
                               aria-label="Eliminar horario"
+                              title="Eliminar horario"
                             >
-                              <TrashIcon width={16} height={16} />
+                              <TrashIcon width={20} height={20} className="btn__icon" />
                             </button>
                           </div>
                         );
@@ -485,18 +487,20 @@ const AdminHorarios = () => {
                         return (
                           <div className="admin-horarios__actions">
                             <button 
-                              className="admin-horarios__action-btn edit" 
+                              className="btn btn--icon btn--subtle btn--medium" 
                               onClick={() => handleEditExcepcion(row.excepcion)}
                               aria-label="Editar excepción"
+                              title="Editar excepción"
                             >
-                              <PencilIcon width={16} height={16} />
+                              <PencilIcon width={20} height={20} className="btn__icon" />
                             </button>
                             <button 
-                              className="admin-horarios__action-btn delete" 
+                              className="btn btn--icon btn--subtle btn--medium" 
                               onClick={() => handleDeleteExcepcion(row.excepcion.excepcion_id || row.excepcion.id)}
                               aria-label="Eliminar excepción"
+                              title="Eliminar excepción"
                             >
-                              <TrashIcon width={16} height={16} />
+                              <TrashIcon width={20} height={20} className="btn__icon" />
                             </button>
                           </div>
                         );

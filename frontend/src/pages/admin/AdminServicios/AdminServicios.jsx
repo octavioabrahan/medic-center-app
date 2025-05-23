@@ -343,19 +343,21 @@ const AdminServicios = () => {
                       <div className="admin-servicios__actions">
                         {isActive ? (
                           <button
-                            className="admin-servicios__action-btn edit"
+                            className="btn btn--icon btn--subtle btn--medium"
                             onClick={() => handleEditServicio(row.servicio_completo)}
                             aria-label="Editar servicio"
+                            title="Editar servicio"
                           >
-                            <PencilIcon width={16} height={16} />
+                            <PencilIcon width={20} height={20} className="btn__icon" />
                           </button>
                         ) : (
                           <button
-                            className="admin-servicios__action-btn activate"
+                            className="btn btn--icon btn--subtle btn--medium"
                             onClick={() => cambiarEstadoServicio(row.servicio_completo.id_servicio || row.servicio_completo.servicio_id, true)}
                             aria-label="Activar servicio"
+                            title="Activar servicio"
                           >
-                            <ArrowPathIcon width={16} height={16} />
+                            <ArrowPathIcon width={20} height={20} className="btn__icon" />
                           </button>
                         )}
                       </div>
