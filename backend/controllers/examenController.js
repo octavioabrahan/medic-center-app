@@ -145,34 +145,7 @@ const obtenerHistorial = async (req, res) => {
 const archivar = async (req, res) => {
   const { codigo } = req.params;
   
-  try {
-    // Verificar que el examen exista
-    const checkResult = await pool.query(
-      'SELECT * FROM examenes WHERE codigo = $1',
-      [codigo]
-    );
-    
-    if (checkResult.rows.length === 0) {
-      return res.status(404).json({ error: 'Examen no encontrado' });
-    }
-    
-    const result = await pool.query(
-      'UPDATE examenes SET is_active = false WHERE codigo = $1 RETURNING *',
-      [codigo]
-    );
-    
-    res.json(result.rows[0]);
-  } catch (err) {
-    console.error('Error al archivar examen:', err);
-    res.status(500).json({ error: 'Error al archivar examen' });
-  }
-};
-
-/**
- * Desarchivar un examen (cambia su estado a activo)
- */
-const desarchivar = async (req, res) => {
-  const { codigo } = req.params;
+  console.log(`[ExamenController] Intentando archivar examen con código: ${codigo}`);
   
   try {
     // Verificar que el examen exista
@@ -182,7 +155,106 @@ const desarchivar = async (req, res) => {
     );
     
     if (checkResult.rows.length === 0) {
-      return res.status(404).json({ error: 'Examen no encontrado' });
+      console.error(`[ExamenController] Examen no encontrado para archivar: ${codigo}`);
+      return res.status(404).json({ 
+        error: 'Examen no encontrado',
+        codigo: codigo,
+        operacion: 'archivar'
+      });
+    }
+    
+    const examenActual = checkResult.rows[0];
+    console.log(`[ExamenController] Examen encontrado:`, {
+      codigo: examenActual.codigo,
+      nombre: examenActual.nombre_examen,
+      is_active: examenActual.is_active,
+      tipo: examenActual.tipo
+    });
+    
+    // Si ya está archivado, no hacer nada y devolver éxito
+    if (examenActual.is_active === false) {
+      console.log(`[ExamenController] El examen ya estaba archivado. No se realizan cambios.`);
+      return res.json({
+        ...examenActual,
+        mensaje: 'El examen ya estaba archivado'
+      });
+    }
+    
+    const result = await pool.query(
+      'UPDATE examenes SET is_active = false WHERE codigo = $1 RETURNING *',
+      [codigo]
+    );
+    
+    if (result.rows.length === 0) {
+      console.error(`[ExamenController] Error inesperado: No se devolvió ninguna fila después de archivar`);
+      return res.status(500).json({ error: 'Error al archivar examen: No se devolvió ningún resultado' });
+    }
+    
+    console.log(`[ExamenController] Examen archivado correctamente:`, {
+      codigo: result.rows[0].codigo,
+      is_active_anterior: examenActual.is_active,
+      is_active_nuevo: result.rows[0].is_active
+    });
+    
+    res.json({
+      ...result.rows[0],
+      resultado: 'archivado_correctamente'
+    });
+  } catch (err) {
+    console.error('[ExamenController] Error al archivar examen:', err);
+    console.error('[ExamenController] Detalles:', {
+      codigo: codigo,
+      mensaje: err.message,
+      stack: err.stack
+    });
+    
+    res.status(500).json({ 
+      error: 'Error al archivar examen',
+      mensaje: err.message,
+      codigo_error: err.code || 'UNKNOWN'
+    });
+  }
+};
+
+/**
+ * Desarchivar un examen (cambia su estado a activo)
+ */
+const desarchivar = async (req, res) => {
+  const { codigo } = req.params;
+  
+  console.log(`[ExamenController] Intentando desarchivar examen con código: ${codigo}`);
+  
+  try {
+    // Verificar que el examen exista
+    const checkResult = await pool.query(
+      'SELECT * FROM examenes WHERE codigo = $1',
+      [codigo]
+    );
+    
+    if (checkResult.rows.length === 0) {
+      console.error(`[ExamenController] Examen no encontrado para desarchivar: ${codigo}`);
+      return res.status(404).json({ 
+        error: 'Examen no encontrado',
+        codigo: codigo,
+        operacion: 'desarchivar'
+      });
+    }
+    
+    const examenActual = checkResult.rows[0];
+    console.log(`[ExamenController] Examen encontrado:`, {
+      codigo: examenActual.codigo,
+      nombre: examenActual.nombre_examen,
+      is_active: examenActual.is_active,
+      tipo: examenActual.tipo
+    });
+    
+    // Si ya está activo, no hacer nada y devolver éxito
+    if (examenActual.is_active === true) {
+      console.log(`[ExamenController] El examen ya estaba activo. No se realizan cambios.`);
+      return res.json({
+        ...examenActual,
+        mensaje: 'El examen ya estaba activo'
+      });
     }
     
     const result = await pool.query(
@@ -190,10 +262,34 @@ const desarchivar = async (req, res) => {
       [codigo]
     );
     
-    res.json(result.rows[0]);
+    if (result.rows.length === 0) {
+      console.error(`[ExamenController] Error inesperado: No se devolvió ninguna fila después de desarchivar`);
+      return res.status(500).json({ error: 'Error al desarchivar examen: No se devolvió ningún resultado' });
+    }
+    
+    console.log(`[ExamenController] Examen desarchivado correctamente:`, {
+      codigo: result.rows[0].codigo,
+      is_active_anterior: examenActual.is_active,
+      is_active_nuevo: result.rows[0].is_active
+    });
+    
+    res.json({
+      ...result.rows[0],
+      resultado: 'desarchivado_correctamente'
+    });
   } catch (err) {
-    console.error('Error al desarchivar examen:', err);
-    res.status(500).json({ error: 'Error al desarchivar examen' });
+    console.error('[ExamenController] Error al desarchivar examen:', err);
+    console.error('[ExamenController] Detalles:', {
+      codigo: codigo,
+      mensaje: err.message,
+      stack: err.stack
+    });
+    
+    res.status(500).json({ 
+      error: 'Error al desarchivar examen',
+      mensaje: err.message,
+      codigo_error: err.code || 'UNKNOWN'
+    });
   }
 };
 

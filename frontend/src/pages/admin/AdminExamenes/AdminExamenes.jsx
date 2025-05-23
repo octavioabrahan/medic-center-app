@@ -61,17 +61,48 @@ const AdminExamenes = () => {
   // Apply filters when data or filter settings change
   useEffect(() => {
     applyFilters();
+    
+    // Verificar si hay exámenes con estado inconsistente
+    const examenesInconsistentes = examenes.filter(examen => 
+      examen.is_active === null || examen.is_active === undefined
+    );
+    
+    if (examenesInconsistentes.length > 0) {
+      console.warn('[AdminExamenes] Se detectaron exámenes con estado inconsistente:', 
+        examenesInconsistentes.map(e => ({
+          codigo: e.codigo,
+          nombre: e.nombre_examen,
+          estado: e.is_active
+        }))
+      );
+    }
   }, [examenes, searchTerm, showArchived, sortAZ]);
 
   // Fetch exams from API
   const cargarExamenes = async () => {
     setLoading(true);
+    console.log(`[AdminExamenes] Cargando exámenes desde: ${API_URL}`);
     try {
       const res = await axios.get(API_URL);
+      console.log(`[AdminExamenes] Exámenes cargados: ${res.data.length}`);
+      
+      // Verificar si hay algún examen con estado inconsistente
+      const examenesSospechosos = res.data.filter(e => e.is_active === null || e.is_active === undefined);
+      if (examenesSospechosos.length > 0) {
+        console.warn(`[AdminExamenes] Se encontraron ${examenesSospechosos.length} exámenes con estado inconsistente:`, 
+          examenesSospechosos.map(e => ({ codigo: e.codigo, nombre: e.nombre_examen, is_active: e.is_active }))
+        );
+      }
+      
       setExamenes(res.data);
       setError(null);
     } catch (err) {
-      console.error("Error al cargar exámenes:", err);
+      console.error("[AdminExamenes] Error al cargar exámenes:", err);
+      console.error("[AdminExamenes] Detalles del error:", {
+        mensaje: err.message,
+        respuesta: err.response?.data,
+        codigo_estado: err.response?.status
+      });
       setError('No se pudieron cargar los exámenes y servicios.');
     } finally {
       setLoading(false);
@@ -218,21 +249,43 @@ const AdminExamenes = () => {
 
   // Toggle active status
   const toggleActivo = async (examen) => {
+    console.log(`[AdminExamenes] Intentando ${!examen.is_active ? 'activar' : 'archivar'} examen:`, {
+      codigo: examen.codigo,
+      nombre: examen.nombre_examen,
+      estado_actual: examen.is_active ? 'activo' : 'archivado',
+      tipo: examen.tipo
+    });
+    
     try {
       // Usar endpoint específico de archivar/desarchivar en lugar de actualización general
       const endpoint = !examen.is_active 
         ? `${API_URL}/${examen.codigo}/desarchivar` 
         : `${API_URL}/${examen.codigo}/archivar`;
       
-      await axios.put(endpoint);
+      console.log(`[AdminExamenes] Llamando a endpoint: ${endpoint}`);
+      
+      const response = await axios.put(endpoint);
+      console.log(`[AdminExamenes] Respuesta del servidor:`, response.data);
+      
+      if (response.data && (response.data.is_active === !examen.is_active)) {
+        console.log(`[AdminExamenes] Estado cambiado correctamente a: ${response.data.is_active ? 'activo' : 'archivado'}`);
+      } else {
+        console.warn(`[AdminExamenes] Posible inconsistencia: El estado devuelto (${response.data?.is_active}) no coincide con lo esperado (${!examen.is_active})`);
+      }
+      
       await cargarExamenes(); // Refresh data
       
       if (showEditModal) {
         setShowEditModal(false);
       }
     } catch (err) {
-      console.error('Error:', err);
-      setError(`Error al ${!examen.is_active ? 'activar' : 'desactivar'} el examen`);
+      console.error('[AdminExamenes] Error al cambiar estado del examen:', err);
+      console.error('[AdminExamenes] Detalles del error:', {
+        mensaje: err.message,
+        respuesta: err.response?.data,
+        codigo_estado: err.response?.status
+      });
+      setError(`Error al ${!examen.is_active ? 'activar' : 'archivar'} el examen. Detalles: ${err.message}`);
     }
   };
 
