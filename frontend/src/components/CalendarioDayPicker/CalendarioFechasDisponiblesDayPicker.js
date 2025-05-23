@@ -72,9 +72,6 @@ const CalendarioFechasDisponiblesDayPicker = ({ profesionalId, fechaSeleccionada
   }, [profesionalId, formatDate, parseFechaLocal]);
 
   const isFechaDisponible = useCallback((date) => {
-    const today = new Date();
-    today.setHours(0, 0, 0, 0); // Ignore time for comparison
-    if (date < today) return false; // Mark past dates as not available
     return fechasDisponibles.some(d =>
       d.dateObj.getFullYear() === date.getFullYear() &&
       d.dateObj.getMonth() === date.getMonth() &&
