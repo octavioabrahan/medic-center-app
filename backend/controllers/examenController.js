@@ -108,7 +108,6 @@ const eliminar = async (req, res) => {
       return res.status(404).json({ error: 'Examen no encontrado' });
     }
     
-    // Eliminar el examen - sin historial
     const result = await pool.query('DELETE FROM examenes WHERE codigo = $1 RETURNING *', [codigo]);
     
     res.json({ message: 'Examen eliminado correctamente', examen: result.rows[0] });
@@ -157,7 +156,6 @@ const archivar = async (req, res) => {
       return res.status(404).json({ error: 'Examen no encontrado' });
     }
     
-    // Actualizar el examen a inactivo - sin transacción ni registro de historial
     const result = await pool.query(
       'UPDATE examenes SET is_active = false WHERE codigo = $1 RETURNING *',
       [codigo]
@@ -187,7 +185,6 @@ const desarchivar = async (req, res) => {
       return res.status(404).json({ error: 'Examen no encontrado' });
     }
     
-    // Actualizar el examen a activo - sin transacción ni registro de historial
     const result = await pool.query(
       'UPDATE examenes SET is_active = true WHERE codigo = $1 RETURNING *',
       [codigo]
