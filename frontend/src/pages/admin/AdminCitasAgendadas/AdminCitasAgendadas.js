@@ -524,8 +524,9 @@ const AdminCitasAgendadas = () => {
           {/* Modal para detalles */}
           {showDetailModal && currentAgendamiento && (
             <div className="admin-citas-agendadas__modal-overlay modal-appointment-detail">
-              <div className="modal-body">
-                <div className="text">
+              <div className="admin-citas-agendadas__modal-content">
+                <div className="modal-body">
+                  <div className="text">
                   <div className="detalle-de-la-cita">Detalle de la cita</div>
                   
                   {/* Información del paciente */}
@@ -556,42 +557,15 @@ const AdminCitasAgendadas = () => {
                       <div className="frame-81">
                         <div className="correo-electr-nico">Documento del convenio</div>
                         <div className="documento-enlaces-container">
-                          <div style={{ marginTop: '8px' }}>
-                            <a 
-                              href={`${process.env.REACT_APP_API_URL || ''}/api/archivos/${currentAgendamiento.archivo_adjunto_id}`}
-                              target="_blank" 
-                              rel="noopener noreferrer"
-                              className="documento-enlace"
-                              style={{ 
-                                color: '#007bff', 
-                                textDecoration: 'none',
-                                display: 'flex',
-                                alignItems: 'center',
-                                gap: '6px',
-                                marginBottom: '8px',
-                                fontSize: '14px'
-                              }}
-                            >
-                              <DocumentIcon width={16} height={16} />
-                              <span>Ver documento</span>
-                            </a>
-                            <a 
-                              href={`${process.env.REACT_APP_API_URL || ''}/api/archivos/${currentAgendamiento.archivo_adjunto_id}?download=true`}
-                              download
-                              className="documento-enlace"
-                              style={{ 
-                                color: '#007bff', 
-                                textDecoration: 'none',
-                                display: 'flex',
-                                alignItems: 'center',
-                                gap: '6px',
-                                fontSize: '14px'
-                              }}
-                            >
-                              <DocumentIcon width={16} height={16} />
-                              <span>Descargar documento</span>
-                            </a>
-                          </div>
+                          <a 
+                            href={`${process.env.REACT_APP_API_URL || ''}/api/archivos/${currentAgendamiento.archivo_adjunto_id}`}
+                            target="_blank" 
+                            rel="noopener noreferrer"
+                            className="documento-enlace"
+                          >
+                            <DocumentIcon width={16} height={16} />
+                            <span>[Ver documento]</span>
+                          </a>
                         </div>
                       </div>
                     )}
@@ -705,6 +679,9 @@ const AdminCitasAgendadas = () => {
                       </div>
                     )}
                   </div>
+                </div>
+                
+                {/* Cerrar div text */}
                 </div>
                 
                 {/* Botón de cerrar */}
