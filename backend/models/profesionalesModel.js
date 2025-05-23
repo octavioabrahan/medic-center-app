@@ -48,6 +48,66 @@ const ProfesionalesModel = {
       [estado, profesionalId]
     );
     return result.rows[0];
+  },
+
+  actualizar: async (profesionalId, datos) => {
+    // Filtrar solo los campos que tienen valor (no undefined, null o vacío)
+    const camposActualizar = {};
+    const valores = [];
+    let contador = 1;
+    
+    if (datos.cedula !== undefined && datos.cedula !== null && datos.cedula !== '') {
+      camposActualizar.cedula = `$${contador}`;
+      valores.push(datos.cedula);
+      contador++;
+    }
+    if (datos.nombre !== undefined && datos.nombre !== null && datos.nombre !== '') {
+      camposActualizar.nombre = `$${contador}`;
+      valores.push(datos.nombre);
+      contador++;
+    }
+    if (datos.apellido !== undefined && datos.apellido !== null && datos.apellido !== '') {
+      camposActualizar.apellido = `$${contador}`;
+      valores.push(datos.apellido);
+      contador++;
+    }
+    if (datos.especialidad_id !== undefined && datos.especialidad_id !== null && datos.especialidad_id !== '') {
+      camposActualizar.especialidad_id = `$${contador}`;
+      valores.push(datos.especialidad_id);
+      contador++;
+    }
+    if (datos.telefono !== undefined && datos.telefono !== null) {
+      camposActualizar.telefono = `$${contador}`;
+      valores.push(datos.telefono);
+      contador++;
+    }
+    if (datos.correo !== undefined && datos.correo !== null) {
+      camposActualizar.email = `$${contador}`;
+      valores.push(datos.correo);
+      contador++;
+    }
+    
+    // Si no hay campos para actualizar, no hacer nada
+    if (Object.keys(camposActualizar).length === 0) {
+      throw new Error('No hay campos válidos para actualizar');
+    }
+    
+    // Construir la consulta dinámicamente
+    const setClauses = Object.entries(camposActualizar)
+      .map(([campo, placeholder]) => `${campo} = ${placeholder}`)
+      .join(', ');
+    
+    valores.push(profesionalId); // El ID va al final
+    
+    const query = `
+      UPDATE profesionales 
+      SET ${setClauses}
+      WHERE profesional_id = $${contador}
+      RETURNING *
+    `;
+    
+    const result = await db.query(query, valores);
+    return result.rows[0];
   }
 };
 

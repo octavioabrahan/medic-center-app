@@ -172,12 +172,24 @@ const EditarProfesionales = ({
       console.log('Actualizando profesional:', profesionalEditado);
       console.log('Servicios seleccionados:', serviciosSeleccionados);
       
-      // Actualizar datos del profesional
-      const updateResponse = await api.put(`/profesionales/estado/${profesionalEditado.id}`, {
-        activo: profesionalEditado.activo
+      // Actualizar datos del profesional (nombre, apellido, etc.)
+      const updateResponse = await api.patch(`/profesionales/${profesionalEditado.id}`, {
+        cedula: profesionalEditado.cedula,
+        nombre: profesionalEditado.nombre,
+        apellido: profesionalEditado.apellido,
+        telefono: profesionalEditado.telefono,
+        correo: profesionalEditado.correo,
+        especialidad_id: profesionalEditado.especialidad_id
       });
       
       console.log('Respuesta actualización profesional:', updateResponse);
+      
+      // Actualizar estado activo/inactivo si es necesario
+      if (profesionalEditado.activo !== undefined) {
+        await api.put(`/profesionales/estado/${profesionalEditado.id}`, {
+          activo: profesionalEditado.activo
+        });
+      }
       
       // Actualizar servicios asignados
       const serviciosResponse = await api.post(`/profesionales/asignar-servicios`, {

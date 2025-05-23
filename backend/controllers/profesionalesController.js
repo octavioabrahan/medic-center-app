@@ -51,6 +51,56 @@ const ProfesionalesController = {
     }
   },
 
+  actualizar: async (req, res) => {
+    try {
+      const { id } = req.params;
+      const { cedula, nombre, apellido, especialidad_id, telefono, correo } = req.body;
+      
+      // Con PATCH, solo validamos que al menos un campo esté presente
+      const camposActualizar = { cedula, nombre, apellido, especialidad_id, telefono, correo };
+      const camposConValor = Object.entries(camposActualizar).filter(([key, value]) => value !== undefined && value !== null && value !== '');
+      
+      if (camposConValor.length === 0) {
+        return res.status(400).json({ error: "Debe proporcionar al menos un campo para actualizar" });
+      }
+      
+      // Validaciones de campos críticos si están presentes
+      if (cedula !== undefined && !cedula) {
+        return res.status(400).json({ error: "La cédula no puede estar vacía" });
+      }
+      if (nombre !== undefined && !nombre) {
+        return res.status(400).json({ error: "El nombre no puede estar vacío" });
+      }
+      if (apellido !== undefined && !apellido) {
+        return res.status(400).json({ error: "El apellido no puede estar vacío" });
+      }
+      
+      const profesional = await Model.actualizar(id, {
+        cedula,
+        nombre,
+        apellido,
+        especialidad_id,
+        telefono,
+        correo
+      });
+      
+      if (!profesional) {
+        return res.status(404).json({ error: "Profesional no encontrado" });
+      }
+      
+      res.json({ 
+        mensaje: "Profesional actualizado correctamente",
+        profesional
+      });
+    } catch (err) {
+      if (err.code === '23505') {
+        return res.status(400).json({ error: "Ya existe un profesional con esta cédula." });
+      }
+      console.error("Error al actualizar profesional:", err);
+      res.status(500).json({ error: "Error al actualizar profesional" });
+    }
+  },
+
   asignarCategorias: async (req, res) => {
     const { profesional_id, categorias } = req.body;
 
