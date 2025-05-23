@@ -156,7 +156,7 @@ const AdminExamenes = () => {
       preciousd: "",
       tiempo_entrega: "",
       informacion: "",
-      tipo: null,
+      tipo: null, // Mantenemos explícitamente como null
       is_active: true
     };
     
@@ -176,7 +176,7 @@ const AdminExamenes = () => {
       preciousd: examen.preciousd,
       tiempo_entrega: examen.tiempo_entrega || "",
       informacion: examen.informacion || "",
-      tipo: examen.tipo || "examen",
+      tipo: examen.tipo, // Ya no asignamos valor por defecto, permitiendo null
       is_active: examen.is_active
     });
     setShowEditModal(true);
