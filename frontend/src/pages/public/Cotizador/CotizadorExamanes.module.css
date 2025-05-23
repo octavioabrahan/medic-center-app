@@ -215,6 +215,8 @@
   align-self: stretch;
   width: 306px;
   position: relative;
+  max-height: 735px;
+  overflow: hidden;
 }
 
 @media (max-width: 768px) {
@@ -337,6 +339,8 @@
   align-self: stretch;
   flex-shrink: 0;
   position: relative;
+  overflow-y: auto;
+  max-height: 400px;
 }
 .cotizadorCheckboxField2 {
   display: flex;

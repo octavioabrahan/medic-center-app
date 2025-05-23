@@ -566,7 +566,6 @@ export default function Cotizaciones() {
         </div>
         {cotizacionId && (
           <div className={styles.cotizadorSubtitle2} style={{marginTop: 24}}>
-            <span>Número de cotización: </span>
             <strong>{cotizacionId}</strong>
           </div>
         )}
