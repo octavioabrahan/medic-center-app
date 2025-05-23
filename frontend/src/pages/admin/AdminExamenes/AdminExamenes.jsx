@@ -19,7 +19,7 @@ const CustomPlusIcon = () => (
   </svg>
 );
 
-const API_ENDPOINT = '/api/exams'; // Usar el endpoint relativo
+const API_ENDPOINT = '/exams'; // Endpoint relativo (sin /api/ porque el cliente api ya lo incluye)
 
 const AdminExamenes = () => {
   // State for exams data
