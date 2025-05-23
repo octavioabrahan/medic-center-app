@@ -9,8 +9,8 @@ import Table from '../../../components/Tables/Table';
 import Tag from '../../../components/Tag/Tag';
 import Modal from '../../../components/Modal/Modal';
 import styles from './AdminExamenes.module.css';
-import axios from 'axios';
 import { PencilSquareIcon, ArrowPathIcon } from '@heroicons/react/20/solid';
+import api from '../../../api'; // Importar el cliente API configurado correctamente
 
 // Custom Plus icon for the Add button
 const CustomPlusIcon = () => (
@@ -19,7 +19,7 @@ const CustomPlusIcon = () => (
   </svg>
 );
 
-const API_URL = `${process.env.REACT_APP_API_URL || ''}/api/exams`;
+const API_ENDPOINT = '/api/exams'; // Usar el endpoint relativo
 
 const AdminExamenes = () => {
   // State for exams data
@@ -81,11 +81,11 @@ const AdminExamenes = () => {
   // Fetch exams from API
   const cargarExamenes = async () => {
     setLoading(true);
-    console.log(`[AdminExamenes] Cargando exámenes desde: ${API_URL}`);
+    console.log(`[AdminExamenes] Cargando exámenes desde: ${API_ENDPOINT}`);
     try {
       // Forzar skip de cache agregando timestamp como query param
       const timestamp = new Date().getTime();
-      const res = await axios.get(`${API_URL}?_=${timestamp}`);
+      const res = await api.get(`${API_ENDPOINT}?_=${timestamp}`);
       
       console.log(`[AdminExamenes] Exámenes cargados: ${res.data.length}`);
       
@@ -235,12 +235,18 @@ const AdminExamenes = () => {
         return;
       }
       
-      const response = await axios.post(API_URL, formData);
+      // Usar api.post en lugar de axios.post
+      const response = await api.post(API_ENDPOINT, formData);
       await cargarExamenes(); // Refresh data
       setShowAddModal(false);
       setError(null); // Clear any previous error
     } catch (err) {
       console.error('Error:', err);
+      console.error("[AdminExamenes] Detalles del error:", {
+        mensaje: err.message,
+        respuesta: err.response?.data,
+        codigo_estado: err.response?.status
+      });
       setError("Error al agregar el examen");
     }
   };
@@ -249,11 +255,17 @@ const AdminExamenes = () => {
   const handleUpdateExamen = async (e) => {
     if (e) e.preventDefault();
     try {      
-      await axios.put(`${API_URL}/${formData.codigo}`, formData);
+      // Usar api.put en lugar de axios.put
+      await api.put(`${API_ENDPOINT}/${formData.codigo}`, formData);
       await cargarExamenes(); // Refresh data
       setShowEditModal(false);
     } catch (err) {
       console.error('Error:', err);
+      console.error("[AdminExamenes] Detalles del error:", {
+        mensaje: err.message,
+        respuesta: err.response?.data,
+        codigo_estado: err.response?.status
+      });
       setError("Error al actualizar el examen");
     }
   };
@@ -268,14 +280,21 @@ const AdminExamenes = () => {
     });
     
     try {
+      if (!examen.codigo) {
+        console.error("[AdminExamenes] Error: Código de examen no definido");
+        setError("Error: Código de examen no definido");
+        return false;
+      }
+      
       // Usar endpoint específico de archivar/desarchivar en lugar de actualización general
       const endpoint = !examen.is_active 
-        ? `${API_URL}/${examen.codigo}/desarchivar` 
-        : `${API_URL}/${examen.codigo}/archivar`;
+        ? `${API_ENDPOINT}/${examen.codigo}/desarchivar` 
+        : `${API_ENDPOINT}/${examen.codigo}/archivar`;
       
       console.log(`[AdminExamenes] Llamando a endpoint: ${endpoint}`);
       
-      const response = await axios.put(endpoint);
+      // Usar api.put en lugar de axios.put - ESTE ES EL CAMBIO CRÍTICO
+      const response = await api.put(endpoint);
       console.log(`[AdminExamenes] Respuesta del servidor:`, response.data);
       
       if (response.data && (response.data.is_active === !examen.is_active)) {
@@ -295,14 +314,15 @@ const AdminExamenes = () => {
         return e;
       }));
       
-      // Luego cargar todos los datos frescos del servidor
-      setTimeout(() => {
-        cargarExamenes(); // Refresh data con un pequeño delay
-      }, 200);
+      // Luego recargar todos los datos frescos del servidor
+      const freshDataResponse = await api.get(API_ENDPOINT);
+      setExamenes(freshDataResponse.data);
       
       if (showEditModal) {
         setShowEditModal(false);
       }
+      
+      return true;
     } catch (err) {
       console.error('[AdminExamenes] Error al cambiar estado del examen:', err);
       console.error('[AdminExamenes] Detalles del error:', {
@@ -311,6 +331,7 @@ const AdminExamenes = () => {
         codigo_estado: err.response?.status
       });
       setError(`Error al ${!examen.is_active ? 'activar' : 'archivar'} el examen. Detalles: ${err.message}`);
+      return false;
     }
   };
 

@@ -147,14 +147,20 @@ const archivar = async (req, res) => {
   
   console.log(`[ExamenController] Intentando archivar examen con código: ${codigo}`);
   
+  // Obtener un cliente para comenzar una transacción
+  const client = await pool.getClient();
+  
   try {
+    await client.query('BEGIN'); // Iniciar transacción
+    
     // Verificar que el examen exista
-    const checkResult = await pool.query(
+    const checkResult = await client.query(
       'SELECT * FROM examenes WHERE codigo = $1',
       [codigo]
     );
     
     if (checkResult.rows.length === 0) {
+      await client.query('ROLLBACK');
       console.error(`[ExamenController] Examen no encontrado para archivar: ${codigo}`);
       return res.status(404).json({ 
         error: 'Examen no encontrado',
@@ -173,6 +179,7 @@ const archivar = async (req, res) => {
     
     // Si ya está archivado, no hacer nada y devolver éxito
     if (examenActual.is_active === false) {
+      await client.query('ROLLBACK');
       console.log(`[ExamenController] El examen ya estaba archivado. No se realizan cambios.`);
       return res.json({
         ...examenActual,
@@ -181,15 +188,19 @@ const archivar = async (req, res) => {
     }
     
     // Usar una consulta simple que solo modifique is_active, sin tocar otros campos
-    const result = await pool.query(
+    const result = await client.query(
       'UPDATE examenes SET is_active = false WHERE codigo = $1 RETURNING *',
       [codigo]
     );
     
     if (result.rows.length === 0) {
+      await client.query('ROLLBACK');
       console.error(`[ExamenController] Error inesperado: No se devolvió ninguna fila después de archivar`);
       return res.status(500).json({ error: 'Error al archivar examen: No se devolvió ningún resultado' });
     }
+    
+    // Confirmar la transacción
+    await client.query('COMMIT');
     
     console.log(`[ExamenController] Examen archivado correctamente:`, {
       codigo: result.rows[0].codigo,
@@ -198,7 +209,7 @@ const archivar = async (req, res) => {
       tipo: result.rows[0].tipo // Solo verificar el tipo final
     });
     
-    // Verificar que is_active realmente cambió en la base de datos
+    // Verificar que is_active realmente cambió en la base de datos (fuera de la transacción)
     const verificacion = await pool.query(
       'SELECT is_active FROM examenes WHERE codigo = $1',
       [codigo]
@@ -206,6 +217,10 @@ const archivar = async (req, res) => {
     
     if (verificacion.rows.length > 0) {
       console.log(`[ExamenController] Verificación post-archivado: is_active = ${verificacion.rows[0].is_active}`);
+      
+      if (verificacion.rows[0].is_active !== false) {
+        console.error(`[ExamenController] ADVERTENCIA: El estado no cambió a pesar del COMMIT exitoso!`);
+      }
     }
     
     res.json({
@@ -213,6 +228,8 @@ const archivar = async (req, res) => {
       resultado: 'archivado_correctamente'
     });
   } catch (err) {
+    await client.query('ROLLBACK').catch(e => console.error('Error en ROLLBACK:', e));
+    
     console.error('[ExamenController] Error al archivar examen:', err);
     console.error('[ExamenController] Detalles:', {
       codigo: codigo,
@@ -225,6 +242,8 @@ const archivar = async (req, res) => {
       mensaje: err.message,
       codigo_error: err.code || 'UNKNOWN'
     });
+  } finally {
+    client.release(); // Siempre liberar el cliente al final
   }
 };
 
@@ -236,14 +255,20 @@ const desarchivar = async (req, res) => {
   
   console.log(`[ExamenController] Intentando desarchivar examen con código: ${codigo}`);
   
+  // Obtener un cliente para comenzar una transacción
+  const client = await pool.getClient();
+  
   try {
+    await client.query('BEGIN'); // Iniciar transacción
+    
     // Verificar que el examen exista
-    const checkResult = await pool.query(
+    const checkResult = await client.query(
       'SELECT * FROM examenes WHERE codigo = $1',
       [codigo]
     );
     
     if (checkResult.rows.length === 0) {
+      await client.query('ROLLBACK');
       console.error(`[ExamenController] Examen no encontrado para desarchivar: ${codigo}`);
       return res.status(404).json({ 
         error: 'Examen no encontrado',
@@ -262,6 +287,7 @@ const desarchivar = async (req, res) => {
     
     // Si ya está activo, no hacer nada y devolver éxito
     if (examenActual.is_active === true) {
+      await client.query('ROLLBACK');
       console.log(`[ExamenController] El examen ya estaba activo. No se realizan cambios.`);
       return res.json({
         ...examenActual,
@@ -270,15 +296,19 @@ const desarchivar = async (req, res) => {
     }
     
     // Usar una consulta simple que solo modifique is_active, sin tocar otros campos
-    const result = await pool.query(
+    const result = await client.query(
       'UPDATE examenes SET is_active = true WHERE codigo = $1 RETURNING *',
       [codigo]
     );
     
     if (result.rows.length === 0) {
+      await client.query('ROLLBACK');
       console.error(`[ExamenController] Error inesperado: No se devolvió ninguna fila después de desarchivar`);
       return res.status(500).json({ error: 'Error al desarchivar examen: No se devolvió ningún resultado' });
     }
+    
+    // Confirmar la transacción
+    await client.query('COMMIT');
     
     console.log(`[ExamenController] Examen desarchivado correctamente:`, {
       codigo: result.rows[0].codigo,
@@ -287,7 +317,7 @@ const desarchivar = async (req, res) => {
       tipo: result.rows[0].tipo // Solo verificar el tipo final
     });
     
-    // Verificar que is_active realmente cambió en la base de datos
+    // Verificar que is_active realmente cambió en la base de datos (fuera de la transacción)
     const verificacion = await pool.query(
       'SELECT is_active FROM examenes WHERE codigo = $1',
       [codigo]
@@ -295,6 +325,10 @@ const desarchivar = async (req, res) => {
     
     if (verificacion.rows.length > 0) {
       console.log(`[ExamenController] Verificación post-desarchivado: is_active = ${verificacion.rows[0].is_active}`);
+      
+      if (verificacion.rows[0].is_active !== true) {
+        console.error(`[ExamenController] ADVERTENCIA: El estado no cambió a pesar del COMMIT exitoso!`);
+      }
     }
     
     res.json({
@@ -302,6 +336,8 @@ const desarchivar = async (req, res) => {
       resultado: 'desarchivado_correctamente'
     });
   } catch (err) {
+    await client.query('ROLLBACK').catch(e => console.error('Error en ROLLBACK:', e));
+    
     console.error('[ExamenController] Error al desarchivar examen:', err);
     console.error('[ExamenController] Detalles:', {
       codigo: codigo,
@@ -314,6 +350,8 @@ const desarchivar = async (req, res) => {
       mensaje: err.message,
       codigo_error: err.code || 'UNKNOWN'
     });
+  } finally {
+    client.release(); // Siempre liberar el cliente al final
   }
 };
 
