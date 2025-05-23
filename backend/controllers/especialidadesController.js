@@ -51,6 +51,63 @@ const EspecialidadesController = {
       console.error(err);
       res.status(500).json({ error: "Error al obtener especialidades" });
     }
+  },
+
+  actualizar: async (req, res) => {
+    try {
+      const { id } = req.params;
+      const { nombre } = req.body;
+      
+      if (!nombre || nombre.trim().length === 0) {
+        return res.status(400).json({ error: "El nombre de la especialidad es obligatorio" });
+      }
+      
+      const especialidad = await Model.actualizar(id, { nombre: nombre.trim() });
+      
+      if (!especialidad) {
+        return res.status(404).json({ error: "Especialidad no encontrada" });
+      }
+      
+      // Invalidar cache después de actualizar
+      especialidadesCache.data = null;
+      
+      res.json({ 
+        mensaje: "Especialidad actualizada correctamente",
+        especialidad
+      });
+    } catch (err) {
+      if (err.code === '23505') {
+        return res.status(400).json({ error: "Ya existe una especialidad con este nombre." });
+      }
+      console.error("Error al actualizar especialidad:", err);
+      res.status(500).json({ error: "Error al actualizar especialidad" });
+    }
+  },
+
+  eliminar: async (req, res) => {
+    try {
+      const { id } = req.params;
+      
+      const especialidad = await Model.eliminar(id);
+      
+      if (!especialidad) {
+        return res.status(404).json({ error: "Especialidad no encontrada" });
+      }
+      
+      // Invalidar cache después de eliminar
+      especialidadesCache.data = null;
+      
+      res.json({ 
+        mensaje: "Especialidad eliminada correctamente",
+        especialidad
+      });
+    } catch (err) {
+      if (err.message.includes('está siendo utilizada')) {
+        return res.status(400).json({ error: err.message });
+      }
+      console.error("Error al eliminar especialidad:", err);
+      res.status(500).json({ error: "Error al eliminar especialidad" });
+    }
   }
 };
 

@@ -1,4 +1,3 @@
-
 .especialidades-lista {
   display: flex;
   flex-direction: column;
@@ -161,4 +160,134 @@
 
 .especialidades-error {
   color: var(--var-sds-color-text-danger-default, #d83933);
+}
+
+/* Estilos para edición inline y botones de acción */
+.especialidades-item-contenido {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  gap: 8px;
+}
+
+.especialidades-acciones {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: auto;
+  flex-shrink: 0;
+}
+
+.especialidades-boton-editar,
+.especialidades-boton-eliminar {
+  background: transparent;
+  border: none;
+  padding: 4px;
+  border-radius: 4px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s ease;
+}
+
+.especialidades-boton-editar:hover {
+  background-color: var(--var-sds-color-background-neutral-secondary, #f5f5f5);
+}
+
+.especialidades-boton-eliminar:hover {
+  background-color: var(--var-sds-color-background-danger-secondary, #fef2f2);
+}
+
+.especialidades-boton-eliminar:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.especialidades-trash-icon {
+  width: 16px;
+  height: 16px;
+  color: var(--var-sds-color-icon-danger-default, #dc2626);
+}
+
+/* Estilos para el modo de edición */
+.especialidades-edicion-contenedor {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+}
+
+.especialidades-edicion-input {
+  flex: 1;
+}
+
+.especialidades-edicion-botones {
+  display: flex;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+.especialidades-boton-guardar,
+.especialidades-boton-cancelar {
+  background: transparent;
+  border: 1px solid;
+  padding: 4px 8px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.especialidades-boton-guardar {
+  border-color: var(--var-sds-color-border-success-default, #16a34a);
+  color: var(--var-sds-color-text-success-default, #16a34a);
+}
+
+.especialidades-boton-guardar:hover {
+  background-color: var(--var-sds-color-background-success-secondary, #f0fdf4);
+}
+
+.especialidades-boton-cancelar {
+  border-color: var(--var-sds-color-border-neutral-default, #d1d5db);
+  color: var(--var-sds-color-text-neutral-default, #6b7280);
+}
+
+.especialidades-boton-cancelar:hover {
+  background-color: var(--var-sds-color-background-neutral-secondary, #f9fafb);
+}
+
+/* Estilo para el error de edición */
+.especialidades-error-edicion {
+  color: var(--var-sds-color-text-danger-default, #dc2626);
+  font-size: 12px;
+  margin-top: 4px;
+  width: 100%;
+}
+
+/* Efecto hover para edición */
+.especialidades-input:not(.editando):hover {
+  cursor: pointer;
+  background-color: var(--var-sds-color-background-neutral-secondary, #f9fafb);
+  border-color: var(--var-sds-color-border-neutral-hover, #9ca3af);
+}
+
+.especialidades-input.editando {
+  border-color: var(--var-sds-color-border-brand-default, #3b82f6);
+  box-shadow: 0 0 0 1px var(--var-sds-color-border-brand-default, #3b82f6);
+}
+
+/* Tooltip para indicar que se puede editar */
+.especialidades-value[title] {
+  position: relative;
+}
+
+/* Animación suave para transiciones */
+.especialidades-input,
+.especialidades-boton-editar,
+.especialidades-boton-eliminar {
+  transition: all 0.2s ease-in-out;
 }
