@@ -169,6 +169,45 @@ const crear = async (req, res) => {
       logGeneral(`⚠️ No se pudo obtener la tasa de cambio: ${err.message}`);
     }
 
+    // Obtener información completa de los exámenes desde la base de datos
+    // incluyendo el campo 'informacion' que contiene las indicaciones
+    const examenesCompletos = [];
+    for (const examen of examenes) {
+      try {
+        const examenCompleto = await pool.query(
+          'SELECT codigo, nombre_examen, preciousd, tiempo_entrega, informacion FROM examenes WHERE codigo = $1',
+          [examen.codigo]
+        );
+        
+        if (examenCompleto.rows.length > 0) {
+          const examenData = examenCompleto.rows[0];
+          examenesCompletos.push({
+            codigo: examenData.codigo,
+            nombre_examen: examenData.nombre_examen,
+            nombre: examenData.nombre_examen, // Para compatibilidad
+            preciousd: parseFloat(examenData.preciousd),
+            tiempo_entrega: examenData.tiempo_entrega,
+            informacion: examenData.informacion, // Esta es la información clave para las indicaciones
+            precioVES: parseFloat(examenData.preciousd) * tasaCambio
+          });
+        } else {
+          // Si no se encuentra el examen en la BD, usar los datos del frontend
+          logGeneral(`⚠️ Examen ${examen.codigo} no encontrado en BD, usando datos del frontend`);
+          examenesCompletos.push({
+            ...examen,
+            precioVES: parseFloat(examen.preciousd) * tasaCambio
+          });
+        }
+      } catch (err) {
+        logGeneral(`❌ Error obteniendo examen ${examen.codigo}: ${err.message}`);
+        // En caso de error, usar los datos del frontend
+        examenesCompletos.push({
+          ...examen,
+          precioVES: parseFloat(examen.preciousd) * tasaCambio
+        });
+      }
+    }
+
     // Preparar datos para PDF
     const datosCliente = {
       nombre: `${nombre} ${apellido}`,
@@ -177,15 +216,10 @@ const crear = async (req, res) => {
       telefono
     };
 
-    const examenesConPrecios = examenes.map(e => ({
-      ...e,
-      precioVES: parseFloat(e.preciousd) * tasaCambio
-    }));
-
     const resumenCotizacion = {
       folio,
       paciente: datosCliente,
-      cotizacion: examenesConPrecios,
+      cotizacion: examenesCompletos, // Usar los exámenes completos con indicaciones
       totalUSD: total_usd,
       totalVES: total_usd * tasaCambio,
       fecha: new Date().toLocaleDateString()

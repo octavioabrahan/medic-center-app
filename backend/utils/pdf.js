@@ -55,15 +55,15 @@ function generarPDF(nombrePaciente, resumen) {
       // doc.image('ruta/al/logo.png', 50, 45, { width: 150 });
       
       // Como placeholder, haremos un logo de texto
-      doc.fontSize(24).fillColor(colors.primary).text('CENTRO MÉDICO', 50, 45);
-      doc.fontSize(10).fillColor(colors.lightText).text('Cuidando tu salud desde 1995', 50, 75);
+      doc.fontSize(24).fillColor(colors.primary).text('Diagnocentro Acarigua', 50, 45);
       
       // Información de la clínica
       doc.fontSize(9).fillColor(colors.lightText).text([
         'CALLE 30 ENTRE AV. 33 Y 34 LOCAL C.C. ORION N°. 01 Y 02 SECTOR',
         'CENTRO ACARIGUA ESTADO PORTUGUESA',
         'ZONA POSTAL. 3301',
-        '0255-9350349 / 0255-9350351 / 0255-9350347 / 0255-9883236',
+        '0255-9350349 / 0255-9350351',
+        '0255-9350347 / 0255-9883236'
       ].join('\n'), 400, 45, { align: 'right' });
 
       // Línea separadora
