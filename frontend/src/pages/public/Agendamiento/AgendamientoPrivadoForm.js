@@ -64,15 +64,22 @@ const AgendamientoPrivadoForm = () => {
 
   useEffect(() => {
     if (step === 2) {
-      axios.get('/api/servicios').then(res => setServicios(res.data)).catch(console.error);
-      axios.get('/api/profesionales').then(res => setProfesionales(res.data)).catch(console.error);
-      axios.get('/api/profesional-servicios')
-        .then(res => {
+      const loadProfesionalesConHorarios = async () => {
+        try {
+          // Cargar servicios y profesional-servicios primero
+          const [serviciosRes, profesionalesRes, profesionalServiciosRes] = await Promise.all([
+            axios.get('/api/servicios'),
+            axios.get('/api/profesionales'),
+            axios.get('/api/profesional-servicios')
+          ]);
+
+          setServicios(serviciosRes.data);
+
           // Crear mapa de profesionales a servicios y viceversa
           const profToServ = {};
           const servToProf = {};
           
-          res.data.forEach(relacion => {
+          profesionalServiciosRes.data.forEach(relacion => {
             // Mapeo de profesional a servicios
             if (!profToServ[relacion.profesional_id]) {
               profToServ[relacion.profesional_id] = [];
@@ -87,8 +94,31 @@ const AgendamientoPrivadoForm = () => {
           });
           
           setProfesionalServicioMap({ profToServ, servToProf });
-        })
-        .catch(console.error);
+
+          // Filtrar profesionales que tengan al menos un horario
+          const profesionalesConHorarios = [];
+          
+          for (const profesional of profesionalesRes.data) {
+            try {
+              const horariosRes = await axios.get(`/api/horarios/profesional/${profesional.profesional_id}`);
+              // Si el profesional tiene al menos un horario, lo incluimos
+              if (horariosRes.data && horariosRes.data.length > 0) {
+                profesionalesConHorarios.push(profesional);
+              }
+            } catch (error) {
+              // Si hay error al consultar los horarios de un profesional específico, lo omitimos
+              console.warn(`Error al verificar horarios del profesional ${profesional.profesional_id}:`, error);
+            }
+          }
+
+          setProfesionales(profesionalesConHorarios);
+
+        } catch (error) {
+          console.error('Error al cargar datos:', error);
+        }
+      };
+
+      loadProfesionalesConHorarios();
     }
   }, [step]);
 
