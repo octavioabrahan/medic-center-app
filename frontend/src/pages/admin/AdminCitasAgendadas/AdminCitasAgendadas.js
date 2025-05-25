@@ -363,10 +363,13 @@ const AdminCitasAgendadas = () => {
           
           <div className="admin-citas-agendadas__select-container">
             <SelectField
-              options={profesionales.map(prof => ({ 
-                label: `${prof.nombre} ${prof.apellido}`, 
-                value: prof.profesional_id 
-              }))}
+              options={[
+                { label: 'Todos los profesionales', value: '' },
+                ...profesionales.map(prof => ({ 
+                  label: `${prof.nombre} ${prof.apellido}`, 
+                  value: prof.profesional_id 
+                }))
+              ]}
               value={selectedProfessional}
               placeholder="Todos los profesionales"
               onChange={(value) => setSelectedProfessional(value)}
