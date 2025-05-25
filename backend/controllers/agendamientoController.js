@@ -9,6 +9,21 @@ const HorariosModel = require("../models/horariosModel");
 const ExcepcionesModel = require("../models/excepcionesModel");
 const { enviarCorreo } = require("../utils/mailer");
 
+// Función para obtener el logo como base64
+function obtenerLogoBase64() {
+  try {
+    const logoPath = path.join(__dirname, '../../frontend/src/logo_header.png');
+    if (fs.existsSync(logoPath)) {
+      const logoBuffer = fs.readFileSync(logoPath);
+      return `data:image/png;base64,${logoBuffer.toString('base64')}`;
+    }
+    return 'https://via.placeholder.com/169x60/20377A/FFFFFF?text=DIAGNOCENTRO';
+  } catch (error) {
+    console.error('Error al obtener logo base64:', error);
+    return 'https://via.placeholder.com/169x60/20377A/FFFFFF?text=DIAGNOCENTRO';
+  }
+}
+
 // Función para obtener horarios de un profesional en una fecha específica
 async function obtenerHorariosPorFecha(profesional_id, fecha) {
   try {
@@ -148,6 +163,9 @@ const AgendamientoController = {
       const fechaFormateada = new Date(fecha_agendada).toLocaleDateString("es-CL", {
         weekday: "long", year: "numeric", month: "long", day: "numeric"
       }).replace(/^./, str => str.toUpperCase());
+
+      // 🖼️ Obtener logo en base64 para el email
+      const logoUrl = obtenerLogoBase64();
 
       // 📬 Renderizar MJML
       const mjmlRaw = fs.readFileSync(

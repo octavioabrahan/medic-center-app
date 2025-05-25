@@ -3,6 +3,23 @@ const { generarPDF } = require('../utils/pdf');
 const { enviarCorreo } = require('../utils/mailer');
 const { logGeneral, logPDF, logEmail } = require('../utils/logger');
 const axios = require('axios');
+const fs = require('fs');
+const path = require('path');
+
+// Función para obtener el logo como base64
+function obtenerLogoBase64() {
+  try {
+    const logoPath = path.join(__dirname, '../../frontend/src/logo_header.png');
+    if (fs.existsSync(logoPath)) {
+      const logoBuffer = fs.readFileSync(logoPath);
+      return `data:image/png;base64,${logoBuffer.toString('base64')}`;
+    }
+    return 'https://via.placeholder.com/169x60/20377A/FFFFFF?text=DIAGNOCENTRO';
+  } catch (error) {
+    console.error('Error al obtener logo base64:', error);
+    return 'https://via.placeholder.com/169x60/20377A/FFFFFF?text=DIAGNOCENTRO';
+  }
+}
 
 // Función auxiliar para generar un folio único
 const generarFolio = async () => {
@@ -238,11 +255,43 @@ const crear = async (req, res) => {
     // Enviar correo electrónico si hay email y se generó el PDF
     if (email && rutaPDF) {
       try {
-        await enviarCorreo(email, 'Tu Cotización Médica', `
-          <p>Hola ${nombre},</p>
-          <p>Adjunto encontrarás tu cotización médica con folio ${folio} en formato PDF.</p>
-          <p>Puedes consultar el estado de tu cotización usando este folio en nuestra página web.</p>
-        `, rutaPDF);
+        // Obtener logo en base64 para el email
+        const logoUrl = obtenerLogoBase64();
+        
+        const htmlEmail = `
+          <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; background-color: #f5f5f5; padding: 20px;">
+            <div style="background-color: white; padding: 30px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+              <!-- Header con logo -->
+              <div style="text-align: center; margin-bottom: 30px; padding-bottom: 20px; border-bottom: 2px solid #20377A;">
+                <img src="${logoUrl}" alt="Diagnocentro Acarigua" style="max-width: 200px; height: auto;">
+              </div>
+              
+              <!-- Contenido principal -->
+              <h2 style="color: #20377A; text-align: center; margin-bottom: 20px;">Tu Cotización Médica</h2>
+              
+              <p style="color: #333; font-size: 16px; line-height: 1.6;">Hola ${nombre},</p>
+              
+              <p style="color: #333; font-size: 16px; line-height: 1.6;">
+                Adjunto encontrarás tu cotización médica con folio <strong style="color: #20377A;">${folio}</strong> en formato PDF.
+              </p>
+              
+              <div style="background-color: #f8f9fa; padding: 20px; border-radius: 8px; margin: 20px 0;">
+                <p style="color: #333; font-size: 16px; line-height: 1.6; margin: 0;">
+                  💡 Puedes consultar el estado de tu cotización usando este folio en nuestra página web.
+                </p>
+              </div>
+              
+              <!-- Footer -->
+              <div style="text-align: center; margin-top: 30px; padding-top: 20px; border-top: 1px solid #e0e0e0;">
+                <p style="color: #666; font-size: 14px; margin: 0;">
+                  Diagnocentro Acarigua - Tu salud es nuestra prioridad
+                </p>
+              </div>
+            </div>
+          </div>
+        `;
+
+        await enviarCorreo(email, 'Tu Cotización Médica', htmlEmail, rutaPDF);
 
         logEmail(`📤 Enviado a ${email} -> archivo: ${rutaPDF}`);
       } catch (err) {
