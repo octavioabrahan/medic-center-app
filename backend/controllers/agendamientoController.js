@@ -62,6 +62,21 @@ async function obtenerHorariosPorFecha(profesional_id, fecha) {
   }
 }
 
+// Función para obtener el logo como base64
+function obtenerLogoBase64() {
+  try {
+    const logoPath = path.join(__dirname, '../../frontend/src/logo_header.png');
+    if (fs.existsSync(logoPath)) {
+      const logoBuffer = fs.readFileSync(logoPath);
+      return `data:image/png;base64,${logoBuffer.toString('base64')}`;
+    }
+    return null;
+  } catch (error) {
+    console.error('Error al obtener logo base64:', error);
+    return null;
+  }
+}
+
 const AgendamientoController = {
   crear: async (req, res) => {
     try {
@@ -149,6 +164,9 @@ const AgendamientoController = {
         weekday: "long", year: "numeric", month: "long", day: "numeric"
       }).replace(/^./, str => str.toUpperCase());
 
+      // 🖼️ Obtener logo en base64 (siempre funciona, independiente del entorno)
+      const logoUrl = obtenerLogoBase64() || 'https://via.placeholder.com/169x60/20377A/FFFFFF?text=DIAGNOCENTRO';
+
       // 📬 Renderizar MJML
       const mjmlRaw = fs.readFileSync(
         path.join(__dirname, '../templates/agendamiento.mjml'),
@@ -164,6 +182,7 @@ const AgendamientoController = {
         .replace(/{{hora_inicio}}/g, horaInicio)
         .replace(/{{hora_fin}}/g, horaFin)
         .replace(/{{hora}}/g, horaInicio) // Mantenemos compatibilidad con el template actual
+        .replace(/{{logo_url}}/g, logoUrl)
         .replace(/{{tipo_atencion}}/g, tipo_atencion_id === 1 ? "consulta médica" : "estudio")
         .replace(/{{numero}}/g, '1') // puedes reemplazarlo dinámicamente después
       );

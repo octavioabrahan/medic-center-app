@@ -43,6 +43,7 @@ const appointmentRoutes = require('./routes/appointments');
 const exchangeRateRoutes = require('./routes/exchangeRate');
 const quotesRoutes = require('./routes/quotes');
 const seguimientoRoutes = require('./routes/seguimiento');
+const demoRoutes = require('./routes/demo'); // Ruta para demostración de correos
 const schedule = require('node-schedule');
 const ArchivoAdjunto = require('./models/archivoAdjunto');
 
@@ -141,6 +142,9 @@ app.use('/api/seguimiento', seguimientoRoutes);
 // Nuevas rutas para gestión de pantallas y permisos
 app.use('/api/screens', screensRoutes);
 app.use('/api/role-screen-permissions', roleScreenPermissionsRoutes);
+
+// Ruta de demostración (sin autenticación para fácil acceso)
+app.use('/demo', demoRoutes);
 
 // Manejo de errores mejorado
 app.use((err, req, res, next) => {
