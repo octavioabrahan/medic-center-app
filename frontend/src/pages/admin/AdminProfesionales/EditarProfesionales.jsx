@@ -408,24 +408,28 @@ const EditarProfesionales = ({
         </div>
         
         <div className="campo-completo">
-          <SelectField
-            key={`especialidad-${profesionalEditado.especialidad_id}-${especialidades.length}`}
-            label="Especialidad"
-            value={String(profesionalEditado.especialidad_id)}
-            placeholder="Seleccione una especialidad"
-            fillContainer={true}
-            options={especialidades.map(esp => ({
-              label: esp.nombre,
-              value: String(esp.especialidad_id)
-            }))}
-            onChange={(value) => {
-              console.log('Especialidad seleccionada desde SelectField:', value);
-              setProfesionalEditado({
-                ...profesionalEditado,
-                especialidad_id: value
-              });
-            }}
-          />
+          {especialidades.length > 0 ? (
+            <SelectField
+              key={`especialidad-${profesionalEditado.especialidad_id}-${especialidades.length}`}
+              label="Especialidad"
+              value={String(profesionalEditado.especialidad_id)}
+              placeholder="Seleccione una especialidad"
+              fillContainer={true}
+              options={especialidades.map(esp => ({
+                label: esp.nombre,
+                value: String(esp.especialidad_id)
+              }))}
+              onChange={(value) => {
+                console.log('Especialidad seleccionada desde SelectField:', value);
+                setProfesionalEditado({
+                  ...profesionalEditado,
+                  especialidad_id: value
+                });
+              }}
+            />
+          ) : (
+            <div>Cargando especialidades...</div>
+          )}
           {/* Debug info - remover después */}
           <div style={{ fontSize: '12px', color: '#666', marginTop: '5px' }}>
             Debug - Valor actual: "{String(profesionalEditado.especialidad_id)}" | 
