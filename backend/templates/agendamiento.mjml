@@ -2,7 +2,7 @@
   <mj-body background-color="#ffffff" font-family="Inter, sans-serif">
     <mj-section border-bottom="1px solid #D9D9D9" padding="24px 0">
       <mj-column>
-        <mj-image width="169px" src="../../frontend/src/assets/logo_header.png" alt="Diagnocentro" />
+        <mj-text font-size="24px" font-weight="600" color="#20377A" align="center">Diagnocentro Acarigua</mj-text>
       </mj-column>
     </mj-section>
 
