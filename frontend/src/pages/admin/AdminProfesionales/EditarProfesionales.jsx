@@ -101,6 +101,7 @@ const EditarProfesionales = ({
       // Mantener el especialidad_id en su formato original pero asegurarnos que sea string
       const especialidadId = profesional.especialidad_id ? String(profesional.especialidad_id) : '';
       console.log('Especialidad ID que se va a seleccionar:', especialidadId);
+      console.log('Tipo de especialidad_id:', typeof profesional.especialidad_id);
       
       // Verificar que exista en las opciones disponibles
       const especialidadExiste = especialidades.some(esp => 
@@ -108,6 +109,11 @@ const EditarProfesionales = ({
       );
       
       console.log('¿Especialidad existe en las opciones?', especialidadExiste);
+      console.log('Opciones de especialidades disponibles:', especialidades.map(esp => ({
+        id: esp.especialidad_id,
+        nombre: esp.nombre,
+        stringId: String(esp.especialidad_id)
+      })));
       
       setProfesionalEditado({
         id: profesional.profesional_id || '',
@@ -418,6 +424,14 @@ const EditarProfesionales = ({
               });
             }}
           />
+          {/* Debug info - remover después */}
+          <div style={{ fontSize: '12px', color: '#666', marginTop: '5px' }}>
+            Debug - Valor actual: "{String(profesionalEditado.especialidad_id)}" | 
+            Opciones: {JSON.stringify(especialidades.map(esp => ({
+              label: esp.nombre,
+              value: String(esp.especialidad_id)
+            })))}
+          </div>
         </div>
         
         <div className="servicios-grupo">
