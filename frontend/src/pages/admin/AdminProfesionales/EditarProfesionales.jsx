@@ -66,10 +66,6 @@ const EditarProfesionales = ({
       // Cargar servicios asignados al profesional (relaciones)
       const relacionesResponse = await api.get(`/profesionales/relaciones/${profesional.profesional_id}`);
       
-      console.log('Profesional ID:', profesional.profesional_id);
-      console.log('Todos los servicios:', serviciosResponse.data);
-      console.log('Relaciones:', relacionesResponse.data);
-      
       // Filtrar solo los servicios activos (no archivados)
       const todosServicios = (serviciosResponse.data || []).filter(servicio => servicio.is_active === true);
       
@@ -79,8 +75,6 @@ const EditarProfesionales = ({
         ? relacionesResponse.data.servicios
         : [];
         
-      console.log('Servicios asignados procesados:', serviciosAsignados);
-      
       // Marcar los servicios que ya están asignados
       setServicios(todosServicios);
       setServiciosSeleccionados(serviciosAsignados);
@@ -96,25 +90,13 @@ const EditarProfesionales = ({
   // Efecto para cargar los datos del profesional cuando se abre el modal
   useEffect(() => {
     if (isOpen && profesional && especialidades.length > 0) {
-      console.log('Profesional recibido:', profesional);
-      console.log('Especialidades disponibles al inicializar:', especialidades.length);
-      
       // Mantener el especialidad_id en su formato original pero asegurarnos que sea string
       const especialidadId = profesional.especialidad_id ? String(profesional.especialidad_id) : '';
-      console.log('Especialidad ID que se va a seleccionar:', especialidadId);
-      console.log('Tipo de especialidad_id:', typeof profesional.especialidad_id);
       
       // Verificar que exista en las opciones disponibles
       const especialidadExiste = especialidades.some(esp => 
         String(esp.especialidad_id) === especialidadId
       );
-      
-      console.log('¿Especialidad existe en las opciones?', especialidadExiste);
-      console.log('Opciones de especialidades disponibles:', especialidades.map(esp => ({
-        id: esp.especialidad_id,
-        nombre: esp.nombre,
-        stringId: String(esp.especialidad_id)
-      })));
       
       setProfesionalEditado({
         id: profesional.profesional_id || '',
@@ -133,7 +115,6 @@ const EditarProfesionales = ({
       
       // Cargar servicios solo cuando tenemos un profesional válido con ID
       if (profesional.profesional_id) {
-        console.log('Cargando servicios para el profesional ID:', profesional.profesional_id);
         cargarServicios();
       }
     }
@@ -150,18 +131,15 @@ const EditarProfesionales = ({
 
   // Toggle de un servicio (seleccionarlo o deseleccionarlo)
   const toggleServicio = (servicioId) => {
-    console.log('Toggle servicio:', servicioId);
     setServiciosSeleccionados(prevServicios => {
       // Asegurarnos que prevServicios es un array
       const serviciosArray = Array.isArray(prevServicios) ? prevServicios : [];
       
       // Verificar si el servicio ya está seleccionado
       if (serviciosArray.includes(servicioId)) {
-        console.log('Removiendo servicio:', servicioId);
         // Si está seleccionado, lo quitamos
         return serviciosArray.filter(id => id !== servicioId);
       } else {
-        console.log('Agregando servicio:', servicioId);
         // Si no está seleccionado, lo agregamos
         return [...serviciosArray, servicioId];
       }
@@ -176,9 +154,6 @@ const EditarProfesionales = ({
       setLoading(true);
       setError(null);
       
-      console.log('Actualizando profesional:', profesionalEditado);
-      console.log('Servicios seleccionados:', serviciosSeleccionados);
-      
       // Actualizar datos del profesional (nombre, apellido, etc.)
       const updateResponse = await api.patch(`/profesionales/${profesionalEditado.id}`, {
         cedula: profesionalEditado.cedula,
@@ -188,8 +163,6 @@ const EditarProfesionales = ({
         correo: profesionalEditado.correo,
         especialidad_id: profesionalEditado.especialidad_id
       });
-      
-      console.log('Respuesta actualización profesional:', updateResponse);
       
       // Actualizar estado activo/inactivo si es necesario
       if (profesionalEditado.activo !== undefined) {
@@ -203,8 +176,6 @@ const EditarProfesionales = ({
         profesional_id: profesionalEditado.id,
         servicios: serviciosSeleccionados
       });
-      
-      console.log('Respuesta asignación servicios:', serviciosResponse);
       
       // Mostrar mensaje de éxito
       setSuccessMessage("Profesional actualizado correctamente");
@@ -240,8 +211,6 @@ const EditarProfesionales = ({
         throw new Error("No se pudo identificar al profesional para archivar");
       }
       
-      console.log('Archivando profesional:', profesionalEditado.id);
-      
       if (typeof onConfirmArchive === 'function') {
         // Pasar el profesional al componente padre para archivar
         const profesionalParaArchivar = {
@@ -253,7 +222,6 @@ const EditarProfesionales = ({
       } else {
         // Archivar directamente si no hay función del padre
         const profesionalId = profesionalEditado.id;
-        console.log('URL de la solicitud:', `/profesionales/estado/${profesionalId}`);
         
         await api.put(`/profesionales/estado/${profesionalId}`, {
           activo: false
@@ -420,7 +388,6 @@ const EditarProfesionales = ({
                 value: String(esp.especialidad_id)
               }))}
               onChange={(value) => {
-                console.log('Especialidad seleccionada desde SelectField:', value);
                 setProfesionalEditado({
                   ...profesionalEditado,
                   especialidad_id: value
@@ -430,14 +397,6 @@ const EditarProfesionales = ({
           ) : (
             <div>Cargando especialidades...</div>
           )}
-          {/* Debug info - remover después */}
-          <div style={{ fontSize: '12px', color: '#666', marginTop: '5px' }}>
-            Debug - Valor actual: "{String(profesionalEditado.especialidad_id)}" | 
-            Opciones: {JSON.stringify(especialidades.map(esp => ({
-              label: esp.nombre,
-              value: String(esp.especialidad_id)
-            })))}
-          </div>
         </div>
         
         <div className="servicios-grupo">
