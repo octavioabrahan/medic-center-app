@@ -75,6 +75,10 @@ app.use(preventXSS); // Proteger contra XSS
 const logosFolderPath = path.join(__dirname, '..', 'frontend', 'src', 'components', 'logos_empresas');
 app.use('/components/logos_empresas', express.static(logosFolderPath));
 
+// Servir archivos estáticos del frontend (incluyendo logo_header.png)
+const frontendSrcPath = path.join(__dirname, '..', 'frontend', 'src');
+app.use('/frontend/src', express.static(frontendSrcPath));
+
 // Configurar acceso a la carpeta de uploads para ver los archivos adjuntos directamente
 const uploadsPath = path.join(__dirname, 'uploads', 'agendamientos');
 app.use('/uploads/agendamientos', express.static(uploadsPath));
