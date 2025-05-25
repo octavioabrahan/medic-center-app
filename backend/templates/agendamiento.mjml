@@ -2,7 +2,7 @@
   <mj-body background-color="#ffffff" font-family="Inter, sans-serif">
     <mj-section border-bottom="1px solid #D9D9D9" padding="24px 0">
       <mj-column>
-        <mj-image width="169px" src="https://placehold.co/169x60" alt="Diagnocentro" />
+        <mj-image width="169px" src="../../frontend/src/assets/logo_header.png" alt="Diagnocentro" />
       </mj-column>
     </mj-section>
 
@@ -20,8 +20,8 @@
         <mj-text font-size="16px">
           <strong>Paciente:</strong> {{nombre}} {{apellido}}<br/>
           <strong>Profesional:</strong> {{profesional}}<br/>
-          <strong>Especialidad:</strong> {{especialidad}}<br/>
-          <strong>Día de atención:</strong> {{fecha}} desde las {{hora}}<br/>
+          <strong>Servicios:</strong> {{especialidad}}<br/>
+          <strong>Día de atención:</strong> {{fecha}} desde las {{hora_inicio}} hasta las {{hora_fin}}<br/>
           <strong>Lugar:</strong> Consultorio {{numero}}<br/><br/>
           <em>La atención será por orden de llegada según el horario del profesional.</em>
         </mj-text>

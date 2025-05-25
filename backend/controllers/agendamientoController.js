@@ -1,10 +1,66 @@
 const fs = require('fs');
 const path = require('path');
 const mjml = require('mjml');
+const moment = require('moment');
 const db = require("../models/db");
 const PacientesModel = require("../models/pacientesModel");
 const AgendamientoModel = require("../models/agendamientoModel");
+const HorariosModel = require("../models/horariosModel");
+const ExcepcionesModel = require("../models/excepcionesModel");
 const { enviarCorreo } = require("../utils/mailer");
+
+// Función para obtener horarios de un profesional en una fecha específica
+async function obtenerHorariosPorFecha(profesional_id, fecha) {
+  try {
+    // 1. Verificar si hay excepciones para esta fecha
+    const excepcionesResult = await db.query(
+      `SELECT fecha, estado, hora_inicio, hora_termino 
+       FROM horario_excepciones 
+       WHERE profesional_id = $1 AND fecha = $2`,
+      [profesional_id, fecha]
+    );
+
+    if (excepcionesResult.rows.length > 0) {
+      const excepcion = excepcionesResult.rows[0];
+      if (excepcion.estado === 'cancelado') {
+        return null; // No hay horarios este día
+      }
+      if (excepcion.estado === 'manual') {
+        return {
+          hora_inicio: excepcion.hora_inicio,
+          hora_termino: excepcion.hora_termino
+        };
+      }
+    }
+
+    // 2. Si no hay excepciones, buscar en horarios regulares
+    const fechaMoment = moment(fecha);
+    const diaSemana = fechaMoment.isoWeekday(); // 1=Lunes, 7=Domingo
+
+    const horariosResult = await db.query(
+      `SELECT hora_inicio, hora_termino 
+       FROM horario_medico 
+       WHERE profesional_id = $1 
+       AND $2 = ANY(dia_semana) 
+       AND $3 >= valido_desde 
+       AND $3 <= valido_hasta`,
+      [profesional_id, diaSemana, fecha]
+    );
+
+    if (horariosResult.rows.length > 0) {
+      const horario = horariosResult.rows[0];
+      return {
+        hora_inicio: horario.hora_inicio,
+        hora_termino: horario.hora_termino
+      };
+    }
+
+    return null; // No se encontraron horarios
+  } catch (error) {
+    console.error('Error al obtener horarios por fecha:', error);
+    return null;
+  }
+}
 
 const AgendamientoController = {
   crear: async (req, res) => {
@@ -78,6 +134,16 @@ const AgendamientoController = {
         ? `${profesional.nombre.toUpperCase()} ${profesional.apellido.toUpperCase()}`
         : "Profesional";
 
+      // 🕐 Obtener horarios del profesional para la fecha específica
+      const horarios = await obtenerHorariosPorFecha(profesional_id, fecha_agendada);
+      let horaInicio = '---';
+      let horaFin = '---';
+      
+      if (horarios) {
+        horaInicio = horarios.hora_inicio ? horarios.hora_inicio.slice(0, 5) : '---';
+        horaFin = horarios.hora_termino ? horarios.hora_termino.slice(0, 5) : '---';
+      }
+
       // 🧠 Construcción de fecha legible
       const fechaFormateada = new Date(fecha_agendada).toLocaleDateString("es-CL", {
         weekday: "long", year: "numeric", month: "long", day: "numeric"
@@ -95,7 +161,9 @@ const AgendamientoController = {
         .replace(/{{profesional}}/g, profesionalNombre)
         .replace(/{{especialidad}}/g, observaciones)
         .replace(/{{fecha}}/g, fechaFormateada)
-        .replace(/{{hora}}/g, hora_inicio?.slice(0, 5) || '---')
+        .replace(/{{hora_inicio}}/g, horaInicio)
+        .replace(/{{hora_fin}}/g, horaFin)
+        .replace(/{{hora}}/g, horaInicio) // Mantenemos compatibilidad con el template actual
         .replace(/{{tipo_atencion}}/g, tipo_atencion_id === 1 ? "consulta médica" : "estudio")
         .replace(/{{numero}}/g, '1') // puedes reemplazarlo dinámicamente después
       );
