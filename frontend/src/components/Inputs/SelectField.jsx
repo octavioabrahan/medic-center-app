@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useCallback } from "react";
 import "./SelectField.css";
 import { ChevronDownIcon } from '@heroicons/react/20/solid';
 
@@ -26,12 +26,28 @@ export default function SelectField({
   style = {},
 }) {
   const selectRef = useRef(null);
+
+  // Callback ref para asegurar que se conecte correctamente
+  const setSelectRef = useCallback((element) => {
+    selectRef.current = element;
+    if (element && value) {
+      element.value = value;
+      console.log('Estableciendo valor via callback ref:', value, 'Resultado:', element.value);
+    }
+  }, [value]);
   
   // Forzar actualización del select cuando cambian value u options
   useEffect(() => {
-    if (selectRef.current) {
-      selectRef.current.value = value || "";
-    }
+    const timer = setTimeout(() => {
+      if (selectRef.current) {
+        selectRef.current.value = value || "";
+        console.log('Forzando valor en DOM:', value, 'Resultado:', selectRef.current.value);
+      } else {
+        console.log('selectRef.current es null, no se puede establecer valor');
+      }
+    }, 0);
+    
+    return () => clearTimeout(timer);
   }, [value, options]);
 
   const isPlaceholder = !value && placeholder;
@@ -61,11 +77,14 @@ export default function SelectField({
       <div className="label">{label}</div>
       <div className={`select select-native-wrapper ${fillContainer ? 'fill-container' : ''}`}>
         <select
-          ref={selectRef}
+          ref={setSelectRef}
           className="select-native"
-          value={value}
+          defaultValue={value}
           disabled={disabled}
-          onChange={e => onChange(e.target.value)}
+          onChange={e => {
+            console.log('Select onChange:', e.target.value);
+            onChange(e.target.value);
+          }}
           style={{
             color: '#1e1e1e !important',
             backgroundColor: '#fff !important',
