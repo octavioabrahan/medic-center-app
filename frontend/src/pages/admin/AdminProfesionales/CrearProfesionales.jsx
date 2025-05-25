@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Modal from '../../../components/Modal/Modal';
+import SelectField from '../../../components/Inputs/SelectField';
 import api from '../../../api';
 import './CrearProfesionales.css';
 import { XMarkIcon, ChevronDownIcon, CheckIcon } from '@heroicons/react/24/solid';
@@ -34,7 +35,6 @@ const CrearProfesionales = ({
   const [serviciosSeleccionados, setServiciosSeleccionados] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [especialidadNombre, setEspecialidadNombre] = useState('');
 
   // Cargar servicios cuando se abre el modal
   useEffect(() => {
@@ -45,19 +45,7 @@ const CrearProfesionales = ({
     }
   }, [isOpen]);
 
-  // Efecto para actualizar nombre de especialidad al cambiar especialidad_id
-  useEffect(() => {
-    if (nuevoProfesional.especialidad_id) {
-      const especialidadSeleccionada = especialidades.find(
-        esp => esp.especialidad_id.toString() === nuevoProfesional.especialidad_id.toString()
-      );
-      if (especialidadSeleccionada) {
-        setEspecialidadNombre(especialidadSeleccionada.nombre);
-      }
-    } else {
-      setEspecialidadNombre('');
-    }
-  }, [nuevoProfesional.especialidad_id, especialidades]);
+
 
   // Función para cargar servicios
   const cargarServicios = async () => {
@@ -85,7 +73,6 @@ const CrearProfesionales = ({
       especialidad_id: '',
     });
     setServiciosSeleccionados([]);
-    setEspecialidadNombre('');
     setError(null);
   };
 
@@ -238,29 +225,22 @@ const CrearProfesionales = ({
           </div>
         </div>
         
-        <div className="select-field">
-          <div className="label">Especialidad</div>
-          <div className="select" onClick={() => !loading && document.getElementById('especialidad-select').focus()}>
-            <select
-              id="especialidad-select"
-              className="select-native"
-              value={nuevoProfesional.especialidad_id}
-              onChange={(e) => setNuevoProfesional({ ...nuevoProfesional, especialidad_id: e.target.value })}
-              disabled={loading}
-              style={{ opacity: 0, position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }}
-            >
-              <option value="">Seleccione una especialidad</option>
-              {especialidades.map(esp => (
-                <option key={esp.especialidad_id} value={esp.especialidad_id}>
-                  {esp.nombre}
-                </option>
-              ))}
-            </select>
-            <div className="value">
-              {especialidadNombre || 'Seleccione una especialidad'}
-            </div>
-            <ChevronDownIcon className="chevron-down" />
-          </div>
+        <div className="campo-completo">
+          <SelectField
+            label="Especialidad"
+            value={nuevoProfesional.especialidad_id}
+            placeholder="Seleccione una especialidad"
+            fillContainer={true}
+            options={especialidades.map(esp => ({
+              label: esp.nombre,
+              value: esp.especialidad_id
+            }))}
+            onChange={(value) => setNuevoProfesional({ 
+              ...nuevoProfesional, 
+              especialidad_id: value 
+            })}
+            disabled={loading}
+          />
         </div>
         
         {servicios.length > 0 && (
