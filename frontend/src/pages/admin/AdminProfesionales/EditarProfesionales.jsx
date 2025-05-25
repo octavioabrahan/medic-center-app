@@ -95,8 +95,9 @@ const EditarProfesionales = ({
   
   // Efecto para cargar los datos del profesional cuando se abre el modal
   useEffect(() => {
-    if (isOpen && profesional) {
+    if (isOpen && profesional && especialidades.length > 0) {
       console.log('Profesional recibido:', profesional);
+      console.log('Especialidades disponibles al inicializar:', especialidades.length);
       
       // Mantener el especialidad_id en su formato original pero asegurarnos que sea string
       const especialidadId = profesional.especialidad_id ? String(profesional.especialidad_id) : '';
@@ -408,6 +409,7 @@ const EditarProfesionales = ({
         
         <div className="campo-completo">
           <SelectField
+            key={`especialidad-${profesionalEditado.especialidad_id}-${especialidades.length}`}
             label="Especialidad"
             value={String(profesionalEditado.especialidad_id)}
             placeholder="Seleccione una especialidad"

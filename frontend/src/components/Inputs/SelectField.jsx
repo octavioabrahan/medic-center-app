@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import "./SelectField.css";
 import { ChevronDownIcon } from '@heroicons/react/20/solid';
 
@@ -25,6 +25,15 @@ export default function SelectField({
   onChange = () => {},
   style = {},
 }) {
+  const selectRef = useRef(null);
+  
+  // Forzar actualización del select cuando cambian value u options
+  useEffect(() => {
+    if (selectRef.current && value) {
+      selectRef.current.value = value;
+    }
+  }, [value, options]);
+
   const isPlaceholder = !value && placeholder;
   const state = disabled
     ? "state-disabled"
@@ -39,6 +48,7 @@ export default function SelectField({
       <div className="label">{label}</div>
       <div className={`select select-native-wrapper ${fillContainer ? 'fill-container' : ''}`}>
         <select
+          ref={selectRef}
           className="select-native"
           value={value}
           disabled={disabled}
