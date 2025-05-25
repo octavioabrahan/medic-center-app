@@ -67,15 +67,37 @@ export default function SelectField({
           disabled={disabled}
           onChange={e => onChange(e.target.value)}
           style={{
-            color: hasValidValue ? 'var(--sds-color-text-default-default, #1e1e1e)' : 'var(--sds-color-text-default-tertiary, #b3b3b3)'
+            color: '#1e1e1e !important',
+            backgroundColor: '#fff !important',
+            fontSize: '14px !important',
+            fontWeight: hasValidValue ? '500 !important' : '400 !important'
           }}
         >
           {placeholder && <option value="" disabled hidden>{placeholder}</option>}
           {options.map(opt => (
-            <option key={opt.value} value={opt.value}>{opt.label}</option>
+            <option key={opt.value} value={opt.value} style={{color: '#1e1e1e !important'}}>
+              {opt.label}
+            </option>
           ))}
         </select>
         <ChevronDownIcon className="heroicons-micro-chevron-down" />
+      </div>
+      
+      {/* Debug visual para ver el valor actual */}
+      <div style={{ 
+        fontSize: '12px', 
+        color: '#333', 
+        marginTop: '5px',
+        border: '1px solid #ccc',
+        padding: '5px',
+        backgroundColor: '#f9f9f9'
+      }}>
+        <strong>Debug Visual:</strong><br/>
+        Valor del select: "{value}"<br/>
+        DOM value: {selectRef.current ? `"${selectRef.current.value}"` : 'null'}<br/>
+        Selected index: {selectRef.current ? selectRef.current.selectedIndex : 'null'}<br/>
+        Opción seleccionada: {selectRef.current && selectRef.current.selectedIndex >= 0 ? 
+          selectRef.current.options[selectRef.current.selectedIndex]?.text || 'No encontrada' : 'Ninguna'}
       </div>
     </div>
   );
