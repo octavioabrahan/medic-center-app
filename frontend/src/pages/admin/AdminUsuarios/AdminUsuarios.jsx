@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { Navigate } from 'react-router-dom';
 import { AdminLayout } from '../../../components/AdminDashboard';
 import Button from '../../../components/Button/Button';
 import SearchField from '../../../components/Inputs/SearchField';
@@ -63,7 +62,7 @@ const AdminUsuarios = () => {
   const fetchUsuarios = async () => {
     try {
       setLoading(true);
-      const response = await api.get('/admin-users');
+      const response = await api.get('/auth');
       console.log('Usuarios obtenidos:', response.data);
       setUsuarios(response.data);
       setError(null);
@@ -135,7 +134,7 @@ const AdminUsuarios = () => {
   const handleDeleteUser = async (userId) => {
     if (window.confirm('¿Está seguro de que desea eliminar este usuario?')) {
       try {
-        await api.delete(`/admin-users/${userId}`);
+        await api.delete(`/auth/${userId}`);
         setUsuarios(prev => prev.filter(user => user.id !== userId));
       } catch (err) {
         console.error('Error al eliminar usuario:', err);

@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
+import api from '../../../api';
 import './EditarUsuario.css';
 
 const EditarUsuario = ({ usuario, roles, onClose, onUpdate }) => {
   const [formData, setFormData] = useState({
-    username: '',
+    name: '',
+    last_name: '',
     email: '',
     password: '',
     confirmPassword: '',
@@ -16,11 +18,12 @@ const EditarUsuario = ({ usuario, roles, onClose, onUpdate }) => {
   useEffect(() => {
     if (usuario) {
       setFormData({
-        username: usuario.username || '',
+        name: usuario.name || '',
+        last_name: usuario.last_name || '',
         email: usuario.email || '',
         password: '',
         confirmPassword: '',
-        selectedRoles: usuario.roles ? usuario.roles.map(role => role.id) : []
+        selectedRoles: usuario.roles ? usuario.roles.map(role => role.id_rol) : []
       });
     }
   }, [usuario]);
@@ -28,10 +31,16 @@ const EditarUsuario = ({ usuario, roles, onClose, onUpdate }) => {
   const validateForm = () => {
     const newErrors = {};
 
-    if (!formData.username.trim()) {
-      newErrors.username = 'El nombre de usuario es requerido';
-    } else if (formData.username.length < 3) {
-      newErrors.username = 'El nombre de usuario debe tener al menos 3 caracteres';
+    if (!formData.name.trim()) {
+      newErrors.name = 'El nombre es requerido';
+    } else if (formData.name.length < 2) {
+      newErrors.name = 'El nombre debe tener al menos 2 caracteres';
+    }
+
+    if (!formData.last_name.trim()) {
+      newErrors.last_name = 'El apellido es requerido';
+    } else if (formData.last_name.length < 2) {
+      newErrors.last_name = 'El apellido debe tener al menos 2 caracteres';
     }
 
     if (!formData.email.trim()) {
@@ -45,8 +54,8 @@ const EditarUsuario = ({ usuario, roles, onClose, onUpdate }) => {
         newErrors.password = 'La contraseña es requerida';
       } else if (formData.password.length < 8) {
         newErrors.password = 'La contraseña debe tener al menos 8 caracteres';
-      } else if (!/(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/.test(formData.password)) {
-        newErrors.password = 'La contraseña debe contener al menos una mayúscula, una minúscula y un número';
+      } else if (!/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]/.test(formData.password)) {
+        newErrors.password = 'La contraseña debe tener al menos una mayúscula, una minúscula, un número y un carácter especial';
       }
 
       if (formData.password !== formData.confirmPassword) {
@@ -72,9 +81,9 @@ const EditarUsuario = ({ usuario, roles, onClose, onUpdate }) => {
     setIsLoading(true);
 
     try {
-      const token = localStorage.getItem('adminToken');
       const updateData = {
-        username: formData.username,
+        name: formData.name,
+        last_name: formData.last_name,
         email: formData.email,
         roles: formData.selectedRoles
       };
@@ -83,22 +92,9 @@ const EditarUsuario = ({ usuario, roles, onClose, onUpdate }) => {
         updateData.password = formData.password;
       }
 
-      const response = await fetch(`http://localhost:3001/api/admin/users/${usuario.id}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify(updateData)
-      });
+      const response = await api.put(`/auth/${usuario.id}`, updateData);
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || 'Error al actualizar usuario');
-      }
-
-      const result = await response.json();
-      onUpdate(result.user);
+      onUpdate(response.data.usuario);
       onClose();
     } catch (error) {
       console.error('Error updating user:', error);

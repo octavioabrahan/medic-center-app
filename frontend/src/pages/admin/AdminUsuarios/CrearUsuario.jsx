@@ -120,7 +120,7 @@ const CrearUsuario = ({ isOpen, onClose, roles, onUserCreated }) => {
       };
 
       console.log('Enviando datos de usuario:', userData);
-      const response = await api.post('/admin-users', userData);
+      const response = await api.post('/auth', userData);
       console.log('Usuario creado:', response.data);
       
       onUserCreated(response.data.usuario);
