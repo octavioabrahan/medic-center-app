@@ -84,6 +84,18 @@ const AdminUsuarios = () => {
     }
   };
 
+  // Combined function to fetch both users and roles
+  const fetchUsersAndRoles = async () => {
+    try {
+      setLoading(true);
+      await Promise.all([fetchUsuarios(), fetchRoles()]);
+    } catch (err) {
+      console.error('Error al refrescar datos:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   // Filter and sort users
   const filteredUsuarios = usuarios
     .filter(user => {
