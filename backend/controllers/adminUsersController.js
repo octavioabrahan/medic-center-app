@@ -80,6 +80,9 @@ const AdminUsersController = {
         await client.query('COMMIT');
         console.log("Transacción confirmada exitosamente");
         
+        // Obtener los roles completos del usuario recién creado
+        const rolesCompletos = await AdminUserRolesModel.rolesDeUsuario(usuario.id);
+        
         logger.logSecurity('Usuario administrativo creado con roles', {
           userId: usuario.id,
           email: usuario.email,
@@ -95,7 +98,8 @@ const AdminUsersController = {
             email: usuario.email,
             name: usuario.name,
             last_name: usuario.last_name,
-            roles: roles
+            is_active: true,
+            roles: rolesCompletos
           }
         });
         console.log("=== FIN DE REGISTRO DE USUARIO ===");
@@ -302,22 +306,104 @@ const AdminUsersController = {
   actualizar: async (req, res) => {
     try {
       const { id } = req.params;
-      const { name, last_name, is_active } = req.body;
+      const { name, last_name, is_active, roles, password } = req.body;
       
-      const usuario = await AdminUsersModel.actualizar(id, { name, last_name, is_active });
-      if (!usuario) {
-        return res.status(404).json({ error: "Usuario no encontrado" });
+      // Verificar si se está intentando actualizar al superadmin
+      const esSuperAdmin = await AdminUserRolesModel.tieneRol(id, 'superadmin');
+      if (esSuperAdmin && req.user.id !== id) {
+        const userEsSuperAdmin = await AdminUserRolesModel.tieneRol(req.user.id, 'superadmin');
+        if (!userEsSuperAdmin) {
+          return res.status(403).json({ error: "No está autorizado para actualizar una cuenta de superadmin" });
+        }
       }
       
-      logger.logGeneral('Usuario administrativo actualizado', {
-        userId: id,
-        updatedBy: req.user.email
-      });
+      // Usar transacción para garantizar consistencia
+      const db = require("../models/db");
+      const client = await db.getClient();
       
-      res.json({ 
-        mensaje: "Usuario actualizado exitosamente",
-        usuario 
-      });
+      try {
+        await client.query('BEGIN');
+        
+        // Actualizar datos básicos del usuario
+        const datosActualizar = { name, last_name, is_active };
+        
+        // Si hay contraseña, validarla y agregarla
+        if (password) {
+          if (!validatePassword(password)) {
+            return res.status(400).json({ 
+              error: "La contraseña debe tener al menos 8 caracteres, una mayúscula, una minúscula, un número y un carácter especial" 
+            });
+          }
+          // Actualizar contraseña usando el método existente
+          await AdminUsersModel.cambiarPassword(id, password);
+        }
+        
+        const usuario = await AdminUsersModel.actualizar(id, datosActualizar);
+        if (!usuario) {
+          await client.query('ROLLBACK');
+          return res.status(404).json({ error: "Usuario no encontrado" });
+        }
+        
+        // Si se proporcionaron roles, actualizarlos
+        if (roles && Array.isArray(roles)) {
+          // Obtener roles actuales del usuario
+          const rolesActuales = await AdminUserRolesModel.rolesDeUsuario(id);
+          const rolesActualesIds = rolesActuales.map(r => r.id_rol);
+          
+          // Determinar roles a eliminar (presentes en actuales pero no en nuevos)
+          const rolesAEliminar = rolesActualesIds.filter(rolId => !roles.includes(rolId));
+          
+          // Determinar roles a agregar (presentes en nuevos pero no en actuales)  
+          const rolesAAgregar = roles.filter(rolId => !rolesActualesIds.includes(rolId));
+          
+          // Eliminar roles que ya no aplican
+          for (const rolId of rolesAEliminar) {
+            await AdminUserRolesModel.eliminar({
+              user_id: id,
+              id_rol: rolId,
+              created_by: req.user.email
+            });
+          }
+          
+          // Agregar nuevos roles
+          for (const rolId of rolesAAgregar) {
+            await AdminUserRolesModel.asignar({
+              user_id: id,
+              id_rol: rolId,
+              created_by: req.user.email
+            });
+          }
+        }
+        
+        await client.query('COMMIT');
+        
+        // Obtener el usuario actualizado con sus roles completos
+        const usuarioActualizado = await AdminUsersModel.obtenerPorId(id);
+        const rolesCompletos = await AdminUserRolesModel.rolesDeUsuario(id);
+        
+        const usuarioConRoles = {
+          ...usuarioActualizado,
+          roles: rolesCompletos
+        };
+        
+        logger.logGeneral('Usuario administrativo actualizado', {
+          userId: id,
+          updatedBy: req.user.email,
+          rolesActualizados: roles ? 'Si' : 'No'
+        });
+        
+        res.json({ 
+          mensaje: "Usuario actualizado exitosamente",
+          usuario: usuarioConRoles
+        });
+        
+      } catch (err) {
+        await client.query('ROLLBACK');
+        throw err;
+      } finally {
+        client.release();
+      }
+      
     } catch (err) {
       logger.logError('Error al actualizar usuario administrativo', err);
       res.status(500).json({ error: "Error al actualizar usuario" });

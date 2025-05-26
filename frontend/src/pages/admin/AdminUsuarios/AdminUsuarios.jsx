@@ -110,16 +110,30 @@ const AdminUsuarios = () => {
     });
 
   // Handle user creation success
-  const handleUserCreated = (newUser) => {
-    setUsuarios(prev => [newUser, ...prev]);
+  const handleUserCreated = async (newUser) => {
+    // Refrescar los datos desde el servidor para asegurar consistencia
+    try {
+      await fetchUsersAndRoles();
+    } catch (err) {
+      console.error('Error al refrescar usuarios después de creación:', err);
+      // Fallback: usar los datos del usuario creado
+      setUsuarios(prev => [newUser, ...prev]);
+    }
     setShowAddUserModal(false);
   };
 
   // Handle user update success
-  const handleUserUpdated = (updatedUser) => {
-    setUsuarios(prev => prev.map(user => 
-      user.id === updatedUser.id ? updatedUser : user
-    ));
+  const handleUserUpdated = async (updatedUser) => {
+    // Refrescar los datos desde el servidor para asegurar consistencia
+    try {
+      await fetchUsersAndRoles();
+    } catch (err) {
+      console.error('Error al refrescar usuarios después de actualización:', err);
+      // Fallback: actualizar localmente
+      setUsuarios(prev => prev.map(user => 
+        user.id === updatedUser.id ? updatedUser : user
+      ));
+    }
     setShowEditUserModal(false);
     setCurrentUser(null);
   };

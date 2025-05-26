@@ -47,6 +47,30 @@ const AdminUserRolesModel = {
   },
 
   /**
+   * Elimina un rol de un usuario administrativo usando un cliente de transacción
+   */
+  eliminarConCliente: async (client, { user_id, id_rol, created_by }) => {
+    const query = `
+      DELETE FROM admin_user_roles 
+      WHERE user_id = $1 AND id_rol = $2
+    `;
+    await client.query(query, [user_id, id_rol]);
+    
+    // Nota: Se ha eliminado la inserción en admin_role_changes ya que la tabla no existe
+  },
+
+  /**
+   * Elimina todos los roles de un usuario
+   */
+  eliminarTodosLosRoles: async (user_id) => {
+    const query = `
+      DELETE FROM admin_user_roles 
+      WHERE user_id = $1
+    `;
+    await db.query(query, [user_id]);
+  },
+
+  /**
    * Obtiene todos los roles de un usuario
    */
   rolesDeUsuario: async (userId) => {
