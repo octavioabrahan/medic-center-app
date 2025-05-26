@@ -146,17 +146,31 @@ const EditarUsuario = ({ usuario, roles, onClose, onUpdate }) => {
 
         <form onSubmit={handleSubmit} className="editar-usuario-form">
           <div className="form-group">
-            <label htmlFor="username">Nombre de Usuario *</label>
+            <label htmlFor="name">Nombre *</label>
             <input
               type="text"
-              id="username"
-              name="username"
-              value={formData.username}
+              id="name"
+              name="name"
+              value={formData.name}
               onChange={handleInputChange}
-              className={errors.username ? 'error' : ''}
+              className={errors.name ? 'error' : ''}
               disabled={isLoading}
             />
-            {errors.username && <span className="error-message">{errors.username}</span>}
+            {errors.name && <span className="error-message">{errors.name}</span>}
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="last_name">Apellido *</label>
+            <input
+              type="text"
+              id="last_name"
+              name="last_name"
+              value={formData.last_name}
+              onChange={handleInputChange}
+              className={errors.last_name ? 'error' : ''}
+              disabled={isLoading}
+            />
+            {errors.last_name && <span className="error-message">{errors.last_name}</span>}
           </div>
 
           <div className="form-group">
@@ -224,14 +238,14 @@ const EditarUsuario = ({ usuario, roles, onClose, onUpdate }) => {
             <label>Roles *</label>
             <div className="roles-container">
               {roles.map(role => (
-                <label key={role.id} className="checkbox-label">
+                <label key={role.id_rol} className="checkbox-label">
                   <input
                     type="checkbox"
-                    checked={formData.selectedRoles.includes(role.id)}
-                    onChange={() => handleRoleChange(role.id)}
+                    checked={formData.selectedRoles.includes(role.id_rol)}
+                    onChange={() => handleRoleChange(role.id_rol)}
                     disabled={isLoading}
                   />
-                  {role.name}
+                  {role.nombre_rol}
                 </label>
               ))}
             </div>
