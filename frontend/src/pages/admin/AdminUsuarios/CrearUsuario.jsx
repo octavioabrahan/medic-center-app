@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import Button from '../../../components/Button/Button';
-import TextField from '../../../components/Inputs/TextField';
+import InputField from '../../../components/Inputs/InputField';
 import CheckboxField from '../../../components/Inputs/CheckboxField';
 import { XMarkIcon } from '@heroicons/react/24/outline';
 import api from '../../../api';
@@ -163,7 +163,7 @@ const CrearUsuario = ({ isOpen, onClose, roles, onUserCreated }) => {
           
           <div className="crear-usuario__form-row">
             <div className="crear-usuario__form-group">
-              <TextField
+              <InputField
                 label="Nombre *"
                 value={formData.name}
                 onChange={(value) => handleInputChange('name', value)}
@@ -171,10 +171,11 @@ const CrearUsuario = ({ isOpen, onClose, roles, onUserCreated }) => {
                 disabled={loading}
                 placeholder="Ingrese el nombre"
               />
+              {validationErrors.name && <span className="crear-usuario__error-text">{validationErrors.name}</span>}
             </div>
             
             <div className="crear-usuario__form-group">
-              <TextField
+              <InputField
                 label="Apellido *"
                 value={formData.last_name}
                 onChange={(value) => handleInputChange('last_name', value)}
@@ -182,45 +183,48 @@ const CrearUsuario = ({ isOpen, onClose, roles, onUserCreated }) => {
                 disabled={loading}
                 placeholder="Ingrese el apellido"
               />
+              {validationErrors.last_name && <span className="crear-usuario__error-text">{validationErrors.last_name}</span>}
             </div>
           </div>
           
           <div className="crear-usuario__form-group">
-            <TextField
+            <InputField
               label="Email *"
-              type="email"
               value={formData.email}
               onChange={(value) => handleInputChange('email', value)}
               error={validationErrors.email}
               disabled={loading}
               placeholder="usuario@ejemplo.com"
             />
+            {validationErrors.email && <span className="crear-usuario__error-text">{validationErrors.email}</span>}
           </div>
           
           <div className="crear-usuario__form-row">
             <div className="crear-usuario__form-group">
-              <TextField
-                label="Contraseña *"
+              <label>Contraseña *</label>
+              <input
                 type="password"
                 value={formData.password}
-                onChange={(value) => handleInputChange('password', value)}
-                error={validationErrors.password}
+                onChange={(e) => handleInputChange('password', e.target.value)}
+                className={`crear-usuario__input ${validationErrors.password ? 'error' : ''}`}
                 disabled={loading}
                 placeholder="••••••••"
-                helpText="Mínimo 8 caracteres, con mayúscula, minúscula, número y carácter especial"
               />
+              {validationErrors.password && <span className="crear-usuario__error-text">{validationErrors.password}</span>}
+              <small className="crear-usuario__help-text">Mínimo 8 caracteres, con mayúscula, minúscula, número y carácter especial</small>
             </div>
             
             <div className="crear-usuario__form-group">
-              <TextField
-                label="Confirmar contraseña *"
+              <label>Confirmar contraseña *</label>
+              <input
                 type="password"
                 value={formData.confirmPassword}
-                onChange={(value) => handleInputChange('confirmPassword', value)}
-                error={validationErrors.confirmPassword}
+                onChange={(e) => handleInputChange('confirmPassword', e.target.value)}
+                className={`crear-usuario__input ${validationErrors.confirmPassword ? 'error' : ''}`}
                 disabled={loading}
                 placeholder="••••••••"
               />
+              {validationErrors.confirmPassword && <span className="crear-usuario__error-text">{validationErrors.confirmPassword}</span>}
             </div>
           </div>
           

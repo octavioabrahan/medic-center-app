@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Navigate } from 'react-router-dom';
 import { AdminLayout } from '../../../components/AdminDashboard';
 import Button from '../../../components/Button/Button';
 import SearchField from '../../../components/Inputs/SearchField';
@@ -8,14 +9,35 @@ import Tag from '../../../components/Tag/Tag';
 import { UserPlusIcon, PencilIcon, TrashIcon, CheckIcon } from '@heroicons/react/20/solid';
 import CrearUsuario from './CrearUsuario';
 import EditarUsuario from './EditarUsuario';
-import api from '../../../api';
+import api, { auth } from '../../../api';
 import './AdminUsuarios.css';
 
 /**
  * AdminUsuarios component for managing users in the admin dashboard
  * Displays the list of users and allows filtering, sorting and adding new users
+ * Only accessible to users with superadmin role
  */
 const AdminUsuarios = () => {
+  // Check if user has superadmin role
+  const authenticatedUser = auth.getCurrentUser();
+  const userRoles = authenticatedUser?.roles || [];
+  const isSuperAdmin = userRoles.includes('superadmin');
+
+  // If user is not superadmin, redirect to access denied
+  if (!isSuperAdmin) {
+    return (
+      <AdminLayout activePage="/admin/usuarios">
+        <div className="admin-usuarios">
+          <div className="admin-usuarios__access-denied">
+            <h2>Acceso Denegado</h2>
+            <p>Solo los usuarios con rol de superadmin pueden acceder a la administración de usuarios.</p>
+            <p>Su rol actual: {userRoles.length > 0 ? userRoles.join(', ') : 'Sin roles asignados'}</p>
+          </div>
+        </div>
+      </AdminLayout>
+    );
+  }
+
   // State for filters and sorting
   const [searchTerm, setSearchTerm] = useState('');
   const [showInactive, setShowInactive] = useState(false);

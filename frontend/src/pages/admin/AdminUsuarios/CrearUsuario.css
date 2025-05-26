@@ -130,6 +130,56 @@
   background-color: #f8fafc;
 }
 
+/* Custom input styles for password fields */
+.crear-usuario__input {
+  width: 100%;
+  padding: var(--spacing-sm, 12px);
+  border: 1px solid var(--color-border, #d1d5db);
+  border-radius: var(--border-radius-md, 8px);
+  font-size: var(--font-size-base, 1rem);
+  transition: all 0.2s ease;
+  background: var(--color-bg-primary, #ffffff);
+}
+
+.crear-usuario__input:focus {
+  outline: none;
+  border-color: var(--color-primary, #3b82f6);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.crear-usuario__input.error {
+  border-color: var(--color-error, #ef4444);
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+}
+
+.crear-usuario__input:disabled {
+  background-color: var(--color-bg-tertiary, #f3f4f6);
+  color: var(--color-text-secondary, #6b7280);
+  cursor: not-allowed;
+}
+
+.crear-usuario__error-text {
+  color: var(--color-error, #ef4444);
+  font-size: var(--font-size-xs, 0.75rem);
+  margin-top: var(--spacing-xs, 4px);
+  display: block;
+}
+
+.crear-usuario__help-text {
+  color: var(--color-text-secondary, #6b7280);
+  font-size: var(--font-size-xs, 0.75rem);
+  margin-top: var(--spacing-xs, 4px);
+  display: block;
+}
+
+.crear-usuario__form-group label {
+  font-weight: var(--font-weight-medium, 500);
+  color: var(--color-text-primary, #1f2937);
+  font-size: var(--font-size-sm, 0.875rem);
+  margin-bottom: var(--spacing-xs, 6px);
+  display: block;
+}
+
 /* Responsive styles */
 @media (max-width: 768px) {
   .crear-usuario__modal-content {
