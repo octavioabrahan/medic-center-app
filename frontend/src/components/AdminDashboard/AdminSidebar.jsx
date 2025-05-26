@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import './AdminSidebar.css';
 import { Menu, MenuHeader, MenuHeading, MenuSeparator } from '../Menu';
 import { ArrowLeftOnRectangleIcon } from '@heroicons/react/24/outline';
+import { auth } from '../../api';
 import logo from '../../assets/logo_header.png';
 
 /**
@@ -16,6 +17,11 @@ import logo from '../../assets/logo_header.png';
  */
 const AdminSidebar = ({ username = 'Usuario', role = 'Administrador', activePage = '' }) => {
   const navigate = useNavigate();
+
+  // Check if current user is superadmin
+  const authenticatedUser = auth.getCurrentUser();
+  const userRoles = authenticatedUser?.roles || [];
+  const isSuperAdmin = userRoles.includes('superadmin');
 
   // No necesitamos definir los items del menú aquí ya que los definimos directamente en el render
 
@@ -133,16 +139,18 @@ const AdminSidebar = ({ username = 'Usuario', role = 'Administrador', activePage
         
         <MenuSeparator />
         
-        <div 
-          className={isActive('/admin/usuarios') ? "menu-item2" : "menu-item"}
-          onClick={() => handleNavigation('/admin/usuarios')}
-        >
-          <div className="body">
-            <div className="row">
-              <div className={isActive('/admin/usuarios') ? "label2" : "label"}>Usuarios y roles</div>
+        {isSuperAdmin && (
+          <div 
+            className={isActive('/admin/usuarios') ? "menu-item2" : "menu-item"}
+            onClick={() => handleNavigation('/admin/usuarios')}
+          >
+            <div className="body">
+              <div className="row">
+                <div className={isActive('/admin/usuarios') ? "label2" : "label"}>Usuarios y roles</div>
+              </div>
             </div>
           </div>
-        </div>
+        )}
       </div>
       
       <MenuHeading heading={`${username} ${role}`} />
