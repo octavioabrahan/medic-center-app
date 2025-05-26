@@ -180,6 +180,39 @@
   display: block;
 }
 
+/* Radio button styles for role selection */
+.crear-usuario__radio-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  padding: 8px 12px;
+  border-radius: 6px;
+  transition: background-color 0.2s ease;
+  font-size: 14px;
+  color: #374151;
+}
+
+.crear-usuario__radio-label:hover {
+  background-color: #f9fafb;
+}
+
+.crear-usuario__radio-label input[type="radio"] {
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+  accent-color: #3b82f6;
+}
+
+.crear-usuario__radio-label input[type="radio"]:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.crear-usuario__radio-label span {
+  flex: 1;
+}
+
 /* Responsive styles */
 @media (max-width: 768px) {
   .crear-usuario__modal-content {

@@ -16,7 +16,7 @@ const CrearUsuario = ({ isOpen, onClose, roles, onUserCreated }) => {
     email: '',
     password: '',
     confirmPassword: '',
-    roles: []
+    role: null
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -31,7 +31,7 @@ const CrearUsuario = ({ isOpen, onClose, roles, onUserCreated }) => {
         email: '',
         password: '',
         confirmPassword: '',
-        roles: []
+        role: null
       });
       setError('');
       setValidationErrors({});
@@ -53,12 +53,10 @@ const CrearUsuario = ({ isOpen, onClose, roles, onUserCreated }) => {
     }
   };
 
-  const handleRoleChange = (roleId, checked) => {
+  const handleRoleChange = (roleId) => {
     setFormData(prev => ({
       ...prev,
-      roles: checked 
-        ? [...prev.roles, roleId]
-        : prev.roles.filter(id => id !== roleId)
+      role: roleId
     }));
   };
 
@@ -91,8 +89,8 @@ const CrearUsuario = ({ isOpen, onClose, roles, onUserCreated }) => {
       errors.confirmPassword = 'Las contraseñas no coinciden';
     }
 
-    if (formData.roles.length === 0) {
-      errors.roles = 'Debe asignar al menos un rol';
+    if (formData.role === null) {
+      errors.roles = 'Debe asignar un rol';
     }
 
     return errors;
@@ -116,7 +114,7 @@ const CrearUsuario = ({ isOpen, onClose, roles, onUserCreated }) => {
         last_name: formData.last_name.trim(),
         email: formData.email.trim().toLowerCase(),
         password: formData.password,
-        roles: formData.roles
+        roles: [formData.role]
       };
 
       console.log('Enviando datos de usuario:', userData);
@@ -230,17 +228,22 @@ const CrearUsuario = ({ isOpen, onClose, roles, onUserCreated }) => {
           
           <div className="crear-usuario__form-group">
             <label className="crear-usuario__roles-label">
-              Roles * {validationErrors.roles && <span className="crear-usuario__error-text">({validationErrors.roles})</span>}
+              Rol * {validationErrors.roles && <span className="crear-usuario__error-text">({validationErrors.roles})</span>}
             </label>
             <div className="crear-usuario__roles-container">
               {roles.map(role => (
                 <div key={role.id_rol} className="crear-usuario__role-item">
-                  <CheckboxField
-                    label={`${role.nombre_rol}${role.descripcion ? ` - ${role.descripcion}` : ''}`}
-                    checked={formData.roles.includes(role.id_rol)}
-                    onChange={(checked) => handleRoleChange(role.id_rol, checked)}
-                    disabled={loading}
-                  />
+                  <label className="crear-usuario__radio-label">
+                    <input
+                      type="radio"
+                      name="role"
+                      value={role.id_rol}
+                      checked={formData.role === role.id_rol}
+                      onChange={() => handleRoleChange(role.id_rol)}
+                      disabled={loading}
+                    />
+                    <span>{role.nombre_rol}{role.descripcion ? ` - ${role.descripcion}` : ''}</span>
+                  </label>
                 </div>
               ))}
             </div>

@@ -227,6 +227,18 @@
   gap: 4px;
 }
 
+.admin-usuarios__roles .tag {
+  margin-right: 4px;
+  margin-bottom: 4px;
+  font-size: 12px;
+  padding: 4px 8px;
+}
+
+.admin-usuarios__roles .tag .tag2 {
+  font-size: 12px;
+  line-height: 1;
+}
+
 .admin-usuarios__no-roles {
   color: var(--sds-color-text-default-secondary, #757575);
   font-style: italic;

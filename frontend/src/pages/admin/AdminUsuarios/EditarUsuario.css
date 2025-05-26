@@ -141,6 +141,16 @@
   color: #1f2937 !important;
 }
 
+.radio-label {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm, 8px);
+  cursor: pointer;
+  padding: var(--spacing-xs, 6px) 0;
+  font-size: var(--font-size-sm, 0.875rem);
+  color: #1f2937 !important;
+}
+
 .checkbox-label input[type="checkbox"] {
   width: 16px;
   height: 16px;
@@ -148,7 +158,15 @@
   accent-color: var(--color-primary, #3b82f6);
 }
 
-.checkbox-label input[type="checkbox"]:disabled {
+.radio-label input[type="radio"] {
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+  accent-color: var(--color-primary, #3b82f6);
+}
+
+.checkbox-label input[type="checkbox"]:disabled,
+.radio-label input[type="radio"]:disabled {
   opacity: 0.5;
   cursor: not-allowed;
 }

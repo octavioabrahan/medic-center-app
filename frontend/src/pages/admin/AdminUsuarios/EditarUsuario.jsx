@@ -9,7 +9,7 @@ const EditarUsuario = ({ usuario, roles, onClose, onUpdate }) => {
     email: '',
     password: '',
     confirmPassword: '',
-    selectedRoles: []
+    selectedRole: null
   });
   const [errors, setErrors] = useState({});
   const [isLoading, setIsLoading] = useState(false);
@@ -23,7 +23,7 @@ const EditarUsuario = ({ usuario, roles, onClose, onUpdate }) => {
         email: usuario.email || '',
         password: '',
         confirmPassword: '',
-        selectedRoles: usuario.roles ? usuario.roles.map(role => role.id_rol) : []
+        selectedRole: usuario.roles && usuario.roles.length > 0 ? usuario.roles[0].id_rol : null
       });
     }
   }, [usuario]);
@@ -63,8 +63,8 @@ const EditarUsuario = ({ usuario, roles, onClose, onUpdate }) => {
       }
     }
 
-    if (formData.selectedRoles.length === 0) {
-      newErrors.roles = 'Debe seleccionar al menos un rol';
+    if (formData.selectedRole === null) {
+      newErrors.roles = 'Debe seleccionar un rol';
     }
 
     setErrors(newErrors);
@@ -85,7 +85,7 @@ const EditarUsuario = ({ usuario, roles, onClose, onUpdate }) => {
         name: formData.name,
         last_name: formData.last_name,
         email: formData.email,
-        roles: formData.selectedRoles
+        roles: [formData.selectedRole]
       };
 
       if (changePassword) {
@@ -107,9 +107,7 @@ const EditarUsuario = ({ usuario, roles, onClose, onUpdate }) => {
   const handleRoleChange = (roleId) => {
     setFormData(prev => ({
       ...prev,
-      selectedRoles: prev.selectedRoles.includes(roleId)
-        ? prev.selectedRoles.filter(id => id !== roleId)
-        : [...prev.selectedRoles, roleId]
+      selectedRole: roleId
     }));
   };
 
@@ -235,13 +233,15 @@ const EditarUsuario = ({ usuario, roles, onClose, onUpdate }) => {
           )}
 
           <div className="form-group">
-            <label>Roles *</label>
+            <label>Rol *</label>
             <div className="roles-container">
               {roles.map(role => (
-                <label key={role.id_rol} className="checkbox-label">
+                <label key={role.id_rol} className="radio-label">
                   <input
-                    type="checkbox"
-                    checked={formData.selectedRoles.includes(role.id_rol)}
+                    type="radio"
+                    name="selectedRole"
+                    value={role.id_rol}
+                    checked={formData.selectedRole === role.id_rol}
                     onChange={() => handleRoleChange(role.id_rol)}
                     disabled={isLoading}
                   />

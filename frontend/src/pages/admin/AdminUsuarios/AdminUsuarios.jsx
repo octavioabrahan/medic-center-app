@@ -153,15 +153,15 @@ const AdminUsuarios = () => {
   const getRoleColor = (roleName) => {
     switch (roleName) {
       case 'superadmin':
-        return 'red';
+        return 'danger';
       case 'admin':
-        return 'blue';
+        return 'brand';
       case 'asistente':
-        return 'green';
+        return 'positive';
       case 'medico':
-        return 'purple';
+        return 'warning';
       default:
-        return 'gray';
+        return 'neutral';
     }
   };
 
@@ -274,9 +274,9 @@ const AdminUsuarios = () => {
                           row.roles.map((role, index) => (
                             <Tag 
                               key={index}
-                              label={role.nombre_rol}
+                              text={role.nombre_rol}
                               scheme={getRoleColor(role.nombre_rol)}
-                              size="small"
+                              closeable={false}
                             />
                           ))
                         ) : (
@@ -289,9 +289,9 @@ const AdminUsuarios = () => {
                   if (column === "estado") {
                     return (
                       <Tag 
-                        label={row.is_active ? "Activo" : "Inactivo"}
-                        scheme={row.is_active ? "success" : "neutral"}
-                        size="small"
+                        text={row.is_active ? "Activo" : "Inactivo"}
+                        scheme={row.is_active ? "positive" : "neutral"}
+                        closeable={false}
                       />
                     );
                   }
