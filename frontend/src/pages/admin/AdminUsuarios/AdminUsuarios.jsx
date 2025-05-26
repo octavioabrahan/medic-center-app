@@ -18,26 +18,6 @@ import './AdminUsuarios.css';
  * Only accessible to users with superadmin role
  */
 const AdminUsuarios = () => {
-  // Check if user has superadmin role
-  const authenticatedUser = auth.getCurrentUser();
-  const userRoles = authenticatedUser?.roles || [];
-  const isSuperAdmin = userRoles.includes('superadmin');
-
-  // If user is not superadmin, redirect to access denied
-  if (!isSuperAdmin) {
-    return (
-      <AdminLayout activePage="/admin/usuarios">
-        <div className="admin-usuarios">
-          <div className="admin-usuarios__access-denied">
-            <h2>Acceso Denegado</h2>
-            <p>Solo los usuarios con rol de superadmin pueden acceder a la administración de usuarios.</p>
-            <p>Su rol actual: {userRoles.length > 0 ? userRoles.join(', ') : 'Sin roles asignados'}</p>
-          </div>
-        </div>
-      </AdminLayout>
-    );
-  }
-
   // State for filters and sorting
   const [searchTerm, setSearchTerm] = useState('');
   const [showInactive, setShowInactive] = useState(false);
@@ -59,6 +39,26 @@ const AdminUsuarios = () => {
     fetchUsuarios();
     fetchRoles();
   }, []);
+
+  // Check if user has superadmin role (after all hooks)
+  const authenticatedUser = auth.getCurrentUser();
+  const userRoles = authenticatedUser?.roles || [];
+  const isSuperAdmin = userRoles.includes('superadmin');
+
+  // If user is not superadmin, show access denied
+  if (!isSuperAdmin) {
+    return (
+      <AdminLayout activePage="/admin/usuarios">
+        <div className="admin-usuarios">
+          <div className="admin-usuarios__access-denied">
+            <h2>Acceso Denegado</h2>
+            <p>Solo los usuarios con rol de superadmin pueden acceder a la administración de usuarios.</p>
+            <p>Su rol actual: {userRoles.length > 0 ? userRoles.join(', ') : 'Sin roles asignados'}</p>
+          </div>
+        </div>
+      </AdminLayout>
+    );
+  }
 
   const fetchUsuarios = async () => {
     try {
