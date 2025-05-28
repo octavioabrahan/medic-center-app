@@ -1,24 +1,8 @@
 import React, { Suspense, lazy, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate, useNavigate, useLocation } from 'react-router-dom';
-import ReactGA from 'react-ga4';
 import { auth } from './api';
 import { AuthProvider } from './context/AuthContext';
 import AdminAuthRedirector from './components/auth/AdminAuthRedirector';
-
-// Inicializamos Google Analytics
-ReactGA.initialize('G-D0Z67LNZX5');
-
-// Componente para seguimiento de páginas
-function PageViewTracker() {
-  const location = useLocation();
-  
-  useEffect(() => {
-    // Enviar datos de página vista a Google Analytics
-    ReactGA.send({ hitType: "pageview", page: location.pathname + location.search });
-  }, [location]);
-  
-  return null;
-}
 
 // Higher-order component para rutas protegidas
 const RequireAuth = ({ children }) => {
@@ -106,7 +90,7 @@ function App() {
         {/* Añadimos el interceptor global para rutas admin */}
         <AdminAuthRedirector />
         {/* Componente para seguimiento de páginas */}
-        <PageViewTracker />
+        {/* <PageViewTracker /> */}
         <Routes>
         {/* Ruta principal para el índice de demos */}
         <Route path="/demo" element={
