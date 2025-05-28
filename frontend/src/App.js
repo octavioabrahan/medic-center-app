@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate, useNavigate, useLocat
 import { auth } from './api';
 import { AuthProvider } from './context/AuthContext';
 import AdminAuthRedirector from './components/auth/AdminAuthRedirector';
+import PageViewTracker from './PageViewTracker';
 
 // Higher-order component para rutas protegidas
 const RequireAuth = ({ children }) => {
@@ -90,7 +91,7 @@ function App() {
         {/* Añadimos el interceptor global para rutas admin */}
         <AdminAuthRedirector />
         {/* Componente para seguimiento de páginas */}
-        {/* <PageViewTracker /> */}
+        <PageViewTracker />
         <Routes>
         {/* Ruta principal para el índice de demos */}
         <Route path="/demo" element={
